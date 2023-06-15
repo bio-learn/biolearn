@@ -1,0 +1,88 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "biolearn"
+description = "Machine learning for biomarkers computing"
+long_description = { file = "README.rst" }
+authors = [{ name = "Biolearn developers" }]
+maintainers = [{ name = "Martin Perez-Guevara", email = "mperezguevara@gmail.com" }]
+readme = "README.rst"
+license = { text = "new BSD" }
+
+requires-python = ">=3.10"
+
+dependencies = [
+  "numpy>=1.19.0"
+]
+
+keywords = ["biomarker"]
+classifiers = [
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved",
+  "Programming Language :: C",
+  "Programming Language :: Python",
+  "Topic :: Software Development",
+  "Topic :: Scientific/Engineering",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+]
+
+dynamic = ["version"]
+
+[project.optional-dependencies]
+# Necessary req to use biolearn's plotting module
+plotting = ["matplotlib>=3.3.0"]
+# Requirements necessary for building the documentation
+doc = [
+    "biolearn[plotting]",
+	"coverage",
+	"flake8",
+	"flake8-docstrings",
+	"black",
+	"furo",
+	"memory_profiler",  # measuring memory during docs building
+	"mkl",
+	"myst-parser",
+	"numpydoc",
+	"sphinx",
+	"sphinx-copybutton",
+	"sphinx-design",
+	"sphinx-gallery",
+	"sphinxcontrib-bibtex",
+	"sphinxext-opengraph",
+]
+# For running unit and docstring tests
+test = [
+	"coverage",
+	"pytest>=6.0.0",
+	"pytest-cov",
+]
+# A combination of dependencies useful for developers
+dev = ["biolearn[plotting,doc,test]"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["biolearn"]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "biolearn/_version.py"
+
+[tool.black]
+line-length = 79
+include = """
+(
+  examples/.*py
+)
+"""
+
+[tool.isort]
+profile = "black"
+line_length = 79
+skip_gitignore = true
+combine_as_imports = true

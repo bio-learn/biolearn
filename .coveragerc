@@ -1,0 +1,6 @@
+[run]
+branch = True
+parallel = True
+omit =
+    */biolearn/tests/*
+    */biolearn/*/tests/*
