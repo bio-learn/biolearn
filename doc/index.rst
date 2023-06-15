@@ -91,4 +91,4 @@ Featured examples
    :caption: Development
 
    authors.rst
-   GitHub Repository <https://github.com/bio-learn/bio-learn>
+   GitHub Repository <https://github.com/bio-learn/biolearn>
