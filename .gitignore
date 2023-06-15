@@ -1,0 +1,23 @@
+*.pyc
+
+# ignore python type annotation stubs for now
+*.pyi
+.pytest_cache
+
+# Mac OS X
+.DS_Store
+
+# IDE related
+.idea/
+.vscode/
+
+# build related
+biolearn.egg-info/
+build
+dist/
+biolearn/_version.py
+
+# coverage
+.coverage
+coverage
+nosetests_coverage/
