@@ -1,0 +1,15 @@
+===========================================
+BIOLEARN
+===========================================
+
+This repository contains code and documentation to use the scikit-learn
+( http://scikit-learn.org ) for biomarkers data analysis.
+
+The code comes with fully-runnable examples that download the data
+required from Internet.
+
+License
+--------
+
+As indicated in the COPYING file, all the code and documentation is
+BSD-licensed.

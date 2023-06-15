@@ -1,5 +1,5 @@
-Bio-learn
-=========
+Biolearn
+========
 
 Biolearn leverages the `scikit-learn <https://scikit-learn.org>`_ Python toolbox for biomarkers analysis
 
