@@ -21,12 +21,14 @@ We recommend that you install ``biolearn`` in a virtual Python environment.
 In linux as example you can create one with venv:
 
 .. code-block:: bash
+
     python3 -m venv bioenv
     source bioenv/bin/activate
 
 After you can install the package in the activated virtual environment:
 
 .. code-block:: bash
+
     pip install -U biolearn
 
 Development version
