@@ -14,7 +14,10 @@ license = { text = "new BSD" }
 requires-python = ">=3.10"
 
 dependencies = [
-  "numpy>=1.19.0"
+  "numpy>=1.19.0",
+  "pandas",
+  "requests",
+  "appdirs"
 ]
 
 keywords = ["biomarker"]

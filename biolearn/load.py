@@ -5,6 +5,7 @@ import requests
 import shutil
 from urllib.parse import urlparse
 import appdirs
+from ._utils import fill_doc
 
 MG_PER_DL_TO_MMOL_PER_L = 0.05551
 
@@ -41,7 +42,16 @@ def cached_dowload(url):
 
 
 def load_fhs():
-    """Loads data from the Framingham Heart Study"""
+    """
+    Loads data from the Framingham Heart Study
+
+    Returns
+    -----------
+    df: Pandas.Dataframe
+        A pandas dataframe where each row represents an individual and each column represents a measurement about that individual
+
+
+    """
     public_link = (
         "https://raw.githubusercontent.com/singator/bdah/master/data/frmgham2.csv"
     )
@@ -72,7 +82,20 @@ def load_fhs():
 
 
 def load_nhanes(year):
-    """Loads data from the National Health and Nutrition Examination Survey"""
+    """Loads data from the National Health and Nutrition Examination Survey
+
+    Parameters
+    ----------
+    year : number
+        A year number for which to load data. Not that NHANES data comes in two year groupings and the year passed in should be the later year.
+        Supported inputs are 2010 and 2012
+    
+    Returns
+    -----------
+    df: Pandas.Dataframe
+        A pandas dataframe where each row represents an individual and each column represents a measurement about that individual
+
+    """
     cbc_sub = [
         "LBXRDW",
         "LBXWBCSI",
