@@ -49,8 +49,6 @@ def load_fhs():
     -----------
     df: Pandas.Dataframe
         A pandas dataframe where each row represents an individual and each column represents a measurement about that individual
-
-
     """
     public_link = (
         "https://raw.githubusercontent.com/singator/bdah/master/data/frmgham2.csv"
@@ -94,7 +92,6 @@ def load_nhanes(year):
     -----------
     df: Pandas.Dataframe
         A pandas dataframe where each row represents an individual and each column represents a measurement about that individual
-
     """
     cbc_sub = [
         "LBXRDW",

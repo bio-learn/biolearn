@@ -35,14 +35,50 @@ def run_clock(dataframe, coeffecient_file, transform_function):
 
 
 def horvath_clock(dataframe):
+    """Runs the Horvath DNA methylation clock on each individual in the dataset to predict a biological age
+    Parameters
+    ----------
+    dataframe : Pandas.Dataframe
+        A pandas dataframe where each row represents an individual and each column represents a measurement about that individual.
+        Needs to have DNA methylation measurements for the clock to work
+    
+    Returns
+    -----------
+    df: Pandas.Dataframe
+        A pandas dataframe where each row represents an individual with a single column for predicted biological age
+    """
     return run_clock(dataframe, "horvath.csv", horvath_transform)
 
 
 def hannum_clock(dataframe):
+    """Runs the Hannum DNA methylation clock on each individual in the dataset to predict a biological age
+    Parameters
+    ----------
+    dataframe : Pandas.Dataframe
+        A pandas dataframe where each row represents an individual and each column represents a measurement about that individual.
+        Needs to have DNA methylation measurements for the clock to work
+    
+    Returns
+    -----------
+    df: Pandas.Dataframe
+        A pandas dataframe where each row represents an individual with a single column for predicted biological age
+    """
     return run_clock(dataframe, "hannum.csv", no_transform)
 
 
 def phenoage_clock(dataframe):
+    """Runs the PhenoAge DNA methylation clock on each individual in the dataset to predict a biological age
+    Parameters
+    ----------
+    dataframe : Pandas.Dataframe
+        A pandas dataframe where each row represents an individual and each column represents a measurement about that individual.
+        Needs to have DNA methylation measurements for the clock to work
+    
+    Returns
+    -----------
+    df: Pandas.Dataframe
+        A pandas dataframe where each row represents an individual with a single column for predicted biological age
+    """
     return run_clock(dataframe, "phenoage.csv", phenoage_transform)
 
 
