@@ -65,7 +65,11 @@ test = [
 	"pytest-cov",
 ]
 # A combination of dependencies useful for developers
-dev = ["biolearn[plotting,doc,test]"]
+dev = [
+	"biolearn[plotting,doc,test]",
+	"lifelines",
+	"matplotlib"
+]
 
 [tool.hatch.build.targets.wheel]
 packages = ["biolearn"]

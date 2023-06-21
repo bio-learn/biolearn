@@ -15,10 +15,7 @@ from warnings import simplefilter; simplefilter(action="ignore", category=pd.err
 import matplotlib.pyplot as plt
 from lifelines import KaplanMeierFitter
 
-import sys
-sys.path.append("../boa-learn")
-
-from boa_learn.load import load_nhanes
+from biolearn.load import load_nhanes
 
 #############################################################################
 # Load up data from NHANES

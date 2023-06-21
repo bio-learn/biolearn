@@ -1,7 +1,7 @@
 .. _tutorial_examples:
 
 ===============
-Basic tutorials
+NHANES Tutorial
 ===============
 
-Introductory examples that teach how to use omicslearn.
+Plot survival graphs using nahnes data
