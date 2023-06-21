@@ -51,7 +51,7 @@ Featured examples
 .. grid::
 
   .. grid-item-card::
-    :link: auto_examples/00_tutorials/plot_nhanes.html
+    :link: auto_examples/00_nhanes/plot_nhanes.html
     :link-type: url
     :columns: 12 12 12 12
     :class-card: sd-shadow-sm
@@ -65,7 +65,7 @@ Featured examples
       .. grid-item::
         :columns: 12 4 4 4
 
-        .. image:: auto_examples/00_tutorials/images/sphx_glr_plot_nhanes_101_005.png
+        .. image:: auto_examples/00_nhanes/images/sphx_glr_plot_nhanes_101_005.png
 
       .. grid-item::
         :columns: 12 8 8 8

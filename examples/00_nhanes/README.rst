@@ -4,4 +4,4 @@
 NHANES Tutorial
 ===============
 
-Plot survival graphs using nahnes data
+Plot survival graphs using nhanes data
