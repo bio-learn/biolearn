@@ -65,7 +65,8 @@ Featured examples
       .. grid-item::
         :columns: 12 4 4 4
 
-        .. image:: auto_examples/00_nhanes/images/sphx_glr_plot_nhanes_101_005.png
+        .. image:: auto_examples/00_nhanes/images/sphx_glr_plot_nhanes_005.png
+          
 
       .. grid-item::
         :columns: 12 8 8 8
