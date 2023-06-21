@@ -26,3 +26,6 @@ nosetests_coverage/
 doc/_build
 doc/auto_examples
 doc/modules/generated
+
+#vevn
+bioenv

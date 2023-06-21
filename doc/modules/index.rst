@@ -10,4 +10,5 @@ the :ref:`user guide <user_guide>` for more information and usage examples.
 .. toctree::
    :hidden:
 
-   stuff.rst
+   load.rst
+   clock.rst

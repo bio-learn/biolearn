@@ -51,7 +51,7 @@ Featured examples
 .. grid::
 
   .. grid-item-card::
-    :link: auto_examples/00_tutorials/plot_python_101.html
+    :link: auto_examples/00_nhanes/plot_nhanes.html
     :link-type: url
     :columns: 12 12 12 12
     :class-card: sd-shadow-sm
@@ -65,16 +65,18 @@ Featured examples
       .. grid-item::
         :columns: 12 4 4 4
 
-        .. image:: auto_examples/00_tutorials/images/thumb/sphx_glr_plot_python_101_thumb.png
+        .. image:: auto_examples/00_nhanes/images/sphx_glr_plot_nhanes_005.png
+          
 
       .. grid-item::
         :columns: 12 8 8 8
 
         .. div:: sd-font-weight-bold
 
-          Basic numerics and plotting with Python
+          NHANES survival plotting with biological age
 
-        Look at a trivial example of numpy and matplotlib usage
+        Using NHANES data shows relationship between various data points and survival
+
 
 .. toctree::
    :hidden:
