@@ -3,15 +3,16 @@ Biolearn
 
 .. container:: index-paragraph
 
-    Biolearn enables **approachable and versatile analyses of brain
-    volumes**. It provides statistical and machine-learning tools, with
-    **instructive documentation & open community**.
+    Biolearn enables **easy and versatile analyses of biomarkers of aging** data. 
+    It provides statistics and machine-learning tools, with **instructive 
+    documentation and an open science approach**.
 
-    It supports general linear model (GLM) based analysis and leverages
-    the :sklearn:`scikit-learn <>` Python toolbox
-    for multivariate statistics with applications such as predictive modelling,
-    classification, decoding, or connectivity analysis.
+    It supports loading public and private clinical and omic data and demonstrates 
+    how to use machine learning models (e.g. :sklearn:`scikit-learn <>`) for quantitative and 
+    qualitative analysis.
 
+    Biolearn is scientifically and fiscally supported by `Biomarkers of Aging Consortium <https://www.agingconsortium.org/>`_ 
+    and `Methuselah Foundation <https://www.mfoundation.org/>`_ respectively 
 
 .. grid::
 
