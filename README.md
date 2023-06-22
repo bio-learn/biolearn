@@ -29,12 +29,6 @@ Bio-learn is a library for working with [biomarkers](https://en.wikipedia.org/wi
 
 ### Installation
 
-1. Clone the repo:
-
-    ```
-    git clone https://github.com/Biomarkers-of-Aging-Consortium/bio-learn
-    cd bio-learn
-    ```
 1. Navigate to library directory
     ```
     cd boa-learn

@@ -1,7 +1,8 @@
 Biolearn
 ========
 
-Biolearn leverages the `scikit-learn <https://scikit-learn.org>`_ Python toolbox for biomarkers analysis
+Biolearn enables easy and versatile analyses of biomarkers of aging data. It provides statistics and machine-learning tools, with instructive documentation and an open science approach.
+
 
 Important links
 ===============

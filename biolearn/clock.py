@@ -19,7 +19,9 @@ def no_transform(_):
 
 
 def run_clock(dataframe, coeffecient_file, transform_function):
-    script_dir = os.path.dirname(__file__)  # get the directory of the current script
+    script_dir = os.path.dirname(
+        __file__
+    )  # get the directory of the current script
     data_file_path = os.path.join(
         script_dir, "data", coeffecient_file
     )  # build the path to the data file
@@ -29,19 +31,22 @@ def run_clock(dataframe, coeffecient_file, transform_function):
         dataframe.transpose(), left_index=True, right_index=True
     )
     for c in methylation_df.columns[1:]:
-        methylation_df[c] = methylation_df["CoefficientTraining"] * methylation_df[c]
+        methylation_df[c] = (
+            methylation_df["CoefficientTraining"] * methylation_df[c]
+        )
     df_sum = methylation_df.drop("CoefficientTraining", axis=1).sum()
     return df_sum.apply(transform_function).to_frame(name="biological_age")
 
 
 def horvath_clock(dataframe):
     """Runs the Horvath DNA methylation clock on each individual in the dataset to predict a biological age
+
     Parameters
     ----------
     dataframe : Pandas.Dataframe
         A pandas dataframe where each row represents an individual and each column represents a measurement about that individual.
         Needs to have DNA methylation measurements for the clock to work
-    
+
     Returns
     -----------
     df: Pandas.Dataframe
@@ -52,12 +57,13 @@ def horvath_clock(dataframe):
 
 def hannum_clock(dataframe):
     """Runs the Hannum DNA methylation clock on each individual in the dataset to predict a biological age
+
     Parameters
     ----------
     dataframe : Pandas.Dataframe
         A pandas dataframe where each row represents an individual and each column represents a measurement about that individual.
         Needs to have DNA methylation measurements for the clock to work
-    
+
     Returns
     -----------
     df: Pandas.Dataframe
@@ -68,12 +74,13 @@ def hannum_clock(dataframe):
 
 def phenoage_clock(dataframe):
     """Runs the PhenoAge DNA methylation clock on each individual in the dataset to predict a biological age
+
     Parameters
     ----------
     dataframe : Pandas.Dataframe
         A pandas dataframe where each row represents an individual and each column represents a measurement about that individual.
         Needs to have DNA methylation measurements for the clock to work
-    
+
     Returns
     -----------
     df: Pandas.Dataframe

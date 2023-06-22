@@ -1,4 +1,4 @@
-.. _load_ref:
+.. _clock_ref:
 
 :mod:`biolearn.clock`: Function to run existing clocks that predice biological age
 =====================================================================================
