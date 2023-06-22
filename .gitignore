@@ -28,4 +28,8 @@ doc/auto_examples
 doc/modules/generated
 
 #vevn
-.venv
+.venvi
+
+#jupyter notebook checkouts
+.ipynb_checkpoints
+
