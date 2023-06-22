@@ -28,4 +28,4 @@ doc/auto_examples
 doc/modules/generated
 
 #vevn
-bioenv
+.venv

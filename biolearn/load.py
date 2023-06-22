@@ -50,13 +50,19 @@ def load_fhs():
     df: Pandas.Dataframe
         A pandas dataframe where each row represents an individual and each column represents a measurement about that individual
     """
-    public_link = (
-        "https://raw.githubusercontent.com/singator/bdah/master/data/frmgham2.csv"
-    )
+    public_link = "https://raw.githubusercontent.com/singator/bdah/master/data/frmgham2.csv"
     df = pd.read_csv(
         public_link,
         index_col=0,
-        usecols=["RANDID", "PERIOD", "AGE", "SEX", "DEATH", "TIMEDTH", "GLUCOSE"],
+        usecols=[
+            "RANDID",
+            "PERIOD",
+            "AGE",
+            "SEX",
+            "DEATH",
+            "TIMEDTH",
+            "GLUCOSE",
+        ],
     )
     df = df[df["PERIOD"] == 1].drop("PERIOD", axis=1)
     df["TIMEDTH"] = df["TIMEDTH"] / 30.437  # days to months
@@ -87,7 +93,7 @@ def load_nhanes(year):
     year : number
         A year number for which to load data. Not that NHANES data comes in two year groupings and the year passed in should be the later year.
         Supported inputs are 2010 and 2012
-    
+
     Returns
     -----------
     df: Pandas.Dataframe
@@ -144,7 +150,9 @@ def load_nhanes(year):
     if year == 2010:
         crp = pd.read_sas(crp_file, index="SEQN")["LBXCRP"]
         crp.index = crp.index.astype(int)
-    bioc = pd.read_sas(bioc_file, index="SEQN")[["LBDSALSI", "LBDSCRSI", "LBXSAPSI"]]
+    bioc = pd.read_sas(bioc_file, index="SEQN")[
+        ["LBDSALSI", "LBDSCRSI", "LBXSAPSI"]
+    ]
     bioc.index = bioc.index.astype(int)
     mort = pd.read_fwf(
         mortality_file,

@@ -68,7 +68,8 @@ test = [
 dev = [
 	"biolearn[plotting,doc,test]",
 	"lifelines",
-	"matplotlib"
+	"matplotlib",
+	"jupyter"
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -82,9 +83,14 @@ version-file = "biolearn/_version.py"
 
 [tool.black]
 line-length = 79
-include = """
+extend-include = """
 (
   examples/.*py
+)
+"""
+extend-exclude = """
+(
+  doc
 )
 """
 

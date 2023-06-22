@@ -1,7 +1,8 @@
 Biolearn
 ========
 
-Biolearn leverages the `scikit-learn <https://scikit-learn.org>`_ Python toolbox for biomarkers analysis
+Biolearn enables easy and versatile analyses of biomarkers of aging data. It provides statistics and machine-learning tools, with instructive documentation and an open science approach.
+
 
 Important links
 ===============
@@ -31,11 +32,6 @@ After you can install the package in the activated virtual environment:
 
     pip install -U biolearn
 
-Development version
--------------------
-
-Please find all development setup instructions in the
-`contribution guide <https://bio-learn.github.io/stable/development.html#setting-up-your-environment>`_.
 
 Check installation
 ------------------
@@ -54,13 +50,10 @@ Discord server
 The biolearn team has a discord server to answer questions,
 discuss feature requests, or have any biolearn related discussions.
 
-For more information and ways to engage with the biolearn team see
-`How to get help <https://bio-learn.github.io/stable/development.html#how-to-get-help>`_.
-
 Dependencies
 ============
 
-The required dependencies to use the software are listed in the file `pyproject.toml <https://github.com/bio-learn/biolearn/blob/main/pyproject.toml>`_.
+The required dependencies to use the software are listed in the file `pyproject.toml <https://github.com/bio-learn/biolearn/blob/master/pyproject.toml>`_.
 
 If you are using biolearn plotting functionalities or running the examples, matplotlib >= 3.3.0 is required.
 
@@ -71,5 +64,4 @@ If you want to run the tests, you need pytest >= 6.0.0 and pytest-cov for covera
 Development
 ===========
 
-Detailed instructions on how to contribute are available at
-http://bio-learn.github.io/stable/development.html
+Detailed instructions on developer setup and how to contribute are available `in the repo <https://github.com/bio-learn/biolearn/blob/master/DEVELOPMENT.md>`_
