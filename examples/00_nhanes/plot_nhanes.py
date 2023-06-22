@@ -1,13 +1,12 @@
 """
-Plotting survival curves with NHANES data
+Survival analyses using NHANES data
 =============================================================
 
-This example loads up data from NHANES and demonstrates plotting survival curves 
-including with a PhenoAge clock
+This example loads blood data from NHANES 2010 and performs survival analyses by sex, glucose level, and “biological age”. 
 """
 
 #############################################################################
-# Needed imports
+# Importing libraries
 # ---------------------------------------
 import pandas as pd
 import numpy as np
@@ -20,11 +19,10 @@ from lifelines import KaplanMeierFitter
 from biolearn.load import load_nhanes
 
 #############################################################################
-# Load up data from NHANES
+# Loading NHANES data
 # ---------------------------------------
 year = 2010
 df = load_nhanes(year)
-df["LBXCRP"] = np.log(df["LBXCRP"])
 df["years_until_death"] = df["months_until_death"] / 12
 
 #############################################################################
@@ -39,7 +37,7 @@ plt.ylabel("Survival")
 plt.xlabel("Years")
 
 #############################################################################
-# Plot survival by sex
+# Plotting survival by follow up time 
 # ---------------------------------------
 ax = plt.subplot()
 groups = df["sex"]
@@ -65,9 +63,9 @@ plt.ylabel("Survival")
 plt.xlabel("Years")
 
 #############################################################################
-# Calculate "biological age" using the phenoage clock
+# Calculate "biological age" based on PhenotypicAge
 # ------------------------------------------------------
-# https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5940111/
+# Biomarker parameters from the paper https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5940111/
 pheno_coefs = {
     "age": 0.0804,
     "LBDSALSI": -0.034,
@@ -84,6 +82,7 @@ pheno_coefs = {
 constant = -19.9067
 gamma = 0.0077
 cs = [141.50225, -0.00553, 0.090165]
+df["LBXCRP"] = np.log(df["LBXCRP"])
 df["pheno"] = df.apply(
     lambda x: sum([x[c] * pheno_coefs[c] for c in pheno_coefs.keys()]), axis=1
 )
@@ -95,12 +94,12 @@ df["phenotypic_age"] = (
 )
 
 #############################################################################
-# Show relation between biological and chronological age
+# Show relation between biological age and chronological age
 # ---------------------------------------------------------------
 df.plot.scatter("age", "phenotypic_age")
 
 ############################################################################################
-# Plot survival curve for people with a biological age younger vs older than chronological
+# Plot survival curve for people with a accelerated aging (biological age younger) vs decelerated aging (older than chronological)
 # -----------------------------------------------------------------------------------------
 df["biologically_older"] = df["phenotypic_age"] > df["age"]
 ax = plt.subplot()
