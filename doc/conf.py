@@ -202,10 +202,6 @@ if "dev" in current_version:
     html_theme_options["announcement"] = (
         "<p>This is the development documentation "
         f"of biolearn ({current_version}) "
-        '<a class="sd-sphinx-override sd-badge sd-text-wrap '
-        'sd-btn-outline-dark reference external" '
-        'href="https://biolearn.github.io">'
-        f"<span>Switch to stable version ({latest_release})</span></a></p>"
     )
 
 # Add any paths that contain custom themes here, relative to this directory.
