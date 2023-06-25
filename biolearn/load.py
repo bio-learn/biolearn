@@ -46,7 +46,7 @@ def load_fhs():
     Loads data from the Framingham Heart Study
 
     Returns
-    -----------
+    -------
     df: Pandas.Dataframe
         A pandas dataframe where each row represents an individual and each column represents a measurement about that individual
     """
@@ -95,7 +95,7 @@ def load_nhanes(year):
         Supported inputs are 2010 and 2012
 
     Returns
-    -----------
+    -------
     df: Pandas.Dataframe
         A pandas dataframe where each row represents an individual and each column represents a measurement about that individual
     """

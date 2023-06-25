@@ -48,7 +48,7 @@ def horvath_clock(dataframe):
         Needs to have DNA methylation measurements for the clock to work
 
     Returns
-    -----------
+    -------
     df: Pandas.Dataframe
         A pandas dataframe where each row represents an individual with a single column for predicted biological age
     """
@@ -65,7 +65,7 @@ def hannum_clock(dataframe):
         Needs to have DNA methylation measurements for the clock to work
 
     Returns
-    -----------
+    -------
     df: Pandas.Dataframe
         A pandas dataframe where each row represents an individual with a single column for predicted biological age
     """
@@ -82,7 +82,7 @@ def phenoage_clock(dataframe):
         Needs to have DNA methylation measurements for the clock to work
 
     Returns
-    -----------
+    -------
     df: Pandas.Dataframe
         A pandas dataframe where each row represents an individual with a single column for predicted biological age
     """

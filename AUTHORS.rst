@@ -17,9 +17,9 @@ Core developers
 
 The biolearn core developers are:
 
-* `Mahdi Moqri`_ ` linkedin <https://www.linkedin.com/in/mahdi-moqri-41432547/>`_
-* `Martin Perez-Guevara`_
-* `Seth Paulson`_
+* `Mahdi Moqri`_  /  `Researcher & BoA Executive <https://www.linkedin.com/in/mahdi-moqri-41432547/>`_
+* `Martin Perez-Guevara`_  /  `Machine Learning Engineer <https://www.linkedin.com/in/martin-perez-guevara/>`_
+* `Seth Paulson`_  /  `Software Architect <https://www.linkedin.com/in/seth-paulson-6ba80226/>`_
 
 Other contributors
 ..................

@@ -4,11 +4,17 @@ Biolearn
 Biolearn enables easy and versatile analyses of biomarkers of aging data. It provides statistics and machine-learning tools, with instructive documentation and an open science approach.
 
 
+.. warning::
+
+    At the moment we do not have a stable release, only a **unstable developer version**.
+    So you have to download the repo from github and install locally with **"pip install .[dev]"**
+
+
 Important links
 ===============
 
 - Official source code repo: https://github.com/bio-learn/biolearn/
-- HTML documentation (only developement release for the moment): https://bio-learn.github.io/
+- HTML documentation (**only development release for the moment**): https://bio-learn.github.io/
 
 Install
 =======
