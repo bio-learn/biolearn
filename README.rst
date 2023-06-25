@@ -8,30 +8,38 @@ Important links
 ===============
 
 - Official source code repo: https://github.com/bio-learn/biolearn/
-- HTML documentation (stable release): https://bio-learn.github.io/
+- HTML documentation (only developement release for the moment): https://bio-learn.github.io/
 
 Install
 =======
 
 Latest release
 --------------
+**0. Install the right Python version**
+
+Biolearn supports Python 3.10 and 3.11, please verify that you have the right Python 3 version before proceeding with the developer setup.
 
 **1. Setup a virtual environment**
 
-We recommend that you install ``biolearn`` in a virtual Python environment.
-In linux as example you can create one with venv:
+At the moment we do not have a stable release, only a unstable developer version.
+This means that you should not install the package directly from pypi but always get the source code from github and do a local pip install.
+
+In the following steps we show an installation path we have tested with venv and pip. Other package managers have not been tested and are not supported at the moment.
+
+In linux as example create a virtual environment with venv:
 
 .. code-block:: bash
 
     python3 -m venv bioenv
     source bioenv/bin/activate
 
-After you can install the package in the activated virtual environment:
+Assuming you move to the local repository folder, you can install the package in the activated virtual environment:
 
 .. code-block:: bash
 
-    pip install -U biolearn
+    pip install -e .[dev]
 
+Remember we do not support a pypi version at the moment, as in (pip install biolearn), the command will work but you will just get a dummy package.
 
 Check installation
 ------------------

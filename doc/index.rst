@@ -11,7 +11,7 @@ Biolearn
     how to use machine learning models (e.g. :sklearn:`scikit-learn <>`) for quantitative and 
     qualitative analysis.
 
-    Biolearn is scientifically and fiscally supported by `Biomarkers of Aging Consortium <https://www.agingconsortium.org/>`_ 
+    Biolearn is scientifically and financially supported by `Biomarkers of Aging Consortium <https://www.agingconsortium.org/>`_ 
     and `Methuselah Foundation <https://www.mfoundation.org/>`_ respectively 
 
 .. grid::
@@ -35,16 +35,6 @@ Biolearn
         :margin: 2 2 0 0
 
         Discover functionalities by reading examples
-
-    .. grid-item-card:: :fas:`book` User guide
-        :link: user_guide
-        :link-type: ref
-        :columns: 12 12 4 4
-        :class-card: sd-shadow-md
-        :class-title: sd-text-primary
-        :margin: 2 2 0 0
-
-        Learn about neuroimaging analysis
 
 Featured examples
 -----------------
@@ -86,7 +76,6 @@ Featured examples
 
    quickstart.md
    auto_examples/index.rst
-   user_guide.rst
    modules/index.rst
 
 .. toctree::

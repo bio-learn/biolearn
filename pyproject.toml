@@ -37,11 +37,19 @@ classifiers = [
 dynamic = ["version"]
 
 [project.optional-dependencies]
+# For running unit and docstring tests
+test = [
+	"coverage",
+	"pytest>=6.0.0",
+	"pytest-cov",
+]
 # Necessary req to use biolearn's plotting module
 plotting = ["matplotlib>=3.3.0"]
+# Examples external dependencies
+examples = ["lifelines"]
 # Requirements necessary for building the documentation
 doc = [
-    "biolearn[plotting]",
+    "biolearn[plotting,examples]",
 	"coverage",
 	"flake8",
 	"flake8-docstrings",
@@ -58,17 +66,9 @@ doc = [
 	"sphinxcontrib-bibtex",
 	"sphinxext-opengraph",
 ]
-# For running unit and docstring tests
-test = [
-	"coverage",
-	"pytest>=6.0.0",
-	"pytest-cov",
-]
 # A combination of dependencies useful for developers
 dev = [
-	"biolearn[plotting,doc,test]",
-	"lifelines",
-	"matplotlib",
+	"biolearn[test,plotting,examples,doc]",
 	"jupyter"
 ]
 
