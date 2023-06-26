@@ -22,7 +22,7 @@ jupyter:
 	$(JUPYTER) notebook
 
 setup: 
-	python3.10 -m venv .venv
+	python3 -m venv .venv
 	$(PIP) install -e .[dev]
 
 format:
