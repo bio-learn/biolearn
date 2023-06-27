@@ -56,7 +56,7 @@ Featured examples
       .. grid-item::
         :columns: 12 4 4 4
 
-        .. image:: auto_examples/00_nhanes/images/sphx_glr_plot_nhanes_005.png
+        .. image:: auto_examples/00_nhanes/images/sphx_glr_plot_nhanes_002.png
           
 
       .. grid-item::
@@ -67,6 +67,34 @@ Featured examples
           NHANES survival plotting with biological age
 
         Using NHANES data shows relationship between various data points and survival
+
+
+  .. grid-item-card::
+    :link: auto_examples/00_nhanes/plot_epigenetic_clocks_on_geo.html
+    :link-type: url
+    :columns: 12 12 12 12
+    :class-card: sd-shadow-sm
+    :margin: 2 2 auto auto
+
+    .. grid::
+      :gutter: 3
+      :margin: 0
+      :padding: 0
+
+      .. grid-item::
+        :columns: 12 4 4 4
+
+        .. image:: auto_examples/00_nhanes/images/sphx_glr_plot_epigenetic_clocks_on_geo_001.png
+          
+
+      .. grid-item::
+        :columns: 12 8 8 8
+
+        .. div:: sd-font-weight-bold
+
+          Demonstrate computation of several epigenetic clocks
+
+        Show how the clocks compare with chronological age
 
 
 .. toctree::

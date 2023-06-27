@@ -25,9 +25,9 @@ df["phenotypic_age"]=phenotypic_age(df)
 import seaborn as sn
 sn.scatterplot(data=df,x="age", y="phenotypic_age",s=2);
 
-##########################################################################################################
+############################################################################################################################
 # Plot survival curve for people with accelerated aging (older biological age) vs decelerated aging (younger biological age)
-# --------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------
 import matplotlib.pyplot as plt
 from lifelines import KaplanMeierFitter
 df["biologically_older"] = df["phenotypic_age"] > df["age"]

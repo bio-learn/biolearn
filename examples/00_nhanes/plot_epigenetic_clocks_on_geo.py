@@ -13,9 +13,9 @@ from biolearn.load import load_dnam
 url='https://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41169/matrix/GSE41169_series_matrix.txt.gz'
 df=load_dnam(dnam_file=url,id_row=32,age_row=46,skiprows=72)
 
-#############################################################################
+######################################################################################
 # Calculate "biological age" based on Horvath, Hannum, and PhenoAge epigenetic clocks
-# ------------------------------------------------------
+# -------------------------------------------------------------------------------------
 from biolearn.clock import horvath_clock, hannum_clock, phenoage_clock
 df['horvath'] = horvath_clock(df)
 df['hannum'] = hannum_clock(df)
