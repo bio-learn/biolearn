@@ -44,7 +44,7 @@ test = [
 	"pytest-cov",
 ]
 # Necessary req to use biolearn's plotting module
-plotting = ["matplotlib>=3.3.0"]
+plotting = ["matplotlib>=3.3.0", "seaborn"]
 # Examples external dependencies
 examples = ["lifelines"]
 # Requirements necessary for building the documentation
@@ -69,7 +69,7 @@ doc = [
 # A combination of dependencies useful for developers
 dev = [
 	"biolearn[test,plotting,examples,doc]",
-	"jupyter","seaborn"
+	"jupyter"
 ]
 
 [tool.hatch.build.targets.wheel]
