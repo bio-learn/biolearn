@@ -30,6 +30,6 @@ doc/modules/generated
 #vevn
 .venv
 
-#jupyter notebook checkouts
+#jupyter notebooks
 .ipynb_checkpoints
-
+notebooks/

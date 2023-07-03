@@ -7,7 +7,7 @@ PYTEST   = $(VENV_BIN)/pytest
 BLACK    = $(VENV_BIN)/black
 JUPYTER  = $(VENV_BIN)/jupyter
 
-all: clean test
+all: clean test format
 
 clean-pyc:
 	find . -name "*.pyc" | xargs rm -f
@@ -19,10 +19,10 @@ clean-build:
 clean: clean-build clean-pyc
 
 jupyter: 
-	$(JUPYTER) notebook
+	mkdir notebooks
+	$(JUPYTER) lab
 
-setup: 
-	python3 -m venv .venv
+install: 
 	$(PIP) install -e .[dev]
 
 format:

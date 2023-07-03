@@ -27,26 +27,33 @@ Biolearn enables easy and versatile analyses of biomarkers of aging data. It pro
 1. Python 3.10+
 
 ### Setup
+Setup your vitual environment at the expected location. Ensure you are using a version of python that is 3.10 or higher as lower versions are not supported.
 
-    ```
-    make setup
-    ```
-This command will initialize a virtual environement in the folder `.venv` and then install all needed dependencies as defined in the [pyproject.toml](/pyproject.toml)
+  ```
+  python3 -m venv .venv
+  ```
+
+Then install all the dependencies using make
+  ```
+  make install
+  ```
+
+Dependencies are defined in the [pyproject.toml](/pyproject.toml) and new ones can be added. Ensure you run `make install` again after adding any new dependencies.
 
 
 ## Code Formatting with Black
 
 We use Black for code formatting. Run it before committing to ensure your code follows our formatting guidelines:
 
-    ```
-    make format
-    ```
+  ```
+  make format
+  ```
 
 ## Running tests
 
-    ```
-    make test
-    ```
+  ```
+  make test
+  ```
 
 Make sure your code passes all the tests before pushing or creating a Pull Request.
 
@@ -58,11 +65,11 @@ Biolearn uses web based documentation which is deployed [here](https://bio-learn
 
 To build the doc site locally follow these steps from the repo root:
 
-    ```
-    source .venv/bin/activate
-    cd doc
-    make html
-    ```
+  ```
+  source .venv/bin/activate
+  cd doc
+  make html
+  ```
 You can then navigate to the html pages locally starting at `doc/_build/html/index.html`
 
 ### Updating deployed site
@@ -90,7 +97,7 @@ Please ensure your PR title is descriptive, and in the PR description, explain y
 
 This library is packaged with examples that can be downloaded via the doc website as Jupyter notebooks. In order to run these notebooks with all the expected dependencies in the vitrual environment simply:
 
-    ```
-    make jupyter
-    ```
+  ```
+  make jupyter
+  ```
 
