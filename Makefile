@@ -19,7 +19,7 @@ clean-build:
 clean: clean-build clean-pyc
 
 jupyter: 
-	mkdir notebooks
+	mkdir -p notebooks
 	$(JUPYTER) lab
 
 install: 
