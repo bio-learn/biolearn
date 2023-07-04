@@ -27,12 +27,12 @@ def test_can_load_dnam():
         script_dir, "data", "geo_dnam_test_file"
     )  # build the path to the data file
     df = load.load_dnam(
-        dnam_file=data_file_path, id_row=32, age_row=46, skiprows=72)
+        dnam_file=data_file_path, id_row=32, age_row=46, skiprows=72
+    )
     # Verify data set is of known size
     assert df.shape == (5, 38)
     assert "age" in df.columns.to_list()
     assert all(np.issubdtype(df[col].dtype, np.number) for col in df.columns)
-
 
 
 def verify_expected_columns(df):

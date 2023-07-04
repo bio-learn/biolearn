@@ -197,9 +197,7 @@ def load_dnam(dnam_file, id_row, age_row, skiprows):
         skiprows=lambda x: x != age_row and x != id_row,
     ).transpose()
     # Each row should be a person
-    dnam = pd.read_table(
-        dnam_file, index_col=0, skiprows=skiprows
-    ).transpose()
+    dnam = pd.read_table(dnam_file, index_col=0, skiprows=skiprows).transpose()
     # Age data is in the form "ageatrecruitment: 61" need to extract numberical age
     dnam["age"] = ages["!Sample_characteristics_ch1"].str[-2:].astype(int)
     dnam = dnam.drop(["!series_matrix_table_end"], axis=1)
