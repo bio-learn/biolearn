@@ -1,0 +1,111 @@
+!Series_title	"Blood DNA methylation profiles in a Dutch population"
+!Series_geo_accession	"GSE41169"
+!Series_status	"Public on Oct 19 2012"
+!Series_submission_date	"Sep 26 2012"
+!Series_last_update_date	"Jul 06 2022"
+!Series_pubmed_id	"23034122"
+!Series_pubmed_id	"25969563"
+!Series_summary	"Genome wide DNA methylation profiling of whole blood in schizophrenia patients and healthy subjects of different ages. The Illumina Infinium 450k Human DNA methylation Beadchip v1.2 was used to obtain DNA methylation profiles across approximately 480,000 CpGs. Dataset included 62 schizophrenia patients and 33 healthy subjects from Dutch descent."
+!Series_overall_design	"Bisulphite converted DNA from the 96 samples were hybridised to the Illumina Infinium 450k Human Methylation Beadchip. Publication: Steve Horvath, Yafeng Zhang, Peter Langfelder, René S. Kahn, Marco P.M. Boks, Kristel van Eijk, Leonard H. van den Berg, Roel A. Ophoff. Aging effects on DNA methylation modules in human brain and blood tissue. Genome Biology. Special Edition."
+!Series_overall_design	"The raw data (non-normalized Unmethylated and Methylated signal intensities) are not available."
+!Series_type	"Methylation profiling by array"
+!Series_contributor	"Roel,,Ophoff"
+!Series_contributor	"Steve,,Horvath"
+!Series_sample_id	"GSM1009660 GSM1009661 GSM1009662 GSM1009663 GSM1009664"
+!Series_contact_name	"Steve,,Horvath"
+!Series_contact_email	"shorvath@altoslabs.com"
+!Series_contact_laboratory	"Horvath"
+!Series_contact_department	"Human Genetics"
+!Series_contact_institute	"University of California, Los Angeles"
+!Series_contact_address	"695 Charles E. Young Drive South, Box 708822"
+!Series_contact_city	"Los Angeles"
+!Series_contact_state	"CA"
+!Series_contact_zip/postal_code	"90095-7088"
+!Series_contact_country	"USA"
+!Series_supplementary_file	"ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41169/suppl/GSE41169_RAW.tar"
+!Series_platform_id	"GPL13534"
+!Series_platform_taxid	"9606"
+!Series_sample_taxid	"9606"
+!Series_relation	"Reanalyzed by: GSE207605"
+!Series_relation	"BioProject: https://www.ncbi.nlm.nih.gov/bioproject/PRJNA176018"
+
+!Sample_title	"genomic DNA from whole blood 6"	"genomic DNA from whole blood 7"	"genomic DNA from whole blood 8"	"genomic DNA from whole blood 9"	"genomic DNA from whole blood 10"
+!Sample_geo_accession	"GSM1009660"	"GSM1009661"	"GSM1009662"	"GSM1009663"	"GSM1009664"
+!Sample_status	"Public on Oct 19 2012"	"Public on Oct 19 2012"	"Public on Oct 19 2012"	"Public on Oct 19 2012"	"Public on Oct 19 2012"
+!Sample_submission_date	"Sep 26 2012"	"Sep 26 2012"	"Sep 26 2012"	"Sep 26 2012"	"Sep 26 2012"
+!Sample_last_update_date	"Oct 19 2012"	"Oct 19 2012"	"Oct 19 2012"	"Oct 19 2012"	"Oct 19 2012"
+!Sample_type	"genomic"	"genomic"	"genomic"	"genomic"	"genomic"
+!Sample_channel_count	"1"	"1"	"1"	"1"	"1"
+!Sample_source_name_ch1	"whole blood 6"	"whole blood 7"	"whole blood 8"	"whole blood 9"	"whole blood 10"
+!Sample_organism_ch1	"Homo sapiens"	"Homo sapiens"	"Homo sapiens"	"Homo sapiens"	"Homo sapiens"
+!Sample_characteristics_ch1	"gender: Male"	"gender: Male"	"gender: Male"	"gender: Male"	"gender: Female"
+!Sample_characteristics_ch1	"sample type: whole blood"	"sample type: whole blood"	"sample type: whole blood"	"sample type: whole blood"	"sample type: whole blood"
+!Sample_characteristics_ch1	"plate: PLATE A"	"plate: PLATE A"	"plate: PLATE A"	"plate: PLATE A"	"plate: PLATE A"
+!Sample_characteristics_ch1	"sentrix barcode: 5773467014"	"sentrix barcode: 5773467020"	"sentrix barcode: 5773467014"	"sentrix barcode: 5773467019"	"sentrix barcode: 5773467015"
+!Sample_characteristics_ch1	"sentrix position: R01C02"	"sentrix position: R02C01"	"sentrix position: R06C01"	"sentrix position: R06C02"	"sentrix position: R01C02"
+!Sample_characteristics_ch1	"well id: C12"	"well id: F02"	"well id: B12"	"well id: D02"	"well id: G10"
+!Sample_characteristics_ch1	"age: 32"	"age: 24"	"age: 65"	"age: 25"	"age: 32"
+!Sample_characteristics_ch1	"diseasestatus (1=control, 2=scz patient): 2"	"diseasestatus (1=control, 2=scz patient): 2"	"diseasestatus (1=control, 2=scz patient): 2"	"diseasestatus (1=control, 2=scz patient): 2"	"diseasestatus (1=control, 2=scz patient): 2"
+!Sample_characteristics_ch1	"used_in_analysis: yes"	"used_in_analysis: yes"	"used_in_analysis: yes"	"used_in_analysis: yes"	"used_in_analysis: no"
+!Sample_molecule_ch1	"genomic DNA"	"genomic DNA"	"genomic DNA"	"genomic DNA"	"genomic DNA"
+!Sample_extract_protocol_ch1	"genomic DNA was extracted and purified from fresh frozen tissue using Qiagen DNeasy Kit according to standard instructions"	"genomic DNA was extracted and purified from fresh frozen tissue using Qiagen DNeasy Kit according to standard instructions"	"genomic DNA was extracted and purified from fresh frozen tissue using Qiagen DNeasy Kit according to standard instructions"	"genomic DNA was extracted and purified from fresh frozen tissue using Qiagen DNeasy Kit according to standard instructions"	"genomic DNA was extracted and purified from fresh frozen tissue using Qiagen DNeasy Kit according to standard instructions"
+!Sample_label_ch1	"Cy3, Cy5"	"Cy3, Cy5"	"Cy3, Cy5"	"Cy3, Cy5"	"Cy3, Cy5"
+!Sample_label_protocol_ch1	"Standard Illumina Protocol"	"Standard Illumina Protocol"	"Standard Illumina Protocol"	"Standard Illumina Protocol"	"Standard Illumina Protocol"
+!Sample_taxid_ch1	"9606"	"9606"	"9606"	"9606"	"9606"
+!Sample_hyb_protocol	"bisulphite converted DNA was amplified, fragmented and hybridised to Illumina Infinium Human Methylation450 Beadchip using standard Illumina protocol"	"bisulphite converted DNA was amplified, fragmented and hybridised to Illumina Infinium Human Methylation450 Beadchip using standard Illumina protocol"	"bisulphite converted DNA was amplified, fragmented and hybridised to Illumina Infinium Human Methylation450 Beadchip using standard Illumina protocol"	"bisulphite converted DNA was amplified, fragmented and hybridised to Illumina Infinium Human Methylation450 Beadchip using standard Illumina protocol"	"bisulphite converted DNA was amplified, fragmented and hybridised to Illumina Infinium Human Methylation450 Beadchip using standard Illumina protocol"
+!Sample_scan_protocol	"Arrays were imaged using BeadArray Reader using standard recommended Illumina scanner setting"	"Arrays were imaged using BeadArray Reader using standard recommended Illumina scanner setting"	"Arrays were imaged using BeadArray Reader using standard recommended Illumina scanner setting"	"Arrays were imaged using BeadArray Reader using standard recommended Illumina scanner setting"	"Arrays were imaged using BeadArray Reader using standard recommended Illumina scanner setting"
+!Sample_description	"normal whole blood sample"	"normal whole blood sample"	"normal whole blood sample"	"normal whole blood sample"	"normal whole blood sample"
+!Sample_data_processing	"BeadStudio software v3.2. The raw data (non-normalized Unmethylated and Methylated signal intensities) are not available."	"BeadStudio software v3.2. The raw data (non-normalized Unmethylated and Methylated signal intensities) are not available."	"BeadStudio software v3.2. The raw data (non-normalized Unmethylated and Methylated signal intensities) are not available."	"BeadStudio software v3.2. The raw data (non-normalized Unmethylated and Methylated signal intensities) are not available."	"BeadStudio software v3.2. The raw data (non-normalized Unmethylated and Methylated signal intensities) are not available."
+!Sample_platform_id	"GPL13534"	"GPL13534"	"GPL13534"	"GPL13534"	"GPL13534"
+!Sample_contact_name	"Steve,,Horvath"	"Steve,,Horvath"	"Steve,,Horvath"	"Steve,,Horvath"	"Steve,,Horvath"
+!Sample_contact_email	"shorvath@altoslabs.com"	"shorvath@altoslabs.com"	"shorvath@altoslabs.com"	"shorvath@altoslabs.com"	"shorvath@altoslabs.com"
+!Sample_contact_laboratory	"Horvath"	"Horvath"	"Horvath"	"Horvath"	"Horvath"
+!Sample_contact_department	"Human Genetics"	"Human Genetics"	"Human Genetics"	"Human Genetics"	"Human Genetics"
+!Sample_contact_institute	"University of California, Los Angeles"	"University of California, Los Angeles"	"University of California, Los Angeles"	"University of California, Los Angeles"	"University of California, Los Angeles"
+!Sample_contact_address	"695 Charles E. Young Drive South, Box 708822"	"695 Charles E. Young Drive South, Box 708822"	"695 Charles E. Young Drive South, Box 708822"	"695 Charles E. Young Drive South, Box 708822"	"695 Charles E. Young Drive South, Box 708822"
+!Sample_contact_city	"Los Angeles"	"Los Angeles"	"Los Angeles"	"Los Angeles"	"Los Angeles"
+!Sample_contact_state	"CA"	"CA"	"CA"	"CA"	"CA"
+!Sample_contact_zip/postal_code	"90095-7088"	"90095-7088"	"90095-7088"	"90095-7088"	"90095-7088"
+!Sample_contact_country	"USA"	"USA"	"USA"	"USA"	"USA"
+!Sample_supplementary_file	"NONE"	"NONE"	"NONE"	"NONE"	"NONE"
+!Sample_data_row_count	"485577"	"485577"	"485577"	"485577"	"485577"
+!series_matrix_table_begin
+"ID_REF"	"GSM1009660"	"GSM1009661"	"GSM1009662"	"GSM1009663"	"GSM1009664"
+"cg00000029"	0.4549308	0.4102866	0.3756035	0.4871998	0.3808655
+"cg00000108"	0.9078832	0.9158939	0.9390181	0.9339752	0.9390081
+"cg00000109"	0.8627719	0.8809996	0.8895726	0.8522666	0.84425
+"cg00000165"	0.1604464	0.1375998	0.1885731	0.1126181	0.1199755
+"cg00000236"	0.7281801	0.7367078	0.6011857	0.6593973	0.6695482
+"cg00000289"	0.6666667	0.6115659	0.6286263	0.567826	0.5998655
+"cg00000292"	0.8194009	0.8111277	0.7902801	0.7745726	0.7905753
+"cg00000321"	0.3331136	0.214622	0.2235831	0.2547144	0.3270563
+"cg00000363"	0.3680121	0.3182038	0.3320966	0.3239403	0.299195
+"cg00000622"	0.02152254	0.01932035	0.01327954	0.01355923	0.00947962
+"cg00000658"	0.8424076	0.8628232	0.8348368	0.7965884	0.8216421
+"cg00000714"	0.2401231	0.1976114	0.1856667	0.1815978	0.2059875
+"cg00000721"	0.9005102	0.9411189	0.9241365	0.9402587	0.9208466
+"cg00000734"	0.07337058	0.05109455	0.05727771	0.06010119	0.04125717
+"cg00000769"	0.03862382	0.03143341	0.0336707	0.03213694	0.03406515
+"cg00000807"	0.822651	0.8463986	0.8552315	0.7698192	0.796266
+"cg00000884"	0.8213568	0.8266039	0.8833178	0.7963205	0.7894871
+"cg00000905"	0.06966221	0.05954071	0.06903716	0.0589184	0.05810501
+"cg00000924"	0.5529672	0.4794989	0.5008628	0.458167	0.4565527
+"cg00000948"	0.8751767	0.8949997	0.8959949	0.8619022	0.8723738
+"cg00000957"	0.8897567	0.9224668	0.913125	0.9161693	0.8617464
+"cg00001099"	0.7207198	0.5857545	0.6704136	0.7059391	0.5446449
+"cg00001245"	0.01259219	0.01206744	0.01810595	0.003907414	0.01996952
+"cg00001249"	0.8157852	0.8474576	0.8823497	0.7604139	0.8552447
+"cg00001261"	0.51285	0.4555233	0.5622246	0.4960107	0.4703076
+"cg00001269"	0.8410819	0.8648753	0.8540246	0.8194072	0.7852628
+"cg00001349"	0.888921	0.8647809	0.9464835	0.9341503	0.7278584
+"cg00001364"	0.8542278	0.7817623	0.836498	0.8099613	0.8008186
+"cg00001446"	0.8630548	0.861675	0.8738164	0.837399	0.8292602
+"cg00001510"	0.5145636	0.5393391	0.490746	0.5235903	0.4748714
+"cg00001534"	0.909139	0.9406747	0.9323045	0.9306583	0.9158455
+"cg00001582"	0.04358103	0.0468062	0.04081544	0.04588648	0.05391459
+"cg00001583"	0.06395939	0.03887723	0.06499505	0.03067281	0.07044644
+"cg00001593"	0.9071785	0.92382	0.9271959	0.9076298	0.8731652
+"cg00001594"	0.03332099	0.01525668	0.03426089	0.00648355	0.02612275
+"cg00001687"	0.9829509	0.9896652	0.9776224	0.9873487	0.982563
+"cg00001747"	0.05578269	0.03362802	0.03363532	0.04031152	0.06418935
+!series_matrix_table_end

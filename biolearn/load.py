@@ -10,9 +10,14 @@ from ._utils import fill_doc
 MG_PER_DL_TO_MMOL_PER_L = 0.05551
 
 
-def cached_dowload(url):
+def cached_dowload(url_or_filepath):
     """Downloads the file at a URL and saves it locally. If called again with the same URL it will use the saved file. Returns the local filepath"""
     # Hash the URL to create a unique filename
+    if os.path.isfile(url_or_filepath):
+        # If the provided URL is a local file path, return it directly
+        return url_or_filepath
+
+    url = url_or_filepath
     url_path = urlparse(url).path
     ext = os.path.splitext(url_path)[1]
     filename = hashlib.sha256(url.encode()).hexdigest() + ext
@@ -183,7 +188,7 @@ def load_nhanes(year):
     return df
 
 
-def load_dnam(dnam_file, id_row, age_row, skiprows, nrows=500000):
+def load_dnam(dnam_file, id_row, age_row, skiprows):
     dnam_file = cached_dowload(dnam_file)
     # Row id_row+1 contains IDs, row age_row+1 contains age
     ages = pd.read_table(
@@ -192,9 +197,7 @@ def load_dnam(dnam_file, id_row, age_row, skiprows, nrows=500000):
         skiprows=lambda x: x != age_row and x != id_row,
     ).transpose()
     # Each row should be a person
-    dnam = pd.read_table(
-        dnam_file, index_col=0, skiprows=skiprows, nrows=nrows
-    ).transpose()
+    dnam = pd.read_table(dnam_file, index_col=0, skiprows=skiprows).transpose()
     # Age data is in the form "ageatrecruitment: 61" need to extract numberical age
     dnam["age"] = ages["!Sample_characteristics_ch1"].str[-2:].astype(int)
     dnam = dnam.drop(["!series_matrix_table_end"], axis=1)
