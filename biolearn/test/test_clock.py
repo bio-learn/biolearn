@@ -5,15 +5,19 @@ import pandas as pd
 from biolearn import clock
 
 
-def load_test_sample():
+def load_test_data_file(relative_path):
     script_dir = os.path.dirname(
         __file__
     )  # get the directory of the current script
     data_file_path = os.path.join(
-        script_dir, "data", "dnam-test-sample.csv"
+        script_dir, "data", relative_path
     )  # build the path to the data file
     test_sample = pd.read_csv(data_file_path, index_col=0)
     return test_sample
+
+
+def load_test_sample():
+    return load_test_data_file("dnam-test-sample.csv")
 
 
 def test_horvath():
