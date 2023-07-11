@@ -20,11 +20,11 @@ def load_test_sample():
     return load_test_data_file("dnam-test-sample.csv")
 
 
-def test_horvath():
+def test_horvathv1():
     sample_data = load_test_sample()
     expected = 62.85
     actual = clock.single_sample_clock(
-        clock.horvath_clock, sample_data.transpose()
+        clock.horvathv1, sample_data.transpose()
     )
     assert isclose(actual, expected, abs_tol=1e-2)
 
@@ -34,7 +34,7 @@ def test_hannum():
     # This seems very strange
     expected = -3.05
     actual = clock.single_sample_clock(
-        clock.hannum_clock, sample_data.transpose()
+        clock.hannum, sample_data.transpose()
     )
     assert isclose(actual, expected, abs_tol=1e-2)
 
@@ -43,7 +43,7 @@ def test_phenoage():
     sample_data = load_test_sample()
     expected = 61.09
     actual = clock.single_sample_clock(
-        clock.phenoage_clock, sample_data.transpose()
+        clock.phenoage, sample_data.transpose()
     )
     assert isclose(actual, expected, abs_tol=1e-2)
 

@@ -38,7 +38,7 @@ def run_clock(dataframe, coeffecient_file, transform_function):
     return df_sum.apply(transform_function).to_frame(name="biological_age")
 
 
-def horvath_clock(dataframe):
+def horvathv1(dataframe):
     """Runs the Horvath DNA methylation clock on each individual in the dataset to predict a biological age
 
     Parameters
@@ -52,10 +52,10 @@ def horvath_clock(dataframe):
     df: Pandas.Dataframe
         A pandas dataframe where each row represents an individual with a single column for predicted biological age
     """
-    return run_clock(dataframe, "horvath.csv", horvath_transform)
+    return run_clock(dataframe, "Horvath1.csv", horvath_transform)
 
 
-def hannum_clock(dataframe):
+def hannum(dataframe):
     """Runs the Hannum DNA methylation clock on each individual in the dataset to predict a biological age
 
     Parameters
@@ -69,10 +69,10 @@ def hannum_clock(dataframe):
     df: Pandas.Dataframe
         A pandas dataframe where each row represents an individual with a single column for predicted biological age
     """
-    return run_clock(dataframe, "hannum.csv", no_transform)
+    return run_clock(dataframe, "Hannum.csv", no_transform)
 
 
-def phenoage_clock(dataframe):
+def phenoage(dataframe):
     """Runs the PhenoAge DNA methylation clock on each individual in the dataset to predict a biological age
 
     Parameters
@@ -86,7 +86,7 @@ def phenoage_clock(dataframe):
     df: Pandas.Dataframe
         A pandas dataframe where each row represents an individual with a single column for predicted biological age
     """
-    return run_clock(dataframe, "phenoage.csv", phenoage_transform)
+    return run_clock(dataframe, "PhenoAge.csv", phenoage_transform)
 
 
 def single_sample_clock(clock_function, data):
