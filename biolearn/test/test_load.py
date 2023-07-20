@@ -19,6 +19,11 @@ def test_can_load_nhanes_2012():
     df = load.load_nhanes(2012)
 
 
+def test_expected_error_when_loading_unsupported_year_nhanes():
+    with pytest.raises(ValueError):
+        df = load.load_nhanes(1913)
+
+
 def test_can_load_dnam():
     script_dir = os.path.dirname(
         __file__
