@@ -117,7 +117,7 @@ def load_nhanes(year):
         "LBXBAPCT",
     ]
     known_nhanes_year_suffix = {2010: "F", 2012: "G"}
-    if not known_nhanes_year_suffix[year]:
+    if not year in known_nhanes_year_suffix:
         raise ValueError(
             f"Unknown year {year}. Can only load for known available years {known_nhanes_year_suffix.keys}"
         )
