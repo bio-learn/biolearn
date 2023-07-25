@@ -16,7 +16,7 @@ def load_test_data_file(relative_path):
     return test_sample
 
 sample_results = load_test_data_file("expected_clock_output.csv")
-sample_inputs = load_test_data_file("external/DNAmTestSet.csv")
+sample_inputs = load_test_data_file("external/DNAmTestSet.csv").transpose()
 
 def load_test_sample():
     return load_test_data_file("dnam-test-sample.csv")
@@ -49,13 +49,13 @@ def check_clock_against_sample(clock_function, results_column_name):
     return test_passed
 
 def test_horvathv1_sample():
-    assert check_clock_against_sample(clock.horvathv1, "HorvathAge")
+    assert check_clock_against_sample(clock.horvathv1, "Horvath1")
 
 def test_horvathv2_sample():
     assert check_clock_against_sample(clock.horvathv2, "Horvath2")
 
 def test_hannum_sample():
-    assert check_clock_against_sample(clock.hannum, "HannumAge")
+    assert check_clock_against_sample(clock.hannum, "Hannum")
 
 def test_phenoage_sample():
     assert check_clock_against_sample(clock.phenoage, "PhenoAge")
@@ -80,9 +80,8 @@ def test_dnam_tl_sample():
 def test_hrs_in_ch_phenoage():
     assert check_clock_against_sample(clock.hrs_in_ch_phenoage, "HRSInChPhenoAge")
 
-# Results missing from expected file
-# def test_knight():
-#     assert check_clock_against_sample(clock.knight, "Knight")
+def test_knight():
+    assert check_clock_against_sample(clock.knight, "Knight")
 
 def test_lee_control_sample():
     assert check_clock_against_sample(clock.lee_control, "LeeControl")
@@ -101,7 +100,7 @@ def test_lin_sample():
 #     assert check_clock_against_sample(clock.mi_age, "MiAge")
 
 def test_pedbe_sample():
-    assert check_clock_against_sample(clock.pedbe, "PedBE")
+    assert check_clock_against_sample(clock.pedbe, "PEDBE")
 
 def test_smoking_mccartney_sample():
     assert check_clock_against_sample(clock.smoking_mccartney, "Smoking_McCartney")
@@ -113,11 +112,10 @@ def test_zhang_10_sample():
     assert check_clock_against_sample(clock.zhang_10, "Zhang")
 
 def test_zhang_2019_sample():
-    assert check_clock_against_sample(clock.zhang_2019, "ZhangAge")
+    assert check_clock_against_sample(clock.zhang_2019, "Zhang2019")
 
-# Results missing from expected file
-# def test_mayne_sample():
-#     assert check_clock_against_sample(clock.lee_robust, "Mayne")
+def test_mayne_sample():
+    assert check_clock_against_sample(clock.lee_robust, "Mayne")
 
 
 def test_hannum():
