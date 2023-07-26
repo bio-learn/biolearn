@@ -18,6 +18,9 @@ clean-build:
 
 clean: clean-build clean-pyc
 
+generate-test-data:
+	$(PYTHON) ./biolearn/test/generate.py
+
 jupyter: 
 	mkdir -p notebooks
 	$(JUPYTER) lab
@@ -35,4 +38,4 @@ test-coverage:
 	rm -rf coverage .coverage
 	$(PYTEST) --pyargs biolearn --showlocals --cov=biolearn --cov-report=html:coverage
 
-test: test-code
+test: generate-test-data test-code

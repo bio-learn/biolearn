@@ -18,18 +18,6 @@ def load_test_data_file(relative_path):
 sample_results = load_test_data_file("expected_clock_output.csv")
 sample_inputs = load_test_data_file("external/DNAmTestSet.csv").transpose()
 
-def load_test_sample():
-    return load_test_data_file("dnam-test-sample.csv")
-
-
-def test_horvathv1():
-    sample_data = load_test_sample()
-    expected = 62.85
-    actual = clock.single_sample_clock(
-        clock.horvathv1, sample_data.transpose()
-    )
-    assert isclose(actual, expected, abs_tol=1e-2)
-
 def check_clock_against_sample(clock_function, results_column_name):
     expected_results = sample_results[results_column_name].sort_index()
     actual_results = clock_function(sample_inputs)['biological_age'].sort_index()
@@ -116,26 +104,6 @@ def test_zhang_2019_sample():
 
 def test_mayne_sample():
     assert check_clock_against_sample(clock.lee_robust, "Mayne")
-
-
-def test_hannum():
-    sample_data = load_test_sample()
-    # This seems very strange
-    expected = -3.05
-    actual = clock.single_sample_clock(
-        clock.hannum, sample_data.transpose()
-    )
-    assert isclose(actual, expected, abs_tol=1e-2)
-
-
-def test_phenoage():
-    sample_data = load_test_sample()
-    expected = 61.09
-    actual = clock.single_sample_clock(
-        clock.phenoage, sample_data.transpose()
-    )
-    assert isclose(actual, expected, abs_tol=1e-2)
-
 
 # Run the test
 if __name__ == "__main__":
