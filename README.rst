@@ -19,11 +19,12 @@ Important links
 Install
 =======
 
+
 Latest release
 --------------
 **0. Install the right Python version**
 
-Biolearn supports Python 3.10 and 3.11, please verify that you have the right Python 3 version before proceeding with the developer setup.
+Biolearn supports Python 3.10, please verify that you have the right Python 3 version before proceeding with the developer setup.
 
 **1. Setup a virtual environment**
 
@@ -32,31 +33,36 @@ This means that you should not install the package directly from pypi but always
 
 In the following steps we show an installation path we have tested with venv and pip. Other package managers have not been tested and are not supported at the moment.
 
-In linux as example create a virtual environment with venv:
+In linux from inside the repo directory run the following to setup a virtual environment and install dependencies
 
 .. code-block:: bash
 
-    python3 -m venv bioenv
-    source bioenv/bin/activate
+    python3.10 -m venv .venv
+    make install
 
-Assuming you move to the local repository folder, you can install the package in the activated virtual environment:
-
-.. code-block:: bash
-
-    pip install -e .[dev]
 
 Remember we do not support a pypi version at the moment, as in (pip install biolearn), the command will work but you will just get a dummy package.
 
 Check installation
 ------------------
 
-Try importing biolearn in a python / iPython session:
+You can verify that your setup is working by running the tests
+
+.. code-block:: bash
+
+    make test
+
+If no error is raised, you have installed biolearn correctly.
+
+You can also run the following to start jupyter lab with the library available
+
+.. code-block:: bash
+
+    make jupyter
 
 .. code-block:: python
 
     import biolearn
-
-If no error is raised, you have installed biolearn correctly.
 
 Discord server
 ==============
@@ -69,11 +75,6 @@ Dependencies
 
 The required dependencies to use the software are listed in the file `pyproject.toml <https://github.com/bio-learn/biolearn/blob/master/pyproject.toml>`_.
 
-If you are using biolearn plotting functionalities or running the examples, matplotlib >= 3.3.0 is required.
-
-Some plotting functions in biolearn support both matplotlib and plotly as plotting engines.
-
-If you want to run the tests, you need pytest >= 6.0.0 and pytest-cov for coverage reporting.
 
 Development
 ===========
