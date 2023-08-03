@@ -33,3 +33,6 @@ doc/modules/generated
 #jupyter notebooks
 .ipynb_checkpoints
 notebooks/
+
+#large test files
+biolearn/test/data/external/
