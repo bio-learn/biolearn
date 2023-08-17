@@ -6,21 +6,21 @@ import numpy as np
 def phenotypic_age(df):
     pheno_coefs = {
         "age": 0.0804,
-        "LBDSALSI": -0.034,
-        "LBDSCRSI": 0.0095,
+        "albumin": -0.034,
+        "creatinine": 0.0095,
         "glucose": 0.1953,
-        "LBXCRP": 0.0954,
-        "LBXLYPCT": -0.012,
-        "LBXMCVSI": 0.0268,
-        "LBXRDW": 0.3356,
-        "LBXSAPSI": 0.00188,
-        "LBXWBCSI": 0.0554,
+        "c_reactive_protein": 0.0954,
+        "lymphocyte_percent": -0.012,
+        "mean_cell_volume": 0.0268,
+        "red_blood_cell_distribution_width": 0.3356,
+        "alkaline_phosphate": 0.00188,
+        "white_blood_cell_count": 0.0554,
     }
 
     constant = -19.9067
     gamma = 0.0077
     cs = [141.50225, -0.00553, 0.090165]
-    df["LBXCRP"] = np.log(df["LBXCRP"])
+    df["c_reactive_protein"] = np.log(df["c_reactive_protein"])
     df["pheno"] = df.apply(
         lambda x: sum([x[c] * pheno_coefs[c] for c in pheno_coefs.keys()]),
         axis=1,

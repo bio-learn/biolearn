@@ -15,6 +15,6 @@
    :toctree: generated/
    :template: function.rst
 
-   horvath_clock
-   hannum_clock
-   phenoage_clock
+   horvathv1
+   hannum
+   phenoage
