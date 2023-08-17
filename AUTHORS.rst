@@ -25,7 +25,7 @@ Other contributors
 ..................
 
 * `Albert Ying`_ / `Harvard Universiy <https://scholar.google.com/citations?user=JS7AdkcAAAAJ&hl=zh-CN>`_
-* `Dayoon Kwon`_ /  `University of California <https://scholar.google.com/citations?user=5L9djqsAAAAJ&hl=en>`
+* `Dayoon Kwon`_ /  `University of California <https://scholar.google.com/citations?user=5L9djqsAAAAJ&hl=en>`_
 
 
 Special thanks to scientific and executive members of the :BoA:`Biomarkers of Aging Consortium <>`
