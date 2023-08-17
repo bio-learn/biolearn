@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import numpy as np
+from sklearn.preprocessing import QuantileTransformer
 
 def horvath_transform(mult_sum):
     const = 0.695507258
@@ -16,16 +17,16 @@ def anti_trafo(x, adult_age=20):
 def no_transform(_):
     return _
 
-
-def run_clock(dataframe, coeffecient_file, transform_function):
+def get_data_file(filename):
     script_dir = os.path.dirname(
         __file__
     )  # get the directory of the current script
-    coeffecient_file_path = os.path.join(
-        script_dir, "data", coeffecient_file
+    return os.path.join(
+        script_dir, "data", filename
     )  # build the path to the data file
 
-    coefficients = pd.read_csv(coeffecient_file_path, index_col=0)
+def run_clock(dataframe, coeffecient_file, transform_function):
+    coefficients = pd.read_csv(get_data_file(coeffecient_file), index_col=0)
     methylation_df = coefficients.merge(
         dataframe.transpose(), left_index=True, right_index=True
     )
@@ -106,6 +107,42 @@ def bmi_mccartney(dataframe):
 def dnam_tl(dataframe):
     transform = lambda sum: sum - 7.924780053
     return run_clock(dataframe, "DNAmTL.csv", transform)
+
+import pandas as pd
+
+def dunedin_pace_normalization(dataframe):
+    # Read the gold standard means into a dictionary
+    gold_standard_df = pd.read_csv(get_data_file("DunedinPACE_Means.csv"))
+    gold_standard_means = dict(zip(gold_standard_df['CpGmarker'], gold_standard_df['mean']))
+    
+    # Identify cpgs in dataframe but not in gold standard, and drop them
+    missing_cpgs = [cpg for cpg in dataframe.columns if cpg not in gold_standard_means]
+    dataframe = dataframe.drop(columns=missing_cpgs)
+
+    # Check if dataframe is left with no CpGs after dropping missing cpgs
+    if dataframe.shape[1] == 0:
+        raise ValueError("The dataframe has no CpGs left after dropping missing ones.")
+
+    # Normalize
+    transformer = QuantileTransformer(output_distribution='normal', n_quantiles=dataframe.shape[0], copy=True)
+    dataframe_normalized = transformer.fit_transform(dataframe)
+    dataframe_normalized = pd.DataFrame(dataframe_normalized, index=dataframe.index, columns=dataframe.columns)
+    
+    # Adjust the data to have the mean of the gold standard
+    for cpg, mean_value in gold_standard_means.items():
+        if cpg in dataframe_normalized.columns:
+            dataframe_normalized[cpg] += mean_value - dataframe_normalized[cpg].mean()
+    
+    return dataframe_normalized
+
+def dunedin_pace(dataframe):
+    normalized_data = dunedin_pace_normalization(dataframe)
+    transform = lambda sum: sum - 1.949859
+    return run_clock(normalized_data, "DunedinPACE.csv", transform)
+
+def dunedin_poam38(dataframe):
+    transform = lambda sum: sum - 0.06929805
+    return run_clock(dataframe, "DunedinPoAm38.csv", transform)
 
 # Results missing from expected file
 # def dnam_clock_cortical(dataframe):

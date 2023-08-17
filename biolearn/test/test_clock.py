@@ -61,6 +61,12 @@ def test_bmi_mccartney_sample():
 def test_dnam_tl_sample():
     assert check_clock_against_sample(clock.dnam_tl, "DNAmTL")
 
+def test_dunedin_poam38_sample():
+    assert check_clock_against_sample(clock.dunedin_poam38, "DunedinPoAm38")
+
+def test_dunedin_pace_sample():
+    assert check_clock_against_sample(clock.dunedin_pace, "Dunedin_PACE")
+
 # Results missing from expected file
 # def test_dnam_clock_cortical_sample():
 #     assert check_clock_against_sample(clock.dnam_clock_cortical, "DNAmClockCortical")
