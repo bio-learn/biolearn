@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import QuantileTransformer
+from sklearn.preprocessing import quantile_transform
 
 def horvath_transform(mult_sum):
     const = 0.695507258
@@ -118,14 +118,9 @@ def dunedin_pace_normalization(dataframe):
     # Identify cpgs in dataframe but not in gold standard, and drop them
     missing_cpgs = [cpg for cpg in dataframe.columns if cpg not in gold_standard_means]
     dataframe = dataframe.drop(columns=missing_cpgs)
-
-    # Check if dataframe is left with no CpGs after dropping missing cpgs
-    if dataframe.shape[1] == 0:
-        raise ValueError("The dataframe has no CpGs left after dropping missing ones.")
-
-    # Normalize
-    transformer = QuantileTransformer(output_distribution='normal', n_quantiles=dataframe.shape[0], copy=True)
-    dataframe_normalized = transformer.fit_transform(dataframe)
+    
+    # Quantile Normalize the dataframe
+    dataframe_normalized = quantile_transform(dataframe, axis=0, n_quantiles=dataframe.shape[0], copy=True, output_distribution='normal')
     dataframe_normalized = pd.DataFrame(dataframe_normalized, index=dataframe.index, columns=dataframe.columns)
     
     # Adjust the data to have the mean of the gold standard

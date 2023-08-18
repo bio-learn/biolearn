@@ -36,6 +36,12 @@ def check_clock_against_sample(clock_function, results_column_name):
 
     return test_passed
 
+def test_dunedin_pace_normalization():
+    actual = clock.dunedin_pace_normalization(sample_inputs)
+    expected = load_test_data_file("PACENormalized.csv").transpose()
+    pd.testing.assert_frame_equal(actual, expected, check_exact=False)
+
+
 def test_horvathv1_sample():
     assert check_clock_against_sample(clock.horvathv1, "Horvath1")
 
