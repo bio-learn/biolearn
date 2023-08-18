@@ -16,10 +16,10 @@ df=load_dnam(dnam_file=url,id_row=32,age_row=46,skiprows=72)
 ######################################################################################
 # Calculate "biological age" based on Horvath, Hannum, and PhenoAge epigenetic clocks
 # -------------------------------------------------------------------------------------
-from biolearn.clock import horvath_clock, hannum_clock, phenoage_clock
-df['horvath'] = horvath_clock(df)
-df['hannum'] = hannum_clock(df)
-df['phenoage'] = phenoage_clock(df)
+from biolearn.clock import horvathv1, hannum, phenoage
+df['horvath'] = horvathv1(df)
+df['hannum'] = hannum(df)
+df['phenoage'] = phenoage(df)
 
 ##########################################################################################################
 # Plot biological ages against chronological age
