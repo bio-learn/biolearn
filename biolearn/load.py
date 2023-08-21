@@ -219,3 +219,16 @@ def load_dnam(dnam_file, id_row, age_row, skiprows):
     dnam = dnam.drop(["!series_matrix_table_end"], axis=1)
     dnam.index.name = "id"
     return dnam
+
+def parse_library_file(library_file):
+    raise ValueError("File must be YAML format with items at root")
+
+
+
+class DataLibrary:
+    def __init__(self):
+        self.sources = []
+
+    def load_sources(self, library_file):
+        pass
+        
