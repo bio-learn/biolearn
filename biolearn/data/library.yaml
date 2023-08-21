@@ -8,10 +8,10 @@ items:
     path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE40nnn/GSE40279/matrix/GSE40279_series_matrix.txt.gz
     parser:
       type: geo-matrix
-      id-row: 12
+      id-row: 36
       age-row: 44
       age-parse: after-colon
-      matrix-start: 72
+      matrix-start: 71
   - id: GSE19711
     title: Genome wide DNA methylation profiling of United Kingdom Ovarian Cancer Population Study (UKOPS)
     summary: "The Illumina Infinium 27k Human DNA methylation Beadchip v1.2 was used to obtain DNA methylation profiles across approximately 27,000 CpGs in whole blood samples from 540 samples, of which 266 were samples taken from postmenopausal women with ovarian cancer and 274 were from age-matched healthy controls"
@@ -20,7 +20,31 @@ items:
     path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE19nnn/GSE19711/matrix/GSE19711_series_matrix.txt.gz
     parser:
       type: geo-matrix
-      id-row: 14
+      id-row: 31
       age-row: 41
       age-parse: after-colon
       matrix-start: 75
+  - id: GSE51057
+    title: Methylome Analysis and Epigenetic Changes Associated with Menarcheal Age
+    summary: "Epigenome-wide association study of age at menarche in a group of 329 women from the EPIC-Italy cohort."
+    format: Illumina450k
+    organism: human
+    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE51nnn/GSE51057/matrix/GSE51057_series_matrix.txt.gz
+    parser:
+      type: geo-matrix
+      id-row: 66
+      age-row: 75
+      age-parse: after-colon
+      matrix-start: 100
+  - id: GSE42861
+    title: Differential DNA methylation in Rheumatoid arthritis
+    summary: "Genome-wide DNA methylation level was studied to determine whether Rheumatoid arthritis patients (cases) has methylation differences comparing to normal controls in peripheral blood leukocytes (PBLs). We used Illumina HumanMethylation450 BeadChip array to determine the genome-wide DNA methylation difference in PBLs from Rheumatoid arthritis patients (cases) and normal controls"
+    format: Illumina450k
+    organism: human
+    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE42nnn/GSE42861/matrix/GSE42861_series_matrix.txt.gz
+    parser:
+      type: geo-matrix
+      id-row: 37
+      age-row: 48
+      age-parse: after-colon
+      matrix-start: 71

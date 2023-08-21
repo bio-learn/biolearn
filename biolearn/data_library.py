@@ -1,6 +1,6 @@
 import yaml
 import pandas as pd
-from biolearn.util import cached_dowload
+from biolearn.util import cached_dowload, get_data_file
 
 
 class GeoMatrixParser:
@@ -59,6 +59,9 @@ class DataSource:
         file_path = cached_dowload(self.path)
         return self.parser.parse(file_path)
 
+    def __repr__(self):
+        return f"DataSource(ID: {self.id}\nTitle: {self.title})"
+
 
 def parse_library_file(library_file):
     data = yaml.safe_load(library_file)
@@ -83,7 +86,7 @@ class DataLibrary:
             data_sources = parse_library_file(f)
             self.sources.extend(data_sources)
 
-    def get_source_by_id(self, source_id):
+    def get(self, source_id):
         for source in self.sources:
             if source.id == source_id:
                 return source

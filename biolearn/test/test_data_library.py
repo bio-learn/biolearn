@@ -176,7 +176,7 @@ def test_get_source_by_id():
     )
 
     # Get source by ID
-    source = library.get_source_by_id("GSE40279")
+    source = library.get("GSE40279")
     assert source.id == "GSE40279"
     assert (
         source.title
@@ -184,7 +184,7 @@ def test_get_source_by_id():
     )
 
 
-def test_lookup_sources():
+def test_lookup_sources_by_format():
     # Initialize DataLibrary
     library = DataLibrary(
         library_file=get_test_data_file("library_files/library.yaml")
@@ -194,3 +194,13 @@ def test_lookup_sources():
     matches = library.lookup_sources(organism="human", format="Illumina27k")
     assert len(matches) == 1
     assert matches[0].id == "GSE19711"
+
+def test_lookup_sources_by_organism():
+    # Initialize DataLibrary
+    library = DataLibrary(
+        library_file=get_test_data_file("library_files/library.yaml")
+    )
+
+    # Perform lookup based on organism and format
+    matches = library.lookup_sources(organism="human")
+    assert len(matches) == 2
