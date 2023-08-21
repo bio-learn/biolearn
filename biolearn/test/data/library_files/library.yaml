@@ -1,0 +1,26 @@
+---
+items:
+  - id: GSE40279
+    title: Genome-wide Methylation Profiles Reveal Quantitative Views of Human Aging Rates
+    summary: "Genome wide DNA methylation profiling of individuals across a large age range. The Illumina Infinium 450k Human DNA methylation Beadchip was used to obtain DNA methylation profiles across approximately 450k CpGs from human whole blood."
+    format: Illumina450k
+    organism: human
+    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE40nnn/GSE40279/matrix/GSE40279_series_matrix.txt.gz
+    parser:
+      type: geo-matrix
+      id-row: 12
+      age-row: 44
+      age-parse: after-colon
+      matrix-start: 72
+  - id: GSE19711
+    title: Genome wide DNA methylation profiling of United Kingdom Ovarian Cancer Population Study (UKOPS)
+    summary: "The Illumina Infinium 27k Human DNA methylation Beadchip v1.2 was used to obtain DNA methylation profiles across approximately 27,000 CpGs in whole blood samples from 540 samples, of which 266 were samples taken from postmenopausal women with ovarian cancer and 274 were from age-matched healthy controls"
+    format: Illumina27k
+    organism: human
+    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE19nnn/GSE19711/matrix/GSE19711_series_matrix.txt.gz
+    parser:
+      type: geo-matrix
+      id-row: 14
+      age-row: 41
+      age-parse: after-colon
+      matrix-start: 75

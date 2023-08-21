@@ -72,8 +72,27 @@ def parse_library_file(library_file):
 
 
 class DataLibrary:
-    def __init__(self):
+    def __init__(self, library_file=None):
         self.sources = []
+        if library_file is None:
+            library_file = get_data_file("library.yaml")
+        self.load_sources(library_file)
 
     def load_sources(self, library_file):
-        pass
+        with open(library_file, "r") as f:
+            data_sources = parse_library_file(f)
+            self.sources.extend(data_sources)
+
+    def get_source_by_id(self, source_id):
+        for source in self.sources:
+            if source.id == source_id:
+                return source
+        return None
+
+    def lookup_sources(self, organism=None, format=None):
+        matches = []
+        for source in self.sources:
+            if (organism is None or source.organism == organism) and \
+               (format is None or source.format == format):
+                matches.append(source)
+        return matches

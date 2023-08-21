@@ -3,8 +3,9 @@ import os
 import pandas as pd
 import numpy as np
 from io import StringIO
-from biolearn.data_library import parse_library_file, DataSource
+from biolearn.data_library import parse_library_file, DataSource, DataLibrary
 from biolearn.clock import get_data_file
+from biolearn.util import get_test_data_file
 
 
 def test_blank_file_gives_error():
@@ -156,3 +157,28 @@ def test_can_load_dnam():
     assert df.shape == (5, 38)
     assert "age" in df.columns.to_list()
     assert all(np.issubdtype(df[col].dtype, np.number) for col in df.columns)
+
+def test_load_sources_append():
+    # Initialize DataLibrary
+    library = DataLibrary(library_file=get_test_data_file("library_files/library.yaml"))
+    
+    # Check if sources were loaded
+    assert len(library.sources) == 2
+
+def test_get_source_by_id():
+    # Initialize DataLibrary
+    library = DataLibrary(library_file=get_test_data_file("library_files/library.yaml"))
+    
+    # Get source by ID
+    source = library.get_source_by_id('GSE40279')
+    assert source.id == 'GSE40279'
+    assert source.title == 'Genome-wide Methylation Profiles Reveal Quantitative Views of Human Aging Rates'
+
+def test_lookup_sources():
+    # Initialize DataLibrary
+    library = DataLibrary(library_file=get_test_data_file("library_files/library.yaml"))
+    
+    # Perform lookup based on organism and format
+    matches = library.lookup_sources(organism='human', format='Illumina27k')
+    assert len(matches) == 1
+    assert matches[0].id == 'GSE19711'

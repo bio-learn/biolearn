@@ -159,7 +159,7 @@ def load_nhanes(year):
     df = df.rename({"LB2RDW": "LBXRDW", "LB2WBCSI": "LBXWBCSI"}, axis=1)
     return df
 
-
+#TODO: Remove and fix examples
 def load_dnam(dnam_file, id_row, age_row, skiprows):
     dnam_file = cached_dowload(dnam_file)
     # Row id_row+1 contains IDs, row age_row+1 contains age

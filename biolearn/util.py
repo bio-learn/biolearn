@@ -14,6 +14,16 @@ def get_data_file(relative_path):
     )  # build the path to the data file
     return data_file_path
 
+def get_test_data_file(relative_path):
+    script_dir = os.path.dirname(
+        __file__
+    )  # get the directory of the current script
+    data_file_path = os.path.join(
+        script_dir, "test/data", relative_path
+    )  # build the path to the data file
+    return data_file_path
+
+
 def cached_dowload(url_or_filepath):
     """Downloads the file at a URL and saves it locally. If called again with the same URL it will use the saved file. Returns the local filepath"""
     # Hash the URL to create a unique filename
