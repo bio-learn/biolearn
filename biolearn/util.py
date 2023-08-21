@@ -5,6 +5,7 @@ from urllib.parse import urlparse
 import shutil
 import appdirs
 
+
 def get_data_file(relative_path):
     script_dir = os.path.dirname(
         __file__
@@ -13,6 +14,7 @@ def get_data_file(relative_path):
         script_dir, "data", relative_path
     )  # build the path to the data file
     return data_file_path
+
 
 def get_test_data_file(relative_path):
     script_dir = os.path.dirname(

@@ -14,11 +14,11 @@ class GeoMatrixParser:
         ages = pd.read_table(
             file_path,
             index_col=0,
-            skiprows=lambda x: x != self.age_row - 1 and x != self.id_row - 1 ,
+            skiprows=lambda x: x != self.age_row - 1 and x != self.id_row - 1,
         ).transpose()
 
         dnam = pd.read_table(
-            file_path, index_col=0, skiprows=self.matrix_start - 1 
+            file_path, index_col=0, skiprows=self.matrix_start - 1
         ).transpose()
         dnam["age"] = ages["!Sample_characteristics_ch1"].str[-2:].astype(int)
         dnam = dnam.drop(["!series_matrix_table_end"], axis=1)
@@ -92,7 +92,8 @@ class DataLibrary:
     def lookup_sources(self, organism=None, format=None):
         matches = []
         for source in self.sources:
-            if (organism is None or source.organism == organism) and \
-               (format is None or source.format == format):
+            if (organism is None or source.organism == organism) and (
+                format is None or source.format == format
+            ):
                 matches.append(source)
         return matches

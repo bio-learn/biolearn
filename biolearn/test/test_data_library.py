@@ -151,34 +151,46 @@ def test_can_load_dnam():
         },
     }
     source = DataSource(data_source_spec)
-    
+
     df = source.load()
     # Verify data set is of known size
     assert df.shape == (5, 38)
     assert "age" in df.columns.to_list()
     assert all(np.issubdtype(df[col].dtype, np.number) for col in df.columns)
 
+
 def test_load_sources_append():
     # Initialize DataLibrary
-    library = DataLibrary(library_file=get_test_data_file("library_files/library.yaml"))
-    
+    library = DataLibrary(
+        library_file=get_test_data_file("library_files/library.yaml")
+    )
+
     # Check if sources were loaded
     assert len(library.sources) == 2
 
+
 def test_get_source_by_id():
     # Initialize DataLibrary
-    library = DataLibrary(library_file=get_test_data_file("library_files/library.yaml"))
-    
+    library = DataLibrary(
+        library_file=get_test_data_file("library_files/library.yaml")
+    )
+
     # Get source by ID
-    source = library.get_source_by_id('GSE40279')
-    assert source.id == 'GSE40279'
-    assert source.title == 'Genome-wide Methylation Profiles Reveal Quantitative Views of Human Aging Rates'
+    source = library.get_source_by_id("GSE40279")
+    assert source.id == "GSE40279"
+    assert (
+        source.title
+        == "Genome-wide Methylation Profiles Reveal Quantitative Views of Human Aging Rates"
+    )
+
 
 def test_lookup_sources():
     # Initialize DataLibrary
-    library = DataLibrary(library_file=get_test_data_file("library_files/library.yaml"))
-    
+    library = DataLibrary(
+        library_file=get_test_data_file("library_files/library.yaml")
+    )
+
     # Perform lookup based on organism and format
-    matches = library.lookup_sources(organism='human', format='Illumina27k')
+    matches = library.lookup_sources(organism="human", format="Illumina27k")
     assert len(matches) == 1
-    assert matches[0].id == 'GSE19711'
+    assert matches[0].id == "GSE19711"

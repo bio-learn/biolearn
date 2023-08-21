@@ -3,6 +3,7 @@ from biolearn.util import cached_dowload
 
 MG_PER_DL_TO_MMOL_PER_L = 0.05551
 
+
 def load_fhs():
     """
     Loads data from the Framingham Heart Study
@@ -159,7 +160,8 @@ def load_nhanes(year):
     df = df.rename({"LB2RDW": "LBXRDW", "LB2WBCSI": "LBXWBCSI"}, axis=1)
     return df
 
-#TODO: Remove and fix examples
+
+# TODO: Remove and fix examples
 def load_dnam(dnam_file, id_row, age_row, skiprows):
     dnam_file = cached_dowload(dnam_file)
     # Row id_row+1 contains IDs, row age_row+1 contains age
