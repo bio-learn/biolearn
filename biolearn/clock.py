@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import quantile_transform
+from biolearn.dunedin_pace import dunedin_pace_normalization
 
 def horvath_transform(mult_sum):
     const = 0.695507258
@@ -107,28 +107,6 @@ def bmi_mccartney(dataframe):
 def dnam_tl(dataframe):
     transform = lambda sum: sum - 7.924780053
     return run_clock(dataframe, "DNAmTL.csv", transform)
-
-import pandas as pd
-
-def dunedin_pace_normalization(dataframe):
-    # Read the gold standard means into a dictionary
-    gold_standard_df = pd.read_csv(get_data_file("DunedinPACE_Means.csv"))
-    gold_standard_means = dict(zip(gold_standard_df['CpGmarker'], gold_standard_df['mean']))
-    
-    # Identify cpgs in dataframe but not in gold standard, and drop them
-    missing_cpgs = [cpg for cpg in dataframe.columns if cpg not in gold_standard_means]
-    dataframe = dataframe.drop(columns=missing_cpgs)
-    
-    # Quantile Normalize the dataframe
-    dataframe_normalized = quantile_transform(dataframe, axis=0, n_quantiles=dataframe.shape[0], copy=True, output_distribution='normal')
-    dataframe_normalized = pd.DataFrame(dataframe_normalized, index=dataframe.index, columns=dataframe.columns)
-    
-    # Adjust the data to have the mean of the gold standard
-    for cpg, mean_value in gold_standard_means.items():
-        if cpg in dataframe_normalized.columns:
-            dataframe_normalized[cpg] += mean_value - dataframe_normalized[cpg].mean()
-    
-    return dataframe_normalized
 
 def dunedin_pace(dataframe):
     normalized_data = dunedin_pace_normalization(dataframe)

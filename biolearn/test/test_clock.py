@@ -2,8 +2,9 @@ import pytest
 import os
 from math import isclose
 import pandas as pd
+import numpy as np
 from biolearn import clock
-
+import pickle
 
 def load_test_data_file(relative_path):
     script_dir = os.path.dirname(
@@ -29,7 +30,7 @@ def check_clock_against_sample(clock_function, results_column_name):
         actual_age = actual_results.loc[idx]
 
         try:
-            assert isclose(actual_age, expected_age, abs_tol=1e-2)
+            assert isclose(actual_age, expected_age, abs_tol=1e-5)
         except AssertionError:
             test_passed = False
             print(f"Discrepancy at index {idx}: expected {expected_age}, but got {actual_age}")
@@ -38,8 +39,33 @@ def check_clock_against_sample(clock_function, results_column_name):
 
 def test_dunedin_pace_normalization():
     actual = clock.dunedin_pace_normalization(sample_inputs)
-    expected = load_test_data_file("PACENormalized.csv").transpose()
-    pd.testing.assert_frame_equal(actual, expected, check_exact=False)
+    script_dir = os.path.dirname(
+        __file__
+    )  # get the directory of the current script
+    data_file_path = os.path.join(
+        script_dir, "data", "pace_normalized.pkl"
+    )  # build the path to the data file
+    with open(data_file_path, 'rb') as file:
+        expected = pickle.load(file).transpose()
+
+    # Finding mismatches based on tolerance
+    mask = np.abs(actual - expected) > 0.00000001
+    mismatches = actual[mask].stack()
+
+    total_mismatches = mismatches.size
+    percentage_mismatched = (total_mismatches / actual.size) * 100
+    
+    # Display the mismatches
+    for idx, value in enumerate(mismatches.items()):
+        if idx == 100:
+            break
+        print(f"Location: {value[0]}, Actual: {actual.at[value[0]]}, Expected: {expected.at[value[0]]}")
+
+    print(f"Total mismatches: {total_mismatches} ({percentage_mismatched:.2f}%)")
+
+    # Your actual assertion can be here based on your needs, e.g.,
+    assert total_mismatches == 0, "Dataframes are not equal within the given tolerance."
+
 
 
 def test_horvathv1_sample():
