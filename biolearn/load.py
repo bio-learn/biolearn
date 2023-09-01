@@ -183,7 +183,7 @@ def load_nhanes(year):
             "PERMTH_EXM": "months_until_death",
             "LBXWBCSI": "white_blood_cell_count",
             "LBXLYPCT": "lymphocyte_percent",
-            "LBXRDW" : "red_blood_cell_distribution_width",
+            "LBXRDW": "red_blood_cell_distribution_width",
             "LBXMCVSI": "mean_cell_volume",
             "LBDLYMNO": "lymphocyte_number",
             "LBXRBCSI": "red_blood_cell_count",
@@ -192,11 +192,10 @@ def load_nhanes(year):
             "LBXMCHSI": "mean_cell_hemoglobin",
             "LBXBAPCT": "basophil_percent",
             "LBDHDDSI": "hdl_cholesterol",
-            "LBXCRP" : "c_reactive_protein",
+            "LBXCRP": "c_reactive_protein",
             "LBDSALSI": "albumin",
             "LBDSCRSI": "creatinine",
-            "LBXSAPSI": "alkaline_phosphate", 
-
+            "LBXSAPSI": "alkaline_phosphate",
         },
         axis=1,
     )
