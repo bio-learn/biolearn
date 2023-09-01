@@ -14,7 +14,6 @@ def get_data_file(filename):
 
 
 def dunedin_pace_normalization(dataframe):
-    # Read the gold standard means into a set for fast look-up
     gold_standard_df = pd.read_csv(get_data_file("DunedinPACE_Gold_Means.csv"))
     gold_standard_means = dict(
         zip(gold_standard_df["CpGmarker"], gold_standard_df["mean"])
@@ -51,17 +50,14 @@ def quantile_normalize_using_target(data, target_values):
     """
     Apply quantile normalization on data using target values.
     """
-    # Sort the target values which will be used for normalization.
     sorted_target = np.sort(target_values)
 
-    # Loop over each column of the data.
     for _, column_data in enumerate(data.T):
         ranks = rankdata(column_data)
 
         rank_floor_values = np.floor(ranks).astype(int)
         has_decimal_above_0_4 = (ranks - rank_floor_values) > 0.4
 
-        # Using a direct approach to assign values based on conditions.
         column_data[has_decimal_above_0_4] = 0.5 * (
             sorted_target[rank_floor_values[has_decimal_above_0_4] - 1]
             + sorted_target[rank_floor_values[has_decimal_above_0_4]]
@@ -74,7 +70,6 @@ def quantile_normalize_using_target(data, target_values):
 
 
 def dunedin_pace_preprocess_data(betas, means, proportionOfProbesRequired=0.8):
-    # Check if betas is entirely numeric
     if not (betas.applymap(np.isreal)).all().all():
         raise ValueError("betas matrix/data.frame is not numeric!")
 
