@@ -16,17 +16,21 @@ data_file_path = os.path.join(
     data_folder_path, "DNAmTestSet.csv"
 )  # build the path to the data file
 
-expected_hash = "62b8b9744c42f6c5bc1f0a40eac4bccfeebc043c7c33da1c0a4eed395bf19003"
+expected_hash = (
+    "62b8b9744c42f6c5bc1f0a40eac4bccfeebc043c7c33da1c0a4eed395bf19003"
+)
 
-def compute_file_hash(file_path, chunk_size=1024*1024):
+
+def compute_file_hash(file_path, chunk_size=1024 * 1024):
     hash_algorithm = hashlib.sha256()
-    with open(file_path, 'rb') as f:
+    with open(file_path, "rb") as f:
         while True:
             data = f.read(chunk_size)
             if not data:
                 break
             hash_algorithm.update(data)
     return hash_algorithm.hexdigest()
+
 
 def is_file_valid(file_path, expected_hash):
     if os.path.exists(file_path):
@@ -42,7 +46,9 @@ ensure_folder_exists(data_folder_path)
 print("Checking if file generation is needed")
 if not is_file_valid(data_file_path, expected_hash):
     print("Generating file")
-    source_data = load_dnam(dnam_file=source_url, id_row=32, age_row=46, skiprows=72)
+    source_data = load_dnam(
+        dnam_file=source_url, id_row=32, age_row=46, skiprows=72
+    )
     source_data.head(10).transpose().to_csv(data_file_path)
     print("Verifying new file")
     if not is_file_valid(data_file_path, expected_hash):
