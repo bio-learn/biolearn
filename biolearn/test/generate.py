@@ -9,8 +9,11 @@ source_url = "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41169/matrix/G
 script_dir = os.path.dirname(
     __file__
 )  # get the directory of the current script
+data_folder_path = os.path.join(
+    script_dir, "data/external/"
+)  # build the path to the data file
 data_file_path = os.path.join(
-    script_dir, "data/external/DNAmTestSet.csv"
+    data_folder_path, "DNAmTestSet.csv"
 )  # build the path to the data file
 
 expected_hash = (
@@ -34,7 +37,12 @@ def is_file_valid(file_path, expected_hash):
         return compute_file_hash(file_path) == expected_hash
     return False
 
+def ensure_folder_exists(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
 
+
+ensure_folder_exists(data_folder_path)
 print("Checking if file generation is needed")
 if not is_file_valid(data_file_path, expected_hash):
     print("Generating file")
