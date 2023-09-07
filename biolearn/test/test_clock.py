@@ -1,8 +1,10 @@
 import pytest
 from math import isclose
 import pandas as pd
+import numpy as np
 from biolearn import clock
 from biolearn.util import get_test_data_file
+import pickle
 
 
 def load_test_data_file(relative_path):
@@ -29,7 +31,7 @@ def check_clock_against_sample(clock_function, results_column_name):
         actual_age = actual_results.loc[idx]
 
         try:
-            assert isclose(actual_age, expected_age, abs_tol=1e-2)
+            assert isclose(actual_age, expected_age, abs_tol=1e-5)
         except AssertionError:
             test_passed = False
             print(
@@ -37,6 +39,37 @@ def check_clock_against_sample(clock_function, results_column_name):
             )
 
     return test_passed
+
+
+def test_dunedin_pace_normalization():
+    actual = clock.dunedin_pace_normalization(sample_inputs)
+    data_file_path = get_test_data_file("pace_normalized.pkl")
+    with open(data_file_path, "rb") as file:
+        expected = pickle.load(file).transpose()
+
+    # Finding mismatches based on tolerance
+    mask = np.abs(actual - expected) > 0.00000001
+    mismatches = actual[mask].stack()
+
+    total_mismatches = mismatches.size
+    percentage_mismatched = (total_mismatches / actual.size) * 100
+
+    # Display the mismatches
+    for idx, value in enumerate(mismatches.items()):
+        if idx == 100:
+            break
+        print(
+            f"Location: {value[0]}, Actual: {actual.at[value[0]]}, Expected: {expected.at[value[0]]}"
+        )
+
+    print(
+        f"Total mismatches: {total_mismatches} ({percentage_mismatched:.2f}%)"
+    )
+
+    # Your actual assertion can be here based on your needs, e.g.,
+    assert (
+        total_mismatches == 0
+    ), "Dataframes are not equal within the given tolerance."
 
 
 def test_horvathv1_sample():
@@ -72,6 +105,14 @@ def test_bmi_mccartney_sample():
 
 def test_dnam_tl_sample():
     assert check_clock_against_sample(clock.dnam_tl, "DNAmTL")
+
+
+def test_dunedin_poam38_sample():
+    assert check_clock_against_sample(clock.dunedin_poam38, "DunedinPoAm38")
+
+
+def test_dunedin_pace_sample():
+    assert check_clock_against_sample(clock.dunedin_pace, "Dunedin_PACE")
 
 
 # Results missing from expected file

@@ -18,7 +18,8 @@ dependencies = [
   "pandas",
   "requests",
   "appdirs",
-  "pyyaml"
+  "pyyaml",
+  "scipy"
 ]
 
 keywords = ["biomarker"]

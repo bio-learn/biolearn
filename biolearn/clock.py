@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import numpy as np
 from biolearn.util import get_data_file
+from biolearn.dunedin_pace import dunedin_pace_normalization
 
 
 def horvath_transform(mult_sum):
@@ -111,6 +112,17 @@ def dnam_tl(dataframe):
     return run_clock(dataframe, "DNAmTL.csv", transform)
 
 
+def dunedin_pace(dataframe):
+    normalized_data = dunedin_pace_normalization(dataframe)
+    transform = lambda sum: sum - 1.949859
+    return run_clock(normalized_data, "DunedinPACE.csv", transform)
+
+
+def dunedin_poam38(dataframe):
+    transform = lambda sum: sum - 0.06929805
+    return run_clock(dataframe, "DunedinPoAm38.csv", transform)
+
+
 # Results missing from expected file
 # def dnam_clock_cortical(dataframe):
 #     transform = lambda sum: sum + 0.577682570446177
@@ -125,7 +137,6 @@ def hrs_in_ch_phenoage(dataframe):
 def knight(dataframe):
     transform = lambda sum: sum + 41.7
     return run_clock(dataframe, "Knight.csv", transform)
-
 
 def lee_control(dataframe):
     transform = lambda sum: sum + 13.06182
