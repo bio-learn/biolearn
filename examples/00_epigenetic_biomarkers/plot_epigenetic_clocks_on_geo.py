@@ -20,13 +20,23 @@ df = data.dnam
 # Calculate "biological age" based on Horvath, Hannum, and PhenoAge epigenetic clocks
 # -------------------------------------------------------------------------------------
 from biolearn.clock import horvathv1, hannum, phenoage
-df['horvath'] = horvathv1(df)
-df['hannum'] = hannum(df)
-df['phenoage'] = phenoage(df)
+horvath_results = horvathv1(df)
+hannum_results = hannum(df)
+phenoage_results = phenoage(df)
+
+actual_age = data.metadata['age']
 
 ##########################################################################################################
 # Plot biological ages against chronological age
 # --------------------------------------------------------------------------------------------------------
 import seaborn as sn
-df.index=df['age']
-sn.relplot(data=df[['horvath','hannum','phenoage']], kind="scatter");
+import pandas as pd
+plot_data = pd.DataFrame({
+    'Horvath': horvath_results,
+    'Hannum': hannum_results,
+    'PhenoAge': phenoage_results,
+    "Age": actual_age
+})
+plot_data.index=plot_data['Age']
+
+sn.relplot(data=plot_data, kind="scatter");
