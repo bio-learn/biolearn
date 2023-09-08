@@ -138,6 +138,7 @@ def knight(dataframe):
     transform = lambda sum: sum + 41.7
     return run_clock(dataframe, "Knight.csv", transform)
 
+
 def lee_control(dataframe):
     transform = lambda sum: sum + 13.06182
     return run_clock(dataframe, "LeeControl.csv", transform)

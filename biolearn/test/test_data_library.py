@@ -51,7 +51,7 @@ items:
     )
     parser = item.parser
     assert parser.id_row == 12
-    assert parser.metadata == {"age": {"row": 44, "parse":"numeric"}}
+    assert parser.metadata == {"age": {"row": 44, "parse": "numeric"}}
     assert parser.matrix_start == 72
 
 
@@ -153,9 +153,9 @@ def test_can_load_dnam():
             "type": "geo-matrix",
             "id-row": 33,
             "metadata": {
-                "age": {"row":47, "parse": "numeric"},
-                "gender": {"row":41, "parse": "gender"},
-                "cancer": {"row":50, "parse": "string"}
+                "age": {"row": 47, "parse": "numeric"},
+                "gender": {"row": 41, "parse": "gender"},
+                "cancer": {"row": 50, "parse": "string"},
             },
             "matrix-start": 74,
         },
@@ -166,12 +166,14 @@ def test_can_load_dnam():
     # Verify data set is of known size
     dnam = df.dnam
     assert dnam.shape == (37, 5)
-    assert df.metadata.shape == (5,3)
+    assert df.metadata.shape == (5, 3)
     assert "cancer" in df.metadata.columns.to_list()
     assert np.issubdtype(df.metadata["age"], np.number)
     assert np.issubdtype(df.metadata["gender"], np.number)
-    assert (df.metadata['gender'] != 0).all()
-    assert all(np.issubdtype(dnam[col].dtype, np.number) for col in dnam.columns)
+    assert (df.metadata["gender"] != 0).all()
+    assert all(
+        np.issubdtype(dnam[col].dtype, np.number) for col in dnam.columns
+    )
 
 
 def test_load_sources_append():
@@ -208,6 +210,7 @@ def test_lookup_sources_by_format():
     matches = library.lookup_sources(organism="human", format="Illumina27k")
     assert len(matches) == 1
     assert matches[0].id == "GSE19711"
+
 
 def test_lookup_sources_by_organism():
     # Initialize DataLibrary

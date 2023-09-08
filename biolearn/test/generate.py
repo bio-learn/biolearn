@@ -36,17 +36,20 @@ def is_file_valid(file_path, expected_hash):
     if os.path.exists(file_path):
         actual_hash = compute_file_hash(file_path)
         if actual_hash != expected_hash:
-            print(f"Warning: Actual file hash {actual_hash} does not equal expected hash {expected_hash}")
+            print(
+                f"Warning: Actual file hash {actual_hash} does not equal expected hash {expected_hash}"
+            )
         return actual_hash == expected_hash
     return False
+
 
 def ensure_folder_exists(path):
     # Get the directory part of the path (if it is a file)
     dir_path = os.path.dirname(path)
-    
+
     if os.path.isdir(path):
         dir_path = path
-    
+
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
 
@@ -63,7 +66,7 @@ if not is_file_valid(data_file_path, expected_hash):
             "type": "geo-matrix",
             "id-row": 33,
             "metadata": {
-                "age": {"row":47, "parse": "numeric"},
+                "age": {"row": 47, "parse": "numeric"},
             },
             "matrix-start": 73,
         },
