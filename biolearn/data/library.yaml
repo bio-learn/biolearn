@@ -15,7 +15,7 @@ items:
           parse: numeric
         gender:
           row: 47
-          parse: string
+          parse: gender
         ethnicity:
           row: 48
           parse: string
@@ -56,7 +56,7 @@ items:
           parse: numeric
         gender:
           row: 74
-          parse: string
+          parse: gender
         cancer:
           row: 77
           parse: string
@@ -76,7 +76,7 @@ items:
           parse: numeric
         gender:
           row: 49
-          parse: string
+          parse: gender
         smoking:
           row: 50
           parse: string
