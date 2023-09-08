@@ -9,8 +9,19 @@ items:
     parser:
       type: geo-matrix
       id-row: 36
-      age-row: 44
-      age-parse: after-colon
+      metadata:
+        age:
+          row: 44
+          parse: numeric
+        gender:
+          row: 47
+          parse: string
+        ethnicity:
+          row: 48
+          parse: string
+        tissue:
+          row: 49
+          parse: string
       matrix-start: 71
   - id: GSE19711
     title: Genome wide DNA methylation profiling of United Kingdom Ovarian Cancer Population Study (UKOPS)
@@ -21,8 +32,14 @@ items:
     parser:
       type: geo-matrix
       id-row: 31
-      age-row: 41
-      age-parse: after-colon
+      metadata:
+        age:
+          row: 41
+          parse: numeric
+        histology:
+          row: 43
+          parse: string
+        
       matrix-start: 75
   - id: GSE51057
     title: Methylome Analysis and Epigenetic Changes Associated with Menarcheal Age
@@ -33,8 +50,16 @@ items:
     parser:
       type: geo-matrix
       id-row: 66
-      age-row: 75
-      age-parse: after-colon
+      metadata:
+        age:
+          row: 75
+          parse: numeric
+        gender:
+          row: 74
+          parse: string
+        cancer:
+          row: 77
+          parse: string
       matrix-start: 100
   - id: GSE42861
     title: Differential DNA methylation in Rheumatoid arthritis
@@ -45,6 +70,17 @@ items:
     parser:
       type: geo-matrix
       id-row: 37
-      age-row: 48
-      age-parse: after-colon
+      metadata:
+        age:
+          row: 48
+          parse: numeric
+        gender:
+          row: 49
+          parse: string
+        smoking:
+          row: 50
+          parse: string
+        disease:
+          row: 46
+          parse: string
       matrix-start: 71

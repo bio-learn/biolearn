@@ -2,28 +2,71 @@ import yaml
 import pandas as pd
 from biolearn.util import cached_dowload, get_data_file
 
+def parse_after_colon(s):
+    """Extract and return the substring after the first colon."""
+    
+    if isinstance(s, str) and s.strip() and ":" in s:
+        return s.split(":")[1].strip()
+    
+    return ""
+
+
+def gender_parser(s):
+    if isinstance(s, str):
+        s_lower = s.lower().strip()
+        if s_lower in ['female', 'f']:
+            return 1
+        elif s_lower in ['male', 'm']:
+            return 2
+    return 0
+
+class GeoData:
+    def __init__(self, metadata, dnam):
+        #Metadata should have rows being samples and columns being data fields
+        self.metadata = metadata
+        #Methylation data should have columns as samples and rows as methylation sites
+        self.dnam = dnam
 
 class GeoMatrixParser:
+    parsers = {"numeric": lambda s: float(parse_after_colon(s)),
+               "string": lambda s: parse_after_colon,
+               "gender": lambda s: gender_parser(parse_after_colon(s))}
+
     def __init__(self, data):
         self.id_row = data.get("id-row")
-        self.age_row = data.get("age-row")
-        self.age_parse = data.get("age-parse")
+        self.metadata = data.get("metadata")
         self.matrix_start = data.get("matrix-start")
 
     def parse(self, file_path):
-        ages = pd.read_table(
+        load_list = self._metadata_load_list()
+        load_rows = [x[1] for x in load_list]
+        column_names = [x[0] for x in load_list]
+        metadata = pd.read_table(
             file_path,
             index_col=0,
-            skiprows=lambda x: x != self.age_row - 1 and x != self.id_row - 1,
-        ).transpose()
-
+            skiprows=lambda x: x != self.id_row - 1 and x not in load_rows,
+        )
+        print(metadata)
+        metadata.index = column_names
+        metadata = metadata.transpose()
+        metadata.index.name = "id"
+        print(metadata)
+        for col in metadata.columns:
+            parser_name = self.metadata[col]["parse"]
+            parser = self.parsers[parser_name]
+            metadata[col] = metadata[col].apply(parser)
+        print(metadata)
         dnam = pd.read_table(
             file_path, index_col=0, skiprows=self.matrix_start - 1
-        ).transpose()
-        dnam["age"] = ages["!Sample_characteristics_ch1"].str[-2:].astype(int)
-        dnam = dnam.drop(["!series_matrix_table_end"], axis=1)
+        )
+        dnam = dnam.drop(["!series_matrix_table_end"], axis=0)
         dnam.index.name = "id"
-        return dnam
+        return GeoData(metadata, dnam)
+    
+    def _metadata_load_list(self):
+        load_list = [(key, self.metadata[key]["row"] - 1) for key in self.metadata.keys()]
+        load_list.sort(key=lambda x: x[1])
+        return load_list
 
 
 class DataSource:

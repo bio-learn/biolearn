@@ -47,6 +47,7 @@
 !Sample_characteristics_ch1	"age: 32"	"age: 24"	"age: 65"	"age: 25"	"age: 32"
 !Sample_characteristics_ch1	"diseasestatus (1=control, 2=scz patient): 2"	"diseasestatus (1=control, 2=scz patient): 2"	"diseasestatus (1=control, 2=scz patient): 2"	"diseasestatus (1=control, 2=scz patient): 2"	"diseasestatus (1=control, 2=scz patient): 2"
 !Sample_characteristics_ch1	"used_in_analysis: yes"	"used_in_analysis: yes"	"used_in_analysis: yes"	"used_in_analysis: yes"	"used_in_analysis: no"
+!Sample_characteristics_ch1	""	""	"cancer type (icd-10): C50"	""	"cancer type (icd-10): C50"
 !Sample_molecule_ch1	"genomic DNA"	"genomic DNA"	"genomic DNA"	"genomic DNA"	"genomic DNA"
 !Sample_extract_protocol_ch1	"genomic DNA was extracted and purified from fresh frozen tissue using Qiagen DNeasy Kit according to standard instructions"	"genomic DNA was extracted and purified from fresh frozen tissue using Qiagen DNeasy Kit according to standard instructions"	"genomic DNA was extracted and purified from fresh frozen tissue using Qiagen DNeasy Kit according to standard instructions"	"genomic DNA was extracted and purified from fresh frozen tissue using Qiagen DNeasy Kit according to standard instructions"	"genomic DNA was extracted and purified from fresh frozen tissue using Qiagen DNeasy Kit according to standard instructions"
 !Sample_label_ch1	"Cy3, Cy5"	"Cy3, Cy5"	"Cy3, Cy5"	"Cy3, Cy5"	"Cy3, Cy5"

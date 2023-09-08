@@ -30,8 +30,10 @@ items:
   parser:
     type: geo-matrix
     id-row: 12
-    age-row: 44
-    age-parse: after-colon
+    metadata:
+      age:
+        row: 44
+        parse: numeric
     matrix-start: 72
 """
     test_file = StringIO(file_contents)
@@ -49,8 +51,7 @@ items:
     )
     parser = item.parser
     assert parser.id_row == 12
-    assert parser.age_row == 44
-    assert parser.age_parse == "after-colon"
+    assert parser.metadata == {"age": {"row": 44, "parse":"numeric"}}
     assert parser.matrix_start == 72
 
 
@@ -63,8 +64,10 @@ items:
   parser:
     type: geo-matrix
     id-row: 12
-    age-row: 44
-    age-parse: after-colon
+    metadata:
+      age:
+        row: 44
+        parse: numeric
     matrix-start: 72
 """
     test_file = StringIO(file_contents)
@@ -82,8 +85,10 @@ items:
   parser:
     type: unknown-parser
     id-row: 12
-    age-row: 44
-    age-parse: after-colon
+    metadata:
+      age:
+        row: 44
+        parse: numeric
     matrix-start: 72
 """
     test_file = StringIO(file_contents)
@@ -100,8 +105,10 @@ items:
   parser:
     type: geo-matrix
     id-row: 12
-    age-row: 44
-    age-parse: after-colon
+    metadata:
+      age:
+        row: 44
+        parse: numeric
     matrix-start: 72
 """
     test_file = StringIO(file_contents)
@@ -145,18 +152,26 @@ def test_can_load_dnam():
         "parser": {
             "type": "geo-matrix",
             "id-row": 33,
-            "age-row": 47,
-            "age-parse": "after-colon",
-            "matrix-start": 73,
+            "metadata": {
+                "age": {"row":47, "parse": "numeric"},
+                "gender": {"row":41, "parse": "gender"},
+                "cancer": {"row":50, "parse": "string"}
+            },
+            "matrix-start": 74,
         },
     }
     source = DataSource(data_source_spec)
 
     df = source.load()
     # Verify data set is of known size
-    assert df.shape == (5, 38)
-    assert "age" in df.columns.to_list()
-    assert all(np.issubdtype(df[col].dtype, np.number) for col in df.columns)
+    dnam = df.dnam
+    assert dnam.shape == (37, 5)
+    assert df.metadata.shape == (5,3)
+    assert "cancer" in df.metadata.columns.to_list()
+    assert np.issubdtype(df.metadata["age"], np.number)
+    assert np.issubdtype(df.metadata["gender"], np.number)
+    assert (df.metadata['gender'] != 0).all()
+    assert all(np.issubdtype(dnam[col].dtype, np.number) for col in dnam.columns)
 
 
 def test_load_sources_append():
@@ -190,7 +205,6 @@ def test_lookup_sources_by_format():
         library_file=get_test_data_file("library_files/library.yaml")
     )
 
-    # Perform lookup based on organism and format
     matches = library.lookup_sources(organism="human", format="Illumina27k")
     assert len(matches) == 1
     assert matches[0].id == "GSE19711"
@@ -201,6 +215,5 @@ def test_lookup_sources_by_organism():
         library_file=get_test_data_file("library_files/library.yaml")
     )
 
-    # Perform lookup based on organism and format
     matches = library.lookup_sources(organism="human")
     assert len(matches) == 2
