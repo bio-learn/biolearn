@@ -46,16 +46,13 @@ class GeoMatrixParser:
             index_col=0,
             skiprows=lambda x: x != self.id_row - 1 and x not in load_rows,
         )
-        print(metadata)
         metadata.index = column_names
         metadata = metadata.transpose()
         metadata.index.name = "id"
-        print(metadata)
         for col in metadata.columns:
             parser_name = self.metadata[col]["parse"]
             parser = self.parsers[parser_name]
             metadata[col] = metadata[col].apply(parser)
-        print(metadata)
         dnam = pd.read_table(
             file_path, index_col=0, skiprows=self.matrix_start - 1
         )

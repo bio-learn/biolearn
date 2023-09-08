@@ -84,3 +84,23 @@ items:
           row: 46
           parse: string
       matrix-start: 71
+  - id: GSE41169
+    title: Blood DNA methylation profiles in a Dutch population
+    summary: "Genome wide DNA methylation profiling of whole blood in schizophrenia patients and healthy subjects of different ages. The Illumina Infinium 450k Human DNA methylation Beadchip v1.2 was used to obtain DNA methylation profiles across approximately 480,000 CpGs. Dataset included 62 schizophrenia patients and 33 healthy subjects from Dutch descent."
+    format: Illumina450k
+    organism: human
+    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41169/matrix/GSE41169_series_matrix.txt.gz
+    parser:
+      type: geo-matrix
+      id-row: 33
+      metadata:
+        age:
+          row: 47
+          parse: numeric
+        gender:
+          row: 41
+          parse: gender
+        disease:
+          row: 48
+          parse: numeric
+      matrix-start: 73
