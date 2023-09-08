@@ -13,14 +13,12 @@ def load_test_data_file(relative_path):
 
 
 sample_results = load_test_data_file("expected_clock_output.csv")
-sample_inputs = load_test_data_file("external/DNAmTestSet.csv").transpose()
+sample_inputs = load_test_data_file("external/DNAmTestSet.csv")
 
 
 def check_clock_against_sample(clock_function, results_column_name):
     expected_results = sample_results[results_column_name].sort_index()
-    actual_results = clock_function(sample_inputs)[
-        "biological_age"
-    ].sort_index()
+    actual_results = clock_function(sample_inputs).sort_index()
     assert len(expected_results) == len(
         actual_results
     ), "DataFrames do not have the same length"
@@ -45,7 +43,7 @@ def test_dunedin_pace_normalization():
     actual = clock.dunedin_pace_normalization(sample_inputs)
     data_file_path = get_test_data_file("pace_normalized.pkl")
     with open(data_file_path, "rb") as file:
-        expected = pickle.load(file).transpose()
+        expected = pickle.load(file)
 
     # Finding mismatches based on tolerance
     mask = np.abs(actual - expected) > 0.00000001

@@ -8,10 +8,13 @@ This example loads a DNA Methylation data from GEO, calculates multiple epigenet
 #############################################################################
 # Loading a DNAm GEO data
 # ---------------------------------------
-from biolearn.load import load_dnam
-#GSE41169 blood DNAm data
-url='https://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41169/matrix/GSE41169_series_matrix.txt.gz'
-df=load_dnam(dnam_file=url,id_row=32,age_row=46,skiprows=72)
+from biolearn.data_library import DataLibrary
+#Load up GSE41169 blood DNAm data
+data_source = DataLibrary().get("GSE41169")
+data=data_source.load()
+
+#The data has the methylation data as well as metadata for each subject
+df = data.dnam
 
 ######################################################################################
 # Calculate "biological age" based on Horvath, Hannum, and PhenoAge epigenetic clocks

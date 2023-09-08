@@ -11,9 +11,8 @@ def dunedin_pace_normalization(dataframe):
         zip(gold_standard_df["CpGmarker"], gold_standard_df["mean"])
     )
 
-    original_index = dataframe.index
     dataframe_transposed = dunedin_pace_preprocess_data(
-        dataframe.transpose(), gold_standard_df
+        dataframe, gold_standard_df
     )
 
     # Keep only rows present in gold_standard_means
@@ -25,17 +24,20 @@ def dunedin_pace_normalization(dataframe):
     target_ordered = dataframe_transposed.index.map(
         gold_standard_means
     ).tolist()
+    # Store the original index and columns
+    original_index = dataframe_transposed.index
+    original_columns = dataframe_transposed.columns
 
     dataframe_normalized = quantile_normalize_using_target(
         dataframe_transposed.values, target_ordered
     )
     dataframe_normalized = pd.DataFrame(
         dataframe_normalized,
-        columns=original_index,
-        index=dataframe_transposed.index,
+        columns=original_columns,
+        index=original_index,
     )
 
-    return dataframe_normalized.T
+    return dataframe_normalized
 
 
 def quantile_normalize_using_target(data, target_values):

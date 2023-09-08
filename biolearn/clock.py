@@ -25,14 +25,14 @@ def no_transform(_):
 def run_clock(dataframe, coeffecient_file, transform_function):
     coefficients = pd.read_csv(get_data_file(coeffecient_file), index_col=0)
     methylation_df = coefficients.merge(
-        dataframe.transpose(), left_index=True, right_index=True
+        dataframe, left_index=True, right_index=True
     )
     for c in methylation_df.columns[1:]:
         methylation_df[c] = (
             methylation_df["CoefficientTraining"] * methylation_df[c]
         )
     df_sum = methylation_df.drop("CoefficientTraining", axis=1).sum()
-    return df_sum.apply(transform_function).to_frame(name="biological_age")
+    return df_sum.apply(transform_function)
 
 
 def horvathv1(dataframe):
