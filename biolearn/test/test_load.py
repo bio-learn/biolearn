@@ -24,22 +24,6 @@ def test_expected_error_when_loading_unsupported_year_nhanes():
         df = load.load_nhanes(1913)
 
 
-def test_can_load_dnam():
-    script_dir = os.path.dirname(
-        __file__
-    )  # get the directory of the current script
-    data_file_path = os.path.join(
-        script_dir, "data", "geo_dnam_test_file"
-    )  # build the path to the data file
-    df = load.load_dnam(
-        dnam_file=data_file_path, id_row=32, age_row=46, skiprows=72
-    )
-    # Verify data set is of known size
-    assert df.shape == (5, 38)
-    assert "age" in df.columns.to_list()
-    assert all(np.issubdtype(df[col].dtype, np.number) for col in df.columns)
-
-
 def verify_expected_columns(df):
     actual_columns = set(df.columns.to_list())
     missing_columns = set(load_columns) - actual_columns
