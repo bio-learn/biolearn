@@ -3,13 +3,8 @@ from math import isclose
 import pandas as pd
 import numpy as np
 from biolearn import clock
-from biolearn.util import get_test_data_file
+from biolearn.util import get_test_data_file, load_test_data_file
 import pickle
-
-
-def load_test_data_file(relative_path):
-    test_sample = pd.read_csv(get_test_data_file(relative_path), index_col=0)
-    return test_sample
 
 
 sample_results = load_test_data_file("expected_clock_output.csv")
