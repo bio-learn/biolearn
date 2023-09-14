@@ -13,9 +13,9 @@ items:
         age:
           row: 44
           parse: numeric
-        gender:
+        sex:
           row: 47
-          parse: gender
+          parse: sex
         ethnicity:
           row: 48
           parse: string
@@ -54,9 +54,9 @@ items:
         age:
           row: 75
           parse: numeric
-        gender:
+        sex:
           row: 74
-          parse: gender
+          parse: sex
         cancer:
           row: 77
           parse: string
@@ -74,9 +74,9 @@ items:
         age:
           row: 48
           parse: numeric
-        gender:
+        sex:
           row: 49
-          parse: gender
+          parse: sex
         smoking:
           row: 50
           parse: string
@@ -97,9 +97,9 @@ items:
         age:
           row: 47
           parse: numeric
-        gender:
+        sex:
           row: 41
-          parse: gender
+          parse: sex
         disease:
           row: 48
           parse: numeric

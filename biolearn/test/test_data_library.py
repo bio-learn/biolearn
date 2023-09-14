@@ -154,7 +154,7 @@ def test_can_load_dnam():
             "id-row": 33,
             "metadata": {
                 "age": {"row": 47, "parse": "numeric"},
-                "gender": {"row": 41, "parse": "gender"},
+                "sex": {"row": 41, "parse": "sex"},
                 "cancer": {"row": 50, "parse": "string"},
             },
             "matrix-start": 74,
@@ -169,8 +169,8 @@ def test_can_load_dnam():
     assert df.metadata.shape == (5, 3)
     assert "cancer" in df.metadata.columns.to_list()
     assert np.issubdtype(df.metadata["age"], np.number)
-    assert np.issubdtype(df.metadata["gender"], np.number)
-    assert (df.metadata["gender"] != 0).all()
+    assert np.issubdtype(df.metadata["sex"], np.number)
+    assert (df.metadata["sex"] != 0).all()
     assert all(
         np.issubdtype(dnam[col].dtype, np.number) for col in dnam.columns
     )

@@ -12,7 +12,7 @@ def parse_after_colon(s):
     return ""
 
 
-def gender_parser(s):
+def sex_parser(s):
     if isinstance(s, str):
         s_lower = s.lower().strip()
         if s_lower in ["female", "f"]:
@@ -34,7 +34,7 @@ class GeoMatrixParser:
     parsers = {
         "numeric": lambda s: float(parse_after_colon(s)),
         "string": lambda s: parse_after_colon,
-        "gender": lambda s: gender_parser(parse_after_colon(s)),
+        "sex": lambda s: sex_parser(parse_after_colon(s)),
     }
 
     def __init__(self, data):
