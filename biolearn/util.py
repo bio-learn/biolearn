@@ -26,9 +26,11 @@ def get_test_data_file(relative_path):
     )  # build the path to the data file
     return data_file_path
 
+
 def load_test_data_file(relative_path):
     test_sample = pd.read_csv(get_test_data_file(relative_path), index_col=0)
     return test_sample
+
 
 def cached_dowload(url_or_filepath):
     """Downloads the file at a URL and saves it locally. If called again with the same URL it will use the saved file. Returns the local filepath"""
