@@ -6,6 +6,7 @@ PIP      = $(VENV_BIN)/pip
 PYTEST   = $(VENV_BIN)/pytest
 BLACK    = $(VENV_BIN)/black
 JUPYTER  = $(VENV_BIN)/jupyter
+FILENAME ?=
 
 all: clean test format
 
@@ -32,7 +33,7 @@ format:
 	$(BLACK) ./biolearn
 
 test-code:
-	$(PYTEST) --pyargs biolearn --cov=biolearn
+	$(PYTEST) --pyargs biolearn --cov=biolearn $(if $(strip $(FILENAME)), -k $(FILENAME))
 
 test-coverage:
 	rm -rf coverage .coverage

@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import numpy as np
+from biolearn.util import get_data_file
 from biolearn.dunedin_pace import dunedin_pace_normalization
 
 
@@ -21,26 +22,17 @@ def no_transform(_):
     return _
 
 
-def get_data_file(filename):
-    script_dir = os.path.dirname(
-        __file__
-    )  # get the directory of the current script
-    return os.path.join(
-        script_dir, "data", filename
-    )  # build the path to the data file
-
-
 def run_clock(dataframe, coeffecient_file, transform_function):
     coefficients = pd.read_csv(get_data_file(coeffecient_file), index_col=0)
     methylation_df = coefficients.merge(
-        dataframe.transpose(), left_index=True, right_index=True
+        dataframe, left_index=True, right_index=True
     )
     for c in methylation_df.columns[1:]:
         methylation_df[c] = (
             methylation_df["CoefficientTraining"] * methylation_df[c]
         )
     df_sum = methylation_df.drop("CoefficientTraining", axis=1).sum()
-    return df_sum.apply(transform_function).to_frame(name="biological_age")
+    return df_sum.apply(transform_function)
 
 
 def horvathv1(dataframe):

@@ -2,15 +2,7 @@ import os
 from scipy.stats import rankdata
 import pandas as pd
 import numpy as np
-
-
-def get_data_file(filename):
-    script_dir = os.path.dirname(
-        __file__
-    )  # get the directory of the current script
-    return os.path.join(
-        script_dir, "data", filename
-    )  # build the path to the data file
+from biolearn.util import get_data_file
 
 
 def dunedin_pace_normalization(dataframe):
@@ -19,9 +11,8 @@ def dunedin_pace_normalization(dataframe):
         zip(gold_standard_df["CpGmarker"], gold_standard_df["mean"])
     )
 
-    original_index = dataframe.index
     dataframe_transposed = dunedin_pace_preprocess_data(
-        dataframe.transpose(), gold_standard_df
+        dataframe, gold_standard_df
     )
 
     # Keep only rows present in gold_standard_means
@@ -33,17 +24,20 @@ def dunedin_pace_normalization(dataframe):
     target_ordered = dataframe_transposed.index.map(
         gold_standard_means
     ).tolist()
+    # Store the original index and columns
+    original_index = dataframe_transposed.index
+    original_columns = dataframe_transposed.columns
 
     dataframe_normalized = quantile_normalize_using_target(
         dataframe_transposed.values, target_ordered
     )
     dataframe_normalized = pd.DataFrame(
         dataframe_normalized,
-        columns=original_index,
-        index=dataframe_transposed.index,
+        columns=original_columns,
+        index=original_index,
     )
 
-    return dataframe_normalized.T
+    return dataframe_normalized
 
 
 def quantile_normalize_using_target(data, target_values):
@@ -70,7 +64,7 @@ def quantile_normalize_using_target(data, target_values):
 
 
 def dunedin_pace_preprocess_data(betas, means, proportionOfProbesRequired=0.8):
-    if not (betas.applymap(np.isreal)).all().all():
+    if not (betas.map(np.isreal)).all().all():
         raise ValueError("betas matrix/data.frame is not numeric!")
 
     gold_standard_means_lookup = dict(zip(means["CpGmarker"], means["mean"]))

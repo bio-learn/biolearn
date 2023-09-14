@@ -1,32 +1,24 @@
 import pytest
-import os
 from math import isclose
 import pandas as pd
 import numpy as np
 from biolearn import clock
+from biolearn.util import get_test_data_file
 import pickle
 
 
 def load_test_data_file(relative_path):
-    script_dir = os.path.dirname(
-        __file__
-    )  # get the directory of the current script
-    data_file_path = os.path.join(
-        script_dir, "data", relative_path
-    )  # build the path to the data file
-    test_sample = pd.read_csv(data_file_path, index_col=0)
+    test_sample = pd.read_csv(get_test_data_file(relative_path), index_col=0)
     return test_sample
 
 
 sample_results = load_test_data_file("expected_clock_output.csv")
-sample_inputs = load_test_data_file("external/DNAmTestSet.csv").transpose()
+sample_inputs = load_test_data_file("external/DNAmTestSet.csv")
 
 
 def check_clock_against_sample(clock_function, results_column_name):
     expected_results = sample_results[results_column_name].sort_index()
-    actual_results = clock_function(sample_inputs)[
-        "biological_age"
-    ].sort_index()
+    actual_results = clock_function(sample_inputs).sort_index()
     assert len(expected_results) == len(
         actual_results
     ), "DataFrames do not have the same length"
@@ -49,14 +41,9 @@ def check_clock_against_sample(clock_function, results_column_name):
 
 def test_dunedin_pace_normalization():
     actual = clock.dunedin_pace_normalization(sample_inputs)
-    script_dir = os.path.dirname(
-        __file__
-    )  # get the directory of the current script
-    data_file_path = os.path.join(
-        script_dir, "data", "pace_normalized.pkl"
-    )  # build the path to the data file
+    data_file_path = get_test_data_file("pace_normalized.pkl")
     with open(data_file_path, "rb") as file:
-        expected = pickle.load(file).transpose()
+        expected = pickle.load(file)
 
     # Finding mismatches based on tolerance
     mask = np.abs(actual - expected) > 0.00000001

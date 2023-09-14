@@ -1,49 +1,7 @@
 import pandas as pd
-import os
-import hashlib
-import requests
-import shutil
-from urllib.parse import urlparse
-import appdirs
-from ._utils import fill_doc
+from biolearn.util import cached_dowload
 
 MG_PER_DL_TO_MMOL_PER_L = 0.05551
-
-
-def cached_dowload(url_or_filepath):
-    """Downloads the file at a URL and saves it locally. If called again with the same URL it will use the saved file. Returns the local filepath"""
-    # Hash the URL to create a unique filename
-    if os.path.isfile(url_or_filepath):
-        # If the provided URL is a local file path, return it directly
-        return url_or_filepath
-
-    url = url_or_filepath
-    url_path = urlparse(url).path
-    ext = os.path.splitext(url_path)[1]
-    filename = hashlib.sha256(url.encode()).hexdigest() + ext
-
-    app_name = "bio-learn"
-    download_path = appdirs.user_cache_dir(app_name)
-
-    # Ensure download path exists
-    os.makedirs(download_path, exist_ok=True)
-
-    filepath = os.path.join(download_path, filename)
-
-    if os.path.exists(filepath):
-        # If the file is already downloaded, return the file path
-        return filepath
-    else:
-        # Try to download the file
-        response = requests.get(url, stream=True)
-        response.raise_for_status()  # Raise an HTTPError if one occurred
-
-        # If the file is not downloaded yet, download and save it
-        with open(filepath, "wb") as out_file:
-            shutil.copyfileobj(response.raw, out_file)
-
-        # Return the file path
-        return filepath
 
 
 def load_fhs():
@@ -201,20 +159,3 @@ def load_nhanes(year):
     )
     df = df.rename({"LB2RDW": "LBXRDW", "LB2WBCSI": "LBXWBCSI"}, axis=1)
     return df
-
-
-def load_dnam(dnam_file, id_row, age_row, skiprows):
-    dnam_file = cached_dowload(dnam_file)
-    # Row id_row+1 contains IDs, row age_row+1 contains age
-    ages = pd.read_table(
-        dnam_file,
-        index_col=0,
-        skiprows=lambda x: x != age_row and x != id_row,
-    ).transpose()
-    # Each row should be a person
-    dnam = pd.read_table(dnam_file, index_col=0, skiprows=skiprows).transpose()
-    # Age data is in the form "ageatrecruitment: 61" need to extract numberical age
-    dnam["age"] = ages["!Sample_characteristics_ch1"].str[-2:].astype(int)
-    dnam = dnam.drop(["!series_matrix_table_end"], axis=1)
-    dnam.index.name = "id"
-    return dnam
