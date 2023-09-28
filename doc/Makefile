@@ -11,6 +11,7 @@ BUILDDIR      = _build
 PAPEROPT_a4     = -D latex_paper_size=a4
 PAPEROPT_letter = -D latex_paper_size=letter
 ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
+GH_PAGES_REPO = ../../bio-learn.github.io/
 
 .PHONY: help clean html
 
@@ -49,3 +50,8 @@ html:	sym_links
 	touch $(BUILDDIR)/html/.nojekyll
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
+
+deploy: html
+	# Assuming the docs repo is cloned in the same repo as biolearn is this will update the site
+	rsync -av --delete --exclude .git/ _build/html/ $(GH_PAGES_REPO)
+	cd $(GH_PAGES_REPO) && git add . && git commit -m "Automation Updated documentation" && git push
