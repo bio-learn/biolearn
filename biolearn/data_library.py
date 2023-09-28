@@ -33,7 +33,7 @@ class GeoData:
 class GeoMatrixParser:
     parsers = {
         "numeric": lambda s: float(parse_after_colon(s)),
-        "string": lambda s: parse_after_colon,
+        "string": lambda s: parse_after_colon(s),
         "sex": lambda s: sex_parser(parse_after_colon(s)),
     }
 

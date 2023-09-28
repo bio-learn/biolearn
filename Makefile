@@ -32,6 +32,9 @@ install:
 format:
 	$(BLACK) ./biolearn
 
+check-format:
+	$(BLACK) --check ./biolearn
+
 test-code:
 	$(PYTEST) --pyargs biolearn --cov=biolearn $(if $(strip $(FILENAME)), -k $(FILENAME))
 
