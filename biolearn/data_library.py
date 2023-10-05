@@ -22,6 +22,7 @@ def sex_parser(s):
             return 2
     return 0
 
+
 def extract_numeric(s):
     """Extract the first numeric value from a string."""
     match = re.search(r"(\d+(\.\d+)?)", s)

@@ -116,6 +116,7 @@ items:
         parse_library_file(test_file)
     assert str(e.value) == "'path' key is missing in item"
 
+
 def test_parser_missing_id_row_gives_error():
     file_contents = """
 ---
