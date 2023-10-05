@@ -39,7 +39,6 @@ items:
         histology:
           row: 43
           parse: string
-        
       matrix-start: 75
   - id: GSE51057
     title: Methylome Analysis and Epigenetic Changes Associated with Menarcheal Age
@@ -104,3 +103,398 @@ items:
           row: 48
           parse: numeric
       matrix-start: 73
+  - id: GSE51032
+    title: EPIC-Italy at HuGeF
+    summary: Anthropometric measurements, and dietary and lifestyle information obtained
+      by questionnaire are also available.
+    format: Illumina450k
+    organism: human
+    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE51nnn/GSE51032/matrix/GSE51032_series_matrix.txt.gz
+    parser:
+      type: geo-matrix
+      id-row: 35
+      matrix-start: 69
+      metadata:
+        gender:
+          row: 43
+          parse: sex
+        age:
+          row: 44
+          parse: numeric
+        age_at_menarche:
+          row: 45
+          parse: string
+        cancer_type_(icd-10):
+          row: 46
+          parse: string
+        time_to_diagnosis:
+          row: 47
+          parse: string
+  - id: GSE73103
+    title: Many obesity-associated SNPs strongly associate with DNA methylation changes
+      at proximal promoters and enhancers
+    summary: 'Background: The mechanisms of how genetic variants (SNPs) identified in
+      genome-wide association studies act to influence body mass remain unknown for
+      most of these SNPs, which continue to puzzle the scientific community. Recent
+      evidence points to epigenetic and chromatin state of the genome to have an important
+      role.  Methods: 355 healthy young individuals were genotyped for 52 known obesity-associated
+      SNPs and we obtained DNA methylation levels in their blood using the Illumina
+      450K BeadChip. Associations between alleles and methylation at proximal cytosine
+      residues were tested using a linear model adjusted for age, sex, weight category
+      and a proxy for blood cell type counts. For replication in other tissues, we used
+      two open-access datasets (skin fibroblasts, n=62; four brain regions, n=121-133)
+      and an additional dataset in subcutaneous and visceral fat (n=149).  Results:
+      We found that alleles at 28 of these obesity-associated SNPs associate with methylation
+      levels at 107 proximal CpG sites. Out of 107 CpG sites, 38 are located in gene
+      promoters, including genes strongly implicated in obesity (MIR148A, BDNF, PTPMT1,
+      NR1H3, MGAT1, SCGB3A1, HOXC12, PMAIP1, PSIP1, RPS10-NUDT3, RPS10, SKOR1, MAP2K5,
+      SIX5, AGRN, IMMP1L, ELP4, ITIH4, SEMA3G, POMC, ADCY3, SSPN, LGR4, TUFM, MIR4721,
+      SULT1A1, SULT1A2, APOBR, CLN3, SPNS1,SH2B1, ATXN2L, and IL27). Interestingly,
+      the associated SNPs are in known eQTLs for some of these genes. We also found
+      that the 107 CpGs are enriched in enhancers in peripheral blood mononuclear cells.
+      Finally, our results indicate that some of these associations are not blood-specific
+      as we successfully replicated four associations in skin fibroblasts.  Conclusions:
+      Our results strongly suggest that many obesity-associated SNPs are associated
+      with proximal gene regulation, which was reflected by association of obesity risk
+      allele genotypes with differential DNA methylation. This study highlights the
+      importance of DNA methylation and other chromatin marks as a way to understand
+      the molecular basis of genetic variants associated to human diseases and traits.'
+    format: Illumina450k
+    organism: human
+    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE73nnn/GSE73103/matrix/GSE73103_series_matrix.txt.gz
+    parser:
+      type: geo-matrix
+      id-row: 45
+      matrix-start: 133
+      metadata:
+        sex:
+          row: 53
+          parse: string
+        tissue:
+          row: 54
+          parse: string
+        age:
+          row: 55
+          parse: numeric
+        weight_category:
+          row: 56
+          parse: string
+        rs1011731:
+          row: 57
+          parse: string
+        rs10150332:
+          row: 58
+          parse: string
+        rs10195252:
+          row: 59
+          parse: string
+        rs10458787:
+          row: 60
+          parse: string
+        rs1055144:
+          row: 61
+          parse: string
+        rs10767664:
+          row: 62
+          parse: string
+        rs10769908:
+          row: 63
+          parse: string
+        rs10783050:
+          row: 64
+          parse: string
+        rs10838738:
+          row: 65
+          parse: string
+        rs10993160:
+          row: 66
+          parse: string
+        rs11142387:
+          row: 67
+          parse: string
+        rs1152846:
+          row: 68
+          parse: string
+        rs12517906:
+          row: 69
+          parse: string
+        rs12597579:
+          row: 70
+          parse: string
+        rs1294421:
+          row: 71
+          parse: string
+        rs13107325:
+          row: 72
+          parse: string
+        rs1443512:
+          row: 73
+          parse: string
+        rs1514175:
+          row: 74
+          parse: string
+        rs17782313:
+          row: 75
+          parse: string
+        rs1878047:
+          row: 76
+          parse: string
+        rs1927702:
+          row: 77
+          parse: string
+        rs206936:
+          row: 78
+          parse: string
+        rs2112347:
+          row: 79
+          parse: string
+        rs2145270:
+          row: 80
+          parse: string
+        rs2206734:
+          row: 81
+          parse: string
+        rs2241423:
+          row: 82
+          parse: string
+        rs2287019:
+          row: 83
+          parse: string
+        rs2383393:
+          row: 84
+          parse: string
+        rs2444217:
+          row: 85
+          parse: string
+        rs261967:
+          row: 86
+          parse: string
+        rs2815752:
+          row: 87
+          parse: string
+        rs3934834:
+          row: 88
+          parse: string
+        rs4377469:
+          row: 89
+          parse: string
+        rs4823006:
+          row: 90
+          parse: string
+        rs516636:
+          row: 91
+          parse: string
+        rs652722:
+          row: 92
+          parse: string
+        rs6784615:
+          row: 93
+          parse: string
+        rs6794092:
+          row: 94
+          parse: string
+        rs6795735:
+          row: 95
+          parse: string
+        rs6861681:
+          row: 96
+          parse: string
+        rs6905288:
+          row: 97
+          parse: string
+        rs713586:
+          row: 98
+          parse: string
+        rs7138803:
+          row: 99
+          parse: string
+        rs718314:
+          row: 100
+          parse: string
+        rs7481311:
+          row: 101
+          parse: string
+        rs7498665:
+          row: 102
+          parse: string
+        rs7647305:
+          row: 103
+          parse: string
+        rs7832552:
+          row: 104
+          parse: string
+        rs824931:
+          row: 105
+          parse: string
+        rs887912:
+          row: 106
+          parse: string
+        rs984222:
+          row: 107
+          parse: string
+        rs9939609:
+          row: 108
+          parse: string
+  - id: GSE69270
+    title: 'Aging-associated DNA methylation changes in middle-aged individuals: The
+      Young Finns Study'
+    summary: Background  Chronological aging-associated changes in the human DNA methylome
+      are studied by multiple epigenome-wide association studies (EWAS); however, the
+      aging-associated DNAmet changes identified among different age groups and tissues
+      vary and especially the rates of aging-associated alterations in the epigenome
+      during adulthood remain unclear. Here, we further explore and characterize CpG-sites
+      where DNA methylation levels alter at a constant rate during adulthood and are
+      also independent of blood cell type heterogeneity.   Results  In the study, we
+      observed 1,202 aging-associated CpG-sites (a-CpGs), of which 48% were hypermethylated
+      with advancing age in whole blood with an especially narrow age range (40 - 49
+      years). Repeatedly reported a-CpGs in ELOVL2, FHL2, PENK and KLF14 were also identified.
+      Regions with aging-associated hypermethylation were enriched to several gene ontology
+      terms (especially on the cluster of developmental processes), while hypomethylated
+      sites showed no enrichment. The genes with a higher number of a-CpG hits were
+      more often hypermethylated. Of the 1,202 aging-associated CpG-sites in the present
+      study, 987 were identified in previous study (Vitality 90+) as differentially
+      methylated also between nonagenarians and young adults in a previous study, and
+      importantly, the directions of changes were identical in the previous and in the
+      present study.   Conclusions  The set of 987 replicated a-CpGs presented here
+      are altered in strong association with chronological aging in the whole range
+      of adulthood. Consequently, future studies should note the variability of the
+      types of a-CpGs, and the a-CpGs presented here should be dissociated from the
+      environmental-sensitive CpG-sites or from regions that are associated with aging
+      in a non-linear manner due to the accumulation of senescence-related features.
+      This report offers detailed and verified pool of a-CpGs in which DNAmet levels
+      associate linearly with chronological age and of which are different from the
+      non-linearly changing ones.
+    format: Illumina450k
+    organism: human
+    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE69nnn/GSE69270/matrix/GSE69270_series_matrix.txt.gz
+    parser:
+      type: geo-matrix
+      id-row: 40
+      matrix-start: 79
+      metadata:
+        age_in_2011:
+          row: 48
+          parse: string
+        gender_(1=woman;_0=man):
+          row: 49
+          parse: string
+        cd8t_cell_proportion:
+          row: 50
+          parse: string
+        cd4t_cell_proportion:
+          row: 51
+          parse: string
+        nk_cell_proportion:
+          row: 52
+          parse: string
+        bcell_cell_proportion:
+          row: 53
+          parse: string
+        monocyte_proportion:
+          row: 54
+          parse: string
+        granulocyte_proportion:
+          row: 55
+          parse: string
+  - id: GSE36054
+    title: Methylation Profiling of Blood DNA from Healthy Children
+    summary: Groupings by family membership requested but not provided by submitter
+    format: Unknown
+    organism: human
+    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE36nnn/GSE36054/matrix/GSE36054_series_matrix.txt.gz
+    parser:
+      type: geo-matrix
+      id-row: 36
+      matrix-start: 78
+      metadata:
+        group:
+          row: 44
+          parse: string
+        sentrix_id:
+          row: 45
+          parse: string
+        sentrix_position:
+          row: 46
+          parse: string
+        experiment:
+          row: 47
+          parse: string
+        cell_type:
+          row: 51
+          parse: string
+        age_at_collection_months:
+          row: 49
+          parse: string
+        ethnicity:
+          row: 50
+          parse: string
+  - id: GSE64495
+    title: DNA methylation profiles of human blood samples from a severe developmental
+      disorder and controls
+    summary: 'The main goal of the study was to measure the epigenetic age (also known
+      as DNA methylation age) of subjects with a severe developmental disorder (known
+      as syndrome X) and controls. To measure DNA methylation age, we used the epigenetic
+      clock software described in Horvath S (n=2013) DNA methylation age of human tissues
+      and cell types. Genome Biology.2013, 14:R115. DOI: 10.1186/10.1186/gb-2013-14-10-r115
+      PMID: 24138928.'
+    format: Illumina450k
+    organism: human
+    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE64nnn/GSE64495/matrix/GSE64495_series_matrix.txt.gz
+    parser:
+      type: geo-matrix
+      id-row: 34
+      matrix-start: 75
+      metadata:
+        tissue:
+          row: 42
+          parse: string
+        sex:
+          row: 43
+          parse: string
+        age:
+          row: 44
+          parse: numeric
+        dna_methylation_age:
+          row: 45
+          parse: string
+        age_acceleration_vs_controls:
+          row: 46
+          parse: string
+        age_acceleration_vs_controls_in_children:
+          row: 47
+          parse: string
+        cor_sample_vs_gold_standard:
+          row: 48
+          parse: string
+        disease_status:
+          row: 49
+          parse: string
+        family_number:
+          row: 50
+          parse: string
+        relation_to_proband:
+          row: 51
+          parse: string
+  - id: GSE30870
+    title: DNA methylomes of Newborns and Nonagenarians
+    summary: DNA methylation differences between Newborns and Nonagenarians
+    format: Illumina450k
+    organism: human
+    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE30nnn/GSE30870/matrix/GSE30870_series_matrix.txt.gz
+    parser:
+      type: geo-matrix
+      id-row: 32
+      matrix-start: 65
+      metadata:
+        age:
+          row: 40
+          parse: numeric
+        disease_status:
+          row: 41
+          parse: string
+        tissue:
+          row: 42
+          parse: string
+        cell_type:
+          row: 43
+          parse: string
