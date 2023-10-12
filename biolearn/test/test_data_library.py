@@ -117,6 +117,27 @@ items:
     assert str(e.value) == "'path' key is missing in item"
 
 
+def test_parser_missing_id_row_gives_error():
+    file_contents = """
+---
+items:
+- id: GSE40279
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE40nnn/GSE40279/matrix/GSE40279_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    misspelled-id-row: 12
+    metadata:
+      age:
+        row: 44
+        parse: numeric
+    matrix-start: 72
+"""
+    test_file = StringIO(file_contents)
+    with pytest.raises(ValueError) as e:
+        parse_library_file(test_file)
+    assert str(e.value) == "Parser not valid: missing id-row"
+
+
 def test_missing_parser_gives_error():
     file_contents = """
 ---

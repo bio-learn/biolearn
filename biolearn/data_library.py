@@ -1,5 +1,6 @@
 import yaml
 import pandas as pd
+import re
 from biolearn.util import cached_dowload, get_data_file
 
 
@@ -22,6 +23,12 @@ def sex_parser(s):
     return 0
 
 
+def extract_numeric(s):
+    """Extract the first numeric value from a string."""
+    match = re.search(r"(\d+(\.\d+)?)", s)
+    return float(match.group(1)) if match else None
+
+
 class GeoData:
     def __init__(self, metadata, dnam):
         # Metadata should have rows being samples and columns being data fields
@@ -32,12 +39,14 @@ class GeoData:
 
 class GeoMatrixParser:
     parsers = {
-        "numeric": lambda s: float(parse_after_colon(s)),
+        "numeric": lambda s: extract_numeric(parse_after_colon(s)),
         "string": lambda s: parse_after_colon(s),
         "sex": lambda s: sex_parser(parse_after_colon(s)),
     }
 
     def __init__(self, data):
+        if data.get("id-row") is None:
+            raise ValueError("Parser not valid: missing id-row")
         self.id_row = data.get("id-row")
         self.metadata = data.get("metadata")
         self.matrix_start = data.get("matrix-start")
