@@ -36,18 +36,19 @@ def run_clock(dataframe, coeffecient_file, transform_function):
 
 
 def horvathv1(dataframe):
-    """Runs the Horvath DNA methylation clock on each individual in the dataset to predict a biological age
+    """Runs the Horvath DNA methylation clock on each individual in the dataset to predict their age.\n
+    Paper: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4015143/ \n
+    Model Coefficients: https://github.com/bio-learn/biolearn/blob/master/biolearn/data/Horvath1.csv
 
     Parameters
     ----------
     dataframe : Pandas.Dataframe
-        A pandas dataframe where each row represents an individual and each column represents a measurement about that individual.
-        Needs to have DNA methylation measurements for the clock to work
+        A pandas dataframe where each column represents a sample and each row represents a methylations site.
 
     Returns
     -------
-    df: Pandas.Dataframe
-        A pandas dataframe where each row represents an individual with a single column for predicted biological age
+    df: Pandas.Series
+        A pandas series where each item represents the predicted age for one of the samples.
     """
     transform = lambda sum: anti_trafo(sum + 0.696)
     return run_clock(dataframe, "Horvath1.csv", transform)

@@ -71,7 +71,10 @@ doc = [
 # A combination of dependencies useful for developers
 dev = [
 	"biolearn[test,plotting,examples,doc]",
-	"jupyterlab"
+	"jupyterlab",
+	"scikit-learn",
+	"torch",
+	"torchvision"
 ]
 
 [tool.hatch.build.targets.wheel]
