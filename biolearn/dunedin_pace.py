@@ -3,6 +3,7 @@ from scipy.stats import rankdata
 import pandas as pd
 import numpy as np
 from biolearn.util import get_data_file
+from biolearn.imputation import hybrid_impute
 
 
 def dunedin_pace_normalization(dataframe):
@@ -67,7 +68,6 @@ def dunedin_pace_preprocess_data(betas, means, proportionOfProbesRequired=0.8):
     if not (betas.map(np.isreal)).all().all():
         raise ValueError("betas matrix/data.frame is not numeric!")
 
-    gold_standard_means_lookup = dict(zip(means["CpGmarker"], means["mean"]))
     coefficients = pd.read_csv(get_data_file("DunedinPACE.csv"), index_col=0)
     model_probes = coefficients.index.tolist()
     gold_standard_probes = means["CpGmarker"].tolist()
@@ -90,35 +90,4 @@ def dunedin_pace_preprocess_data(betas, means, proportionOfProbesRequired=0.8):
         )
 
     betas_mat = betas.loc[gold_standard_probes].copy()
-
-    probesNotInMatrix = [
-        probe for probe in gold_standard_probes if probe not in betas_mat.index
-    ]
-
-    for probe in probesNotInMatrix:
-        betas_mat.loc[probe] = gold_standard_means_lookup[probe]
-
-    samplesToRemove = betas_mat.columns[
-        (betas_mat.notna().sum(axis=0) / len(betas_mat)).lt(
-            proportionOfProbesRequired
-        )
-    ]
-
-    betas_mat.drop(columns=samplesToRemove, inplace=True)
-
-    pctValuesPresent = betas_mat.notna().mean(axis=1)
-
-    probesToAdjust = pctValuesPresent.index[
-        (pctValuesPresent < 1)
-        & (pctValuesPresent >= proportionOfProbesRequired)
-    ]
-    for probe in probesToAdjust:
-        betas_mat.loc[probe].fillna(betas_mat.loc[probe].mean(), inplace=True)
-
-    probesToReplaceWithMean = pctValuesPresent.index[
-        pctValuesPresent < proportionOfProbesRequired
-    ]
-    for probe in probesToReplaceWithMean:
-        betas_mat.loc[probe] = gold_standard_means_lookup[probe]
-
-    return betas_mat
+    return hybrid_impute(betas_mat, means["mean"], gold_standard_probes)
