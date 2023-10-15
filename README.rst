@@ -1,82 +1,52 @@
 Biolearn
 ========
 
-Biolearn enables easy and versatile analyses of biomarkers of aging data. It provides statistics and machine-learning tools, with instructive documentation and an open science approach.
+Biolearn enables easy and versatile analyses of biomarkers of aging data. It provides tools to easily load data from publicly available sources like the 
+`Gene Expression Omnibus <https://www.ncbi.nlm.nih.gov/geo/>`_, `National Health and Nutrition Examimation Survey <https://www.cdc.gov/nchs/nhanes/index.htm>`_,
+and the `Framingham Heart Study <https://www.framinghamheartstudy.org/>`. Biolearn also contains reference implemenations for common aging clock such at the 
+Horvath clock, DunedinPACE and many others that can easily be run in only a few lines of code.
 
 
 .. warning::
 
-    At the moment we do not have a stable release, only a **unstable developer version**.
-    So you have to download the repo from github and install locally with **"pip install .[dev]"**
+    This is a prerelease version of the biolearn library. There may be bugs and interfaces are subject to change.
 
 
 Important links
 ===============
 
-- Official source code repo: https://github.com/bio-learn/biolearn/
-- HTML documentation (**only development release for the moment**): https://bio-learn.github.io/
+- Source code: https://github.com/bio-learn/biolearn/
+- Documentation Homepage: https://bio-learn.github.io/
+
+Requirements
+============
+
+Python 3.10+
 
 Install
 =======
-
-
-Latest release
---------------
-**0. Install the right Python version**
-
-Biolearn supports Python 3.10, please verify that you have the right Python 3 version before proceeding with the developer setup.
-
-**1. Setup a virtual environment**
-
-At the moment we do not have a stable release, only a unstable developer version.
-This means that you should not install the package directly from pypi but always get the source code from github and do a local pip install.
-
-In the following steps we show an installation path we have tested with venv and pip. Other package managers have not been tested and are not supported at the moment.
-
-In linux from inside the repo directory run the following to setup a virtual environment and install dependencies
+Install biolearn using pip.
 
 .. code-block:: bash
 
-    python3.10 -m venv .venv
-    make install
+    pip install biolearn
 
-
-Remember we do not support a pypi version at the moment, as in (pip install biolearn), the command will work but you will just get a dummy package.
-
-Check installation
-------------------
-
-You can verify that your setup is working by running the tests
-
-.. code-block:: bash
-
-    make test
-
-If no error is raised, you have installed biolearn correctly.
-
-You can also run the following to start jupyter lab with the library available
-
-.. code-block:: bash
-
-    make jupyter
+To verify the library was installed correctly open python or a jupyter notebook and run:
 
 .. code-block:: python
 
-    import biolearn
+    from biolearn.data_library import DataLibrary
+
+If it executes with no errors then the library is installed. To get started check out `some code examples <https://bio-learn.github.io/auto_examples/index.html>`_
 
 Discord server
 ==============
 
-The biolearn team has a discord server to answer questions,
+The biolearn team has a `discord server <https://discord.gg/345kHcsJy>`_ to answer questions,
 discuss feature requests, or have any biolearn related discussions.
 
-Dependencies
+
+Contributing
 ============
-
-The required dependencies to use the software are listed in the file `pyproject.toml <https://github.com/bio-learn/biolearn/blob/master/pyproject.toml>`_.
-
-
-Development
-===========
 
 Detailed instructions on developer setup and how to contribute are available `in the repo <https://github.com/bio-learn/biolearn/blob/master/DEVELOPMENT.md>`_

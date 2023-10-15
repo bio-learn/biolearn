@@ -6,6 +6,7 @@ PIP      = $(VENV_BIN)/pip
 PYTEST   = $(VENV_BIN)/pytest
 BLACK    = $(VENV_BIN)/black
 JUPYTER  = $(VENV_BIN)/jupyter
+HATCH  = $(VENV_BIN)/hatch
 FILENAME ?=
 
 all: clean test format
@@ -34,6 +35,10 @@ format:
 
 check-format:
 	$(BLACK) --check ./biolearn
+
+publish: 
+	$(HATCH) build -c
+	$(HATCH) publish
 
 test-code:
 	$(PYTEST) --pyargs biolearn --cov=biolearn $(if $(strip $(FILENAME)), -k $(FILENAME))

@@ -2,14 +2,10 @@ Biolearn
 ========
 
 .. container:: index-paragraph
-
-    Biolearn enables **easy and versatile analyses of biomarkers of aging** data. 
-    It provides statistics and machine-learning tools, with **instructive 
-    documentation and an open science approach**.
-
-    It supports loading public and private clinical and omic data and demonstrates 
-    how to use machine learning models (e.g. :sklearn:`scikit-learn <>`) for quantitative and 
-    qualitative analysis.
+    Biolearn enables easy and versatile analyses of biomarkers of aging data. It provides tools to easy load data from publicly available sources like the 
+    `Gene Expression Omnibus <https://www.ncbi.nlm.nih.gov/geo/>`_, `National Health and Nutrition Examimation Survey <https://www.cdc.gov/nchs/nhanes/index.htm>`_,
+    and the `Framingham Heart Study <https://www.framinghamheartstudy.org/>`. Biolearns also contains reference implemenations for common aging clock such at the 
+    Horvath clock, DunedinPACE and many others that can easily be run in only a few lines of code.
 
     Biolearn is scientifically and financially supported by `Biomarkers of Aging Consortium <https://www.agingconsortium.org/>`_ 
     and `Methuselah Foundation <https://www.mfoundation.org/>`_ respectively 

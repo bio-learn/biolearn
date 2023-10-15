@@ -46,7 +46,7 @@ test = [
 	"pytest-cov",
 ]
 # Necessary req to use biolearn's plotting module
-plotting = ["matplotlib>=3.3.0", "seaborn"]
+plotting = ["matplotlib>=3.3.0", "seaborn>=0.13.0"]
 # Examples external dependencies
 examples = ["lifelines"]
 # Requirements necessary for building the documentation

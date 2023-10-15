@@ -2,11 +2,11 @@
 "Epigenetic Clocks" in GEO Data
 =============================================================
 
-This example loads a DNA Methylation data from GEO, calculates multiple epigenetic clocks, and plot them against chronological age. 
+This example loads a DNA Methylation data from GEO, calculates multiple epigenetic clocks, and plots them against chronological age. 
 """
 
 #############################################################################
-# Loading a DNAm GEO data
+# First load up some methylation data from GEO using the data library
 # ---------------------------------------
 from biolearn.data_library import DataLibrary
 #Load up GSE41169 blood DNAm data
@@ -14,23 +14,32 @@ data_source = DataLibrary().get("GSE41169")
 data=data_source.load()
 
 #The data has the methylation data as well as metadata for each subject
-df = data.dnam
+methylation_data = data.dnam
+
+#######################################################################################
+# Run a simple imputation to replace missing data using the avearges of measured values
+# -------------------------------------------------------------------------------------
+from biolearn.imputation import impute_from_average
+prepared_data = impute_from_average(methylation_data)
 
 ######################################################################################
-# Calculate "biological age" based on Horvath, Hannum, and PhenoAge epigenetic clocks
-# -------------------------------------------------------------------------------------
-from biolearn.clock import horvathv1, hannum, phenoage
-horvath_results = horvathv1(df)
-hannum_results = hannum(df)
-phenoage_results = phenoage(df)
+# Now run three different clocks on the dataset to produce epigenetic clock ages
+# ------------------------------------------------------------------------------------
 
-actual_age = data.metadata['age']
+from biolearn.clock import horvathv1, hannum, phenoage
+horvath_results = horvathv1(prepared_data)
+hannum_results = hannum(prepared_data)
+phenoage_results = phenoage(prepared_data)
+
+
 
 ##########################################################################################################
-# Plot biological ages against chronological age
+# Finally exctract the age data from the metadata from GEO and plot the results using seaborn
 # --------------------------------------------------------------------------------------------------------
 import seaborn as sn
 import pandas as pd
+
+actual_age = data.metadata['age']
 plot_data = pd.DataFrame({
     'Horvath': horvath_results,
     'Hannum': hannum_results,

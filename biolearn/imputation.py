@@ -23,9 +23,7 @@ def impute_from_average(dnam):
     :return: DataFrame with missing values filled.
     """
 
-    row_averages = dnam.mean(axis=1)
-    df_filled = dnam.T.fillna(row_averages).T
-    return df_filled
+    return dnam.apply(lambda row: row.fillna(row.mean()), axis=1)
 
 
 def hybrid_impute(dnam, cpg_source, required_cpgs, threshold=0.8):
