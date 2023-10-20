@@ -15,6 +15,7 @@ def no_transform(_):
 
 clock_definitions = {
     "Horvathv1": {"file": "Horvath1.csv", "transform": lambda sum: anti_trafo(sum + 0.696)},
+    "Horvathv2": {"file": "Horvath2.csv", "transform": lambda sum: anti_trafo(sum - 0.447119319)},
     "Hannum": {"file": "Hannum.csv", "transform": no_transform},
     "PhenoAge": {"file": "PhenoAge.csv", "transform": lambda sum: sum + 60.664},
     "AlcoholMcCartney": {"file": "Alcohol.csv", "transform": no_transform},
