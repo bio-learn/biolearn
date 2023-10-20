@@ -10,10 +10,9 @@ import pickle
 sample_results = load_test_data_file("expected_clock_output.csv")
 sample_inputs = load_test_data_file("external/DNAmTestSet.csv")
 
-@pytest.mark.parametrize("clock_name, clock_config", clock.clock_definitions.items())
-def test_clocks(clock_name, clock_config):
-
-    test_clock = clock.LinearMethylationClock(get_data_file(clock_config["file"]), clock_config["transform"], clock_config.get("preprocess"))
+@pytest.mark.parametrize("clock_name, clock_entry", clock.clock_definitions.items())
+def test_clocks(clock_name, clock_entry):
+    test_clock = clock.LinearMethylationClock.from_definition(clock_entry)
     actual_results = test_clock.predict(sample_inputs).sort_index()
 
     expected_results = sample_results[clock_name].sort_index()
