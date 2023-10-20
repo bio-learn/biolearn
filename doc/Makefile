@@ -42,7 +42,11 @@ force_html: force html
 force:
 	find . -name \*.rst -exec touch {} \;
 
-html:	sym_links
+generate_dynamic_content:
+	@echo "Generating dynamic content..."
+	python generate.py
+
+html:	sym_links generate_dynamic_content
 	# These two lines make the build a bit more lengthy, and the
 	# the embedding of images more robust
 	rm -rf $(BUILDDIR)/html/_images
