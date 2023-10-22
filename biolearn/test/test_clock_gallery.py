@@ -62,7 +62,7 @@ def test_init_with_bad_data():
 
 def test_get_clock_by_name():
     gallery = ClockGallery(sample_data)
-    clock = gallery.get_by_name("Horvathv1")
+    clock = gallery.get("Horvathv1")
     assert isinstance(clock, LinearMethylationClock)
     assert clock.metadata["year"] == 2013
 
@@ -70,7 +70,7 @@ def test_get_clock_by_name():
 def test_get_nonexistent_clock_by_name():
     gallery = ClockGallery(sample_data)
     with pytest.raises(KeyError, match="Clock not found:"):
-        gallery.get_by_name("NonExistentClock")
+        gallery.get("NonExistentClock")
 
 
 def test_search_with_no_parameters():

@@ -14,7 +14,7 @@ class ClockGallery:
                 clock_def
             )
 
-    def get_by_name(self, name):
+    def get(self, name):
         """Get a clock by its name."""
         if name not in self.clocks:
             raise KeyError(f"Clock not found: {name}")

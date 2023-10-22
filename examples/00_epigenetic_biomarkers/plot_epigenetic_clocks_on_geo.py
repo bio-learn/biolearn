@@ -26,10 +26,11 @@ prepared_data = impute_from_average(methylation_data)
 # Now run three different clocks on the dataset to produce epigenetic clock ages
 # ------------------------------------------------------------------------------------
 
-from biolearn.clock import horvathv1, hannum, phenoage
-horvath_results = horvathv1(prepared_data)
-hannum_results = hannum(prepared_data)
-phenoage_results = phenoage(prepared_data)
+from biolearn.clock_gallery import ClockGallery
+gallery = ClockGallery()
+horvath_results = gallery.get("Horvathv1").predict(prepared_data)
+hannum_results = gallery.get("Hannum").predict(prepared_data)
+phenoage_results = gallery.get("PhenoAge").predict(prepared_data)
 
 
 
