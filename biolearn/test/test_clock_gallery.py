@@ -63,7 +63,6 @@ def test_init_with_bad_data():
 def test_get_clock_by_name():
     gallery = ClockGallery(sample_data)
     clock = gallery.get("Horvathv1")
-    assert isinstance(clock, LinearMethylationClock)
     assert clock.metadata["year"] == 2013
 
 

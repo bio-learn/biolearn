@@ -16,11 +16,6 @@ data=data_source.load()
 #The data has the methylation data as well as metadata for each subject
 methylation_data = data.dnam
 
-#######################################################################################
-# Run a simple imputation to replace missing data using the avearges of measured values
-# -------------------------------------------------------------------------------------
-from biolearn.imputation import impute_from_average
-prepared_data = impute_from_average(methylation_data)
 
 ######################################################################################
 # Now run three different clocks on the dataset to produce epigenetic clock ages
@@ -28,9 +23,11 @@ prepared_data = impute_from_average(methylation_data)
 
 from biolearn.clock_gallery import ClockGallery
 gallery = ClockGallery()
-horvath_results = gallery.get("Horvathv1").predict(prepared_data)
-hannum_results = gallery.get("Hannum").predict(prepared_data)
-phenoage_results = gallery.get("PhenoAge").predict(prepared_data)
+#Note that by default clocks will impute missing data.
+#To change this behavior set the imputation= parameter when getting the clock
+horvath_results = gallery.get("Horvathv1").predict(methylation_data)
+hannum_results = gallery.get("Hannum").predict(methylation_data)
+phenoage_results = gallery.get("PhenoAge").predict(methylation_data)
 
 
 
