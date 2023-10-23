@@ -1,14 +1,7 @@
-import os
 import pandas as pd
 import numpy as np
 from biolearn.util import get_data_file
 from biolearn.dunedin_pace import dunedin_pace_normalization
-
-
-def horvath_transform(mult_sum):
-    const = 0.695507258
-    BA = (mult_sum + const) * 21 + 20
-    return BA
 
 
 def anti_trafo(x, adult_age=20):
@@ -18,199 +11,245 @@ def anti_trafo(x, adult_age=20):
     return y
 
 
-def no_transform(_):
-    return _
+clock_definitions = {
+    "Horvathv1": {
+        "year": 2013,
+        "species": "Human",
+        "tissue": "Multi-tissue",
+        "source": "https://genomebiology.biomedcentral.com/articles/10.1186/gb-2013-14-10-r115",
+        "model": {
+            "type": "LinearMethylationClock",
+            "file": "Horvath1.csv",
+            "transform": lambda sum: anti_trafo(sum + 0.696),
+        },
+    },
+    "Hannum": {
+        "year": 2013,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.sciencedirect.com/science/article/pii/S1097276512008933",
+        "model": {"type": "LinearMethylationClock", "file": "Hannum.csv"},
+    },
+    "Lin": {
+        "year": 2016,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.aging-us.com/article/100908/text",
+        "model": {
+            "type": "LinearMethylationClock",
+            "file": "Lin.csv",
+            "transform": lambda sum: sum + 12.2169841,
+        },
+    },
+    "PhenoAge": {
+        "year": 2018,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.aging-us.com/article/101414/text",
+        "model": {
+            "type": "LinearMethylationClock",
+            "file": "PhenoAge.csv",
+            "transform": lambda sum: sum + 60.664,
+        },
+    },
+    "Horvathv2": {
+        "year": 2018,
+        "species": "Human",
+        "tissue": "Skin + blood",
+        "source": "https://www.aging-us.com/article/101508/text",
+        "model": {
+            "type": "LinearMethylationClock",
+            "file": "Horvath2.csv",
+            "transform": lambda sum: anti_trafo(sum - 0.447119319),
+        },
+    },
+    "PEDBE": {
+        "year": 2019,
+        "species": "Human",
+        "tissue": "Buccal",
+        "source": "https://www.pnas.org/doi/10.1073/pnas.1820843116",
+        "model": {
+            "type": "LinearMethylationClock",
+            "file": "PEDBE.csv",
+            "transform": lambda sum: anti_trafo(sum - 2.1),
+        },
+    },
+    "Zhang_10": {
+        "year": 2019,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://genomemedicine.biomedcentral.com/articles/10.1186/s13073-019-0667-1",
+        "model": {"type": "LinearMethylationClock", "file": "Zhang_10.csv"},
+    },
+    "DunedinPoAm38": {
+        "year": 2020,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://elifesciences.org/articles/54870#s2",
+        "model": {
+            "type": "LinearMethylationClock",
+            "file": "DunedinPoAm38.csv",
+            "transform": lambda sum: sum - 0.06929805,
+        },
+    },
+    "DunedinPACE": {
+        "year": 2022,
+        "species": "Human",
+        "tissue": "Unknown",
+        "source": "https://www.proquest.com/docview/2634411178",
+        "model": {
+            "type": "LinearMethylationClock",
+            "file": "DunedinPACE.csv",
+            "transform": lambda sum: sum - 1.949859,
+            "preprocess": dunedin_pace_normalization,
+        },
+    },
+    "AlcoholMcCartney": {
+        "year": "unknown",
+        "species": "Human",
+        "tissue": "unknown",
+        "source": "unknown",
+        "model": {"type": "LinearMethylationClock", "file": "Alcohol.csv"},
+    },
+    "BMI_McCartney": {
+        "year": "unknown",
+        "species": "Human",
+        "tissue": "unknown",
+        "source": "unknown",
+        "model": {"type": "LinearMethylationClock", "file": "BMI.csv"},
+    },
+    "DNAmTL": {
+        "year": "unknown",
+        "species": "Human",
+        "tissue": "unknown",
+        "source": "unknown",
+        "model": {
+            "type": "LinearMethylationClock",
+            "file": "DNAmTL.csv",
+            "transform": lambda sum: sum - 7.924780053,
+        },
+    },
+    "HRSInCHPhenoAge": {
+        "year": "unknown",
+        "species": "Human",
+        "tissue": "unknown",
+        "source": "unknown",
+        "model": {
+            "type": "LinearMethylationClock",
+            "file": "HRSInCHPhenoAge.csv",
+            "transform": lambda sum: sum + 52.8334080,
+        },
+    },
+    "Knight": {
+        "year": "unknown",
+        "species": "Human",
+        "tissue": "unknown",
+        "source": "unknown",
+        "model": {
+            "type": "LinearMethylationClock",
+            "file": "Knight.csv",
+            "transform": lambda sum: sum + 41.7,
+        },
+    },
+    "LeeControl": {
+        "year": "unknown",
+        "species": "Human",
+        "tissue": "unknown",
+        "source": "unknown",
+        "model": {
+            "type": "LinearMethylationClock",
+            "file": "LeeControl.csv",
+            "transform": lambda sum: sum + 13.06182,
+        },
+    },
+    "LeeRefinedRobust": {
+        "year": "unknown",
+        "species": "Human",
+        "tissue": "unknown",
+        "source": "unknown",
+        "model": {
+            "type": "LinearMethylationClock",
+            "file": "LeeRefinedRobust.csv",
+            "transform": lambda sum: sum + 30.74966,
+        },
+    },
+    "LeeRobust": {
+        "year": "unknown",
+        "species": "Human",
+        "tissue": "unknown",
+        "source": "unknown",
+        "model": {
+            "type": "LinearMethylationClock",
+            "file": "LeeRobust.csv",
+            "transform": lambda sum: sum + 24.99772,
+        },
+    },
+    "SmokingMcCartney": {
+        "year": "unknown",
+        "species": "Human",
+        "tissue": "unknown",
+        "source": "unknown",
+        "model": {"type": "LinearMethylationClock", "file": "Smoking.csv"},
+    },
+}
 
 
-def run_clock(dataframe, coeffecient_file, transform_function):
-    coefficients = pd.read_csv(get_data_file(coeffecient_file), index_col=0)
-    methylation_df = coefficients.merge(
-        dataframe, left_index=True, right_index=True
-    )
-    for c in methylation_df.columns[1:]:
-        methylation_df[c] = (
-            methylation_df["CoefficientTraining"] * methylation_df[c]
+class LinearMethylationClock:
+    def __init__(
+        self, coeffecient_file, transform, preprocess=None, **metadata
+    ) -> None:
+        self.transform = transform
+        self.coefficients = pd.read_csv(
+            get_data_file(coeffecient_file), index_col=0
         )
-    df_sum = methylation_df.drop("CoefficientTraining", axis=1).sum()
-    return df_sum.apply(transform_function)
+        self.preprocess = preprocess
+        self.metadata = metadata
+
+    @staticmethod
+    def from_definition(clock_definition):
+        def no_transform(_):
+            return _
+
+        model_def = clock_definition["model"]
+        return LinearMethylationClock(
+            model_def["file"],
+            model_def.get("transform", no_transform),
+            model_def.get("preprocess", no_transform),
+            **{k: v for k, v in clock_definition.items() if k != "model"},
+        )
+
+    def predict(self, dnam_data):
+        dnam_data = self.preprocess(dnam_data)
+
+        # Join the coefficients and dnam_data on the index
+        methylation_df = self.coefficients.join(dnam_data, how="inner")
+
+        # Vectorized multiplication: multiply CoefficientTraining with all columns of dnam_data
+        result = (
+            methylation_df.iloc[:, 1:]
+            .multiply(methylation_df["CoefficientTraining"], axis=0)
+            .sum(axis=0)
+        )
+        return result.apply(self.transform)
+
+    def methylation_sites(self):
+        return list(self.coefficients.index)
 
 
-def horvathv1(dataframe):
-    """Runs the Horvath DNA methylation clock on each individual in the dataset to predict their age.\n
-    Paper: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4015143/ \n
-    Model Coefficients: https://github.com/bio-learn/biolearn/blob/master/biolearn/data/Horvath1.csv
+class ImputationDecorator:
+    def __init__(self, clock, imputation_method):
+        self.clock = clock
+        self.imputation_method = imputation_method
 
-    Parameters
-    ----------
-    dataframe : Pandas.Dataframe
-        A pandas dataframe where each column represents a sample and each row represents a methylations site.
+    def predict(self, dnam_data):
+        # Impute missing values before prediction
+        needed_cpgs = self.clock.methylation_sites()
+        dnam_data_imputed = self.imputation_method(dnam_data, needed_cpgs)
+        return self.clock.predict(dnam_data_imputed)
 
-    Returns
-    -------
-    df: Pandas.Series
-        A pandas series where each item represents the predicted age for one of the samples.
-    """
-    transform = lambda sum: anti_trafo(sum + 0.696)
-    return run_clock(dataframe, "Horvath1.csv", transform)
-
-
-def horvathv2(dataframe):
-    transform = lambda sum: anti_trafo(sum - 0.447119319)
-    return run_clock(dataframe, "Horvath2.csv", transform)
-
-
-def hannum(dataframe):
-    """Runs the Hannum DNA methylation clock on each individual in the dataset to predict a biological age
-
-    Parameters
-    ----------
-    dataframe : Pandas.Dataframe
-        A pandas dataframe where each row represents an individual and each column represents a measurement about that individual.
-        Needs to have DNA methylation measurements for the clock to work
-
-    Returns
-    -------
-    df: Pandas.Dataframe
-        A pandas dataframe where each row represents an individual with a single column for predicted biological age
-    """
-    return run_clock(dataframe, "Hannum.csv", no_transform)
-
-
-def phenoage(dataframe):
-    """Runs the PhenoAge DNA methylation clock on each individual in the dataset to predict a biological age
-
-    Parameters
-    ----------
-    dataframe : Pandas.Dataframe
-        A pandas dataframe where each row represents an individual and each column represents a measurement about that individual.
-        Needs to have DNA methylation measurements for the clock to work
-
-    Returns
-    -------
-    df: Pandas.Dataframe
-        A pandas dataframe where each row represents an individual with a single column for predicted biological age
-    """
-    transform = lambda sum: sum + 60.664
-    return run_clock(dataframe, "PhenoAge.csv", transform)
-
-
-# Results missing from expected file
-# def bohlin(dataframe):
-#     transform = lambda sum: sum + 277.2421
-#     return run_clock(dataframe, "Bohlin.csv", transform)
-
-
-def alcohol_mccartney(dataframe):
-    return run_clock(dataframe, "Alcohol.csv", no_transform)
-
-
-def bmi_mccartney(dataframe):
-    return run_clock(dataframe, "BMI.csv", no_transform)
-
-
-def dnam_tl(dataframe):
-    transform = lambda sum: sum - 7.924780053
-    return run_clock(dataframe, "DNAmTL.csv", transform)
-
-
-def dunedin_pace(dataframe):
-    normalized_data = dunedin_pace_normalization(dataframe)
-    transform = lambda sum: sum - 1.949859
-    return run_clock(normalized_data, "DunedinPACE.csv", transform)
-
-
-def dunedin_poam38(dataframe):
-    transform = lambda sum: sum - 0.06929805
-    return run_clock(dataframe, "DunedinPoAm38.csv", transform)
-
-
-# Results missing from expected file
-# def dnam_clock_cortical(dataframe):
-#     transform = lambda sum: sum + 0.577682570446177
-#     return run_clock(dataframe, "DNAmClockCortical.csv", transform)
-
-
-def hrs_in_ch_phenoage(dataframe):
-    transform = lambda sum: sum + 52.8334080
-    return run_clock(dataframe, "HRSInCHPhenoAge.csv", transform)
-
-
-def knight(dataframe):
-    transform = lambda sum: sum + 41.7
-    return run_clock(dataframe, "Knight.csv", transform)
-
-
-def lee_control(dataframe):
-    transform = lambda sum: sum + 13.06182
-    return run_clock(dataframe, "LeeControl.csv", transform)
-
-
-def lee_refined_robust(dataframe):
-    transform = lambda sum: sum + 30.74966
-    return run_clock(dataframe, "LeeRefinedRobust.csv", transform)
-
-
-def lee_robust(dataframe):
-    transform = lambda sum: sum + 24.99772
-    return run_clock(dataframe, "LeeRobust.csv", transform)
-
-
-def lin(dataframe):
-    transform = lambda sum: sum + 12.2169841
-    return run_clock(dataframe, "Lin.csv", transform)
-
-
-# Test results do not match expected
-# def mayne(dataframe):
-#     transform = lambda sum: sum + 24.99026
-#     return run_clock(dataframe, "Mayne.csv", transform)
-
-# Coeffecient file is broken
-# def mi_age(dataframe):
-#     return run_clock(dataframe, "MiAge.csv", no_transform)
-
-
-def pedbe(dataframe):
-    transform = lambda sum: anti_trafo(sum - 2.1)
-    return run_clock(dataframe, "PEDBE.csv", transform)
-
-
-def phenoage(dataframe):
-    """Runs the PhenoAge DNA methylation clock on each individual in the dataset to predict a biological age
-
-    Parameters
-    ----------
-    dataframe : Pandas.Dataframe
-        A pandas dataframe where each row represents an individual and each column represents a measurement about that individual.
-        Needs to have DNA methylation measurements for the clock to work
-
-    Returns
-    -------
-    df: Pandas.Dataframe
-        A pandas dataframe where each row represents an individual with a single column for predicted biological age
-    """
-    transform = lambda sum: sum + 60.664
-    return run_clock(dataframe, "PhenoAge.csv", transform)
-
-
-def smoking_mccartney(dataframe):
-    return run_clock(dataframe, "Smoking.csv", no_transform)
-
-
-# Test results do not match expected
-# def vidal_bralo(dataframe):
-#     transform = lambda sum: sum + 84.7
-#     return run_clock(dataframe, "Smoking.csv", transform)
-
-
-def zhang_10(dataframe):
-    return run_clock(dataframe, "Zhang_10.csv", no_transform)
-
-
-# Test results do not match expected
-# def zhang_2019(dataframe):
-#     transform = lambda sum: sum + 65.8
-#     return run_clock(dataframe, "Zhang2019.csv", transform)
+    # Forwarding other methods and attributes to the clock
+    def __getattr__(self, name):
+        return getattr(self.clock, name)
 
 
 def single_sample_clock(clock_function, data):

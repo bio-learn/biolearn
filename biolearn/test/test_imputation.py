@@ -38,12 +38,44 @@ def test_impute_from_standard():
     assert df_filled.loc["cpg2", "Sample1"] == 2.5
 
 
+def test_impute_from_standard_specific_cpgs():
+    specific_cpgs = ["cpg1", "cpg3"]
+    df_filled = impute_from_standard(
+        df_test, cpg_averages_test, cpgs_to_impute=specific_cpgs
+    )
+
+    print(df_filled)
+    print(df_test)
+    assert not df_filled.loc[specific_cpgs].isna().any().any()
+    assert (
+        df_filled.drop(specific_cpgs).isna().sum().sum()
+        == df_test.drop(specific_cpgs).isna().sum().sum()
+    )
+    assert df_filled.loc["cpg1", "Sample2"] == 1.5
+    assert df_filled.loc["cpg3", "Sample3"] == 3.5
+
+
 def test_impute_from_average():
     df_filled = impute_from_average(df_test)
     assert no_missing_values(df_filled)
     assert (
         df_filled.loc["cpg1", "Sample2"] == 2
     )  # Ensure the value was filled with the row average.
+
+
+def test_impute_from_average_specific_cpgs():
+    specific_cpgs = ["cpg1", "cpg3"]
+    df_filled = impute_from_average(df_test, cpgs_to_impute=specific_cpgs)
+
+    print(df_filled)
+    print(df_test)
+    assert not df_filled.loc[specific_cpgs].isna().any().any()
+    assert (
+        df_filled.drop(specific_cpgs).isna().sum().sum()
+        == df_test.drop(specific_cpgs).isna().sum().sum()
+    )
+    assert df_filled.loc["cpg1", "Sample2"] == 2
+    assert df_filled.loc["cpg3", "Sample3"] == 2.4
 
 
 def test_replacement_with_mean():

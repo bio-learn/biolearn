@@ -2,28 +2,41 @@ import pandas as pd
 from biolearn.util import get_data_file
 
 
-def impute_from_standard(dnam, cpg_averages):
+def impute_from_standard(dnam, cpg_averages, cpgs_to_impute=None):
     """
     Impute all missing values using the averages from an external dataset
 
     :param dnam: DataFrame with samples as columns and cpg sites as rows.
     :param cpg_averages: Series containing reference averages for cpg sites.
+    :param cpgs_to_impute: List of CpG sites to impute.
     :return: DataFrame with missing values filled.
     """
-
-    df_filled = dnam.apply(lambda col: col.fillna(cpg_averages))
+    if cpgs_to_impute:
+        impute_rows = dnam.loc[cpgs_to_impute]
+        impute_rows = impute_rows.apply(lambda col: col.fillna(cpg_averages))
+        df_filled = dnam.combine_first(impute_rows)
+    else:
+        df_filled = dnam.apply(lambda col: col.fillna(cpg_averages))
     return df_filled
 
 
-def impute_from_average(dnam):
+def impute_from_average(dnam, cpgs_to_impute=None):
     """
     Impute all missing values using the average from the current dataset
 
     :param dnam: DataFrame with samples as columns and cpg sites as rows.
+    :param cpgs_to_impute: List of CpG sites to impute.
     :return: DataFrame with missing values filled.
     """
-
-    return dnam.apply(lambda row: row.fillna(row.mean()), axis=1)
+    if cpgs_to_impute:
+        impute_rows = dnam.loc[cpgs_to_impute]
+        impute_rows = impute_rows.apply(
+            lambda row: row.fillna(row.mean()), axis=1
+        )
+        df_filled = dnam.combine_first(impute_rows)
+    else:
+        df_filled = dnam.apply(lambda row: row.fillna(row.mean()), axis=1)
+    return df_filled
 
 
 def hybrid_impute(dnam, cpg_source, required_cpgs, threshold=0.8):

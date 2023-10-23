@@ -97,6 +97,7 @@ Featured examples
    :titlesonly:
 
    quickstart.md
+   clocks.rst
    auto_examples/index.rst
    modules/index.rst
 
