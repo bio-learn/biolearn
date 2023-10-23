@@ -30,7 +30,9 @@ def impute_from_average(dnam, cpgs_to_impute=None):
     """
     if cpgs_to_impute:
         impute_rows = dnam.loc[cpgs_to_impute]
-        impute_rows = impute_rows.apply(lambda row: row.fillna(row.mean()), axis=1)
+        impute_rows = impute_rows.apply(
+            lambda row: row.fillna(row.mean()), axis=1
+        )
         df_filled = dnam.combine_first(impute_rows)
     else:
         df_filled = dnam.apply(lambda row: row.fillna(row.mean()), axis=1)

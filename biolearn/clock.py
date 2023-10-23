@@ -235,6 +235,7 @@ class LinearMethylationClock:
     def methylation_sites(self):
         return list(self.coefficients.index)
 
+
 class ImputationDecorator:
     def __init__(self, clock, imputation_method):
         self.clock = clock
@@ -249,6 +250,7 @@ class ImputationDecorator:
     # Forwarding other methods and attributes to the clock
     def __getattr__(self, name):
         return getattr(self.clock, name)
+
 
 def single_sample_clock(clock_function, data):
     return clock_function(data).iloc[0, 0]
