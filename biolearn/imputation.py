@@ -19,6 +19,7 @@ def impute_from_standard(dnam, cpg_averages, cpgs_to_impute=None):
         df_filled = dnam.apply(lambda col: col.fillna(cpg_averages))
     return df_filled
 
+
 def impute_from_average(dnam, cpgs_to_impute=None):
     """
     Impute all missing values using the average from the current dataset
@@ -34,13 +35,13 @@ def impute_from_average(dnam, cpgs_to_impute=None):
 
     if cpgs_to_impute:
         mask = dnam_copy.loc[cpgs_to_impute].isna()
-        dnam_copy.loc[cpgs_to_impute] = dnam_copy.loc[cpgs_to_impute].where(~mask, means[cpgs_to_impute], axis=0)
+        dnam_copy.loc[cpgs_to_impute] = dnam_copy.loc[cpgs_to_impute].where(
+            ~mask, means[cpgs_to_impute], axis=0
+        )
     else:
         dnam_copy = dnam_copy.where(dnam_copy.notna(), means, axis=0)
 
     return dnam_copy
-
-
 
 
 def hybrid_impute(dnam, cpg_source, required_cpgs, threshold=0.8):

@@ -50,7 +50,10 @@ class ClockGallery:
                 clock_instance,
                 lambda dnam, cpgs: hybrid_impute(dnam, gold_averages, cpgs),
             )
-        elif imputation_method == "seasame_450k" or imputation_method == "default":
+        elif (
+            imputation_method == "sesame_450k"
+            or imputation_method == "default"
+        ):
             sesame_450k_file = get_data_file("sesame_450k_median.csv")
             df = pd.read_csv(sesame_450k_file, index_col=0)
             gold_medians = df["median"]

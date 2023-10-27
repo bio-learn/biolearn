@@ -7,7 +7,9 @@ from biolearn.imputation import hybrid_impute
 
 
 def dunedin_pace_normalization(dataframe):
-    gold_standard_df = pd.read_csv(get_data_file("DunedinPACE_Gold_Means.csv"), index_col=0)
+    gold_standard_df = pd.read_csv(
+        get_data_file("DunedinPACE_Gold_Means.csv"), index_col=0
+    )
     gold_standard_means = dict(
         zip(gold_standard_df.index, gold_standard_df["mean"])
     )
