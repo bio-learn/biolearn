@@ -42,13 +42,24 @@ class ClockGallery:
                 clock_instance,
                 lambda dnam, cpgs: impute_from_average(dnam, cpgs),
             )
-        elif imputation_method == "dunedin" or imputation_method == "default":
+        elif imputation_method == "dunedin":
             gold_means_file = get_data_file("DunedinPACE_Gold_Means.csv")
             df = pd.read_csv(gold_means_file, index_col=0)
             gold_averages = df["mean"]
             return ImputationDecorator(
                 clock_instance,
                 lambda dnam, cpgs: hybrid_impute(dnam, gold_averages, cpgs),
+            )
+        elif (
+            imputation_method == "sesame_450k"
+            or imputation_method == "default"
+        ):
+            sesame_450k_file = get_data_file("sesame_450k_median.csv")
+            df = pd.read_csv(sesame_450k_file, index_col=0)
+            gold_medians = df["median"]
+            return ImputationDecorator(
+                clock_instance,
+                lambda dnam, cpgs: hybrid_impute(dnam, gold_medians, cpgs),
             )
         else:
             raise ValueError(f"Invalid imputation method: {imputation_method}")

@@ -28,15 +28,20 @@ def impute_from_average(dnam, cpgs_to_impute=None):
     :param cpgs_to_impute: List of CpG sites to impute.
     :return: DataFrame with missing values filled.
     """
+
+    # Protect input from mutation
+    dnam_copy = dnam.copy()
+    means = dnam_copy.mean(axis=1)
+
     if cpgs_to_impute:
-        impute_rows = dnam.loc[cpgs_to_impute]
-        impute_rows = impute_rows.apply(
-            lambda row: row.fillna(row.mean()), axis=1
+        mask = dnam_copy.loc[cpgs_to_impute].isna()
+        dnam_copy.loc[cpgs_to_impute] = dnam_copy.loc[cpgs_to_impute].where(
+            ~mask, means[cpgs_to_impute], axis=0
         )
-        df_filled = dnam.combine_first(impute_rows)
     else:
-        df_filled = dnam.apply(lambda row: row.fillna(row.mean()), axis=1)
-    return df_filled
+        dnam_copy = dnam_copy.where(dnam_copy.notna(), means, axis=0)
+
+    return dnam_copy
 
 
 def hybrid_impute(dnam, cpg_source, required_cpgs, threshold=0.8):

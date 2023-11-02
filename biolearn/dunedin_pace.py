@@ -7,9 +7,11 @@ from biolearn.imputation import hybrid_impute
 
 
 def dunedin_pace_normalization(dataframe):
-    gold_standard_df = pd.read_csv(get_data_file("DunedinPACE_Gold_Means.csv"))
+    gold_standard_df = pd.read_csv(
+        get_data_file("DunedinPACE_Gold_Means.csv"), index_col=0
+    )
     gold_standard_means = dict(
-        zip(gold_standard_df["CpGmarker"], gold_standard_df["mean"])
+        zip(gold_standard_df.index, gold_standard_df["mean"])
     )
 
     dataframe_transposed = dunedin_pace_preprocess_data(
@@ -70,7 +72,7 @@ def dunedin_pace_preprocess_data(betas, means, proportionOfProbesRequired=0.8):
 
     coefficients = pd.read_csv(get_data_file("DunedinPACE.csv"), index_col=0)
     model_probes = coefficients.index.tolist()
-    gold_standard_probes = means["CpGmarker"].tolist()
+    gold_standard_probes = means.index.tolist()
 
     probeOverlap = len(set(betas.index) & set(model_probes)) / len(
         set(model_probes)
@@ -89,5 +91,7 @@ def dunedin_pace_preprocess_data(betas, means, proportionOfProbesRequired=0.8):
             )
         )
 
-    betas_mat = betas.loc[gold_standard_probes].copy()
+    desired_labels = gold_standard_probes
+    existing_labels = betas.index.intersection(desired_labels)
+    betas_mat = betas.loc[existing_labels]
     return hybrid_impute(betas_mat, means["mean"], gold_standard_probes)
