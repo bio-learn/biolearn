@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 from io import StringIO
 from biolearn.data_library import parse_library_file, DataSource, DataLibrary
-from biolearn.clock import get_data_file
+from biolearn.model import get_data_file
 from biolearn.util import get_test_data_file
 
 

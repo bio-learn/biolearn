@@ -11,3 +11,4 @@ the :ref:`user guide <user_guide>` for more information and usage examples.
    :hidden:
 
    load.rst
+   data_library.rst

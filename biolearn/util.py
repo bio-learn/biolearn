@@ -32,7 +32,7 @@ def load_test_data_file(relative_path):
     return test_sample
 
 
-def cached_dowload(url_or_filepath):
+def cached_download(url_or_filepath):
     """Downloads the file at a URL and saves it locally. If called again with the same URL it will use the saved file. Returns the local filepath"""
     # Hash the URL to create a unique filename
     if os.path.isfile(url_or_filepath):

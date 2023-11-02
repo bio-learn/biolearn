@@ -1,4 +1,4 @@
-from biolearn.clock import clock_definitions
+from biolearn.model import clock_definitions
 import csv
 import os
 

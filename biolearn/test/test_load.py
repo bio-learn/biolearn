@@ -1,9 +1,8 @@
 from biolearn import load
-from biolearn.model import load_columns
 import pytest
-import numpy as np
-import os
 
+
+load_columns = ["sex", "age", "glucose", "is_dead", "months_until_death"]
 
 def test_fhs_columns():
     df = load.load_fhs()
