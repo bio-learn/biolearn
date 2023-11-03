@@ -5,7 +5,7 @@ import csv
 import os
 
 def generate_models_csv(models, output_file="generated/model_table.csv"):
-    header = ["Name", "Year", "Species", "Tissue", "Source", "Coefficients"]
+    header = ["Name", "Year", "Species", "Tissue", "Predicts", "Source", "Coefficients"]
 
     # Generate the CSV data
     with open(output_file, "w", newline='') as csvfile:
@@ -27,6 +27,7 @@ def generate_models_csv(models, output_file="generated/model_table.csv"):
                 details["year"],
                 details["species"],
                 details["tissue"],
+                details.get('output', 'unknown'),
                 source_link,
                 coefficients_link
             ]
