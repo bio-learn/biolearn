@@ -21,8 +21,8 @@ methylation_data = data.dnam
 # Now run three different clocks on the dataset to produce epigenetic clock ages
 # ------------------------------------------------------------------------------------
 
-from biolearn.clock_gallery import ClockGallery
-gallery = ClockGallery()
+from biolearn.model_gallery import ModelGallery
+gallery = ModelGallery()
 #Note that by default clocks will impute missing data.
 #To change this behavior set the imputation= parameter when getting the clock
 horvath_results = gallery.get("Horvathv1").predict(methylation_data)

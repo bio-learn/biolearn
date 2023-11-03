@@ -98,6 +98,7 @@ Featured examples
 
    quickstart.md
    clocks.rst
+   data.rst
    auto_examples/index.rst
    modules/index.rst
 

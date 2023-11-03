@@ -1,21 +1,21 @@
 import pytest
 from biolearn.util import get_data_file
-from biolearn.clock import LinearMethylationClock
-from biolearn.clock_gallery import ClockGallery
+from biolearn.model import LinearMethylationModel
+from biolearn.model_gallery import ModelGallery
 
 
 def no_transform(_):
     return _
 
 
-def test_methylation_clock_can_report_sites():
-    coeffecient_file = get_data_file("Horvath1.csv")
-    test_clock = LinearMethylationClock(coeffecient_file, no_transform)
+def test_methylation_model_can_report_sites():
+    coefficient_file = get_data_file("Horvath1.csv")
+    test_model = LinearMethylationModel(coefficient_file, no_transform)
 
     some_expected_cpgs = ["cg00945507", "cg04528819", "cg14727952"]
     expected_cpg_count = 353
 
-    result_sites = test_clock.methylation_sites()
+    result_sites = test_model.methylation_sites()
     assert expected_cpg_count == len(
         result_sites
     ), f"Expected count {expected_cpg_count} but got {len(result_sites)}"
@@ -24,7 +24,7 @@ def test_methylation_clock_can_report_sites():
     ), f"Some expected CpGs not found in result"
 
 
-# Sample Clock Data for testing
+# Sample Model Data for testing
 sample_data = {
     "Horvathv1": {
         "year": 2013,
@@ -32,18 +32,18 @@ sample_data = {
         "tissue": "Multi-tissue",
         "source": "https://genomebiology.biomedcentral.com/articles/10.1186/gb-2013-14-10-r115",
         "model": {
-            "type": "LinearMethylationClock",
+            "type": "LinearMethylationModel",
             "file": "Horvath1.csv",
             "transform": lambda sum: sum + 0.696,
         },
     },
-    "SampleClock2": {
+    "SampleModel2": {
         "year": 2020,
         "species": "Human",
         "tissue": "Brain",
         "source": "https://samplelink.com",
         "model": {
-            "type": "LinearMethylationClock",
+            "type": "LinearMethylationModel",
             "file": "Horvath2.csv",
             "transform": lambda sum: sum + 1.0,
         },
@@ -53,35 +53,35 @@ sample_data = {
 
 def test_init_with_bad_data():
     # This example assumes a bad data structure, adjust accordingly
-    bad_data = {"ClockName": "SomeStringInsteadOfDict"}
+    bad_data = {"ModelName": "SomeStringInsteadOfDict"}
     with pytest.raises(
-        ValueError, match="Expected dictionary for clock definition, got"
+        ValueError, match="Expected dictionary for model definition, got"
     ):
-        ClockGallery(bad_data)
+        ModelGallery(bad_data)
 
 
-def test_get_clock_by_name():
-    gallery = ClockGallery(sample_data)
-    clock = gallery.get("Horvathv1")
-    assert clock.metadata["year"] == 2013
+def test_get_model_by_name():
+    gallery = ModelGallery(sample_data)
+    model = gallery.get("Horvathv1")
+    assert model.metadata["year"] == 2013
 
 
-def test_get_nonexistent_clock_by_name():
-    gallery = ClockGallery(sample_data)
-    with pytest.raises(KeyError, match="Clock not found:"):
-        gallery.get("NonExistentClock")
+def test_get_nonexistent_model_by_name():
+    gallery = ModelGallery(sample_data)
+    with pytest.raises(KeyError, match="Model not found:"):
+        gallery.get("NonExistentModel")
 
 
 def test_search_with_no_parameters():
-    gallery = ClockGallery(sample_data)
+    gallery = ModelGallery(sample_data)
     results = gallery.search()
     assert len(results) == len(sample_data)
     assert "Horvathv1" in results
-    assert "SampleClock2" in results
+    assert "SampleModel2" in results
 
 
 def test_search_by_parameters():
-    gallery = ClockGallery(sample_data)
+    gallery = ModelGallery(sample_data)
     results = gallery.search(species="Human", tissue="Brain")
     assert len(results) == 1
-    assert "SampleClock2" in results
+    assert "SampleModel2" in results

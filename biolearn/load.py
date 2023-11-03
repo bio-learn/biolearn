@@ -1,5 +1,5 @@
 import pandas as pd
-from biolearn.util import cached_dowload
+from biolearn.util import cached_download
 
 MG_PER_DL_TO_MMOL_PER_L = 0.05551
 
@@ -80,25 +80,25 @@ def load_nhanes(year):
             f"Unknown year {year}. Can only load for known available years {known_nhanes_year_suffix.keys}"
         )
     suffix = known_nhanes_year_suffix[year]
-    dem_file = cached_dowload(
+    dem_file = cached_download(
         f"https://wwwn.cdc.gov/Nchs/Nhanes/{year-1}-{year}/DEMO_{suffix}.XPT"
     )
-    gluc_file = cached_dowload(
+    gluc_file = cached_download(
         f"https://wwwn.cdc.gov/Nchs/Nhanes/{year-1}-{year}/GLU_{suffix}.XPT"
     )
-    cbc_file = cached_dowload(
+    cbc_file = cached_download(
         f"https://wwwn.cdc.gov/Nchs/Nhanes/{year-1}-{year}/CBC_{suffix}.XPT"
     )
-    bioc_file = cached_dowload(
+    bioc_file = cached_download(
         f"https://wwwn.cdc.gov/Nchs/Nhanes/{year-1}-{year}/BIOPRO_{suffix}.XPT"
     )
-    mortality_file = cached_dowload(
+    mortality_file = cached_download(
         f"https://ftp.cdc.gov/pub/Health_Statistics/NCHS/datalinkage/linked_mortality/NHANES_{year-1}_{year}_MORT_2019_PUBLIC.dat"
     )
-    crp_file = cached_dowload(
+    crp_file = cached_download(
         f"https://wwwn.cdc.gov/Nchs/Nhanes/{year-1}-{year}/CRP_{suffix}.XPT"
     )
-    hdl_file = cached_dowload(
+    hdl_file = cached_download(
         f"https://wwwn.cdc.gov/Nchs/Nhanes/{year-1}-{year}/HDL_{suffix}.XPT"
     )
     dem = pd.read_sas(dem_file, index="SEQN")[["RIAGENDR", "RIDAGEYR"]]

@@ -1,8 +1,10 @@
-from biolearn.clock import clock_definitions
+from biolearn.model import model_definitions
+from biolearn.util import get_data_file
+import yaml
 import csv
 import os
 
-def generate_clocks_csv(clocks, output_file="generated/clock_table.csv"):
+def generate_models_csv(models, output_file="generated/model_table.csv"):
     header = ["Name", "Year", "Species", "Tissue", "Source", "Coefficients"]
 
     # Generate the CSV data
@@ -12,8 +14,8 @@ def generate_clocks_csv(clocks, output_file="generated/clock_table.csv"):
         # Write the header
         writer.writerow(header)
 
-        # Add each clock to the CSV
-        for name, details in clocks.items():
+        # Add each model to the CSV
+        for name, details in models.items():
             if details["source"] == "unknown":
                 source_link = "unknown"
             else:
@@ -43,6 +45,34 @@ def ensure_folder_exists(path):
         os.makedirs(dir_path)
 
 
+def generate_data_csv_from_yaml(yaml_file, output_file="generated/data_table.csv"):
+    header = ["ID", "Title", "Format", "Samples", "Age Present", "Sex Present"]
+
+    with open(yaml_file, 'r') as stream:
+        yaml_data = yaml.safe_load(stream)
+
+    with open(output_file, "w", newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(header)
+
+        for item in yaml_data["items"]:
+            age_present = "Yes" if "age" in item.get("parser", {}).get("metadata", {}) else "No"
+            sex_present = "Yes" if "sex" in item.get("parser", {}).get("metadata", {}) else "No"
+            geo_link = f"`{item['id']} <https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc={item['id']}>`_"
+            title = item['title'][:60] + '...' if len(item['title']) > 60 else item['title']
+            row = [
+                geo_link,
+                title,
+                item["format"],
+                item["samples"],
+                age_present,
+                sex_present
+            ]
+            writer.writerow(row)
+
+    print(f"CSV generated at: {output_file}")
+
 if __name__ == "__main__":
     ensure_folder_exists("generated")
-    generate_clocks_csv(clock_definitions)
+    generate_models_csv(model_definitions)
+    generate_data_csv_from_yaml(get_data_file("library.yaml"))

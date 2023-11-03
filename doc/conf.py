@@ -40,8 +40,8 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.imgmath",
     "sphinx.ext.intersphinx",
+    'sphinx.ext.napoleon',
     "sphinxcontrib.bibtex",
-    "numpydoc",
     "sphinx.ext.linkcode",
     "gh_substitutions",
     "sphinx_copybutton",
@@ -51,6 +51,7 @@ extensions = [
     "sphinx.ext.extlinks",
 ]
 
+napoleon_google_docstring = True
 autosummary_generate = True
 
 autodoc_default_options = {
@@ -62,11 +63,6 @@ autodoc_default_options = {
     #  'special-members': '__init__',
 }
 
-# Get rid of spurious warnings due to some interaction between
-# autosummary and numpydoc. See
-# https://github.com/phn/pytpm/issues/3#issuecomment-12133978 for more
-# details
-numpydoc_show_class_members = False
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["templates"]
 
@@ -421,3 +417,5 @@ ogp_site_url = "https://bio-learn.github.io/"
 ogp_image = "https://bio-learn.github.io/_static/biolearn-logo.png"
 ogp_use_first_image = True
 ogp_site_name = "Biolearn"
+
+autodoc_preserve_defaults=True

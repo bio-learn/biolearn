@@ -2,7 +2,7 @@ import pytest
 from math import isclose
 import pandas as pd
 import numpy as np
-from biolearn import clock
+from biolearn import model
 from biolearn.util import (
     get_test_data_file,
     load_test_data_file,
@@ -16,17 +16,17 @@ sample_inputs = load_test_data_file("external/DNAmTestSet.csv")
 
 
 @pytest.mark.parametrize(
-    "clock_name, clock_entry", clock.clock_definitions.items()
+    "model_name, model_entry", model.model_definitions.items()
 )
-def test_clocks(clock_name, clock_entry):
-    test_clock = clock.LinearMethylationClock.from_definition(clock_entry)
-    actual_results = test_clock.predict(sample_inputs).sort_index()
+def test_models(model_name, model_entry):
+    test_model = model.LinearMethylationModel.from_definition(model_entry)
+    actual_results = test_model.predict(sample_inputs).sort_index()
 
-    expected_results = sample_results[clock_name].sort_index()
+    expected_results = sample_results[model_name].sort_index()
 
     assert len(expected_results) == len(
         actual_results
-    ), f"For {clock_name}: DataFrames do not have the same length"
+    ), f"For {model_name}: DataFrames do not have the same length"
 
     discrepancies = [
         (idx, expected_results.loc[idx], actual_results.loc[idx])
@@ -39,14 +39,14 @@ def test_clocks(clock_name, clock_entry):
     # Check if any discrepancies were found and output them
     assert not discrepancies, "\n".join(
         [
-            f"For {clock_name}: Discrepancy at index {idx}: expected {expected_age}, but got {actual_age}"
+            f"For {model_name}: Discrepancy at index {idx}: expected {expected_age}, but got {actual_age}"
             for idx, expected_age, actual_age in discrepancies
         ]
     )
 
 
 def test_dunedin_pace_normalization():
-    actual = clock.dunedin_pace_normalization(sample_inputs)
+    actual = model.dunedin_pace_normalization(sample_inputs)
     data_file_path = get_test_data_file("pace_normalized.pkl")
     with open(data_file_path, "rb") as file:
         expected = pickle.load(file)

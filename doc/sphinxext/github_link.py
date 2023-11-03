@@ -18,32 +18,21 @@ def _get_git_revision():
 
 
 def _linkcode_resolve(domain, info, package, url_fmt, revision):
-    """Determine a link to online source for a class/method/function.
-
-    This is called by sphinx.ext.linkcode
-
-    An example with a long-untouched module that everyone has
-    >>> _linkcode_resolve('py', {'module': 'tty',
-    ...                          'fullname': 'setraw'},
-    ...                   package='tty',
-    ...                   url_fmt='http://hg.python.org/cpython/file/'
-    ...                           '{revision}/Lib/{package}/{path}#L{lineno}',
-    ...                   revision='xxxx')
-    'http://hg.python.org/cpython/file/xxxx/Lib/tty/tty.py#L18'
-    """
-    if revision is None:
-        return
-    if domain not in ("py", "pyx"):
-        return
-    if not info.get("module") or not info.get("fullname"):
-        return
-
-    class_name = info["fullname"].split(".")[0]
+    # Continue as normal for non-attributes
+    if domain not in ("py", "pyx") or not info.get("module") or '.' not in info["fullname"]:
+        return None
+    
+    class_name, _, attr = info["fullname"].partition('.')
     module = __import__(info["module"], fromlist=[class_name])
-    obj = attrgetter(info["fullname"])(module)
-
-    # Unwrap the object to get the correct source
-    # file in case that is wrapped by a decorator
+    
+    # If we're trying to get an attribute of a class, skip it
+    if attr:
+        return None
+    
+    obj = getattr(module, class_name, None)
+    if obj is None:
+        return None
+    
     obj = inspect.unwrap(obj)
 
     try:
