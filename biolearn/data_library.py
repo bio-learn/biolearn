@@ -150,7 +150,6 @@ class DataSource:
         file_path = cached_download(self.path)
         return self.parser.parse(file_path)
 
-
     def __repr__(self):
         """
         Represents the DataSource instance as a string.
