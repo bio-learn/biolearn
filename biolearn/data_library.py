@@ -53,6 +53,7 @@ class GeoData:
         self.metadata = metadata
         self.dnam = dnam
 
+
 class GeoMatrixParser:
     parsers = {
         "numeric": lambda s: extract_numeric(parse_after_colon(s)),
@@ -103,23 +104,14 @@ class DataSource:
     """
     Represents a single data source in the DataLibrary.
 
-    This class encapsulates the details of a data source, including its identifier, path, 
-    parser, and optional metadata such as title, summary, format, and organism. It also 
-    provides functionality to load and parse the data from the source.
-
-    Attributes:
-        id (str): Identifier of the data source.
-        path (str): Path where the data source is located.
-        parser (object): Parser object responsible for parsing the data source.
-        title (str, optional): Title of the data source.
-        summary (str, optional): Summary of the data source.
-        format (str, optional): Format of the data source.
-        organism (str, optional): Organism related to the data source.
+    This class encapsulates the details of a data source including metadata about the source and
+    functionality to load the data.
 
     Raises:
         ValueError: If any of the required fields ('id', 'path', 'parser') are missing
                     during initialization.
     """
+
     REQUIRED_FIELDS = {
         "id": "'id' key is missing in item",
         "path": "'path' key is missing in item",
@@ -153,10 +145,11 @@ class DataSource:
         Loads the data from the source.
 
         Returns:
-            DNA methylation and metadata
+            GeoData: An instance of the GeoData class containing the parsed geographical data.
         """
         file_path = cached_download(self.path)
         return self.parser.parse(file_path)
+
 
     def __repr__(self):
         """
@@ -166,7 +159,6 @@ class DataSource:
             str: A string representation of the DataSource instance.
         """
         return f"DataSource(ID: {self.id}, Title: {self.title})"
-
 
     def _create_parser(self, parser_data):
         parser_type = parser_data.get("type")
@@ -193,21 +185,17 @@ class DataLibrary:
     """
     Manages a collection of data sources for biomarkers research.
 
-    The DataLibrary class is responsible for loading, storing, and retrieving data sources
-    from a specified library file. It offers functionality to look up data sources based on
-    specific criteria such as organism and format, and to retrieve a specific data source
-    by its identifier. This class acts as a central repository for managing data sources in
-    bioinformatics applications. Currently DNA methylation data from GEO is supported.
-
-    Attributes:
-        sources (list): A list of data sources loaded from the library file.
+    The DataLibrary class is responsible for loading, storing, and retrieving data sources.
+    Data sources are defined in a library file and new sources can easily be added at runtime.
+    Currently DNA methylation data from GEO is supported.
     """
+
     def __init__(self, library_file=None):
         """
         Initializes the DataLibrary instance.
 
         Args:
-            library_file (str, optional): The file path of the library file. If None, 
+            library_file (str, optional): The file path of the library file. If None,
                                           the biolearn default library will be loaded.
 
         """
@@ -260,4 +248,3 @@ class DataLibrary:
             ):
                 matches.append(source)
         return matches
-

@@ -1,7 +1,7 @@
 .. _data_library_ref:
 
 :mod:`biolearn.data_library`: DataLibrary
-=================================
+==========================================
 
 .. automodule:: biolearn.data_library
    :no-members:
@@ -17,3 +17,4 @@
 
    DataLibrary
    DataSource
+   GeoData

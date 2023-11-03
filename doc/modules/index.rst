@@ -12,3 +12,4 @@ the :ref:`user guide <user_guide>` for more information and usage examples.
 
    load.rst
    data_library.rst
+   model_gallery.rst

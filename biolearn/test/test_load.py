@@ -4,6 +4,7 @@ import pytest
 
 load_columns = ["sex", "age", "glucose", "is_dead", "months_until_death"]
 
+
 def test_fhs_columns():
     df = load.load_fhs()
     verify_expected_columns(df)

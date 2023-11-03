@@ -5,6 +5,7 @@ items:
     summary: "Genome wide DNA methylation profiling of individuals across a large age range. The Illumina Infinium 450k Human DNA methylation Beadchip was used to obtain DNA methylation profiles across approximately 450k CpGs from human whole blood."
     format: Illumina450k
     organism: human
+    samples: 656
     path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE40nnn/GSE40279/matrix/GSE40279_series_matrix.txt.gz
     parser:
       type: geo-matrix
@@ -28,6 +29,7 @@ items:
     summary: "The Illumina Infinium 27k Human DNA methylation Beadchip v1.2 was used to obtain DNA methylation profiles across approximately 27,000 CpGs in whole blood samples from 540 samples, of which 266 were samples taken from postmenopausal women with ovarian cancer and 274 were from age-matched healthy controls"
     format: Illumina27k
     organism: human
+    samples: 540
     path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE19nnn/GSE19711/matrix/GSE19711_series_matrix.txt.gz
     parser:
       type: geo-matrix
@@ -45,6 +47,7 @@ items:
     summary: "Epigenome-wide association study of age at menarche in a group of 329 women from the EPIC-Italy cohort."
     format: Illumina450k
     organism: human
+    samples: 329
     path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE51nnn/GSE51057/matrix/GSE51057_series_matrix.txt.gz
     parser:
       type: geo-matrix
@@ -65,6 +68,7 @@ items:
     summary: "Genome-wide DNA methylation level was studied to determine whether Rheumatoid arthritis patients (cases) has methylation differences comparing to normal controls in peripheral blood leukocytes (PBLs). We used Illumina HumanMethylation450 BeadChip array to determine the genome-wide DNA methylation difference in PBLs from Rheumatoid arthritis patients (cases) and normal controls"
     format: Illumina450k
     organism: human
+    samples: 689
     path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE42nnn/GSE42861/matrix/GSE42861_series_matrix.txt.gz
     parser:
       type: geo-matrix
@@ -88,6 +92,7 @@ items:
     summary: "Genome wide DNA methylation profiling of whole blood in schizophrenia patients and healthy subjects of different ages. The Illumina Infinium 450k Human DNA methylation Beadchip v1.2 was used to obtain DNA methylation profiles across approximately 480,000 CpGs. Dataset included 62 schizophrenia patients and 33 healthy subjects from Dutch descent."
     format: Illumina450k
     organism: human
+    samples: 95
     path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41169/matrix/GSE41169_series_matrix.txt.gz
     parser:
       type: geo-matrix
@@ -109,6 +114,7 @@ items:
       by questionnaire are also available.
     format: Illumina450k
     organism: human
+    samples: 845
     path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE51nnn/GSE51032/matrix/GSE51032_series_matrix.txt.gz
     parser:
       type: geo-matrix
@@ -161,6 +167,7 @@ items:
       the molecular basis of genetic variants associated to human diseases and traits.'
     format: Illumina450k
     organism: human
+    samples: 355
     path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE73nnn/GSE73103/matrix/GSE73103_series_matrix.txt.gz
     parser:
       type: geo-matrix
@@ -366,15 +373,16 @@ items:
       non-linearly changing ones.
     format: Illumina450k
     organism: human
+    samples: 184
     path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE69nnn/GSE69270/matrix/GSE69270_series_matrix.txt.gz
     parser:
       type: geo-matrix
       id-row: 40
       matrix-start: 79
       metadata:
-        age_in_2011:
+        age:
           row: 48
-          parse: string
+          parse: numeric
         gender_(1=woman;_0=man):
           row: 49
           parse: string
@@ -399,8 +407,9 @@ items:
   - id: GSE36054
     title: Methylation Profiling of Blood DNA from Healthy Children
     summary: Groupings by family membership requested but not provided by submitter
-    format: Unknown
+    format: Illumina450k
     organism: human
+    samples: 192
     path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE36nnn/GSE36054/matrix/GSE36054_series_matrix.txt.gz
     parser:
       type: geo-matrix
@@ -439,6 +448,7 @@ items:
       PMID: 24138928.'
     format: Illumina450k
     organism: human
+    samples: 113
     path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE64nnn/GSE64495/matrix/GSE64495_series_matrix.txt.gz
     parser:
       type: geo-matrix
@@ -480,6 +490,7 @@ items:
     summary: DNA methylation differences between Newborns and Nonagenarians
     format: Illumina450k
     organism: human
+    samples: 40
     path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE30nnn/GSE30870/matrix/GSE30870_series_matrix.txt.gz
     parser:
       type: geo-matrix
