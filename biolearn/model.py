@@ -17,6 +17,7 @@ model_definitions = {
         "species": "Human",
         "tissue": "Multi-tissue",
         "source": "https://genomebiology.biomedcentral.com/articles/10.1186/gb-2013-14-10-r115",
+        "output": "Age (Years)",
         "model": {
             "type": "LinearMethylationModel",
             "file": "Horvath1.csv",
@@ -28,6 +29,7 @@ model_definitions = {
         "species": "Human",
         "tissue": "Blood",
         "source": "https://www.sciencedirect.com/science/article/pii/S1097276512008933",
+        "output": "Age (Years)",
         "model": {"type": "LinearMethylationModel", "file": "Hannum.csv"},
     },
     "Lin": {
@@ -35,6 +37,7 @@ model_definitions = {
         "species": "Human",
         "tissue": "Blood",
         "source": "https://www.aging-us.com/article/100908/text",
+        "output": "Age (Years)",
         "model": {
             "type": "LinearMethylationModel",
             "file": "Lin.csv",
@@ -46,6 +49,7 @@ model_definitions = {
         "species": "Human",
         "tissue": "Blood",
         "source": "https://www.aging-us.com/article/101414/text",
+        "output": "Age (Years)",
         "model": {
             "type": "LinearMethylationModel",
             "file": "PhenoAge.csv",
@@ -57,6 +61,7 @@ model_definitions = {
         "species": "Human",
         "tissue": "Skin + blood",
         "source": "https://www.aging-us.com/article/101508/text",
+        "output": "Age (Years)",
         "model": {
             "type": "LinearMethylationModel",
             "file": "Horvath2.csv",
@@ -68,6 +73,7 @@ model_definitions = {
         "species": "Human",
         "tissue": "Buccal",
         "source": "https://www.pnas.org/doi/10.1073/pnas.1820843116",
+        "output": "Age (Years)",
         "model": {
             "type": "LinearMethylationModel",
             "file": "PEDBE.csv",
@@ -78,7 +84,8 @@ model_definitions = {
         "year": 2019,
         "species": "Human",
         "tissue": "Blood",
-        "source": "https://genomemedicine.biomedcentral.com/articles/10.1186/s13073-019-0667-1",
+        "source": "https://www.nature.com/articles/ncomms14617",
+        "output": "Mortality Risk",
         "model": {"type": "LinearMethylationModel", "file": "Zhang_10.csv"},
     },
     "DunedinPoAm38": {
@@ -86,6 +93,7 @@ model_definitions = {
         "species": "Human",
         "tissue": "Blood",
         "source": "https://elifesciences.org/articles/54870#s2",
+        "output": "Aging Rate (Years/Year)",
         "model": {
             "type": "LinearMethylationModel",
             "file": "DunedinPoAm38.csv",
@@ -97,6 +105,7 @@ model_definitions = {
         "species": "Human",
         "tissue": "Unknown",
         "source": "https://www.proquest.com/docview/2634411178",
+        "output": "Aging Rate (Years/Year)",
         "model": {
             "type": "LinearMethylationModel",
             "file": "DunedinPACE.csv",
@@ -105,24 +114,27 @@ model_definitions = {
         },
     },
     "AlcoholMcCartney": {
-        "year": "unknown",
+        "year": 2018,
         "species": "Human",
-        "tissue": "unknown",
-        "source": "unknown",
+        "tissue": "Blood",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6158884/",
+        "output": "Alcohol Consumption",
         "model": {"type": "LinearMethylationModel", "file": "Alcohol.csv"},
     },
     "BMI_McCartney": {
-        "year": "unknown",
+        "year": 2018,
         "species": "Human",
-        "tissue": "unknown",
-        "source": "unknown",
+        "tissue": "Blood",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6158884/",
+        "output": "BMI",
         "model": {"type": "LinearMethylationModel", "file": "BMI.csv"},
     },
     "DNAmTL": {
-        "year": "unknown",
+        "year": 2019,
         "species": "Human",
-        "tissue": "unknown",
-        "source": "unknown",
+        "tissue": "Blood, Adipose",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6738410/",
+        "output": "Telomere Length",
         "model": {
             "type": "LinearMethylationModel",
             "file": "DNAmTL.csv",
@@ -141,10 +153,11 @@ model_definitions = {
         },
     },
     "Knight": {
-        "year": "unknown",
+        "year": 2016,
         "species": "Human",
-        "tissue": "unknown",
-        "source": "unknown",
+        "tissue": "Cord Blood",
+        "source": "https://genomebiology.biomedcentral.com/articles/10.1186/s13059-016-1068-z",
+        "output": "Gestational Age",
         "model": {
             "type": "LinearMethylationModel",
             "file": "Knight.csv",
@@ -152,10 +165,11 @@ model_definitions = {
         },
     },
     "LeeControl": {
-        "year": "unknown",
+        "year": 2019,
         "species": "Human",
-        "tissue": "unknown",
-        "source": "unknown",
+        "tissue": "Placenta",
+        "source": "https://www.aging-us.com/article/102049/text",
+        "output": "Gestational Age",
         "model": {
             "type": "LinearMethylationModel",
             "file": "LeeControl.csv",
@@ -163,10 +177,11 @@ model_definitions = {
         },
     },
     "LeeRefinedRobust": {
-        "year": "unknown",
+        "year": 2019,
         "species": "Human",
-        "tissue": "unknown",
-        "source": "unknown",
+        "tissue": "Placenta",
+        "source": "https://www.aging-us.com/article/102049/text",
+        "output": "Gestational Age",
         "model": {
             "type": "LinearMethylationModel",
             "file": "LeeRefinedRobust.csv",
@@ -174,10 +189,11 @@ model_definitions = {
         },
     },
     "LeeRobust": {
-        "year": "unknown",
+        "year": 2019,
         "species": "Human",
-        "tissue": "unknown",
-        "source": "unknown",
+        "tissue": "Placenta",
+        "source": "https://www.aging-us.com/article/102049/text",
+        "output": "Gestational Age",
         "model": {
             "type": "LinearMethylationModel",
             "file": "LeeRobust.csv",
@@ -185,10 +201,11 @@ model_definitions = {
         },
     },
     "SmokingMcCartney": {
-        "year": "unknown",
+        "year": 2018,
         "species": "Human",
-        "tissue": "unknown",
-        "source": "unknown",
+        "tissue": "Blood",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6158884/",
+        "output": "Smoking Status",
         "model": {"type": "LinearMethylationModel", "file": "Smoking.csv"},
     },
 }
