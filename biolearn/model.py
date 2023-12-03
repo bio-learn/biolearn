@@ -113,6 +113,28 @@ model_definitions = {
             "preprocess": dunedin_pace_normalization,
         },
     },
+    "GrimAge": {
+        "year": 2019,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6366976/",
+        "output": "Mortality Adjusted Age (Years)",
+        "model": {
+            "type": "NotImplemented",
+            "file": "DunedinPACE.csv"
+        },
+    },
+    "GrimAge2": {
+        "year": 2022,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9792204/",
+        "output": "Mortality Adjusted Age (Years)",
+        "model": {
+            "type": "NotImplemented",
+            "file": "DunedinPACE.csv"
+        },
+    },
     "AlcoholMcCartney": {
         "year": 2018,
         "species": "Human",
