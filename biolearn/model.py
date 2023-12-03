@@ -113,7 +113,7 @@ model_definitions = {
             "preprocess": dunedin_pace_normalization,
         },
     },
-    "GrimAge": {
+    "GrimAgeV1": {
         "year": 2019,
         "species": "Human",
         "tissue": "Blood",
@@ -121,10 +121,10 @@ model_definitions = {
         "output": "Mortality Adjusted Age (Years)",
         "model": {
             "type": "NotImplemented",
-            "file": "DunedinPACE.csv"
+            "file": "GrimAgeV1.csv"
         },
     },
-    "GrimAge2": {
+    "GrimAgeV2": {
         "year": 2022,
         "species": "Human",
         "tissue": "Blood",
@@ -132,7 +132,7 @@ model_definitions = {
         "output": "Mortality Adjusted Age (Years)",
         "model": {
             "type": "NotImplemented",
-            "file": "DunedinPACE.csv"
+            "file": "GrimAgeV2.csv"
         },
     },
     "AlcoholMcCartney": {

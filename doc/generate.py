@@ -74,6 +74,6 @@ def generate_data_csv_from_yaml(yaml_file, output_file="generated/data_table.csv
     print(f"CSV generated at: {output_file}")
 
 if __name__ == "__main__":
-    ensure_folder_exists("generated")
+    ensure_folder_exists("generated/")
     generate_models_csv(model_definitions)
     generate_data_csv_from_yaml(get_data_file("library.yaml"))

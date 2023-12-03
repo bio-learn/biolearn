@@ -19,6 +19,10 @@ sample_inputs = load_test_data_file("external/DNAmTestSet.csv")
     "model_name, model_entry", model.model_definitions.items()
 )
 def test_models(model_name, model_entry):
+    # Skip trying to test models that aren't implemented in biolearn yet
+    if model_entry['model']['type'] == "NotImplemented":
+        pytest.skip(f"Model type 'NotImplemented' for {model_name} - skipping test")
+
     test_model = model.LinearMethylationModel.from_definition(model_entry)
     actual_results = test_model.predict(sample_inputs).sort_index()
 
