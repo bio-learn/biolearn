@@ -4,12 +4,15 @@ from biolearn.util import get_data_file
 
 def impute_from_standard(dnam, cpg_averages, cpgs_to_impute=None):
     """
-    Impute all missing values using the averages from an external dataset
+    Impute all missing values in a DNA methylation dataset using the averages from an external dataset.
 
-    :param dnam: DataFrame with samples as columns and cpg sites as rows.
-    :param cpg_averages: Series containing reference averages for cpg sites.
-    :param cpgs_to_impute: List of CpG sites to impute.
-    :return: DataFrame with missing values filled.
+    Args:
+        dnam (pd.DataFrame): DataFrame with samples as columns and CpG sites as rows.
+        cpg_averages (pd.Series): Series containing reference averages for CpG sites.
+        cpgs_to_impute (list of str, optional): List of CpG sites to impute. Missing cpgs will only be imputed if in this list.
+
+    Returns:
+        pd.DataFrame: DataFrame with missing values filled.
     """
     if cpgs_to_impute:
         impute_rows = dnam.loc[cpgs_to_impute]
@@ -22,13 +25,15 @@ def impute_from_standard(dnam, cpg_averages, cpgs_to_impute=None):
 
 def impute_from_average(dnam, cpgs_to_impute=None):
     """
-    Impute all missing values using the average from the current dataset
+    Impute all missing values in a DNA methylation dataset using the average from the dataset itself.
 
-    :param dnam: DataFrame with samples as columns and cpg sites as rows.
-    :param cpgs_to_impute: List of CpG sites to impute.
-    :return: DataFrame with missing values filled.
+    Args:
+        dnam (pd.DataFrame): DataFrame with samples as columns and CpG sites as rows.
+        cpgs_to_impute (list of str, optional): List of CpG sites to impute.
+
+    Returns:
+        pd.DataFrame: DataFrame with missing values filled.
     """
-
     # Protect input from mutation
     dnam_copy = dnam.copy()
     means = dnam_copy.mean(axis=1)
@@ -46,15 +51,19 @@ def impute_from_average(dnam, cpgs_to_impute=None):
 
 def hybrid_impute(dnam, cpg_source, required_cpgs, threshold=0.8):
     """
-    Imputes missing values based on a threshold. For sites that have less data than
-    the threshold requires all values for that site are replaced from source.
-    Otherwise the average of existing values in the input data are used.
+    Imputes missing values in a DNA methylation dataset based on a threshold. Sites with data below the threshold are replaced from an external source, while others are imputed using the average of existing values.
 
-    :param dnam: DataFrame with samples as columns and cpg sites as rows.
-    :param cpg_source: Series containing reference averages for cpg sites.
-    :param required_cpgs: List of cpgs that need to be in the final dataset.
-    :param threshold: Threshold for determining imputation strategy. Default is 0.8.
-    :return: DataFrame with missing values filled.
+    Args:
+        dnam (pd.DataFrame): DataFrame with samples as columns and CpG sites as rows.
+        cpg_source (pd.Series): Series containing reference values for CpG sites.
+        required_cpgs (list of str): List of CpG sites that need to be in the final dataset.
+        threshold (float, optional): Threshold for determining imputation strategy. Default is 0.8.
+
+    Returns:
+        pd.DataFrame: DataFrame with missing values filled.
+
+    Raises:
+        ValueError: If certain required CpG sites are missing from both the dataset and the cpg_source.
     """
     # Drop rows below the threshold, these will be replaced entirely from cpg_source
     cpgs_below_threshold = dnam.notna().mean(axis=1) < threshold
@@ -80,6 +89,15 @@ def hybrid_impute(dnam, cpg_source, required_cpgs, threshold=0.8):
 
 
 def biolearn_impute(dnam):
+    """
+    Impute missing values in a DNA methylation dataset using a standard Biolearn dataset for reference.
+
+    Args:
+        dnam (pd.DataFrame): DataFrame with samples as columns and CpG sites as rows.
+
+    Returns:
+        pd.DataFrame: DataFrame with missing values filled.
+    """
     biolearn_averages_file = get_data_file("biolearn_averages_450k.csv")
     df = pd.read_csv(biolearn_averages_file, index_col=0)
     biolearn_averages = df["average"]
