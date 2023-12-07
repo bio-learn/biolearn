@@ -48,7 +48,7 @@ discuss feature requests, or have any biolearn related discussions.
 Issues
 ======
 
-If you find any bugs with biolearn we welcome you to create a Github issue including information on how we can replicate the issue and the expected vs actual behavior.
+If you find any bugs with biolearn please create a Github issue including how we can replicate the issue and the expected vs actual behavior.
 
 
 Contributing
