@@ -42,8 +42,13 @@ If it executes with no errors then the library is installed. To get started chec
 Discord server
 ==============
 
-The biolearn team has a `discord server <https://discord.gg/zwBQDCSf>`_ to answer questions,
+The biolearn team has a `discord server <https://discord.gg/wZH85WRTxN>`_ to answer questions,
 discuss feature requests, or have any biolearn related discussions.
+
+Issues
+======
+
+If you find any bugs with biolearn we welcome you to create a Github issue including information on how we can replicate the issue and the expected vs actual behavior.
 
 
 Contributing

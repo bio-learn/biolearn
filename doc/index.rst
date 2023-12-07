@@ -31,6 +31,16 @@ and `Methuselah Foundation <https://www.mfoundation.org/>`_ respectively
 
         Discover functionalities by reading examples
 
+    .. grid-item-card:: :fas:`dna` Biomarkers of Aging 2024
+        :link: https://www.synapse.org/#!Synapse:syn52966292/
+        :link-type: url
+        :columns: 12 12 4 4
+        :class-card: sd-shadow-md
+        :class-title: sd-text-primary
+        :margin: 2 2 0 0
+
+        Join the challenge to build better biomarkers!
+
 Featured examples
 -----------------
 

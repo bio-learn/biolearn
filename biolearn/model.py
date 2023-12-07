@@ -103,7 +103,7 @@ model_definitions = {
     "DunedinPACE": {
         "year": 2022,
         "species": "Human",
-        "tissue": "Unknown",
+        "tissue": "Blood",
         "source": "https://www.proquest.com/docview/2634411178",
         "output": "Aging Rate (Years/Year)",
         "model": {
@@ -142,10 +142,11 @@ model_definitions = {
         },
     },
     "HRSInCHPhenoAge": {
-        "year": "unknown",
+        "year": "2022",
         "species": "Human",
-        "tissue": "unknown",
-        "source": "unknown",
+        "tissue": "Blood",
+        "output": "Age (Years)",
+        "source": "https://www.nature.com/articles/s43587-022-00248-2",
         "model": {
             "type": "LinearMethylationModel",
             "file": "HRSInCHPhenoAge.csv",
