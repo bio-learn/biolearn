@@ -258,8 +258,8 @@ class LinearMethylationModel:
             **{k: v for k, v in clock_definition.items() if k != "model"},
         )
 
-    def predict(self, dnam_data):
-        dnam_data = self.preprocess(dnam_data)
+    def predict(self, geo_data):
+        dnam_data = self.preprocess(geo_data.dnam)
 
         # Join the coefficients and dnam_data on the index
         methylation_df = self.coefficients.join(dnam_data, how="inner")
@@ -270,7 +270,9 @@ class LinearMethylationModel:
             .multiply(methylation_df["CoefficientTraining"], axis=0)
             .sum(axis=0)
         )
-        return result.apply(self.transform)
+
+        # Return as a DataFrame
+        return result.apply(self.transform).to_frame(name='Prediction')
 
     def methylation_sites(self):
         return list(self.coefficients.index)

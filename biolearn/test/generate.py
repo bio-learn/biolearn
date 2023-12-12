@@ -6,15 +6,12 @@ import hashlib
 
 source_url = "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41169/matrix/GSE41169_series_matrix.txt.gz"
 
-script_dir = os.path.dirname(
-    __file__
-)  # get the directory of the current script
-data_folder_path = os.path.join(
-    script_dir, "data/external/"
-)  # build the path to the data file
-data_file_path = os.path.join(
-    data_folder_path, "DNAmTestSet.csv"
-)  # build the path to the data file
+# Paths for the script, data, and metadata files
+script_dir = os.path.dirname(__file__)
+data_folder_path = os.path.join(script_dir, "data/external/")
+data_file_path = os.path.join(data_folder_path, "DNAmTestSet.csv")
+metadata_file_path = os.path.join(data_folder_path, "testset_metadata.csv")
+
 
 expected_hash = (
     "3ee979ae6d2f1572f72f02e951073af0910b5b1576d46177cbfb76932fda6693"
@@ -58,7 +55,7 @@ ensure_folder_exists(data_file_path)
 
 print("Checking if file generation is needed")
 if not is_file_valid(data_file_path, expected_hash):
-    print("Generating file")
+    print("Loading data source")
     data_source_spec = {
         "id": "TestData",
         "path": source_url,
@@ -67,18 +64,28 @@ if not is_file_valid(data_file_path, expected_hash):
             "id-row": 33,
             "metadata": {
                 "age": {"row": 47, "parse": "numeric"},
+                "sex": {"row": 41, "parse": "sex"}
             },
             "matrix-start": 73,
         },
     }
     source = DataSource(data_source_spec)
-    source_data = source.load().dnam
-    source_data.transpose().head(10).transpose().to_csv(data_file_path)
-    print("Verifying new file")
+    loaded_data = source.load()
+
+    print("Processing DNAm data")
+    dnam = loaded_data.dnam.transpose().head(10).transpose()  # Transpose and limit to 10 items
+    dnam.to_csv(data_file_path)
+
+    print("Verifying new DNAm data file")
     if not is_file_valid(data_file_path, expected_hash):
-        print("ERROR: Generated file does not match expected. Exiting.")
+        print("ERROR: Generated DNAm data file does not match expected. Exiting.")
         sys.exit(1)
     else:
-        print("File matches existing hash. Done.")
+        print("DNAm data file matches existing hash. Done.")
+
+    print("Processing metadata")
+    metadata = loaded_data.metadata.head(10)  # Limit to 10 items
+    metadata.to_csv(metadata_file_path)
+    print("Metadata file generated and saved.")
 else:
     print("File matches existing hash. Done.")

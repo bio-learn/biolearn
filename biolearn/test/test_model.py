@@ -8,11 +8,13 @@ from biolearn.util import (
     load_test_data_file,
     get_data_file,
 )
+from biolearn.data_library import GeoData
 import pickle
 
 
 sample_results = load_test_data_file("expected_clock_output.csv")
 sample_inputs = load_test_data_file("external/DNAmTestSet.csv")
+sample_metadata = load_test_data_file("external/testset_metadata.csv")
 
 
 @pytest.mark.parametrize(
@@ -23,8 +25,10 @@ def test_models(model_name, model_entry):
     if model_entry['model']['type'] == "NotImplemented":
         pytest.skip(f"Model type 'NotImplemented' for {model_name} - skipping test")
 
+    test_data = GeoData(sample_metadata, sample_inputs)
+
     test_model = model.LinearMethylationModel.from_definition(model_entry)
-    actual_results = test_model.predict(sample_inputs).sort_index()
+    actual_results = test_model.predict(test_data).sort_index()
 
     expected_results = sample_results[model_name].sort_index()
 
@@ -36,15 +40,15 @@ def test_models(model_name, model_entry):
         (idx, expected_results.loc[idx], actual_results.loc[idx])
         for idx in expected_results.index
         if not isclose(
-            actual_results.loc[idx], expected_results.loc[idx], abs_tol=1e-5
+            actual_results.loc[idx].item(), expected_results.loc[idx], abs_tol=1e-5
         )
     ]
 
     # Check if any discrepancies were found and output them
     assert not discrepancies, "\n".join(
         [
-            f"For {model_name}: Discrepancy at index {idx}: expected {expected_age}, but got {actual_age}"
-            for idx, expected_age, actual_age in discrepancies
+            f"For {model_name}: Discrepancy at index {idx}: expected {expected_value}, but got {actual_value}"
+            for idx, expected_value, actual_value in discrepancies
         ]
     )
 
