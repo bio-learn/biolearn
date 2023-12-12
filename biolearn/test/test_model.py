@@ -12,35 +12,32 @@ from biolearn.data_library import GeoData
 import pickle
 
 
-sample_results = load_test_data_file("expected_clock_output.csv")
 sample_inputs = load_test_data_file("external/DNAmTestSet.csv")
 sample_metadata = load_test_data_file("external/testset_metadata.csv")
 
 
-@pytest.mark.parametrize(
-    "model_name, model_entry", model.model_definitions.items()
-)
+@pytest.mark.parametrize("model_name, model_entry", model.model_definitions.items())
 def test_models(model_name, model_entry):
     # Skip trying to test models that aren't implemented in biolearn yet
     if model_entry['model']['type'] == "NotImplemented":
         pytest.skip(f"Model type 'NotImplemented' for {model_name} - skipping test")
 
+    # Assuming you have a function to load data files
     test_data = GeoData(sample_metadata, sample_inputs)
 
     test_model = model.LinearMethylationModel.from_definition(model_entry)
     actual_results = test_model.predict(test_data).sort_index()
 
-    expected_results = sample_results[model_name].sort_index()
+    # Load the expected results from the corresponding file
+    expected_results = load_test_data_file(f'expected_model_outputs/{model_name}.csv')
 
-    assert len(expected_results) == len(
-        actual_results
-    ), f"For {model_name}: DataFrames do not have the same length"
+    assert len(expected_results) == len(actual_results), f"For {model_name}: DataFrames do not have the same length"
 
     discrepancies = [
-        (idx, expected_results.loc[idx], actual_results.loc[idx])
+        (idx, expected_results.loc[idx, 'Predicted'], actual_results.loc[idx].item())
         for idx in expected_results.index
         if not isclose(
-            actual_results.loc[idx].item(), expected_results.loc[idx], abs_tol=1e-5
+            actual_results.loc[idx].item(), expected_results.loc[idx, 'Predicted'], abs_tol=1e-5
         )
     ]
 
@@ -51,7 +48,6 @@ def test_models(model_name, model_entry):
             for idx, expected_value, actual_value in discrepancies
         ]
     )
-
 
 def test_dunedin_pace_normalization():
     actual = model.dunedin_pace_normalization(sample_inputs)
