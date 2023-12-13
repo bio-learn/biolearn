@@ -6,7 +6,6 @@ from biolearn import model
 from biolearn.util import (
     get_test_data_file,
     load_test_data_file,
-    get_data_file,
 )
 from biolearn.data_library import GeoData
 import pickle
@@ -18,35 +17,44 @@ sample_metadata = load_test_data_file("external/testset_metadata.csv")
 
 @pytest.mark.parametrize("model_name, model_entry", model.model_definitions.items())
 def test_models(model_name, model_entry):
-    # Skip trying to test models that aren't implemented in biolearn yet
+    # Skip models not implemented
     if model_entry['model']['type'] == "NotImplemented":
         pytest.skip(f"Model type 'NotImplemented' for {model_name} - skipping test")
 
-    # Assuming you have a function to load data files
     test_data = GeoData(sample_metadata, sample_inputs)
 
-    test_model = model.LinearMethylationModel.from_definition(model_entry)
+    # Check if the model class exists
+    try:
+        model_class = getattr(model, model_entry['model']['type'])
+    except AttributeError:
+        pytest.fail(f"Model class '{model_entry['model']['type']}' not found in biolearn.model")
+
+    # Instantiate the model
+    test_model = model_class.from_definition(model_entry)
+
     actual_results = test_model.predict(test_data).sort_index()
 
-    # Load the expected results from the corresponding file
-    expected_results = load_test_data_file(f'expected_model_outputs/{model_name}.csv')
+    # Load the expected results
+    expected_results = load_test_data_file(f'expected_model_outputs/{model_name}.csv').sort_index()
 
+    # Assertions and discrepancy checks
     assert len(expected_results) == len(actual_results), f"For {model_name}: DataFrames do not have the same length"
 
-    discrepancies = [
-        (idx, expected_results.loc[idx, 'Predicted'], actual_results.loc[idx].item())
-        for idx in expected_results.index
-        if not isclose(
-            actual_results.loc[idx].item(), expected_results.loc[idx, 'Predicted'], abs_tol=1e-5
-        )
-    ]
+    discrepancies = []
+    for idx in expected_results.index:
+        for col in expected_results.columns:
+            expected_val = expected_results.loc[idx, col]
+            actual_val = actual_results.loc[idx, col]
 
-    # Check if any discrepancies were found and output them
+            if isinstance(expected_val, float) and not isclose(actual_val, expected_val, abs_tol=1e-5):
+                discrepancies.append((idx, col, expected_val, actual_val))
+            elif not isinstance(expected_val, float) and expected_val != actual_val:
+                print(type(expected_val))
+                discrepancies.append((idx, col, expected_val, actual_val))
+
     assert not discrepancies, "\n".join(
-        [
-            f"For {model_name}: Discrepancy at index {idx}: expected {expected_value}, but got {actual_value}"
-            for idx, expected_value, actual_value in discrepancies
-        ]
+        [f"For {model_name}: Discrepancy at index {idx}, column {col}: expected {expected}, but got {actual}"
+         for idx, col, expected, actual in discrepancies]
     )
 
 def test_dunedin_pace_normalization():
