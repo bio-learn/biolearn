@@ -32,7 +32,7 @@ def test_models(model_name, model_entry):
     # Instantiate the model
     test_model = model_class.from_definition(model_entry)
 
-    actual_results = test_model.predict(test_data).sort_index()
+    actual_results = test_model.predict(test_data.copy()).sort_index()
 
     # Load the expected results
     expected_results = load_test_data_file(f'expected_model_outputs/{model_name}.csv').sort_index()

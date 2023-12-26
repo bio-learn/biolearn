@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from sklearn.linear_model import LinearRegression
 from biolearn.util import get_data_file
 from biolearn.dunedin_pace import dunedin_pace_normalization
 
@@ -120,7 +121,7 @@ model_definitions = {
         "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6366976/",
         "output": "Mortality Adjusted Age (Years)",
         "model": {
-            "type": "NotImplemented",
+            "type": "GrimageModel",
             "file": "GrimAgeV1.csv"
         },
     },
@@ -199,6 +200,14 @@ model_definitions = {
             "transform": lambda sum: sum + 13.06182,
         },
     },
+    "SexEstimation": {
+        "year": 2021,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-021-07675-2",
+        "output": "Sex",
+        "model": {"type": "SexEstimationModel", "file": "estimateSex.csv"},
+    },
     "LeeRefinedRobust": {
         "year": 2019,
         "species": "Human",
@@ -231,14 +240,6 @@ model_definitions = {
         "output": "Smoking Status",
         "model": {"type": "LinearMethylationModel", "file": "Smoking.csv"},
     },
-    "SexEstimation": {
-        "year": 2021,
-        "species": "Human",
-        "tissue": "Blood",
-        "source": "https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-021-07675-2",
-        "output": "Sex",
-        "model": {"type": "SexEstimationModel", "file": "estimateSex.csv"},
-    },
 }
 
 
@@ -254,13 +255,13 @@ class LinearMethylationModel:
         self.preprocess = preprocess
         self.metadata = metadata
 
-    @staticmethod
-    def from_definition(clock_definition):
+    @classmethod
+    def from_definition(cls, clock_definition):
         def no_transform(_):
             return _
 
         model_def = clock_definition["model"]
-        return LinearMethylationModel(
+        return cls(
             model_def["file"],
             model_def.get("transform", no_transform),
             model_def.get("preprocess", no_transform),
@@ -286,19 +287,115 @@ class LinearMethylationModel:
     def methylation_sites(self):
         return list(self.coefficients.index)
 
+class GrimageModel:
+    def __init__(self, coefficient_file, **metadata):
+        self.coefficients = pd.read_csv(get_data_file(coefficient_file), index_col=0)
+        self.metadata = metadata
 
-class SexEstimationModel():
+    @classmethod
+    def from_definition(cls, clock_definition):
+        model_def = clock_definition["model"]
+        return cls(
+            model_def["file"],
+            **{k: v for k, v in clock_definition.items() if k != "model"},
+        )
+
+    def predict(self, geo_data):
+        if 'sex' not in geo_data.metadata or 'age' not in geo_data.metadata:
+            raise ValueError("Metadata must contain 'sex' and 'age' columns")
+
+        df = geo_data.dnam
+
+        # Transposing metadata so that its structure aligns with dnam (columns as samples)
+        transposed_metadata = geo_data.metadata.transpose()
+
+        # Add metadata rows to dnam DataFrame
+        df.loc['Age'] = transposed_metadata.loc['age']
+        df.loc['Female'] = transposed_metadata.loc['sex'].apply(lambda x: 1 if x == 1 else 0)
+        df.loc['Intercept'] = 1
+
+
+        grouped = self.coefficients.groupby('Y.pred')
+        all_data = pd.DataFrame()
+
+        for name, group in grouped:
+            sub_clock_result = self.calculate_sub_clock(df, group)
+            all_data[name] = sub_clock_result
+
+        cox_coefficients = {
+            'DNAmGDF15': 0.000348777412272004,
+            'DNAmB2M': 4.59105969389204e-07,
+            'DNAmCystatinC': 3.49816671441537e-06,
+            'DNAmTIMP1': 0.000143661105491888,
+            'DNAmADM': 0.00790270975255529,
+            'DNAmPAI1': 2.55560382039825e-05,
+            'DNAmLeptin': -7.32066983502079e-06,
+            'DNAmPACKYRS': 0.0303981613409142,
+            'Age': 0.0300823182194075,
+            'Female': -0.228468475622039
+        }
+
+        # Add Age and Female to all_data
+        all_data['Age'] = geo_data.metadata['age']
+        all_data['Female'] = geo_data.metadata['sex'].apply(lambda x: 1 if x == 1 else 0)
+
+
+        all_data['COX'] = all_data.mul(cox_coefficients).sum(axis=1)
+
+        # Constants for DNAmGrimAge calculation
+        m_age = 59.63951
+        sd_age = 9.049608
+        m_cox = 13.20127
+        sd_cox = 1.086805
+
+        # Calculate DNAmGrimAge
+        Y = (all_data['COX'] - m_cox) / sd_cox
+        all_data['DNAmGrimAge'] = (Y * sd_age) + m_age
+
+        # Calculate AgeAccelGrim
+        lm = LinearRegression().fit(
+            all_data[['Age']].values,
+            all_data['DNAmGrimAge'].values
+        )
+        predictions = lm.predict(all_data[['Age']].values)
+        all_data['AgeAccelGrim'] = all_data['DNAmGrimAge'] - predictions
+
+        # Drop COX column after computations
+        all_data.drop('COX', axis=1, inplace=True)
+
+        return all_data
+
+
+    def calculate_sub_clock(self, df, coefficients):
+        # Filter coefficients for only those present in df
+        relevant_coefficients = coefficients[coefficients['var'].isin(df.index)]
+
+        # Create a Series from the relevant coefficients, indexed by 'var'
+        coefficients_series = relevant_coefficients.set_index('var')['beta']
+
+        # Align coefficients with df's rows and multiply, then sum across CpG sites for each sample
+        result = df.loc[coefficients_series.index].multiply(coefficients_series, axis=0).sum()
+
+        return result
+
+
+    def rename_columns(self, data, old_names, new_names):
+        for old_name, new_name in zip(old_names, new_names):
+            data.rename(columns={old_name: new_name}, inplace=True)
+
+
+class SexEstimationModel:
     def __init__(self, coeffecient_file, **metadata):
         self.coefficients = pd.read_csv(
             get_data_file(coeffecient_file), index_col=0, low_memory=False
         )
         self.metadata = metadata
 
-    @staticmethod
-    def from_definition(clock_definition):
+    @classmethod
+    def from_definition(cls, clock_definition):
         # Implementation for creating an instance from a definition
         # Adjust this as needed for your specific definition format
-        return SexEstimationModel(clock_definition["model"]["file"], **{k: v for k, v in clock_definition.items() if k != "model"})
+        return cls(clock_definition["model"]["file"], **{k: v for k, v in clock_definition.items() if k != "model"})
 
     def predict(self, geo_data):
         dnam_data = geo_data.dnam
