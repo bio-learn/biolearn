@@ -319,60 +319,26 @@ class GrimageModel:
         all_data = pd.DataFrame()
 
         for name, group in grouped:
-            sub_clock_result = self.calculate_sub_clock(df, group)
-            all_data[name] = sub_clock_result
+            if name == "COX":
+                cox_coefficients = group.set_index('var')['beta']
+                print(cox_coefficients)
+            elif name == "transform":
+                transform = group.set_index('var')['beta']
+                m_age = transform['m_age']
+                sd_age = transform['sd_age']
+                m_cox = transform['m_cox']
+                sd_cox = transform['sd_cox']
+            else:
+                sub_clock_result = self.calculate_sub_clock(df, group)
+                all_data[name] = sub_clock_result
 
-        grimagev1_cox_coefficients = {
-            'DNAmGDF15': 0.000348777412272004,
-            'DNAmB2M': 4.59105969389204e-07,
-            'DNAmCystatinC': 3.49816671441537e-06,
-            'DNAmTIMP1': 0.000143661105491888,
-            'DNAmADM': 0.00790270975255529,
-            'DNAmPAI1': 2.55560382039825e-05,
-            'DNAmLeptin': -7.32066983502079e-06,
-            'DNAmPACKYRS': 0.0303981613409142,
-            'Age': 0.0300823182194075,
-            'Female': -0.228468475622039
-        }
-
-        grimagev2_cox_coefficients = {
-            'DNAmGDF15': 0.000349669851220334,
-            'DNAmB2M': 2.79226725088905e-07,
-            'DNAmCystatinC': 4.08419390049684e-06,
-            'DNAmTIMP1': 0.000137375483713224,
-            'DNAmADM': 0.00608931150498963,
-            'DNAmPAI1': 3.66922851511085e-06,
-            'DNAmLeptin': -2.03129309361266e-05,
-            'DNAmPACKYRS': 0.0294092167989899,
-            "DNAmlogCRP": 0.403587277157754,
-            "DNAmlogA1C": 1.90266039640722,
-            "Age": 0.0267637392803755,
-            "Female": -0.142123921424443
-        }
-
-        if self.metadata["year"] == 2022:
-            cox_coefficients = grimagev2_cox_coefficients
-            age_key = "DNAmGrimAge2"
-            accel_key = "AgeAccelGrim2"
-            m_age = 66.0943807965085
-            sd_age = 9.05974444998421
-            m_cox = 15.370829484122
-            sd_cox = 1.09534876966487
-        else:
-            cox_coefficients = grimagev1_cox_coefficients
-            age_key = "DNAmGrimAge"
-            accel_key = "AgeAccelGrim"
-            m_age = 59.63951
-            sd_age = 9.049608
-            m_cox = 13.20127
-            sd_cox = 1.086805
-        # Add Age and Female to all_data
         all_data['Age'] = geo_data.metadata['age']
         all_data['Female'] = geo_data.metadata['sex'].apply(lambda x: 1 if x == 1 else 0)
 
 
         all_data['COX'] = all_data.mul(cox_coefficients).sum(axis=1)
-
+        age_key = "DNAmGrimAge"
+        accel_key = "AgeAccelGrim"
         # Calculate DNAmGrimAge
         Y = (all_data['COX'] - m_cox) / sd_cox
         all_data[age_key] = (Y * sd_age) + m_age
