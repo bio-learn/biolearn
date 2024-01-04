@@ -5,9 +5,9 @@ Performing custom imputations
 This example demonstrates the ease of custom imputation using the biolearn library.
 """
 
-#############################################################################
+################################################################################
 # Load methylation data from a GEO dataset to use as a reference for imputation
-# --------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 from biolearn.data_library import DataLibrary, GeoData
 

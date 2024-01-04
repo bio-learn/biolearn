@@ -7,7 +7,7 @@ This example loads a DNA Methylation data from GEO, calculates multiple epigenet
 
 #############################################################################
 # First load up some methylation data from GEO using the data library
-# ---------------------------------------
+# ---------------------------------------------------------------------------
 from biolearn.data_library import DataLibrary
 #Load up GSE41169 blood DNAm data
 data_source = DataLibrary().get("GSE41169")
