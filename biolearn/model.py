@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 from biolearn.util import get_data_file
 from biolearn.dunedin_pace import dunedin_pace_normalization
+from biolearn.data_library import GeoData
 
 
 def anti_trafo(x, adult_age=20):
@@ -437,11 +438,12 @@ class ImputationDecorator:
         self.clock = clock
         self.imputation_method = imputation_method
 
-    def predict(self, dnam_data):
+    def predict(self, geo_data):
         # Impute missing values before prediction
         needed_cpgs = self.clock.methylation_sites()
-        dnam_data_imputed = self.imputation_method(dnam_data, needed_cpgs)
-        return self.clock.predict(dnam_data_imputed)
+        dnam_data_imputed = self.imputation_method(geo_data.dnam, needed_cpgs)
+
+        return self.clock.predict(GeoData(geo_data.metadata, dnam_data_imputed))
 
     # Forwarding other methods and attributes to the clock
     def __getattr__(self, name):
