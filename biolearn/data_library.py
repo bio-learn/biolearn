@@ -60,7 +60,9 @@ class GeoData:
         Returns:
             GeoData: A new instance of GeoData with copies of the metadata and dnam DataFrames.
         """
-        return GeoData(self.metadata.copy(deep=True), self.dnam.copy(deep=True))
+        return GeoData(
+            self.metadata.copy(deep=True), self.dnam.copy(deep=True)
+        )
 
 
 class GeoMatrixParser:

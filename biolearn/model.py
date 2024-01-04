@@ -121,10 +121,7 @@ model_definitions = {
         "tissue": "Blood",
         "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6366976/",
         "output": "Mortality Adjusted Age (Years)",
-        "model": {
-            "type": "GrimageModel",
-            "file": "GrimAgeV1.csv"
-        },
+        "model": {"type": "GrimageModel", "file": "GrimAgeV1.csv"},
     },
     "GrimAgeV2": {
         "year": 2022,
@@ -132,10 +129,7 @@ model_definitions = {
         "tissue": "Blood",
         "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9792204/",
         "output": "Mortality Adjusted Age (Years)",
-        "model": {
-            "type": "GrimageModel",
-            "file": "GrimAgeV2.csv"
-        },
+        "model": {"type": "GrimageModel", "file": "GrimAgeV2.csv"},
     },
     "AlcoholMcCartney": {
         "year": 2018,
@@ -244,7 +238,6 @@ model_definitions = {
 }
 
 
-
 class LinearMethylationModel:
     def __init__(
         self, coeffecient_file, transform, preprocess=None, **metadata
@@ -283,14 +276,17 @@ class LinearMethylationModel:
         )
 
         # Return as a DataFrame
-        return result.apply(self.transform).to_frame(name='Predicted')
+        return result.apply(self.transform).to_frame(name="Predicted")
 
     def methylation_sites(self):
         return list(self.coefficients.index)
 
+
 class GrimageModel:
     def __init__(self, coefficient_file, **metadata):
-        self.coefficients = pd.read_csv(get_data_file(coefficient_file), index_col=0)
+        self.coefficients = pd.read_csv(
+            get_data_file(coefficient_file), index_col=0
+        )
         self.metadata = metadata
 
     @classmethod
@@ -302,7 +298,7 @@ class GrimageModel:
         )
 
     def predict(self, geo_data):
-        if 'sex' not in geo_data.metadata or 'age' not in geo_data.metadata:
+        if "sex" not in geo_data.metadata or "age" not in geo_data.metadata:
             raise ValueError("Metadata must contain 'sex' and 'age' columns")
 
         df = geo_data.dnam
@@ -311,65 +307,70 @@ class GrimageModel:
         transposed_metadata = geo_data.metadata.transpose()
 
         # Add metadata rows to dnam DataFrame
-        df.loc['Age'] = transposed_metadata.loc['age']
-        df.loc['Female'] = transposed_metadata.loc['sex'].apply(lambda x: 1 if x == 1 else 0)
-        df.loc['Intercept'] = 1
+        df.loc["Age"] = transposed_metadata.loc["age"]
+        df.loc["Female"] = transposed_metadata.loc["sex"].apply(
+            lambda x: 1 if x == 1 else 0
+        )
+        df.loc["Intercept"] = 1
 
-
-        grouped = self.coefficients.groupby('Y.pred')
+        grouped = self.coefficients.groupby("Y.pred")
         all_data = pd.DataFrame()
 
         for name, group in grouped:
             if name == "COX":
-                cox_coefficients = group.set_index('var')['beta']
+                cox_coefficients = group.set_index("var")["beta"]
                 print(cox_coefficients)
             elif name == "transform":
-                transform = group.set_index('var')['beta']
-                m_age = transform['m_age']
-                sd_age = transform['sd_age']
-                m_cox = transform['m_cox']
-                sd_cox = transform['sd_cox']
+                transform = group.set_index("var")["beta"]
+                m_age = transform["m_age"]
+                sd_age = transform["sd_age"]
+                m_cox = transform["m_cox"]
+                sd_cox = transform["sd_cox"]
             else:
                 sub_clock_result = self.calculate_sub_clock(df, group)
                 all_data[name] = sub_clock_result
 
-        all_data['Age'] = geo_data.metadata['age']
-        all_data['Female'] = geo_data.metadata['sex'].apply(lambda x: 1 if x == 1 else 0)
+        all_data["Age"] = geo_data.metadata["age"]
+        all_data["Female"] = geo_data.metadata["sex"].apply(
+            lambda x: 1 if x == 1 else 0
+        )
 
-
-        all_data['COX'] = all_data.mul(cox_coefficients).sum(axis=1)
+        all_data["COX"] = all_data.mul(cox_coefficients).sum(axis=1)
         age_key = "DNAmGrimAge"
         accel_key = "AgeAccelGrim"
         # Calculate DNAmGrimAge
-        Y = (all_data['COX'] - m_cox) / sd_cox
+        Y = (all_data["COX"] - m_cox) / sd_cox
         all_data[age_key] = (Y * sd_age) + m_age
 
         # Calculate AgeAccelGrim
         lm = LinearRegression().fit(
-            all_data[['Age']].values,
-            all_data[age_key].values
+            all_data[["Age"]].values, all_data[age_key].values
         )
-        predictions = lm.predict(all_data[['Age']].values)
+        predictions = lm.predict(all_data[["Age"]].values)
         all_data[accel_key] = all_data[age_key] - predictions
 
         # Drop COX column after computations
-        all_data.drop('COX', axis=1, inplace=True)
+        all_data.drop("COX", axis=1, inplace=True)
 
         return all_data
 
-
     def calculate_sub_clock(self, df, coefficients):
         # Filter coefficients for only those present in df
-        relevant_coefficients = coefficients[coefficients['var'].isin(df.index)]
+        relevant_coefficients = coefficients[
+            coefficients["var"].isin(df.index)
+        ]
 
         # Create a Series from the relevant coefficients, indexed by 'var'
-        coefficients_series = relevant_coefficients.set_index('var')['beta']
+        coefficients_series = relevant_coefficients.set_index("var")["beta"]
 
         # Align coefficients with df's rows and multiply, then sum across CpG sites for each sample
-        result = df.loc[coefficients_series.index].multiply(coefficients_series, axis=0).sum()
+        result = (
+            df.loc[coefficients_series.index]
+            .multiply(coefficients_series, axis=0)
+            .sum()
+        )
 
         return result
-
 
     def rename_columns(self, data, old_names, new_names):
         for old_name, new_name in zip(old_names, new_names):
@@ -387,7 +388,10 @@ class SexEstimationModel:
     def from_definition(cls, clock_definition):
         # Implementation for creating an instance from a definition
         # Adjust this as needed for your specific definition format
-        return cls(clock_definition["model"]["file"], **{k: v for k, v in clock_definition.items() if k != "model"})
+        return cls(
+            clock_definition["model"]["file"],
+            **{k: v for k, v in clock_definition.items() if k != "model"},
+        )
 
     def predict(self, geo_data):
         dnam_data = geo_data.dnam
@@ -402,7 +406,9 @@ class SexEstimationModel:
         d_std = dnam_data.loc[autosomes].std(axis=0, skipna=True)
 
         # Normalize the data using Z-score normalization
-        z_data = dnam_data.subtract(d_mean, axis=1).div(d_std, axis=1).fillna(0)
+        z_data = (
+            dnam_data.subtract(d_mean, axis=1).div(d_std, axis=1).fillna(0)
+        )
 
         # Perform the sex prediction for chromosomes X and Y separately
         pred_xy = {}
@@ -433,6 +439,7 @@ class SexEstimationModel:
     def methylation_sites(self):
         return list(self.coefficients.index)
 
+
 class ImputationDecorator:
     def __init__(self, clock, imputation_method):
         self.clock = clock
@@ -443,7 +450,9 @@ class ImputationDecorator:
         needed_cpgs = self.clock.methylation_sites()
         dnam_data_imputed = self.imputation_method(geo_data.dnam, needed_cpgs)
 
-        return self.clock.predict(GeoData(geo_data.metadata, dnam_data_imputed))
+        return self.clock.predict(
+            GeoData(geo_data.metadata, dnam_data_imputed)
+        )
 
     # Forwarding other methods and attributes to the clock
     def __getattr__(self, name):

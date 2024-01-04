@@ -31,7 +31,7 @@ class ModelGallery:
                 raise ValueError(
                     f"Expected dictionary for model definition, got {type(model_def)} for model {name}"
                 )
-            if not model_def['model']['type'] == "NotImplemented":
+            if not model_def["model"]["type"] == "NotImplemented":
                 self.models[name] = LinearMethylationModel.from_definition(
                     model_def
                 )

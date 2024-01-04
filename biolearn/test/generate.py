@@ -64,7 +64,7 @@ if not is_file_valid(data_file_path, expected_hash):
             "id-row": 33,
             "metadata": {
                 "age": {"row": 47, "parse": "numeric"},
-                "sex": {"row": 41, "parse": "sex"}
+                "sex": {"row": 41, "parse": "sex"},
             },
             "matrix-start": 73,
         },
@@ -73,12 +73,16 @@ if not is_file_valid(data_file_path, expected_hash):
     loaded_data = source.load()
 
     print("Processing DNAm data")
-    dnam = loaded_data.dnam.transpose().head(10).transpose()  # Transpose and limit to 10 items
+    dnam = (
+        loaded_data.dnam.transpose().head(10).transpose()
+    )  # Transpose and limit to 10 items
     dnam.to_csv(data_file_path)
 
     print("Verifying new DNAm data file")
     if not is_file_valid(data_file_path, expected_hash):
-        print("ERROR: Generated DNAm data file does not match expected. Exiting.")
+        print(
+            "ERROR: Generated DNAm data file does not match expected. Exiting."
+        )
         sys.exit(1)
     else:
         print("DNAm data file matches existing hash. Done.")
