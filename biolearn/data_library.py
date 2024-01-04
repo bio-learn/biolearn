@@ -53,6 +53,17 @@ class GeoData:
         self.metadata = metadata
         self.dnam = dnam
 
+    def copy(self):
+        """
+        Creates a deep copy of the GeoData instance.
+
+        Returns:
+            GeoData: A new instance of GeoData with copies of the metadata and dnam DataFrames.
+        """
+        return GeoData(
+            self.metadata.copy(deep=True), self.dnam.copy(deep=True)
+        )
+
 
 class GeoMatrixParser:
     parsers = {

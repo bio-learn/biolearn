@@ -5,11 +5,11 @@ Performing custom imputations
 This example demonstrates the ease of custom imputation using the biolearn library.
 """
 
-#############################################################################
+################################################################################
 # Load methylation data from a GEO dataset to use as a reference for imputation
-# --------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
-from biolearn.data_library import DataLibrary
+from biolearn.data_library import DataLibrary, GeoData
 
 # Load the reference dataset and compute averages for imputation
 reference_dataset = DataLibrary().get("GSE40279").load()
@@ -25,6 +25,7 @@ target_dataset = DataLibrary().get("GSE51057").load()
 # Perform imputation using the reference averages
 from biolearn.imputation import impute_from_standard
 imputed_data = impute_from_standard(target_dataset.dnam, reference_averages)
+imputed_dataset = GeoData(target_dataset.metadata, imputed_data)
 
 #############################################################################
 # Now run clock predictions on the dataset before and after
@@ -34,8 +35,8 @@ imputed_data = impute_from_standard(target_dataset.dnam, reference_averages)
 from biolearn.model_gallery import ModelGallery
 clock_model = ModelGallery().get("Horvathv1")
 
-original_age_predictions = clock_model.predict(target_dataset.dnam)
-imputed_age_predictions = clock_model.predict(imputed_data)
+original_age_predictions = clock_model.predict(target_dataset)
+imputed_age_predictions = clock_model.predict(imputed_dataset)
 
 #############################################################################
 # Visualize the comparison of age predictions
@@ -47,8 +48,8 @@ import matplotlib.pyplot as plt
 
 # Prepare data for visualization
 comparison_data = pd.DataFrame({
-    'Original': original_age_predictions,
-    'Imputed': imputed_age_predictions
+    'Original': original_age_predictions['Predicted'],
+    'Imputed': imputed_age_predictions['Predicted']
 })
 
 # Create a scatter plot to compare the results
@@ -79,7 +80,7 @@ decorated_clock = ImputationDecorator(clock_model, custom_impute_method)
 # --------------------------------------------------------------------------
 
 # Predict epigenetic age using the decorated clock (with imputation)
-decorated_clock_predictions = decorated_clock.predict(target_dataset.dnam)
+decorated_clock_predictions = decorated_clock.predict(target_dataset)
 
 # Verify that the results are the same as the direct imputation approach
 same_results = all(decorated_clock_predictions == imputed_age_predictions)
