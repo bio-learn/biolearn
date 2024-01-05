@@ -377,12 +377,8 @@ class GrimageModel:
             data.rename(columns={old_name: new_name}, inplace=True)
 
     def methylation_sites(self):
-        # Filter out rows with index "COX" or "transform"
         filtered_df = self.coefficients[~self.coefficients.index.isin(['COX', 'transform'])]
-
-        # Select unique values from 'var' column, excluding "Intercept", "Age", and "Female"
         unique_vars = set(filtered_df['var']) - {"Intercept", "Age", "Female"}
-
         return list(unique_vars)
 
 
