@@ -509,3 +509,46 @@ items:
         cell_type:
           row: 43
           parse: string
+  - id: GSE52588
+    title: Identification of a DNA methylation signature in blood from subjects affected
+      by Down syndrome
+    summary: Down syndrome is characterized by a wide spectrum of clinical signs, which
+      include cognitive and endocrine disorders and haematological abnormalities. Although
+      it is well established that the causative defect of Down syndrome is the trisomy
+      of chromosome 21, the molecular bases of Down syndrome phenotype are still largely
+      unknown. We used the Infinium HumanMethylation450 BeadChip to investigate DNA
+      methylation patterns in whole blood from 29 subjects affected by Down syndrome
+      (DS), using their healthy relatives as controls (mothers  and unaffected siblings).
+      This family-based model allowed us to monitor possible confounding effects on
+      DNA methylation patterns deriving from genetic and environmental (lifestyle) factors.
+      The identified epigenetic signature of Down syndrome includes differentially methylated
+      regions that, although enriched on chromosome 21, interest most of the other chromosomes
+      and can be functionally linked to the developmental and haematological defects
+      characteristic of the disease.
+    format: Illumina450k
+    organism: human
+    samples: 87
+    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE52nnn/GSE52588/matrix/GSE52588_series_matrix.txt.gz
+    parser:
+      type: geo-matrix
+      id-row: 52
+      matrix-start: 88
+      metadata:
+        group:
+          row: 60
+          parse: string
+        disease_state:
+          row: 61
+          parse: string
+        family:
+          row: 62
+          parse: string
+        gender:
+          row: 63
+          parse: sex
+        age:
+          row: 64
+          parse: numeric
+        tissue:
+          row: 65
+          parse: string
