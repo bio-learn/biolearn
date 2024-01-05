@@ -19,10 +19,11 @@ class ModelGallery:
     ModelGallery manages a collection of Models that can be run on biological data to produce predictions.
     It supports retrieving models by name with various imputation methods, and searching models based on species or tissue.
     """
+
     model_builders = {
         "LinearMethylationModel": LinearMethylationModel.from_definition,
         "GrimageModel": GrimageModel.from_definition,
-        "SexEstimationModel": SexEstimationModel.from_definition
+        "SexEstimationModel": SexEstimationModel.from_definition,
     }
 
     def __init__(self, models=model_definitions):
@@ -40,11 +41,11 @@ class ModelGallery:
                 )
             model_type = model_def["model"]["type"]
             if model_type in self.model_builders:
-                self.models[name] = self.model_builders[model_type](
-                    model_def
-                )
+                self.models[name] = self.model_builders[model_type](model_def)
             else:
-                raise ValueError(f"Model type {model_type} does not have a known builder")
+                raise ValueError(
+                    f"Model type {model_type} does not have a known builder"
+                )
 
     def get(self, name, imputation_method="default"):
         """

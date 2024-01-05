@@ -22,6 +22,7 @@ def impute_from_standard(dnam, cpg_averages, cpgs_to_impute=None):
         df_filled = dnam.apply(lambda col: col.fillna(cpg_averages))
     return df_filled
 
+
 def impute_from_average(dnam, cpgs_to_impute=None):
     """
     Impute all missing values in a DNA methylation dataset using the average from the dataset itself.
@@ -39,7 +40,9 @@ def impute_from_average(dnam, cpgs_to_impute=None):
 
     if cpgs_to_impute:
         # Filter out non-existent CpG sites
-        existing_cpgs = [cpg for cpg in cpgs_to_impute if cpg in dnam_copy.index]
+        existing_cpgs = [
+            cpg for cpg in cpgs_to_impute if cpg in dnam_copy.index
+        ]
 
         # Apply imputation only to existing CpG sites
         mask = dnam_copy.loc[existing_cpgs].isna()

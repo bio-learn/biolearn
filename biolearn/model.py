@@ -377,8 +377,10 @@ class GrimageModel:
             data.rename(columns={old_name: new_name}, inplace=True)
 
     def methylation_sites(self):
-        filtered_df = self.coefficients[~self.coefficients.index.isin(['COX', 'transform'])]
-        unique_vars = set(filtered_df['var']) - {"Intercept", "Age", "Female"}
+        filtered_df = self.coefficients[
+            ~self.coefficients.index.isin(["COX", "transform"])
+        ]
+        unique_vars = set(filtered_df["var"]) - {"Intercept", "Age", "Female"}
         return list(unique_vars)
 
 
