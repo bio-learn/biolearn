@@ -78,6 +78,17 @@ def test_impute_from_average_specific_cpgs():
     assert df_filled.loc["cpg3", "Sample3"] == 2.4
 
 
+def test_impute_from_average_missing_column():
+    existing_cpg = "cpg1"
+    non_existent_cpg = "cpg5"
+    cpgs_to_impute = [existing_cpg, non_existent_cpg]
+
+    df_filled = impute_from_average(df_test, cpgs_to_impute=cpgs_to_impute)
+
+    assert non_existent_cpg not in df_filled.columns
+    assert not df_filled.loc[existing_cpg].isna().any()
+
+
 def test_replacement_with_mean():
     result = hybrid_impute(
         df_test, cpg_averages_test, ["cpg1", "cpg2", "cpg3", "cpg4", "cpg5"]
