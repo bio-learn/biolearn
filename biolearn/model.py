@@ -1,9 +1,10 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
 from sklearn.linear_model import LinearRegression
-from biolearn.util import get_data_file
-from biolearn.dunedin_pace import dunedin_pace_normalization
+
 from biolearn.data_library import GeoData
+from biolearn.dunedin_pace import dunedin_pace_normalization
+from biolearn.util import get_data_file
 
 
 def anti_trafo(x, adult_age=20):
@@ -56,6 +57,42 @@ model_definitions = {
             "type": "LinearMethylationModel",
             "file": "PhenoAge.csv",
             "transform": lambda sum: sum + 60.664,
+        },
+    },
+    "YingCausAge": {
+        "year": 2022,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.biorxiv.org/content/10.1101/2022.10.07.511382v2",
+        "output": "Age (Years)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "YingCausAge.csv",
+            "transform": lambda sum: sum + 86.80816381,
+        },
+    },
+    "YingDamAge": {
+        "year": 2022,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.biorxiv.org/content/10.1101/2022.10.07.511382v2",
+        "output": "Age (Years)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "YingDamAge.csv",
+            "transform": lambda sum: sum + 543.4315887,
+        },
+    },
+    "YingAdaptAge": {
+        "year": 2022,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.biorxiv.org/content/10.1101/2022.10.07.511382v2",
+        "output": "Age (Years)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "YingAdaptAge.csv",
+            "transform": lambda sum: sum - 511.9742762,
         },
     },
     "Horvathv2": {
