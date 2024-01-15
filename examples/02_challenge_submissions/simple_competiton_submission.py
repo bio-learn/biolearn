@@ -1,5 +1,5 @@
 """
-Building a competition submtission using an existing model
+Building a competition submission using an existing model
 =============================================================
 
 This example shows you how to generate a submission for the community warmup using an existing model

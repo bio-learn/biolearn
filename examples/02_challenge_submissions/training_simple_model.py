@@ -58,6 +58,7 @@ for _ in range(n_bootstrap):
 
 # Determine stable CpG sites
 stable_cpg_sites = np.where(cpg_counts > n_bootstrap * 0.6)[0]
+stable_cpg_names = data.dnam.index[stable_cpg_sites].tolist()
 
 print(f"Stable CpG sites (associated with age in more than 60% of bootstrap samples): {stable_cpg_sites}")
 
@@ -81,6 +82,9 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 # Define the model
 # alpha is the regularization strength, and l1_ratio defines the mix between L1 and L2
 # l1_ratio = 1 is Lasso; l1_ratio = 0 is Ridge.
+from sklearn.linear_model import ElasticNet
+from sklearn.metrics import mean_squared_error
+
 model = ElasticNet(alpha=0.01, l1_ratio=0.3, max_iter=10000)
 # Train the model
 model.fit(X_train, y_train)
@@ -94,6 +98,7 @@ print(f"Mean Squared Error on Test Data: {mse}")
 ############################################################################################################################
 # Plot the results to see how good our model is
 # --------------------------------------------------------------------------------------------------------------------------
+import matplotlib.pyplot as plt
 
 y_pred = model.predict(X_test)
 
