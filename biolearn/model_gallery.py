@@ -68,6 +68,9 @@ class ModelGallery:
 
         # Selecting imputation method
         model_instance = self.models[name]
+
+        if imputation_method == "default":
+            imputation_method = model_instance
         if imputation_method == "none":
             return model_instance
         elif imputation_method == "biolearn":
