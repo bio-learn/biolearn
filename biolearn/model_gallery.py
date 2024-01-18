@@ -25,6 +25,7 @@ class ModelGallery:
         "GrimageModel": GrimageModel.from_definition,
         "SexEstimationModel": SexEstimationModel.from_definition,
     }
+
     def __init__(self, models=model_definitions):
         """
         Initializes the ModelGallery instance.
@@ -68,10 +69,11 @@ class ModelGallery:
         model_type = model_def["model"]["type"]
         model_instance = self.model_builders[model_type](model_def)
 
-        global_default = 'sesame_450k'
-        default_imputation_method = model_def['model'].get('default_imputation', global_default)
+        global_default = "sesame_450k"
+        default_imputation_method = model_def["model"].get(
+            "default_imputation", global_default
+        )
         imputation_method = imputation_method or default_imputation_method
-
 
         if imputation_method == "none":
             return model_instance
@@ -118,7 +120,8 @@ class ModelGallery:
         """
         matches = {}
         for name, model_def in self.model_definitions.items():
-            if (species is None or model_def.get("species") == species) and \
-            (tissue is None or model_def.get("tissue") == tissue):
+            if (species is None or model_def.get("species") == species) and (
+                tissue is None or model_def.get("tissue") == tissue
+            ):
                 matches[name] = model_def
         return matches
