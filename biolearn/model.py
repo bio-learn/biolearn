@@ -108,12 +108,12 @@ model_definitions = {
         "tissue": "Blood",
         "source": "https://www.proquest.com/docview/2634411178",
         "output": "Aging Rate (Years/Year)",
-        "imputation": "none",
         "model": {
             "type": "LinearMethylationModel",
             "file": "DunedinPACE.csv",
             "transform": lambda sum: sum - 1.949859,
             "preprocess": dunedin_pace_normalization,
+            "default_imputation": "none",
         },
     },
     "GrimAgeV1": {

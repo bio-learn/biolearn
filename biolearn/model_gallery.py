@@ -25,7 +25,6 @@ class ModelGallery:
         "GrimageModel": GrimageModel.from_definition,
         "SexEstimationModel": SexEstimationModel.from_definition,
     }
-
     def __init__(self, models=model_definitions):
         """
         Initializes the ModelGallery instance.
@@ -33,7 +32,7 @@ class ModelGallery:
         Args:
             models (dict): A dictionary of model definitions.
         """
-        self.models = {}
+        self.model_definitions = {}
         for name, model_def in models.items():
             if not isinstance(model_def, dict):
                 raise ValueError(
@@ -41,20 +40,32 @@ class ModelGallery:
                 )
             model_type = model_def["model"]["type"]
             if model_type in self.model_builders:
-                self.models[name] = self.model_builders[model_type](model_def)
+                self.model_definitions[name] = model_def
             else:
                 raise ValueError(
                     f"Model type {model_type} does not have a known builder"
                 )
 
-    def get(self, name, imputation_method="default"):
+    def create_model_instance(self, model_def):
         """
-        Retrieves a model by its name with specified imputation method. Possible imputation values are:
-        'none', 'biolearn', 'averaging', 'dunedin', 'sesame_450k'. If no value is passed it will default to sesame_450k.
+        Creates a model instance from the definition.
+
+        Args:
+            model_def (dict): The model definition.
+
+        Returns:
+            object: The created model instance.
+        """
+        model_type = model_def["model"]["type"]
+        return self.model_builders[model_type](model_def)
+
+    def get(self, name, imputation_method=None):
+        """
+        Retrieves a model by its name with specified imputation method.
 
         Args:
             name (str): The name of the model.
-            imputation_method (str, optional): The imputation method to use
+            imputation_method (str, optional): The imputation method to use. If None, use the default method for the model.
 
         Returns:
             object: The requested model instance, possibly wrapped in an ImputationDecorator.
@@ -63,14 +74,17 @@ class ModelGallery:
             KeyError: If the model with the specified name is not found.
             ValueError: If an invalid imputation method is specified.
         """
-        if name not in self.models:
+        if name not in self.model_definitions:
             raise KeyError(f"Model not found: {name}")
 
-        # Selecting imputation method
-        model_instance = self.models[name]
+        model_def = self.model_definitions[name]
+        model_instance = self.create_model_instance(model_def)
 
-        if imputation_method == "default":
-            imputation_method = model_instance
+        global_default = 'sesame_450k'
+        default_imputation_method = model_def['model'].get('default_imputation', global_default)
+        imputation_method = imputation_method or default_imputation_method
+
+
         if imputation_method == "none":
             return model_instance
         elif imputation_method == "biolearn":
@@ -91,7 +105,7 @@ class ModelGallery:
                 model_instance,
                 lambda dnam, cpgs: hybrid_impute(dnam, gold_averages, cpgs),
             )
-        elif imputation_method in ("sesame_450k", "default"):
+        elif imputation_method == "sesame_450k":
             # Sesame method for 450k arrays
             sesame_450k_file = get_data_file("sesame_450k_median.csv")
             df = pd.read_csv(sesame_450k_file, index_col=0)
@@ -109,16 +123,14 @@ class ModelGallery:
 
         Args:
             species (str, optional): The species to filter models by.
-
             tissue (str, optional): The tissue to filter models by.
 
         Returns:
             dict: A dictionary of models that match the specified criteria.
         """
         matches = {}
-        for name, model in self.models.items():
-            if (species is None or model.metadata["species"] == species) and (
-                tissue is None or model.metadata["tissue"] == tissue
-            ):
-                matches[name] = model
+        for name, model_def in self.model_definitions.items():
+            if (species is None or model_def.get("species") == species) and \
+            (tissue is None or model_def.get("tissue") == tissue):
+                matches[name] = model_def
         return matches
