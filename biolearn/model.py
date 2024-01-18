@@ -113,6 +113,7 @@ model_definitions = {
             "file": "DunedinPACE.csv",
             "transform": lambda sum: sum - 1.949859,
             "preprocess": dunedin_pace_normalization,
+            "default_imputation": "none",
         },
     },
     "GrimAgeV1": {
