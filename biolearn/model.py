@@ -243,10 +243,10 @@ model_definitions = {
         "source": "https://www.nature.com/articles/s41467-021-21064-z",
         "output": "Down Syndrome Prediction",
         "model": {
-            "type": "LinearMethylationModel", 
+            "type": "LinearMethylationModel",
             "file": "down_syndrome.csv",
-            "default_imputation": "averaging"
-        }
+            "default_imputation": "averaging",
+        },
     },
 }
 
