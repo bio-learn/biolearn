@@ -39,9 +39,15 @@ def impute_from_average(dnam, cpgs_to_impute=None):
     means = dnam_copy.mean(axis=1)
 
     if cpgs_to_impute:
-        mask = dnam_copy.loc[cpgs_to_impute].isna()
-        dnam_copy.loc[cpgs_to_impute] = dnam_copy.loc[cpgs_to_impute].where(
-            ~mask, means[cpgs_to_impute], axis=0
+        # Filter out non-existent CpG sites
+        existing_cpgs = [
+            cpg for cpg in cpgs_to_impute if cpg in dnam_copy.index
+        ]
+
+        # Apply imputation only to existing CpG sites
+        mask = dnam_copy.loc[existing_cpgs].isna()
+        dnam_copy.loc[existing_cpgs] = dnam_copy.loc[existing_cpgs].where(
+            ~mask, means[existing_cpgs], axis=0
         )
     else:
         dnam_copy = dnam_copy.where(dnam_copy.notna(), means, axis=0)

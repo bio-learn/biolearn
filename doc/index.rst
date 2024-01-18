@@ -1,13 +1,16 @@
 Biolearn
 ========
 
-Biolearn enables easy and versatile analyses of biomarkers of aging data. It provides tools to easy load data from publicly available sources like the 
-`Gene Expression Omnibus <https://www.ncbi.nlm.nih.gov/geo/>`_, `National Health and Nutrition Examimation Survey <https://www.cdc.gov/nchs/nhanes/index.htm>`_,
-and the `Framingham Heart Study <https://www.framinghamheartstudy.org/>`_. Biolearns also contains reference implemenations for common aging clock such at the 
-Horvath clock, DunedinPACE and many others that can easily be run in only a few lines of code.
+Biolearn enables easy and versatile analyses of biomarkers of aging data. It provides tools to easily load data from publicly available sources like the 
+`Gene Expression Omnibus <https://www.ncbi.nlm.nih.gov/geo/>`_, `National Health and Nutrition Examination Survey <https://www.cdc.gov/nchs/nhanes/index.htm>`_,
+and the `Framingham Heart Study <https://www.framinghamheartstudy.org/>`_. Biolearn also contains reference implementations for common aging clocks such as the 
+Horvath clock, DunedinPACE, and many others that can easily be run in only a few lines of code.
 
-Biolearn is scientifically and financially supported by `Biomarkers of Aging Consortium <https://www.agingconsortium.org/>`_ 
-and `Methuselah Foundation <https://www.mfoundation.org/>`_ respectively 
+Biolearn is developed and supported by several organizations and individuals, especially `Biomarkers of Aging Consortium <https://www.agingconsortium.org/>`_,
+`Methuselah Foundation <https://www.mfoundation.org/>`_, and `VOLO Foundation <https://www.VOLOfoundation.org/>`_.
+
+We are hosting a 2024-2025 Challenge series on the Synapse platform, where participants will be asked to predict chronological age, 
+mortality, and multi-morbidity, with total awards of $200k+. `Learn more at Synapse! <https://www.synapse.org/#!Synapse:syn52966292/wiki/624696/>`_.
 
 .. grid::
 
@@ -21,7 +24,7 @@ and `Methuselah Foundation <https://www.mfoundation.org/>`_ respectively
 
         Get started with Biolearn
 
-    .. grid-item-card:: :fas:`th` Examples
+    .. grid-item-card:: :fas:`dna` Examples
         :link: auto_examples/index.html
         :link-type: url
         :columns: 12 12 4 4
@@ -31,7 +34,7 @@ and `Methuselah Foundation <https://www.mfoundation.org/>`_ respectively
 
         Discover functionalities by reading examples
 
-    .. grid-item-card:: :fas:`dna` Biomarkers of Aging 2024
+    .. grid-item-card:: :fas:`trophy` Challenge
         :link: https://www.synapse.org/#!Synapse:syn52966292/
         :link-type: url
         :columns: 12 12 4 4
@@ -39,7 +42,7 @@ and `Methuselah Foundation <https://www.mfoundation.org/>`_ respectively
         :class-title: sd-text-primary
         :margin: 2 2 0 0
 
-        Join the challenge to build better biomarkers!
+        Join the Biomarkers of Aging Challenge!
 
 Featured examples
 -----------------
