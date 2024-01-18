@@ -46,19 +46,6 @@ class ModelGallery:
                     f"Model type {model_type} does not have a known builder"
                 )
 
-    def create_model_instance(self, model_def):
-        """
-        Creates a model instance from the definition.
-
-        Args:
-            model_def (dict): The model definition.
-
-        Returns:
-            object: The created model instance.
-        """
-        model_type = model_def["model"]["type"]
-        return self.model_builders[model_type](model_def)
-
     def get(self, name, imputation_method=None):
         """
         Retrieves a model by its name with specified imputation method.
@@ -78,7 +65,8 @@ class ModelGallery:
             raise KeyError(f"Model not found: {name}")
 
         model_def = self.model_definitions[name]
-        model_instance = self.create_model_instance(model_def)
+        model_type = model_def["model"]["type"]
+        model_instance = self.model_builders[model_type](model_def)
 
         global_default = 'sesame_450k'
         default_imputation_method = model_def['model'].get('default_imputation', global_default)
