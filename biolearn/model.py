@@ -236,6 +236,18 @@ model_definitions = {
         "output": "Smoking Status",
         "model": {"type": "LinearMethylationModel", "file": "Smoking.csv"},
     },
+    "DownSyndrome": {
+        "year": 2021,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.nature.com/articles/s41467-021-21064-z",
+        "output": "Down Syndrome Prediction",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "down_syndrome.csv",
+            "default_imputation": "averaging",
+        },
+    },
 }
 
 

@@ -29,7 +29,7 @@ phenoage_results = gallery.get("PhenoAge").predict(data)
 
 
 ##########################################################################################################
-# Finally exctract the age data from the metadata from GEO and plot the results using seaborn
+# Finally extract the age data from the metadata from GEO and plot the results using seaborn
 # --------------------------------------------------------------------------------------------------------
 import seaborn as sn
 import pandas as pd
