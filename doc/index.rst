@@ -4,7 +4,7 @@ Biolearn
 Biolearn enables easy and versatile analyses of biomarkers of aging data. It provides tools to easily load data from publicly available sources like the 
 `Gene Expression Omnibus <https://www.ncbi.nlm.nih.gov/geo/>`_, `National Health and Nutrition Examination Survey <https://www.cdc.gov/nchs/nhanes/index.htm>`_,
 and the `Framingham Heart Study <https://www.framinghamheartstudy.org/>`_. Biolearn also contains reference implementations for common aging clocks such as the 
-Horvath clock, DunedinPACE, and many others that can easily be run in only a few lines of code.
+Horvath clock, DunedinPACE, and many others that can easily be run in only a few lines of code. You can read more about it in our `paper <https://www.biorxiv.org/content/10.1101/2023.12.02.569722v2>`_.
 
 Biolearn is developed and supported by several organizations and individuals, especially `Biomarkers of Aging Consortium <https://www.agingconsortium.org/>`_,
 `Methuselah Foundation <https://www.mfoundation.org/>`_, and `VOLO Foundation <https://www.VOLOfoundation.org/>`_.
