@@ -239,7 +239,11 @@ model_definitions = {
         "tissue": "Blood",
         "source": "https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-021-07675-2",
         "output": "Sex",
-        "model": {"type": "SexEstimationModel", "file": "estimateSex.csv"},
+        "model": {
+            "type": "SexEstimationModel",
+            "file": "estimateSex.csv",
+            "default_imputation": "averaging",
+        },
     },
     "LeeRefinedRobust": {
         "year": 2019,
