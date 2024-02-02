@@ -3,9 +3,23 @@ import os
 import pandas as pd
 import numpy as np
 from io import StringIO
-from biolearn.data_library import parse_library_file, DataSource, DataLibrary
+from biolearn.data_library import parse_library_file, DataSource, DataLibrary, GeoData
 from biolearn.model import get_data_file
 from biolearn.util import get_test_data_file
+from biolearn.util import load_test_data_file
+
+import pandas as pd
+
+def test_quality_report():
+    sample_inputs = load_test_data_file("external/DNAmTestSet.csv")
+    sample_metadata = load_test_data_file("external/testset_metadata.csv")
+    geo_data_instance = GeoData(sample_metadata, sample_inputs)
+    actual_report = geo_data_instance.quality_report()
+
+    expected_report = load_test_data_file("test_quality_report.csv")
+
+    # Directly compare the actual and expected reports
+    pd.testing.assert_frame_equal(actual_report, expected_report, check_dtype=True, check_like=True)
 
 
 def test_blank_file_gives_error():
