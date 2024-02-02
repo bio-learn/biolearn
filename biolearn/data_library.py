@@ -69,7 +69,7 @@ class GeoData:
         Generates a quality control report for the genomic data.
 
         The report includes a 'qc' column with mean absolute deviation from the median value per methylation site,
-        and an 'age' column pulled from the metadata.
+        and an 'age' column pulled from the metadata. High deviation could indicate a technical issue with the data.
 
         Returns:
             DataFrame: A pandas DataFrame containing the quality control report.
