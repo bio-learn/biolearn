@@ -63,7 +63,7 @@ class GeoData:
         return GeoData(
             self.metadata.copy(deep=True), self.dnam.copy(deep=True)
         )
-    
+
     def quality_report(self):
         """
         Generates a quality control report for the genomic data.
@@ -76,15 +76,16 @@ class GeoData:
         """
         # Copy the DNA methylation data to preserve the original data
         methylation_data = self.dnam.copy()
-        
+
         methylation_medians = methylation_data.median(axis=1)
         deviations = methylation_data.sub(methylation_medians, axis=0)
         mean_abs_deviation = deviations.abs().mean()
-        
-        report = mean_abs_deviation.to_frame(name='qc')
-        report['age'] = self.metadata['age']
-        
+
+        report = mean_abs_deviation.to_frame(name="qc")
+        report["age"] = self.metadata["age"]
+
         return report
+
 
 class GeoMatrixParser:
     parsers = {

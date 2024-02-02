@@ -3,12 +3,18 @@ import os
 import pandas as pd
 import numpy as np
 from io import StringIO
-from biolearn.data_library import parse_library_file, DataSource, DataLibrary, GeoData
+from biolearn.data_library import (
+    parse_library_file,
+    DataSource,
+    DataLibrary,
+    GeoData,
+)
 from biolearn.model import get_data_file
 from biolearn.util import get_test_data_file
 from biolearn.util import load_test_data_file
 
 import pandas as pd
+
 
 def test_quality_report():
     sample_inputs = load_test_data_file("external/DNAmTestSet.csv")
@@ -19,7 +25,9 @@ def test_quality_report():
     expected_report = load_test_data_file("test_quality_report.csv")
 
     # Directly compare the actual and expected reports
-    pd.testing.assert_frame_equal(actual_report, expected_report, check_dtype=True, check_like=True)
+    pd.testing.assert_frame_equal(
+        actual_report, expected_report, check_dtype=True, check_like=True
+    )
 
 
 def test_blank_file_gives_error():
