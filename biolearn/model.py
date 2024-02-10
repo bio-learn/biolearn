@@ -288,7 +288,6 @@ model_definitions = {
 }
 
 
-
 class LinearMethylationModel:
     def __init__(
         self, coeffecient_file, transform, preprocess=None, **metadata

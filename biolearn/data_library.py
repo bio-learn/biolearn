@@ -157,7 +157,7 @@ class GeoData:
         sample_report = mean_abs_deviation.to_frame(name="deviation")
 
         # Include 'age' in the detailed report if relevant and if analyzing all sites
-        if 'age' in self.metadata.columns and sites is None:
+        if "age" in self.metadata.columns and sites is None:
             sample_report["age"] = self.metadata["age"]
 
         # Calculate missing percentage for each methylation site
