@@ -31,8 +31,9 @@ def extract_numeric(s):
 
 
 class QualityReport:
-    def __init__(self, methylation_data, summary):
-        self.methylation_data = methylation_data
+    def __init__(self, sample_report, methylation_site_report, summary):
+        self.sample_report = sample_report
+        self.methylation_site_report = methylation_site_report
         self.summary = summary
 
     def show(self):
@@ -130,26 +131,43 @@ class GeoData:
             self.metadata.copy(deep=True), self.dnam.copy(deep=True)
         )
 
-    def quality_report(self):
+    def quality_report(self, sites=None):
         """
-        Generates a quality control report for the genomic data.
+        Generates a quality control report for the genomic data, optionally filtered by specified methylation sites,
+        and includes a detailed section reporting the missing percentage for each methylation site.
+
+        Args:
+            sites (list, optional): A list of methylation site identifiers to include in the report.
+                                    If None, all sites are included.
 
         Returns:
-            QualityReport: An object containing both detailed methylation data and a summary.
+            QualityReport: An object containing both detailed methylation data, a summary,
+                           and a detailed section for missing percentages per site.
         """
         methylation_data = self.dnam.copy()
+
+        # Filter methylation data if specific sites are provided
+        if sites is not None:
+            methylation_data = methylation_data.loc[sites]
 
         # Calculate mean absolute deviation
         methylation_medians = methylation_data.median(axis=1)
         deviations = methylation_data.sub(methylation_medians, axis=0)
         mean_abs_deviation = deviations.abs().mean()
-        detailed_report = mean_abs_deviation.to_frame(name="deviation")
-        detailed_report["age"] = self.metadata["age"]
+        sample_report = mean_abs_deviation.to_frame(name="deviation")
+
+        # Include 'age' in the detailed report if relevant and if analyzing all sites
+        if 'age' in self.metadata.columns and sites is None:
+            sample_report["age"] = self.metadata["age"]
+
+        # Calculate missing percentage for each methylation site
+        missing_percentage = methylation_data.isna().mean(axis=1)
+        methylation_site_report = missing_percentage.to_frame(name="missing")
 
         # Summary calculations
         total_nan = methylation_data.isna().sum().sum()
         sites_with_20_percent_nan = (
-            methylation_data.isna().mean() >= 0.2
+            methylation_data.isna().mean(axis=1) >= 0.2
         ).sum()
 
         summary = {
@@ -160,7 +178,7 @@ class GeoData:
             "methylation_sites": methylation_data.shape[0],
         }
 
-        return QualityReport(detailed_report, summary)
+        return QualityReport(sample_report, methylation_site_report, summary)
 
 
 class GeoMatrixParser:
