@@ -26,7 +26,7 @@ def test_quality_report():
 
     # Directly compare the actual and expected reports
     pd.testing.assert_frame_equal(
-        actual_report.methylation_data,
+        actual_report.methylation_site_report,
         expected_report,
         check_dtype=True,
         check_like=True,
