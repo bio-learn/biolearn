@@ -198,7 +198,7 @@ model_definitions = {
         },
     },
     "HRSInCHPhenoAge": {
-        "year": "2022",
+        "year": 2022,
         "species": "Human",
         "tissue": "Blood",
         "output": "Age (Years)",

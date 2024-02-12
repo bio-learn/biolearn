@@ -2,6 +2,7 @@ import yaml
 import pandas as pd
 import re
 from biolearn.util import cached_download, get_data_file
+from IPython.display import display, HTML
 
 
 def parse_after_colon(s):
@@ -27,6 +28,72 @@ def extract_numeric(s):
     """Extract the first numeric value from a string."""
     match = re.search(r"(\d+(\.\d+)?)", s)
     return float(match.group(1)) if match else None
+
+
+class QualityReport:
+    def __init__(self, sample_report, methylation_site_report, summary):
+        self.sample_report = sample_report
+        self.methylation_site_report = methylation_site_report
+        self.summary = summary
+
+    def show(self):
+        """
+        Pretty prints the summary of the quality report for display, along with relevant notes based on the data.
+        """
+        print("Quality Report Summary\n")
+        print("------------------------------------------------")
+
+        total_samples = self.summary["total_samples"]
+        total_sites = self.summary["methylation_sites"]
+        missing_data_points = self.summary["missing_data_points"]
+
+        total_data_points = total_samples * total_sites
+        missing_data_percentage = (
+            (missing_data_points / total_data_points) * 100
+            if total_data_points > 0
+            else 0
+        )
+        print(f"Sample Count: {total_samples}")
+        print(f"Methylation Sites: {total_sites}")
+        print(
+            f"Missing Methylation Data: {missing_data_points} ({missing_data_percentage:.2f}%)"
+        )
+
+        high_deviation_count = self.summary["samples_with_high_deviation"]
+        high_deviation_percentage = (
+            high_deviation_count / total_samples
+        ) * 100
+        print(
+            f"Samples With High Deviation: {high_deviation_count} ({high_deviation_percentage:.2f}%)"
+        )
+
+        sites_with_missing_data = self.summary[
+            "sites_with_over_20_percent_missing"
+        ]
+        missing_data_sites_percentage = (
+            sites_with_missing_data / total_sites
+        ) * 100
+        print(
+            f"Methylation Sites With Over 20% of Reads Missing: {sites_with_missing_data} ({missing_data_sites_percentage:.2f}%)"
+        )
+
+        print("\nNotes:")
+        print("------------------------------------------------")
+        if missing_data_points == 0:
+            print(
+                "- No missing data points implies that this data has already gone through an imputation process or that low quality reads were included."
+            )
+
+        if sites_with_missing_data > 0:
+            print(
+                "- Your data set includes methylation sites that have over 20% of reads missing. Default imputation may replace the values for all reads from this site with a gold standard."
+            )
+
+        if high_deviation_count > 0:
+            print(
+                "- Your data set includes samples with a high deviation. It is likely that the methylation data for these samples has been distorted due to technical issues."
+            )
+        print("\n")
 
 
 class GeoData:
@@ -63,6 +130,55 @@ class GeoData:
         return GeoData(
             self.metadata.copy(deep=True), self.dnam.copy(deep=True)
         )
+
+    def quality_report(self, sites=None):
+        """
+        Generates a quality control report for the genomic data, optionally filtered by specified methylation sites,
+        and includes a detailed section reporting the missing percentage for each methylation site.
+
+        Args:
+            sites (list, optional): A list of methylation site identifiers to include in the report.
+                                    If None, all sites are included.
+
+        Returns:
+            QualityReport: An object containing both detailed methylation data, a summary,
+                           and a detailed section for missing percentages per site.
+        """
+        methylation_data = self.dnam.copy()
+
+        # Filter methylation data if specific sites are provided
+        if sites is not None:
+            methylation_data = methylation_data.loc[sites]
+
+        # Calculate mean absolute deviation
+        methylation_medians = methylation_data.median(axis=1)
+        deviations = methylation_data.sub(methylation_medians, axis=0)
+        mean_abs_deviation = deviations.abs().mean()
+        sample_report = mean_abs_deviation.to_frame(name="deviation")
+
+        # Include 'age' in the detailed report if relevant and if analyzing all sites
+        if "age" in self.metadata.columns and sites is None:
+            sample_report["age"] = self.metadata["age"]
+
+        # Calculate missing percentage for each methylation site
+        missing_percentage = methylation_data.isna().mean(axis=1)
+        methylation_site_report = missing_percentage.to_frame(name="missing")
+
+        # Summary calculations
+        total_nan = methylation_data.isna().sum().sum()
+        sites_with_20_percent_nan = (
+            methylation_data.isna().mean(axis=1) >= 0.2
+        ).sum()
+
+        summary = {
+            "missing_data_points": total_nan,
+            "sites_with_over_20_percent_missing": sites_with_20_percent_nan,
+            "samples_with_high_deviation": (mean_abs_deviation > 0.04).sum(),
+            "total_samples": methylation_data.shape[1],
+            "methylation_sites": methylation_data.shape[0],
+        }
+
+        return QualityReport(sample_report, methylation_site_report, summary)
 
 
 class GeoMatrixParser:
