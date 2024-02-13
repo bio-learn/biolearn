@@ -1,5 +1,6 @@
 import yaml
 import pandas as pd
+import numpy as np
 import re
 from biolearn.util import cached_download, get_data_file
 
@@ -78,6 +79,7 @@ class GeoMatrixParser:
         self.id_row = data.get("id-row")
         self.metadata = data.get("metadata")
         self.matrix_start = data.get("matrix-start")
+        self.matrix_file = data.get("matrix-file")
 
     def parse(self, file_path):
         load_list = self._metadata_load_list()
@@ -95,11 +97,24 @@ class GeoMatrixParser:
             parser_name = self.metadata[col]["parse"]
             parser = self.parsers[parser_name]
             metadata[col] = metadata[col].apply(parser)
-        dnam = pd.read_table(
-            file_path, index_col=0, skiprows=self.matrix_start - 1
-        )
-        dnam = dnam.drop(["!series_matrix_table_end"], axis=0)
-        dnam.index.name = "id"
+        if self.matrix_start:
+            dnam = pd.read_table(
+                file_path, index_col=0, skiprows=self.matrix_start - 1
+            )
+            dnam = dnam.drop(["!series_matrix_table_end"], axis=0)
+            dnam.index.name = "id"
+        elif self.matrix_file:
+            matrix_file_path = cached_download(self.matrix_file)
+            print(f"Note: This dataset will take a few minutes to load")
+            df = pd.read_csv(matrix_file_path, index_col=0, sep=" ")
+            methylation_df = df.iloc[:, ::2]
+            pval_df = df.iloc[:, 1::2]
+            pval_df = pval_df.replace("<1E-16", "0", regex=False).astype(
+                float, errors="ignore"
+            )
+            pval_df = pval_df.map(lambda x: np.nan if x > 0.05 else 0)
+            # NaN values in pval_df will cause corresponding values in methylation_df to be NaN
+            dnam = methylation_df + pval_df
         return GeoData(metadata, dnam)
 
     def _metadata_load_list(self):

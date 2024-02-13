@@ -121,7 +121,7 @@ items:
       id-row: 35
       matrix-start: 69
       metadata:
-        gender:
+        sex:
           row: 43
           parse: sex
         age:
@@ -543,7 +543,7 @@ items:
         family:
           row: 62
           parse: string
-        gender:
+        sex:
           row: 63
           parse: sex
         age:
@@ -551,4 +551,95 @@ items:
           parse: numeric
         tissue:
           row: 65
+          parse: string
+  - id: GSE157131
+    title: Methylation data from stored peripheral blood leukocytes from African American
+      participants in the GENOA study
+    summary: African-American individuals of the GENOA cohort
+    format: IlluminaEPIC
+    organism: human
+    samples: 946
+    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE157nnn/GSE157131/matrix/GSE157131-GPL21145_series_matrix.txt.gz
+    parser:
+      type: geo-matrix
+      id-row: 33
+      matrix-file: "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE157nnn/GSE157131/suppl/GSE157131_Matrix_processed_beta_geo_08252020.txt.gz"
+      metadata:
+        tissue:
+          row: 41
+          parse: string
+        sex:
+          row: 42
+          parse: sex
+        age:
+          row: 43
+          parse: numeric
+        systolic_blood_pressure_(mmhg):
+          row: 44
+          parse: string
+        diastolic_blood_pressure_(mmhg):
+          row: 45
+          parse: string
+  - id: GSE132203
+    title: DNA Methylation (EPIC) from the Grady Trauma Project
+    summary: Childhood and cumulative exposure to trauma increases an individual's lifetime
+      risk for psychiatric and stress-related disorders. This study evaluates DNA methylation
+      in whole blood, with the goal of identifying associaitons between peripheral DNA
+      methylation and psychiatric symptoms.
+    format: IlluminaEPIC
+    organism: human
+    samples: 795
+    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE132nnn/GSE132203/matrix/GSE132203_series_matrix.txt.gz
+    parser:
+      type: geo-matrix
+      id-row: 31
+      matrix-file: "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE132nnn/GSE132203/suppl/GSE132203_Geo_Submission_GTPEpic.csv.gz"
+      metadata:
+        sex:
+          row: 39
+          parse: sex
+        age:
+          row: 40
+          parse: numeric
+        race:
+          row: 41
+          parse: string
+        mergedcapsandpsswinthin30days:
+          row: 42
+          parse: string
+        tei_total_types_experienced_somewitness:
+          row: 43
+          parse: string
+        childabphyssexemot_ctq_01modandsev:
+          row: 44
+          parse: string
+        pc1:
+          row: 45
+          parse: string
+        pc2:
+          row: 46
+          parse: string
+        pc3:
+          row: 47
+          parse: string
+        cd8t:
+          row: 48
+          parse: string
+        cd4t:
+          row: 49
+          parse: string
+        nk:
+          row: 50
+          parse: string
+        bcell:
+          row: 51
+          parse: string
+        mono:
+          row: 52
+          parse: string
+        neu:
+          row: 53
+          parse: string
+        age_acceleration:
+          row: 54
           parse: string
