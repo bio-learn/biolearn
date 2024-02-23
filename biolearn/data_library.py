@@ -188,10 +188,7 @@ class GeoMatrixParser:
         "string": lambda s: parse_after_colon(s),
         "sex": lambda s: sex_parser(parse_after_colon(s)),
     }
-    seperators = {
-        "space": " ",
-        "comma": ","
-    }
+    seperators = {"space": " ", "comma": ","}
 
     def __init__(self, data):
         if data.get("id-row") is None:
@@ -200,7 +197,9 @@ class GeoMatrixParser:
         self.metadata = data.get("metadata")
         self.matrix_start = data.get("matrix-start")
         self.matrix_file = data.get("matrix-file")
-        self.matrix_file_seperator = self.seperators.get(data.get("matrix-file-seperator"))
+        self.matrix_file_seperator = self.seperators.get(
+            data.get("matrix-file-seperator")
+        )
 
     def parse(self, file_path):
         load_list = self._metadata_load_list()
@@ -226,8 +225,12 @@ class GeoMatrixParser:
             dnam.index.name = "id"
         elif self.matrix_file:
             matrix_file_path = cached_download(self.matrix_file)
-            print(f"Note: This dataset will take a few minutes to load and may fail if you have insufficient memory")
-            df = pd.read_csv(matrix_file_path, index_col=0, sep=self.matrix_file_seperator)
+            print(
+                f"Note: This dataset will take a few minutes to load and may fail if you have insufficient memory"
+            )
+            df = pd.read_csv(
+                matrix_file_path, index_col=0, sep=self.matrix_file_seperator
+            )
             methylation_df = df.iloc[:, ::2]
             pval_df = df.iloc[:, 1::2]
             pval_df = pval_df.replace("<1E-16", "0", regex=False).astype(
