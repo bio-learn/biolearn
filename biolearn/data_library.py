@@ -247,19 +247,21 @@ class GeoMatrixParser:
         mapping_df = pd.read_table(
             matrix_file_path,
             index_col=0,
-            skiprows=lambda x: x != self.id_row - 1 and x != self.matrix_file_key_line - 1,
+            skiprows=lambda x: x != self.id_row - 1
+            and x != self.matrix_file_key_line - 1,
         )
-        column_mapping = mapping_df.to_dict('records')[0]
+        column_mapping = mapping_df.to_dict("records")[0]
 
-        #Reverse the mapping if needed as key is based on first line loaded
+        # Reverse the mapping if needed as key is based on first line loaded
         reverse_mapping = self.id_row < self.matrix_file_key_line
         if reverse_mapping:
             column_mapping = {v: k for k, v in column_mapping.items()}
 
         data = data.rename(columns=column_mapping)
-        data = data[[col for col in data.columns if col in column_mapping.values()]]
+        data = data[
+            [col for col in data.columns if col in column_mapping.values()]
+        ]
         return data
-
 
     def _metadata_load_list(self):
         load_list = [
