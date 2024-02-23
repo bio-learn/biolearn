@@ -565,6 +565,7 @@ items:
       id-row: 33
       matrix-file: "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE157nnn/GSE157131/suppl/GSE157131_Matrix_processed_beta_geo_08252020.txt.gz"
       matrix-file-seperator: "space"
+      matrix-file-key-line: 53
       metadata:
         tissue:
           row: 41
@@ -596,6 +597,7 @@ items:
       id-row: 31
       matrix-file: "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE132nnn/GSE132203/suppl/GSE132203_Geo_Submission_GTPEpic.csv.gz"
       matrix-file-seperator: "comma"
+      matrix-file-key-line: 30
       metadata:
         sex:
           row: 39

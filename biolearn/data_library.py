@@ -200,6 +200,7 @@ class GeoMatrixParser:
         self.matrix_file_seperator = self.seperators.get(
             data.get("matrix-file-seperator")
         )
+        self.matrix_file_key_line = data.get("matrix-file-key-line")
 
     def parse(self, file_path):
         load_list = self._metadata_load_list()
@@ -239,7 +240,26 @@ class GeoMatrixParser:
             pval_df = pval_df.map(lambda x: np.nan if x > 0.05 else 0)
             # NaN values in pval_df will cause corresponding values in methylation_df to be NaN
             dnam = methylation_df + pval_df.values
+            dnam = self._remap_and_prune_columns(dnam, file_path)
         return GeoData(metadata, dnam)
+
+    def _remap_and_prune_columns(self, data, matrix_file_path):
+        mapping_df = pd.read_table(
+            matrix_file_path,
+            index_col=0,
+            skiprows=lambda x: x != self.id_row - 1 and x != self.matrix_file_key_line - 1,
+        )
+        column_mapping = mapping_df.to_dict('records')[0]
+
+        #Reverse the mapping if needed as key is based on first line loaded
+        reverse_mapping = self.id_row < self.matrix_file_key_line
+        if reverse_mapping:
+            column_mapping = {v: k for k, v in column_mapping.items()}
+
+        data = data.rename(columns=column_mapping)
+        data = data[[col for col in data.columns if col in column_mapping.values()]]
+        return data
+
 
     def _metadata_load_list(self):
         load_list = [
