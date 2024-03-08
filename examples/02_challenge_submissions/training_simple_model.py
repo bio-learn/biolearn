@@ -124,7 +124,7 @@ print(f"Mean Absolute Error (MAE): {mae:.4f}")
 # Run the challenge data through the model
 # --------------------------------------------------------------------------------------------------------------------------
 
-pruned_data = challenge_data.T[stable_cpg_names]
+pruned_data = challenge_data.dnam.T[stable_cpg_names]
 pruned_data = pruned_data.fillna(0)
 challenge_results = model.predict(pruned_data)
 
@@ -135,6 +135,6 @@ import pandas as pd
 
 predicted_age_df = pd.DataFrame({
     'predictedAge': challenge_results
-}, index=challenge_data.columns)
+}, index=challenge_data.dnam.columns)
 predicted_age_df.index.name = 'sampleId'
 predicted_age_df
