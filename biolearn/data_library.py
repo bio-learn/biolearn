@@ -181,6 +181,40 @@ class GeoData:
 
         return QualityReport(sample_report, methylation_site_report, summary)
 
+    @classmethod
+    def from_methylation_matrix(cls, matrix):
+        """
+        Creates a GeoData instance from a methylation matrix which can be
+        either a DataFrame directly or a path to a CSV file.
+
+        Args:
+            matrix (Union[str, DataFrame]): Methylation matrix as a DataFrame or the path to the CSV file containing the matrix.
+
+        Returns:
+            GeoData: An instance of GeoData with the methylation data loaded and metadata initialized.
+        """
+        if isinstance(matrix, str):
+            # If the input is a string, assume it's a file path and read the CSV
+            dnam = pd.read_csv(matrix, index_col=0)
+        elif isinstance(matrix, pd.DataFrame):
+            # If the input is already a DataFrame, use it directly
+            dnam = matrix
+        else:
+            raise ValueError(
+                "The matrix must be either a DataFrame or a file path to a CSV."
+            )
+
+        # Process row identifiers
+        dnam.index = dnam.index.str.split("_").str[0]
+
+        # Combine duplicate rows by averaging their values
+        dnam = dnam.groupby(dnam.index).mean()
+
+        # Create an empty DataFrame for metadata with row identifiers as columns
+        metadata = pd.DataFrame(index=dnam.columns)
+
+        return cls(metadata, dnam)
+
 
 class GeoMatrixParser:
     parsers = {
