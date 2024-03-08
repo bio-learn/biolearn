@@ -8,12 +8,13 @@ This example shows you how to train a simple elasticnet model and use it to subm
 #############################################################################
 # Loading up the data for the competition
 # ---------------------------------------
-import pandas as pd
+from biolearn.data_library import GeoData
 
 #Download the data file for the warmup challenge linked here https://www.synapse.org/#!Synapse:syn52966292/wiki/625231
 DOWNLOADED_DATA_FILE_PATH="ADD YOUR PATH HERE"
-challenge_data = pd.read_csv(DOWNLOADED_DATA_FILE_PATH, index_col=0)
+challenge_data = GeoData.from_methylation_matrix(DOWNLOADED_DATA_FILE_PATH)
 challenge_data
+
 
 #############################################################################
 # Load up some training data
@@ -123,16 +124,17 @@ print(f"Mean Absolute Error (MAE): {mae:.4f}")
 # Run the challenge data through the model
 # --------------------------------------------------------------------------------------------------------------------------
 
-pruned_data = challenge_data.T[stable_cpg_names]
+pruned_data = challenge_data.dnam.T[stable_cpg_names]
 pruned_data = pruned_data.fillna(0)
 challenge_results = model.predict(pruned_data)
 
 ############################################################################################################################
 # Save the results as an output file for submission
 # --------------------------------------------------------------------------------------------------------------------------
+import pandas as pd
 
 predicted_age_df = pd.DataFrame({
     'predictedAge': challenge_results
-}, index=challenge_data.columns)
+}, index=challenge_data.dnam.columns)
 predicted_age_df.index.name = 'sampleId'
 predicted_age_df
