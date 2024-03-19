@@ -12,6 +12,10 @@ Biolearn is developed and supported by several organizations and individuals, es
 We are hosting a 2024-2025 Challenge series on the Synapse platform, where participants will be asked to predict chronological age, 
 mortality, and multi-morbidity, with total awards of $200k+. `Learn more at Synapse! <https://www.synapse.org/#!Synapse:syn52966292/wiki/624696/>`_.
 
+If you use Biolearn in your research, please cite our `preprint <https://doi.org/10.1101/2023.12.02.569722>`_:
+
+Ying, K., Paulson, S., Perez-Guevara, M., Emamifar, M., Martí nez, M. C., Kwon, D., Poganik, J. R., Moqri, M., & Gladyshev, V. N. (2023). Biolearn, an open-source library for biomarkers of aging. bioRxiv. https://doi.org/10.1101/2023.12.02.569722
+
 .. grid::
 
     .. grid-item-card:: :fas:`rocket` Quickstart
