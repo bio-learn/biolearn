@@ -69,7 +69,7 @@
 !Sample_contact_zip/postal_code	"90095-7088"	"90095-7088"	"90095-7088"	"90095-7088"	"90095-7088"
 !Sample_contact_country	"USA"	"USA"	"USA"	"USA"	"USA"
 !Sample_supplementary_file	"NONE"	"NONE"	"NONE"	"NONE"	"NONE"
-!Sample_data_row_count	"485577"	"485577"	"485577"	"485577"	"485577"
+!Sample_data_key	"Test1"	"Test2"	"Test3"	"Test4"	"Test5"
 !series_matrix_table_begin
 "ID_REF"	"GSM1009660"	"GSM1009661"	"GSM1009662"	"GSM1009663"	"GSM1009664"
 "cg00000029"	0.4549308	0.4102866	0.3756035	0.4871998	0.3808655
