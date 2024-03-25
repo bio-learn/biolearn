@@ -5,6 +5,7 @@ from biolearn.model import (
     GrimageModel,
     SexEstimationModel,
     ImputationDecorator,
+    DeconvolutionModel,
 )
 from biolearn.imputation import (
     biolearn_impute,
@@ -24,6 +25,7 @@ class ModelGallery:
         "LinearMethylationModel": LinearMethylationModel.from_definition,
         "GrimageModel": GrimageModel.from_definition,
         "SexEstimationModel": SexEstimationModel.from_definition,
+        "DeconvolutionModel": DeconvolutionModel.from_definition,
     }
 
     def __init__(self, models=model_definitions):

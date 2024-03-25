@@ -1,5 +1,190 @@
 ---
 items:
+  - id: GSE112618
+    title: 'FACS validation dataset: An optimized library for reference-based deconvolution
+      of whole-blood biospecimens assayed using the Illumina HumanMethylationEPIC BeadArray
+      (III)'
+    summary: DNA methylation assessments of peripheral blood DNA can be used to accurately
+      estimate the relative proportions of underlying leukocyte subtypes. Such cell
+      deconvolution analysis relies on libraries of discriminating differentially methylated
+      regions that are developed for each specific cell type measured. The relationship
+      between estimated cell type proportions can then be tested for their association
+      with phenotypes, disease states, and subject outcomes, or used in multivariable
+      models as terms for adjustment in epigenome-wide association studies (EWAS). We
+      obtained purified neutrophils, monocytes, B-lymphocytes, natural killer (NK) cells,
+      CD4+ T-cells, and CD8+ T-cells from healthy subjects and measured DNA methylation
+      with the Illumina HumanMethylationEPIC array platform. In addition, we measured
+      DNA methylation with the EPIC array in two sets of artificial DNA mixtures comprising
+      the above cell types. We compared three separate approaches to select reference
+      differentially methylated region libraries (DMR library), for cell type proportion
+      inference. The IDOL algorithm identified an optimal DMR library consisting of
+      450 CpG sites for inferring leukocyte subtype proportions (average R2=99.2). Importantly,
+      the majority of CpG sites (69%) in the IDOL DMR library were unique to the new
+      EPIC methylation array, in that they were not present on the 450K array. Our new
+      reference DMR library is available as a Bioconductor package, has the potential
+      to reduce any unintended technical differences arising from the combination of
+      different generations of array platforms, and may be helpful in generating larger
+      DMR libraries that include novel cell subtypes. A  dataset of six whole blood
+      samples were FACS sorted and the DNA was processed as a validation dataset.
+    format: Unknown
+    organism: human
+    samples: 6
+    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE112nnn/GSE112618/matrix/GSE112618_series_matrix.txt.gz
+    parser:
+      type: geo-matrix
+      id_row: null
+      matrix-start: 82
+      metadata:
+        sample_well:
+          row: 45
+          parse: string
+        chip:
+          row: 46
+          parse: string
+        sex:
+          row: 47
+          parse: string
+        age:
+          row: 48
+          parse: numeric
+        array:
+          row: 49
+          parse: string
+        slide:
+          row: 50
+          parse: string
+        cd4t_proportion:
+          row: 51
+          parse: string
+        cd8t_proportion:
+          row: 52
+          parse: string
+        nk_proportion:
+          row: 53
+          parse: string
+        bcell_proportion:
+          row: 54
+          parse: string
+        monocytes_proportion:
+          row: 55
+          parse: string
+        granulocytes_proportion:
+          row: 56
+          parse: string
+        neutrophils_proportion:
+          row: 57
+          parse: string
+      id-row: 37
+  - id: GSE110554
+    title: 'FlowSorted.Blood.EPIC: An optimized library for reference-based deconvolution
+      of whole-blood biospecimens assayed using the Illumina HumanMethylationEPIC BeadArray
+      (II)'
+    summary: DNA methylation assessments of peripheral blood DNA can be used to accurately
+      estimate the relative proportions of underlying leukocyte subtypes. Such cell
+      deconvolution analysis relies on libraries of discriminating differentially methylated
+      regions that are developed for each specific cell type measured. The relationship
+      between estimated cell type proportions can then be tested for their association
+      with phenotypes, disease states, and subject outcomes, or used in multivariable
+      models as terms for adjustment in epigenome-wide association studies (EWAS). We
+      obtained purified neutrophils, monocytes, B-lymphocytes, natural killer (NK) cells,
+      CD4+ T-cells, and CD8+ T-cells from healthy subjects and measured DNA methylation
+      with the Illumina HumanMethylationEPIC array platform. In addition, we measured
+      DNA methylation with the EPIC array in two sets of artificial DNA mixtures comprising
+      the above cell types. We compared three separate approaches to select reference
+      differentially methylated region libraries (DMR library), for cell type proportion
+      inference. The IDOL algorithm identified an optimal DMR library consisting of
+      450 CpG sites for inferring leukocyte subtype proportions (average R2=99.2). Importantly,
+      the majority of CpG sites (69%) in the IDOL DMR library were unique to the new
+      EPIC methylation array, in that they were not present on the 450K array. Our new
+      reference DMR library is available as a Bioconductor package, has the potential
+      to reduce any unintended technical differences arising from the combination of
+      different generations of array platforms, and may be helpful in generating larger
+      DMR libraries that include novel cell subtypes.
+    format: Unknown
+    organism: human
+    samples: 49
+    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE110nnn/GSE110554/matrix/GSE110554_series_matrix.txt.gz
+    parser:
+      type: geo-matrix
+      id_row: null
+      matrix-start: 98
+      metadata:
+        sample_plate:
+          row: 47
+          parse: string
+        sample_well:
+          row: 48
+          parse: string
+        sample_name:
+          row: 49
+          parse: string
+        sample_group:
+          row: 50
+          parse: string
+        chip:
+          row: 51
+          parse: string
+        array_well:
+          row: 52
+          parse: string
+        cell_type:
+          row: 53
+          parse: string
+        cd4t:
+          row: 54
+          parse: string
+        cd8t:
+          row: 55
+          parse: string
+        bcell:
+          row: 56
+          parse: string
+        nk:
+          row: 57
+          parse: string
+        mono:
+          row: 58
+          parse: string
+        neu:
+          row: 59
+          parse: string
+        purity:
+          row: 60
+          parse: string
+        sex:
+          row: 61
+          parse: string
+        age:
+          row: 62
+          parse: numeric
+        weight_kg:
+          row: 63
+          parse: string
+        height_m:
+          row: 64
+          parse: string
+        bmi:
+          row: 65
+          parse: string
+        bmi_clas:
+          row: 66
+          parse: string
+        ethnicity_wide:
+          row: 67
+          parse: string
+        ethnic_self:
+          row: 68
+          parse: string
+        smoker:
+          row: 69
+          parse: string
+        array:
+          row: 70
+          parse: string
+        slide:
+          row: 72
+          parse: string
+      id-row: 39
   - id: GSE40279
     title: Genome-wide Methylation Profiles Reveal Quantitative Views of Human Aging Rates
     summary: "Genome wide DNA methylation profiling of individuals across a large age range. The Illumina Infinium 450k Human DNA methylation Beadchip was used to obtain DNA methylation profiles across approximately 450k CpGs from human whole blood."

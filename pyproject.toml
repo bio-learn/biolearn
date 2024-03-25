@@ -19,7 +19,8 @@ dependencies = [
   "requests",
   "appdirs",
   "pyyaml",
-  "scipy"
+  "scipy",
+  "quadprog"
 ]
 
 keywords = ["biomarker"]
@@ -58,7 +59,6 @@ doc = [
 	"black",
 	"furo",
 	"memory_profiler",  # measuring memory during docs building
-	"mkl",
 	"myst-parser",
 	"numpydoc",
 	"sphinx",
