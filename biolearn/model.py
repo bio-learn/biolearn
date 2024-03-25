@@ -396,6 +396,7 @@ class DeconvolutionModel:
                 "WARNING: methylation data contains missing values. Rows with missing values will be removed"
             )
 
+        # omit rows with missing values
         meth.dropna(inplace=True)
 
         print(
