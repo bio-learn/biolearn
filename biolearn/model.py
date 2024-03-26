@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+import cvxpy as cp
+
 from sklearn.linear_model import LinearRegression
 
 from biolearn.data_library import GeoData
@@ -289,7 +291,156 @@ model_definitions = {
             "default_imputation": "averaging",
         },
     },
+    "DeconvoluteBlood450K": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "",
+        "output": "Cell Proportions",
+        "model": {
+            "type": "DeconvolutionModel",
+            "file": "450K_reinius_12_reference.csv",
+            "platform": "450K",
+            "default_imputation": "none",
+        },
+    },
+    "DeconvoluteBloodEPIC": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "",
+        "output": "Cell Proportions",
+        "model": {
+            "type": "DeconvolutionModel",
+            "file": "EPIC_salas_18_reference.csv",
+            "platform": "EPIC",
+            "default_imputation": "none",
+        },
+    },
 }
+
+
+class DeconvolutionModel:
+    def __init__(self, reference_file, platform_input):
+
+        # sets reference data
+        self.reference = pd.read_csv(
+            get_data_file(reference_file), index_col=0
+        )
+
+        # sets reference platform type (e.g. "450K")
+        self.platform = platform_input
+
+    @classmethod
+    def from_definition(cls, clock_definition):
+
+        model_def = clock_definition["model"]
+
+        # calls constructor: "__init__()"
+        return cls(model_def["file"], model_def["platform"])
+
+    def predict(self, geo_data):
+
+        # This function computes estimate of cell proportions using quadratic programming
+        # inputs:
+        # meth_vector: ndarray vector of bulk methylation (length must equal number of rows in deconv_reference)
+        # deconv_reference: ndarray matrix with rows corresponding to CpG sites and columns to cell types
+        # outputs:
+        # cell_prop_estimate.value: ndarray vector of estimated cell type proportions
+        def solve_qp(meth_vector, deconv_reference):
+
+            # confirm number of rows in reference equals methylation vector length
+            assert deconv_reference.shape[0] == len(meth_vector)
+
+            # define cell proportion variable being solved for
+            cell_prop_estimate = cp.Variable(deconv_reference.shape[1])
+
+            # define quadratic objective function
+            objective = cp.Minimize(
+                cp.norm(deconv_reference @ cell_prop_estimate - meth_vector, 2)
+            )
+
+            # define constraints: proportion estimate should be within [0, 1] interval, sum to 1
+            constraints = [
+                0 <= cell_prop_estimate,
+                cell_prop_estimate <= 1,
+                cp.sum(cell_prop_estimate) == 1,
+            ]
+
+            # create optimization problem
+            problem = cp.Problem(objective, constraints)
+
+            # solve optimization problem
+            problem.solve(solver=cp.ECOS)
+
+            # return result
+            return cell_prop_estimate.value
+
+        # create copy of methylation matrix
+        meth = geo_data.dnam.copy()
+
+        # check if missing values are present in methylation matrix
+        if any(meth.isna().values.flatten()):
+            print(
+                "WARNING: methylation data contains missing values. Rows with missing values will be removed"
+            )
+
+        # omit rows with missing values
+        meth.dropna(inplace=True)
+
+        print(
+            "Estimating cell proportions using %r platform reference..."
+            % self.platform
+        )
+
+        # filter methylation array and reference to include only shared CpGs
+        intersecting_cpgs = meth.index.intersection(self.reference.index)
+
+        meth_filtered = meth.loc[intersecting_cpgs]
+
+        reference_filtered = self.reference.loc[intersecting_cpgs]
+
+        # confirm same number of rows in reference and methylation samples
+        assert meth_filtered.shape[0] == reference_filtered.shape[0]
+
+        # print number of reference cpgs
+        print("Number of CpGs in reference:", len(self.reference.index))
+        print(
+            "Number of CpGs in methylation data intersecting with reference CpGs:",
+            len(intersecting_cpgs),
+        )
+
+        # save reference cell types
+        cell_types = reference_filtered.columns
+
+        # save methylation sample names
+        sample_names = meth_filtered.columns
+
+        # convert methylation samples and reference to ndarray
+        meth_filtered_ndarray = meth_filtered.to_numpy()
+        reference_filtered_ndarray = reference_filtered.to_numpy()
+
+        print("Running deconvolution...")
+
+        # deconvolve each sample (each column of meth)
+        cell_prop = np.apply_along_axis(
+            solve_qp,
+            axis=0,
+            arr=meth_filtered_ndarray,
+            deconv_reference=reference_filtered_ndarray,
+        )
+
+        # convert cell proportion ndarray to dataframe
+        cell_prop_df = pd.DataFrame(cell_prop, columns=sample_names)
+        cell_prop_df.index = cell_types
+
+        print("Deconvolution complete!")
+
+        return cell_prop_df
+
+    # returns required methylation sites
+    def methylation_sites(self):
+        return list(self.reference.index)
 
 
 class LinearMethylationModel:
