@@ -24,15 +24,15 @@ mortality, and multi-morbidity, with total awards of $200k+. `Learn more at Syna
 
         Get started with Biolearn
 
-    .. grid-item-card:: :fas:`dna` Examples
-        :link: auto_examples/index.html
+    .. grid-item-card:: :fas:`road` Roadmap
+        :link: roadmap.html
         :link-type: url
         :columns: 12 12 4 4
         :class-card: sd-shadow-md
         :class-title: sd-text-primary
         :margin: 2 2 0 0
 
-        Discover functionalities by reading examples
+        See where Biolearn is headed and how to contribute
 
     .. grid-item-card:: :fas:`trophy` Challenge
         :link: https://www.synapse.org/#!Synapse:syn52966292/
