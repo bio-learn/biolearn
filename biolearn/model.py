@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import quadprog
+import cvxpy as cp
 
 from sklearn.linear_model import LinearRegression
 
@@ -349,48 +349,37 @@ class DeconvolutionModel:
         # cell_prop_estimate.value: ndarray vector of estimated cell type proportions
         def solve_qp(meth_vector, deconv_reference):
 
-            A = deconv_reference
-            B = meth_vector
-
             # confirm number of rows in reference equals methylation vector length
-            assert A.shape[0] == len(B)
+            assert deconv_reference.shape[0] == len(meth_vector)
 
-            # convert to standard form
-            num_cell_types = A.shape[1]
+            # define cell proportion variable being solved for
+            cell_prop_estimate = cp.Variable(deconv_reference.shape[1])
 
-            G_mat = np.dot(A.T, A)
-            a_vec = np.dot(A.T, B)
-
-            # sum of cell proportions much equal 1
-            equality_constraint = -np.ones(num_cell_types)
-
-            # cell proportions must be within [0, 1] interval
-            C_mat = np.vstack(
-                (
-                    equality_constraint,
-                    np.eye(num_cell_types),
-                    -np.eye(num_cell_types),
-                )
-            )
-            b_vec = np.concatenate(
-                [
-                    np.array([-1]),
-                    np.zeros(num_cell_types),
-                    -np.ones(num_cell_types),
-                ]
+            # define quadratic objective function
+            objective = cp.Minimize(
+                cp.norm(deconv_reference @ cell_prop_estimate - meth_vector, 2)
             )
 
-            # Solve the quadratic programming problem
-            x, _, _, _, _, _ = quadprog.solve_qp(
-                G=G_mat, a=a_vec, C=C_mat.T, b=b_vec, meq=1
-            )
+            # define constraints: proportion estimate should be within [0, 1] interval, sum to 1
+            constraints = [
+                0 <= cell_prop_estimate,
+                cell_prop_estimate <= 1,
+                cp.sum(cell_prop_estimate) == 1,
+            ]
 
-            return x
+            # create optimization problem
+            problem = cp.Problem(objective, constraints)
+
+            # solve optimization problem
+            problem.solve(solver=cp.ECOS)
+
+            # return result
+            return cell_prop_estimate.value
 
         # create copy of methylation matrix
         meth = geo_data.dnam.copy()
 
-        # check if missing values present in methylation matrix
+        # check if missing values are present in methylation matrix
         if any(meth.isna().values.flatten()):
             print(
                 "WARNING: methylation data contains missing values. Rows with missing values will be removed"

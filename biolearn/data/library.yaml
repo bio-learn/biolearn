@@ -43,7 +43,7 @@ items:
           parse: string
         sex:
           row: 47
-          parse: string
+          parse: sex
         age:
           row: 48
           parse: numeric
@@ -153,7 +153,7 @@ items:
           parse: string
         sex:
           row: 61
-          parse: string
+          parse: sex
         age:
           row: 62
           parse: numeric
