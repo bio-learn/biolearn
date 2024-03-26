@@ -11,7 +11,7 @@ from biolearn.data_library import (
 )
 from biolearn.model import get_data_file
 from biolearn.util import get_test_data_file
-from biolearn.util import load_test_data_file
+from biolearn.util import load_test_data_file, get_test_data_file
 
 import pandas as pd
 
@@ -185,16 +185,9 @@ def test_can_load_library_file():
 
 
 def test_can_load_dnam():
-    script_dir = os.path.dirname(
-        __file__
-    )  # get the directory of the current script
-    data_file_path = os.path.join(
-        script_dir, "data", "geo_dnam_test_file"
-    )  # build the path to the data file
-
     data_source_spec = {
         "id": "TestData",
-        "path": data_file_path,
+        "path": get_test_data_file("geo_dnam_test_file"),
         "parser": {
             "type": "geo-matrix",
             "id-row": 33,
@@ -220,6 +213,42 @@ def test_can_load_dnam():
     assert all(
         np.issubdtype(dnam[col].dtype, np.number) for col in dnam.columns
     )
+
+
+def test_load_dnam_with_matrix_file():
+    data_source_spec = {
+        "id": "TestMatrixFile",
+        "path": get_test_data_file("geo_dnam_test_file"),
+        "parser": {
+            "type": "geo-matrix",
+            "id-row": 33,
+            "metadata": {
+                "age": {"row": 47, "parse": "numeric"},
+                "sex": {"row": 41, "parse": "sex"},
+                "cancer": {"row": 50, "parse": "string"},
+            },
+            "matrix-file": get_test_data_file("test_supplementary_matrix.txt"),
+            "matrix-file-seperator": "space",
+            "matrix-file-key-line": 72,
+        },
+    }
+    source = DataSource(data_source_spec)
+
+    df = source.load()
+    dnam = df.dnam
+    metadata = df.metadata
+
+    assert dnam.shape == (37, 5)
+    assert metadata.shape == (5, 3)
+    assert "cancer" in metadata.columns.to_list()
+    assert np.issubdtype(metadata["age"], np.number)
+    assert np.issubdtype(metadata["sex"], np.number)
+    assert (metadata["sex"] != 0).all()
+    assert all(
+        np.issubdtype(dnam[col].dtype, np.number) for col in dnam.columns
+    )
+    assert dnam.isna().sum().sum() == 8
+    assert all(col in metadata.index for col in dnam.columns)
 
 
 def test_load_sources_append():

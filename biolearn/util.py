@@ -32,37 +32,43 @@ def load_test_data_file(relative_path):
     return test_sample
 
 
+def is_url(s):
+    """Check if the input string is a URL."""
+    parsed = urlparse(s)
+    return bool(parsed.scheme)
+
+
 def cached_download(url_or_filepath):
-    """Downloads the file at a URL and saves it locally. If called again with the same URL it will use the saved file. Returns the local filepath"""
-    # Hash the URL to create a unique filename
-    if os.path.isfile(url_or_filepath):
-        # If the provided URL is a local file path, return it directly
-        return url_or_filepath
+    """Downloads the file at a URL and saves it locally. If called again with the same URL, it will use the saved file.
+    If the input is a local file path and the file does not exist, raises a FileNotFoundError.
+    Returns the local filepath."""
+    if is_url(url_or_filepath):
+        url = url_or_filepath
+        url_path = urlparse(url).path
+        ext = os.path.splitext(url_path)[1]
+        filename = hashlib.sha256(url.encode()).hexdigest() + ext
 
-    url = url_or_filepath
-    url_path = urlparse(url).path
-    ext = os.path.splitext(url_path)[1]
-    filename = hashlib.sha256(url.encode()).hexdigest() + ext
+        app_name = "bio-learn"
+        download_path = appdirs.user_cache_dir(app_name)
+        os.makedirs(download_path, exist_ok=True)
+        filepath = os.path.join(download_path, filename)
 
-    app_name = "bio-learn"
-    download_path = appdirs.user_cache_dir(app_name)
-
-    # Ensure download path exists
-    os.makedirs(download_path, exist_ok=True)
-
-    filepath = os.path.join(download_path, filename)
-
-    if os.path.exists(filepath):
-        # If the file is already downloaded, return the file path
-        return filepath
+        if not os.path.exists(filepath):
+            # Download the file if it doesn't already exist locally
+            try:
+                response = requests.get(url, stream=True)
+                response.raise_for_status()  # Check for HTTP errors
+                with open(filepath, "wb") as out_file:
+                    shutil.copyfileobj(response.raw, out_file)
+            except requests.RequestException as e:
+                raise Exception(
+                    f"Failed to download the file from {url}. Error: {e}"
+                )
     else:
-        # Try to download the file
-        response = requests.get(url, stream=True)
-        response.raise_for_status()  # Raise an HTTPError if one occurred
+        if not os.path.exists(url_or_filepath):
+            raise FileNotFoundError(
+                f"The file does not exist: {url_or_filepath}"
+            )
+        filepath = url_or_filepath
 
-        # If the file is not downloaded yet, download and save it
-        with open(filepath, "wb") as out_file:
-            shutil.copyfileobj(response.raw, out_file)
-
-        # Return the file path
-        return filepath
+    return filepath
