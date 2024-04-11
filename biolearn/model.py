@@ -373,7 +373,6 @@ class GrimageModel:
         for name, group in grouped:
             if name == "COX":
                 cox_coefficients = group.set_index("var")["beta"]
-                print(cox_coefficients)
             elif name == "transform":
                 transform = group.set_index("var")["beta"]
                 m_age = transform["m_age"]

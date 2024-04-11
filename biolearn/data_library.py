@@ -3,7 +3,9 @@ import pandas as pd
 import numpy as np
 import re
 from biolearn.util import cached_download, get_data_file
-from IPython.display import display, HTML
+from biolearn.defaults import default_cache
+from biolearn.cache import NoCache
+import appdirs
 
 
 def parse_after_colon(s):
@@ -324,7 +326,7 @@ class DataSource:
         "parser": "'parser' key is missing in item",
     }
 
-    def __init__(self, data):
+    def __init__(self, data, cache=None):
         """
         Initializes the DataSource instance. Intended to be initialized with data from a library YAML file.
 
@@ -338,7 +340,7 @@ class DataSource:
             setattr(self, field, data.get(field))
             if getattr(self, field) is None:
                 raise ValueError(error_message)
-
+        self.cache = cache if cache else NoCache()
         self.title = data.get("title")
         self.summary = data.get("summary")
         self.format = data.get("format")
@@ -353,8 +355,13 @@ class DataSource:
         Returns:
             GeoData: An instance of the GeoData class containing the parsed geographical data.
         """
-        file_path = cached_download(self.path)
-        return self.parser.parse(file_path)
+        cached = self.cache.get(self.id)
+        if cached:
+            return cached
+        else:
+            data = self.parser.parse(self.path)
+            self.cache.store(self.id, data)
+            return data
 
     def __repr__(self):
         """
@@ -374,17 +381,15 @@ class DataSource:
         # Add more parsers as needed
         raise ValueError(f"Unknown parser type: {parser_type}")
 
-
-def parse_library_file(library_file):
+def parse_library_file(library_file, cache=None):
     data = yaml.safe_load(library_file)
     if data is None:
         raise ValueError("File must be YAML format with 'items' at root")
     if "items" in data:
-        data_sources = [DataSource(item) for item in data["items"]]
+        data_sources = [DataSource(item, cache if cache else NoCache()) for item in data["items"]]
         return data_sources
     else:
         raise ValueError("File must be YAML format with 'items' at root")
-
 
 class DataLibrary:
     """
@@ -395,7 +400,7 @@ class DataLibrary:
     Currently DNA methylation data from GEO is supported.
     """
 
-    def __init__(self, library_file=None):
+    def __init__(self, library_file=None, cache=None):
         """
         Initializes the DataLibrary instance.
 
@@ -404,6 +409,8 @@ class DataLibrary:
                                           the biolearn default library will be loaded.
 
         """
+
+        self.cache = cache if cache else default_cache()
         self.sources = []
         if library_file is None:
             library_file = get_data_file("library.yaml")
@@ -417,7 +424,7 @@ class DataLibrary:
             library_file (str): The file path of the library file to load data sources from.
         """
         with open(library_file, "r") as f:
-            data_sources = parse_library_file(f)
+            data_sources = self._parse_library_file(f)
             self.sources.extend(data_sources)
 
     def get(self, source_id):
@@ -453,3 +460,6 @@ class DataLibrary:
             ):
                 matches.append(source)
         return matches
+    
+    def _parse_library_file(self, library_file):
+        return parse_library_file(library_file, self.cache)
