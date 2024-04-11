@@ -5,7 +5,6 @@ import re
 from biolearn.util import cached_download, get_data_file
 from biolearn.defaults import default_cache
 from biolearn.cache import NoCache
-import appdirs
 
 
 def parse_after_colon(s):

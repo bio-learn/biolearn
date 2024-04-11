@@ -39,6 +39,22 @@ def test_cache_size_limit(cache):
     assert cache.get('key2') == 'b' * 800
     assert cache.get('key3') == 'c' * 150
 
+def test_lru_respects_get_calls(cache):
+    # Store items exceeding the cache size limit
+    cache.store('key1', 'a' * 500)
+    time.sleep(0.1) #Ensure file timestamps are different
+    cache.store('key2', 'b' * 400)
+    time.sleep(0.1)
+    cache.get('key1') #Ensure Key1 most recently used
+    time.sleep(0.1)
+    cache.store('key3', 'c' * 150)
+
+
+    # Check that the least recently used item (key1) is evicted
+    assert cache.get('key1') == 'a' * 500
+    assert cache.get('key2') is None
+    assert cache.get('key3') == 'c' * 150
+
 def test_clear(cache):
     cache.store('key1', 'value1')
     cache.store('key2', 'value2')

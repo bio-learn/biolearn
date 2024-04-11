@@ -23,9 +23,9 @@ class LocalFolderCache:
         if os.path.exists(file_path):
             try:
                 with open(file_path, 'rb') as file:
-                    return pickle.load(file)
+                    value = pickle.load(file)
+                return value
             except (pickle.UnpicklingError, EOFError, FileNotFoundError, IOError):
-                #If there are bad items in cache then ignore them
                 return None
         return None
 
@@ -42,9 +42,9 @@ class LocalFolderCache:
     def _cleanup(self):
         total_size = sum(os.path.getsize(os.path.join(self.path, f)) for f in os.listdir(self.path))
         if total_size > self.max_size_bytes:
-            files = sorted(os.listdir(self.path), key=lambda f: os.path.getmtime(os.path.join(self.path, f)))
-            while total_size > self.max_size_bytes:
-                file_to_remove = files.pop(0)
+            files = sorted(os.listdir(self.path), key=lambda f: os.path.getatime(os.path.join(self.path, f)), reverse=True)
+            while total_size > self.max_size_bytes and files:
+                file_to_remove = files.pop()
                 file_path = os.path.join(self.path, file_to_remove)
                 total_size -= os.path.getsize(file_path)
                 os.remove(file_path)
