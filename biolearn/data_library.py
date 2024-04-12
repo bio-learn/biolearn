@@ -327,23 +327,36 @@ class DataSource:
 
     def __init__(self, data, cache=None):
         """
-        Initializes the DataSource instance. Intended to be initialized with data from a library YAML file.
+        Initializes the DataSource instance with configuration data and an optional cache mechanism.
+        This method parses a dictionary typically loaded from a YAML configuration file for a data source.
+        It checks for essential fields, sets up attributes, and configures a parser for data handling.
 
         Args:
-            data (dict): A dictionary containing the data source's properties.
+            data (dict): A dictionary containing the data source's properties. Must include keys like 'id',
+                        'path', 'parser', and optionally 'title', 'summary', 'format', and 'organism'.
+            cache (object, optional): An object that adheres to the caching interface used in the caching module.
+                        If no cache is provided, a default NoCache instance is used.
 
         Raises:
-            ValueError: If any of the required fields ('id', 'path', 'parser') are missing.
+            ValueError: If any of the required fields ('id', 'path', 'parser') are missing in the input data.
         """
         for field, error_message in self.REQUIRED_FIELDS.items():
             setattr(self, field, data.get(field))
             if getattr(self, field) is None:
                 raise ValueError(error_message)
         self.cache = cache if cache else NoCache()
-        self.title = data.get("title")
-        self.summary = data.get("summary")
-        self.format = data.get("format")
-        self.organism = data.get("organism")
+        self.title = data.get(
+            "title", ""
+        )  # Default empty string if title is not provided
+        self.summary = data.get(
+            "summary", ""
+        )  # Default empty string if summary is not provided
+        self.format = data.get(
+            "format", ""
+        )  # Default empty string if format is not provided
+        self.organism = data.get(
+            "organism", ""
+        )  # Default empty string if organism is not provided
 
         self.parser = self._create_parser(data["parser"])
 
@@ -406,14 +419,15 @@ class DataLibrary:
 
     def __init__(self, library_file=None, cache=None):
         """
-        Initializes the DataLibrary instance.
+        Initializes the DataLibrary instance with an optional library file and cache mechanism.
 
         Args:
-            library_file (str, optional): The file path of the library file. If None,
-                                          the biolearn default library will be loaded.
-
+            library_file (str, optional): The path to the library file. If None, the default biolearn
+                                          library file is loaded.
+            cache (object, optional): An object that implements a caching interface. If None, the
+                                      default cache is used. This cache will be used by all returned
+                                      data sources
         """
-
         self.cache = cache if cache else default_cache()
         self.sources = []
         if library_file is None:
