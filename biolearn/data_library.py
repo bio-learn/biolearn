@@ -380,15 +380,20 @@ class DataSource:
         # Add more parsers as needed
         raise ValueError(f"Unknown parser type: {parser_type}")
 
+
 def parse_library_file(library_file, cache=None):
     data = yaml.safe_load(library_file)
     if data is None:
         raise ValueError("File must be YAML format with 'items' at root")
     if "items" in data:
-        data_sources = [DataSource(item, cache if cache else NoCache()) for item in data["items"]]
+        data_sources = [
+            DataSource(item, cache if cache else NoCache())
+            for item in data["items"]
+        ]
         return data_sources
     else:
         raise ValueError("File must be YAML format with 'items' at root")
+
 
 class DataLibrary:
     """
@@ -459,6 +464,6 @@ class DataLibrary:
             ):
                 matches.append(source)
         return matches
-    
+
     def _parse_library_file(self, library_file):
         return parse_library_file(library_file, self.cache)
