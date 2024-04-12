@@ -3,7 +3,8 @@ import pandas as pd
 import numpy as np
 import re
 from biolearn.util import cached_download, get_data_file
-from IPython.display import display, HTML
+from biolearn.defaults import default_cache
+from biolearn.cache import NoCache
 
 
 def parse_after_colon(s):
@@ -324,25 +325,38 @@ class DataSource:
         "parser": "'parser' key is missing in item",
     }
 
-    def __init__(self, data):
+    def __init__(self, data, cache=None):
         """
-        Initializes the DataSource instance. Intended to be initialized with data from a library YAML file.
+        Initializes the DataSource instance with configuration data and an optional cache mechanism.
+        This method parses a dictionary typically loaded from a YAML configuration file for a data source.
+        It checks for essential fields, sets up attributes, and configures a parser for data handling.
 
         Args:
-            data (dict): A dictionary containing the data source's properties.
+            data (dict): A dictionary containing the data source's properties. Must include keys like 'id',
+                        'path', 'parser', and optionally 'title', 'summary', 'format', and 'organism'.
+            cache (object, optional): An object that adheres to the caching interface used in the caching module.
+                        If no cache is provided, a default NoCache instance is used.
 
         Raises:
-            ValueError: If any of the required fields ('id', 'path', 'parser') are missing.
+            ValueError: If any of the required fields ('id', 'path', 'parser') are missing in the input data.
         """
         for field, error_message in self.REQUIRED_FIELDS.items():
             setattr(self, field, data.get(field))
             if getattr(self, field) is None:
                 raise ValueError(error_message)
-
-        self.title = data.get("title")
-        self.summary = data.get("summary")
-        self.format = data.get("format")
-        self.organism = data.get("organism")
+        self.cache = cache if cache else NoCache()
+        self.title = data.get(
+            "title", ""
+        )  # Default empty string if title is not provided
+        self.summary = data.get(
+            "summary", ""
+        )  # Default empty string if summary is not provided
+        self.format = data.get(
+            "format", ""
+        )  # Default empty string if format is not provided
+        self.organism = data.get(
+            "organism", ""
+        )  # Default empty string if organism is not provided
 
         self.parser = self._create_parser(data["parser"])
 
@@ -353,8 +367,13 @@ class DataSource:
         Returns:
             GeoData: An instance of the GeoData class containing the parsed geographical data.
         """
-        file_path = cached_download(self.path)
-        return self.parser.parse(file_path)
+        cached = self.cache.get(self.id)
+        if cached:
+            return cached
+        else:
+            data = self.parser.parse(self.path)
+            self.cache.store(self.id, data)
+            return data
 
     def __repr__(self):
         """
@@ -375,12 +394,15 @@ class DataSource:
         raise ValueError(f"Unknown parser type: {parser_type}")
 
 
-def parse_library_file(library_file):
+def parse_library_file(library_file, cache=None):
     data = yaml.safe_load(library_file)
     if data is None:
         raise ValueError("File must be YAML format with 'items' at root")
     if "items" in data:
-        data_sources = [DataSource(item) for item in data["items"]]
+        data_sources = [
+            DataSource(item, cache if cache else NoCache())
+            for item in data["items"]
+        ]
         return data_sources
     else:
         raise ValueError("File must be YAML format with 'items' at root")
@@ -395,15 +417,18 @@ class DataLibrary:
     Currently DNA methylation data from GEO is supported.
     """
 
-    def __init__(self, library_file=None):
+    def __init__(self, library_file=None, cache=None):
         """
-        Initializes the DataLibrary instance.
+        Initializes the DataLibrary instance with an optional library file and cache mechanism.
 
         Args:
-            library_file (str, optional): The file path of the library file. If None,
-                                          the biolearn default library will be loaded.
-
+            library_file (str, optional): The path to the library file. If None, the default biolearn
+                                          library file is loaded.
+            cache (object, optional): An object that adheres to the caching interface used in the caching module. If None, the
+                                      default cache is used. This cache will be used by all returned
+                                      data sources
         """
+        self.cache = cache if cache else default_cache()
         self.sources = []
         if library_file is None:
             library_file = get_data_file("library.yaml")
@@ -417,7 +442,7 @@ class DataLibrary:
             library_file (str): The file path of the library file to load data sources from.
         """
         with open(library_file, "r") as f:
-            data_sources = parse_library_file(f)
+            data_sources = self._parse_library_file(f)
             self.sources.extend(data_sources)
 
     def get(self, source_id):
@@ -453,3 +478,6 @@ class DataLibrary:
             ):
                 matches.append(source)
         return matches
+
+    def _parse_library_file(self, library_file):
+        return parse_library_file(library_file, self.cache)
