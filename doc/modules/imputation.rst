@@ -20,4 +20,3 @@ This module provides a set of functions for imputing missing values in DNA methy
    impute_from_standard
    impute_from_average
    hybrid_impute
-   biolearn_impute
