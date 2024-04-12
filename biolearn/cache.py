@@ -41,10 +41,6 @@ class LocalFolderCache:
     """
     A cache that stores data as serialized objects in a local directory. Implements basic LRU (Least Recently Used)
     cleanup to maintain the cache within a specified maximum size limit.
-
-    Attributes:
-        path (str): The directory path where cache files are stored.
-        max_size_bytes (int): The maximum size of the cache in bytes.
     """
 
     def __init__(self, path, max_size_gb):

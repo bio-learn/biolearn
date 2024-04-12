@@ -424,7 +424,7 @@ class DataLibrary:
         Args:
             library_file (str, optional): The path to the library file. If None, the default biolearn
                                           library file is loaded.
-            cache (object, optional): An object that implements a caching interface. If None, the
+            cache (object, optional): An object that adheres to the caching interface used in the caching module. If None, the
                                       default cache is used. This cache will be used by all returned
                                       data sources
         """
