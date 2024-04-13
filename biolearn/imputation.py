@@ -92,19 +92,3 @@ def hybrid_impute(dnam, cpg_source, required_cpgs, threshold=0.8):
         df_filled.loc[cpg] = cpg_source.loc[cpg]
 
     return df_filled.sort_index()
-
-
-def biolearn_impute(dnam):
-    """
-    Impute missing values in a DNA methylation dataset using a standard Biolearn dataset for reference.
-
-    Args:
-        dnam (pd.DataFrame): DataFrame with samples as columns and CpG sites as rows.
-
-    Returns:
-        pd.DataFrame: DataFrame with missing values filled.
-    """
-    biolearn_averages_file = get_data_file("biolearn_averages_450k.csv")
-    df = pd.read_csv(biolearn_averages_file, index_col=0)
-    biolearn_averages = df["average"]
-    return impute_from_standard(dnam, biolearn_averages)

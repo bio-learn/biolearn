@@ -8,7 +8,6 @@ from biolearn.model import (
     DeconvolutionModel,
 )
 from biolearn.imputation import (
-    biolearn_impute,
     hybrid_impute,
     impute_from_average,
 )
@@ -51,18 +50,25 @@ class ModelGallery:
 
     def get(self, name, imputation_method=None):
         """
-        Retrieves a model by its name with specified imputation method.
+        Retrieves a model by its name with a specified imputation method to handle missing data.
 
         Args:
             name (str): The name of the model.
-            imputation_method (str, optional): The imputation method to use. If None, use the default method for the model.
+            imputation_method (str, optional): The method used for imputing missing data in the model's dataset.
 
         Returns:
-            object: The requested model instance, possibly wrapped in an ImputationDecorator.
+            object: The requested model instance, possibly enhanced with an imputation strategy if specified.
 
         Raises:
-            KeyError: If the model with the specified name is not found.
+            KeyError: If the model with the specified name is not found in the library.
             ValueError: If an invalid imputation method is specified.
+
+        Available imputation_method selections are:
+            - "none": No imputation is applied.
+            - "averaging": Imputes missing values by calculating the average of data in the input set.
+            - "dunedin": Uses hybrid_impute with the dunedinPACE gold standard values.
+            - "sesame_450k": Uses hybrid_impute with the sesame 450k gold standard values.
+        If no imputation method is selected then the default imputation method specified within the model's definition is used.
         """
         if name not in self.model_definitions:
             raise KeyError(f"Model not found: {name}")
@@ -79,10 +85,6 @@ class ModelGallery:
 
         if imputation_method == "none":
             return model_instance
-        elif imputation_method == "biolearn":
-            return ImputationDecorator(
-                model_instance, lambda dnam, cpgs: biolearn_impute(dnam)
-            )
         elif imputation_method == "averaging":
             return ImputationDecorator(
                 model_instance,

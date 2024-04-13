@@ -1,7 +1,7 @@
 .. _model_gallery_ref:
 
 :mod:`biolearn.model_gallery`: ModelGallery
-=================================
+============================================
 
 .. automodule:: biolearn.model_gallery
    :no-members:
