@@ -1,7 +1,6 @@
+import cvxpy as cp
 import numpy as np
 import pandas as pd
-import cvxpy as cp
-
 from sklearn.linear_model import LinearRegression
 
 from biolearn.data_library import GeoData
@@ -315,6 +314,150 @@ model_definitions = {
             "file": "EPIC_salas_18_reference.csv",
             "platform": "EPIC",
             "default_imputation": "none",
+        },
+    },
+    "BMI_McCartney": {
+        "year": 2018,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1186/s13059-018-1514-1",
+        "output": "BMI",
+        "model": {
+            "type": "LogisticMethylationModel",
+            "file": "BMI_McCartney.csv",
+            "transform": lambda sum: sum + 0,
+        },
+    },
+    "EducationMcCartney": {
+        "year": 2018,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1186/s13059-018-1514-1",
+        "output": "Educational Attainment",
+        "model": {
+            "type": "LogisticMethylationModel",
+            "file": "EducationMcCartney.csv",
+            "transform": lambda sum: sum + 0,
+        },
+    },
+    "TotalCholesterolMcCartney": {
+        "year": 2018,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1186/s13059-018-1514-1",
+        "output": "Total Cholesterol",
+        "model": {
+            "type": "LogisticMethylationModel",
+            "file": "TotalCholesterolMcCartney.csv",
+            "transform": lambda sum: sum + 0,
+        },
+    },
+    "HDLCholesterolMcCartney": {
+        "year": 2018,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1186/s13059-018-1514-1",
+        "output": "HDL Cholesterol",
+        "model": {
+            "type": "LogisticMethylationModel",
+            "file": "HDLCholesterolMcCartney.csv",
+            "transform": lambda sum: sum + 0,
+        },
+    },
+    "LDLCholesterolMcCartney": {
+        "year": 2018,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1186/s13059-018-1514-1",
+        "output": "LDL with Remnant Cholesterol",
+        "model": {
+            "type": "LogisticMethylationModel",
+            "file": "LDLCholesterolMcCartney.csv",
+            "transform": lambda sum: sum + 0,
+        },
+    },
+    "BodyFatMcCartney": {
+        "year": 2018,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1186/s13059-018-1514-1",
+        "output": "Percentage Body Fat",
+        "model": {
+            "type": "LogisticMethylationModel",
+            "file": "BodyFatMcCartney.csv",
+            "transform": lambda sum: sum + 0,
+        },
+    },
+    "BMI_Reed": {
+        "year": 2020,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1186/s13148-020-00841-5",
+        "output": "BMI",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "BMI_Reed.csv",
+            "transform": lambda sum: sum + 0,
+        },
+    },
+    "ProstateCancerKirby": {
+        "year": 2017,
+        "species": "Human",
+        "tissue": "Prostate",
+        "source": "https://doi.org/10.1186/s12885-017-3252-2",
+        "output": "Prostate Cancer Status",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "ProstateCancerKirby.csv",
+            "transform": lambda sum: sum + 6.524,
+        },
+    },
+    "HepatoXu": {
+        "year": 2017,
+        "species": "Human",
+        "tissue": "Circulating DNA",
+        "source": "https://doi.org/10.1038/nmat4997",
+        "output": "Hepatocellular Carcinoma Status",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "HepatoXu.csv",
+            "transform": lambda sum: sum + 15.595,
+        },
+    },
+    "CVD_Westerman": {
+        "year": 2020,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1161/JAHA.119.015299",
+        "output": "Coronary Heart Disease Status",
+        "model": {
+            "type": "LogisticMethylationModel",
+            "file": "CVD_Westermann.csv",
+            "transform": lambda sum: sum + 0,
+        },
+    },
+    "AD_Bahado-Singh": {
+        "year": 2021,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1371/journal.pone.0248375",
+        "output": "Alzheimer's Disease Status",
+        "model": {
+            "type": "LogisticMethylationModel",
+            "file": "AD_Bahado-Singh.csv",
+            "transform": lambda sum: sum + -0.072,
+        },
+    },
+    "DepressionBarbu": {
+        "year": 2021,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1038/s41380-020-0808-3",
+        "output": "Depression Risk",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "DepressionBarbu.csv",
+            "transform": lambda sum: sum + 12.2169841,
         },
     },
 }
