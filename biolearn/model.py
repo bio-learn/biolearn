@@ -323,9 +323,9 @@ model_definitions = {
         "source": "https://doi.org/10.1186/s13059-018-1514-1",
         "output": "BMI",
         "model": {
-            "type": "LogisticMethylationModel",
+            "type": "LinearMethylationModel",
             "file": "BMI_McCartney.csv",
-            "transform": lambda sum: sum + 0,
+            "transform": lambda x: 1 / (1 + np.exp(-x)),
         },
     },
     "EducationMcCartney": {
@@ -335,9 +335,9 @@ model_definitions = {
         "source": "https://doi.org/10.1186/s13059-018-1514-1",
         "output": "Educational Attainment",
         "model": {
-            "type": "LogisticMethylationModel",
+            "type": "LinearMethylationModel",
             "file": "EducationMcCartney.csv",
-            "transform": lambda sum: sum + 0,
+            "transform": lambda x: 1 / (1 + np.exp(-x)),
         },
     },
     "TotalCholesterolMcCartney": {
@@ -347,9 +347,9 @@ model_definitions = {
         "source": "https://doi.org/10.1186/s13059-018-1514-1",
         "output": "Total Cholesterol",
         "model": {
-            "type": "LogisticMethylationModel",
+            "type": "LinearMethylationModel",
             "file": "TotalCholesterolMcCartney.csv",
-            "transform": lambda sum: sum + 0,
+            "transform": lambda x: 1 / (1 + np.exp(-x)),
         },
     },
     "HDLCholesterolMcCartney": {
@@ -359,9 +359,9 @@ model_definitions = {
         "source": "https://doi.org/10.1186/s13059-018-1514-1",
         "output": "HDL Cholesterol",
         "model": {
-            "type": "LogisticMethylationModel",
+            "type": "LinearMethylationModel",
             "file": "HDLCholesterolMcCartney.csv",
-            "transform": lambda sum: sum + 0,
+            "transform": lambda x: 1 / (1 + np.exp(-x)),
         },
     },
     "LDLCholesterolMcCartney": {
@@ -371,9 +371,9 @@ model_definitions = {
         "source": "https://doi.org/10.1186/s13059-018-1514-1",
         "output": "LDL with Remnant Cholesterol",
         "model": {
-            "type": "LogisticMethylationModel",
+            "type": "LinearMethylationModel",
             "file": "LDLCholesterolMcCartney.csv",
-            "transform": lambda sum: sum + 0,
+            "transform": lambda x: 1 / (1 + np.exp(-x)),
         },
     },
     "BodyFatMcCartney": {
@@ -383,9 +383,9 @@ model_definitions = {
         "source": "https://doi.org/10.1186/s13059-018-1514-1",
         "output": "Percentage Body Fat",
         "model": {
-            "type": "LogisticMethylationModel",
+            "type": "LinearMethylationModel",
             "file": "BodyFatMcCartney.csv",
-            "transform": lambda sum: sum + 0,
+            "transform": lambda x: 1 / (1 + np.exp(-x)),
         },
     },
     "BMI_Reed": {
@@ -419,7 +419,8 @@ model_definitions = {
         "source": "https://doi.org/10.1038/nmat4997",
         "output": "Hepatocellular Carcinoma Status",
         "model": {
-            "type": "LinearMethylationModel",
+            # "type": "LinearMethylationModel",
+            "type": "NotImplemented",  # TypeError: can't multiply sequence by non-int of type 'float'
             "file": "HepatoXu.csv",
             "transform": lambda sum: sum + 15.595,
         },
@@ -431,9 +432,9 @@ model_definitions = {
         "source": "https://doi.org/10.1161/JAHA.119.015299",
         "output": "Coronary Heart Disease Status",
         "model": {
-            "type": "LogisticMethylationModel",
+            "type": "LinearMethylationModel",
             "file": "CVD_Westermann.csv",
-            "transform": lambda sum: sum + 0,
+            "transform": lambda x: 1 / (1 + np.exp(-x)),
         },
     },
     "AD_Bahado-Singh": {
@@ -443,9 +444,10 @@ model_definitions = {
         "source": "https://doi.org/10.1371/journal.pone.0248375",
         "output": "Alzheimer's Disease Status",
         "model": {
-            "type": "LogisticMethylationModel",
+            # "type": "LinearMethylationModel",
+            "type": "NotImplemented",  # ValueError: Tried to fill the following cpgs but they were missing from cpg_source: ['cg00613827']
             "file": "AD_Bahado-Singh.csv",
-            "transform": lambda sum: sum + -0.072,
+            "transform": lambda x: 1 / (1 + np.exp(-x - 0.072)),
         },
     },
     "DepressionBarbu": {
