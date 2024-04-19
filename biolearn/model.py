@@ -419,8 +419,7 @@ model_definitions = {
         "source": "https://doi.org/10.1038/nmat4997",
         "output": "Hepatocellular Carcinoma Status",
         "model": {
-            # "type": "LinearMethylationModel",
-            "type": "NotImplemented",  # TypeError: can't multiply sequence by non-int of type 'float'
+            "type": "LinearMethylationModel",
             "file": "HepatoXu.csv",
             "transform": lambda sum: sum + 15.595,
         },
@@ -444,8 +443,7 @@ model_definitions = {
         "source": "https://doi.org/10.1371/journal.pone.0248375",
         "output": "Alzheimer's Disease Status",
         "model": {
-            # "type": "LinearMethylationModel",
-            "type": "NotImplemented",  # ValueError: Tried to fill the following cpgs but they were missing from cpg_source: ['cg00613827']
+            "type": "LinearMethylationModel",
             "file": "AD_Bahado-Singh.csv",
             "transform": lambda x: 1 / (1 + np.exp(-x - 0.072)),
         },
