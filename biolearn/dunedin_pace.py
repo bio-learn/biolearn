@@ -1,9 +1,12 @@
 import os
-from scipy.stats import rankdata
-import pandas as pd
+import warnings
+
 import numpy as np
-from biolearn.util import get_data_file
+import pandas as pd
+from scipy.stats import rankdata
+
 from biolearn.imputation import hybrid_impute
+from biolearn.util import get_data_file
 
 
 def dunedin_pace_normalization(dataframe):
@@ -85,10 +88,9 @@ def dunedin_pace_preprocess_data(betas, means, proportionOfProbesRequired=0.8):
         probeOverlap < proportionOfProbesRequired
         or probeOverlap_background < proportionOfProbesRequired
     ):
-        raise (
-            Exception(
-                "Number of datapoints does not meet minimum required for this clock"
-            )
+
+        warnings.warn(
+            "Number of datapoints does not meet minimum required for this clock"
         )
 
     desired_labels = gold_standard_probes
