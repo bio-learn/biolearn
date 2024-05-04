@@ -19,8 +19,8 @@ sample_metadata = load_test_data_file("external/testset_metadata.csv")
     "model_name, model_entry", model.model_definitions.items()
 )
 def test_models(model_name, model_entry):
-    #TODO: Make testing more intelligent for different model types.
-    #TODO: Add testing for LinearTranscriptomicModel
+    # TODO: Make testing more intelligent for different model types.
+    # TODO: Add testing for LinearTranscriptomicModel
     # Skip models that don't have tests
     model_type = model_entry["model"]["type"]
     if model_type in ["NotImplemented", "LinearTranscriptomicModel"]:

@@ -230,7 +230,7 @@ def test_load_dnam_with_matrix_file():
             "matrix-file": get_test_data_file("test_supplementary_matrix.txt"),
             "matrix-file-seperator": "space",
             "matrix-file-key-line": 72,
-            "matrix-file-format": "pvalue"
+            "matrix-file-format": "pvalue",
         },
     }
     source = DataSource(data_source_spec)

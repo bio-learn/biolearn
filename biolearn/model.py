@@ -469,17 +469,21 @@ model_definitions = {
         "model": {
             "type": "LinearTranscriptomicModel",
             "file": "TranscriptomicPrediction.csv",
-            "preprocess": lambda rna_data: preprocess_rna(map_ensembl_to_gene(rna_data)),
+            "preprocess": lambda rna_data: preprocess_rna(
+                map_ensembl_to_gene(rna_data)
+            ),
             "transform": lambda sum: sum + 55.808884324,
         },
     },
-
 }
 
 
 def quantile_normalize(df):
-    rank_mean = df.stack().groupby(df.rank(method='first').stack().astype(int)).mean()
-    return df.rank(method='min').stack().astype(int).map(rank_mean).unstack()
+    rank_mean = (
+        df.stack().groupby(df.rank(method="first").stack().astype(int)).mean()
+    )
+    return df.rank(method="min").stack().astype(int).map(rank_mean).unstack()
+
 
 def preprocess_rna(rna_matrix):
     normalized_data = quantile_normalize(rna_matrix)
@@ -488,19 +492,22 @@ def preprocess_rna(rna_matrix):
     log2_data = np.log2(normalized_data + 1)  # Adding 1 to avoid log(0) error
 
     # Center the probe means to zero
-    probe_centered_data = log2_data.sub(log2_data.mean(axis=1), axis='index')
+    probe_centered_data = log2_data.sub(log2_data.mean(axis=1), axis="index")
 
     # Center the sample means to zero
-    sample_centered_data = probe_centered_data.sub(probe_centered_data.mean(axis=0), axis='columns')
+    sample_centered_data = probe_centered_data.sub(
+        probe_centered_data.mean(axis=0), axis="columns"
+    )
     return sample_centered_data
 
 
 def map_ensembl_to_gene(rna_matrix):
     mapping_file = get_data_file("reference/ensembl_to_gene.csv")
     ensembl_to_gene = pd.read_csv(mapping_file, index_col=0)
-    id_to_gene_map = ensembl_to_gene['gene'].to_dict()
+    id_to_gene_map = ensembl_to_gene["gene"].to_dict()
     new_rna_matrix = rna_matrix.rename(index=id_to_gene_map)
     return new_rna_matrix
+
 
 class DeconvolutionModel:
     def __init__(self, reference_file, platform_input):
@@ -669,6 +676,7 @@ class LinearModel:
     def _get_data_matrix(self, geo_data):
         raise NotImplementedError()
 
+
 class LinearMethylationModel(LinearModel):
     def _get_data_matrix(self, geo_data):
         return geo_data.dnam
@@ -680,6 +688,7 @@ class LinearMethylationModel(LinearModel):
 class LinearTranscriptomicModel(LinearModel):
     def _get_data_matrix(self, geo_data):
         return geo_data.rna
+
 
 class GrimageModel:
     def __init__(self, coefficient_file, **metadata):

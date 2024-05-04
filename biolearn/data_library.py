@@ -111,7 +111,7 @@ class GeoData:
                           and rows represent different methylation sites.
     """
 
-    def __init__(self, metadata, dnam = None, rna = None):
+    def __init__(self, metadata, dnam=None, rna=None):
         """
         Initializes the GeoData instance.
 
@@ -133,7 +133,7 @@ class GeoData:
         return GeoData(
             metadata=self.metadata.copy(deep=True),
             dnam=self.dnam.copy(deep=True) if self.dnam is not None else None,
-            rna=self.rna.copy(deep=True) if self.rna is not None else None
+            rna=self.rna.copy(deep=True) if self.rna is not None else None,
         )
 
     def quality_report(self, sites=None):
@@ -219,6 +219,7 @@ class GeoData:
 
         return cls(metadata, dnam)
 
+
 class GeoMatrixParser:
     parsers = {
         "numeric": lambda s: extract_numeric(parse_after_colon(s)),
@@ -261,7 +262,9 @@ class GeoMatrixParser:
             matrix_data = pd.read_table(
                 file_path, index_col=0, skiprows=self.matrix_start - 1
             )
-            matrix_data = matrix_data.drop(["!series_matrix_table_end"], axis=0)
+            matrix_data = matrix_data.drop(
+                ["!series_matrix_table_end"], axis=0
+            )
             matrix_data.index.name = "id"
         elif self.matrix_file:
             matrix_file_path = cached_download(self.matrix_file)
@@ -274,18 +277,26 @@ class GeoMatrixParser:
             if self.matrix_file_format == "pvalue":
                 reading_df = df.iloc[:, ::2]
                 pval_df = df.iloc[:, 1::2]
-                pval_df = pval_df.replace("<1E-16", "0", regex=False).astype(float, errors="ignore")
+                pval_df = pval_df.replace("<1E-16", "0", regex=False).astype(
+                    float, errors="ignore"
+                )
                 pval_df = pval_df.map(lambda x: np.nan if x > 0.05 else x)
                 # NaN values in pval_df will cause corresponding values in methylation_df to be NaN
                 matrix_data = reading_df + pval_df.values
-                matrix_data = self._remap_and_prune_columns(matrix_data, file_path)
+                matrix_data = self._remap_and_prune_columns(
+                    matrix_data, file_path
+                )
 
             elif self.matrix_file_format == "standard":
                 matrix_data = df
-                matrix_data = self._remap_and_prune_columns(matrix_data, file_path)
+                matrix_data = self._remap_and_prune_columns(
+                    matrix_data, file_path
+                )
 
             else:
-                raise ValueError(f"Unsupported matrix file format: {self.matrix_file_format}")
+                raise ValueError(
+                    f"Unsupported matrix file format: {self.matrix_file_format}"
+                )
 
         if self.data_type == "rna":
             return GeoData(metadata, rna=matrix_data)
@@ -300,7 +311,7 @@ class GeoMatrixParser:
                 index_col=0,
                 header=None,
                 skiprows=lambda x: x != self.id_row - 1,
-                nrows=1
+                nrows=1,
             )
             column_mapping = dict(zip(data.columns, header_row.iloc[0]))
         else:
@@ -319,7 +330,9 @@ class GeoMatrixParser:
                 column_mapping = {v: k for k, v in column_mapping.items()}
 
         data = data.rename(columns=column_mapping)
-        data = data[[col for col in data.columns if col in column_mapping.values()]]
+        data = data[
+            [col for col in data.columns if col in column_mapping.values()]
+        ]
         return data
 
     def _metadata_load_list(self):
