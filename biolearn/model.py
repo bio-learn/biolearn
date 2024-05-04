@@ -460,7 +460,53 @@ model_definitions = {
             "transform": lambda sum: sum + 12.2169841,
         },
     },
+    "TranscriptomicPredictionModel": {
+        "year": 2015,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.nature.com/articles/ncomms9570",
+        "output": "Age (Years)",
+        "model": {
+            "type": "LinearTranscriptomicModel",
+            "file": "TranscriptomicPrediction.csv",
+            "preprocess": lambda rna_data: preprocess_rna(
+                map_ensembl_to_gene(rna_data)
+            ),
+            "transform": lambda sum: sum + 55.808884324,
+        },
+    },
 }
+
+
+def quantile_normalize(df):
+    rank_mean = (
+        df.stack().groupby(df.rank(method="first").stack().astype(int)).mean()
+    )
+    return df.rank(method="min").stack().astype(int).map(rank_mean).unstack()
+
+
+def preprocess_rna(rna_matrix):
+    normalized_data = quantile_normalize(rna_matrix)
+
+    # Log2 transform the normalized data
+    log2_data = np.log2(normalized_data + 1)  # Adding 1 to avoid log(0) error
+
+    # Center the probe means to zero
+    probe_centered_data = log2_data.sub(log2_data.mean(axis=1), axis="index")
+
+    # Center the sample means to zero
+    sample_centered_data = probe_centered_data.sub(
+        probe_centered_data.mean(axis=0), axis="columns"
+    )
+    return sample_centered_data
+
+
+def map_ensembl_to_gene(rna_matrix):
+    mapping_file = get_data_file("reference/ensembl_to_gene.csv")
+    ensembl_to_gene = pd.read_csv(mapping_file, index_col=0)
+    id_to_gene_map = ensembl_to_gene["gene"].to_dict()
+    new_rna_matrix = rna_matrix.rename(index=id_to_gene_map)
+    return new_rna_matrix
 
 
 class DeconvolutionModel:
@@ -586,7 +632,7 @@ class DeconvolutionModel:
         return list(self.reference.index)
 
 
-class LinearMethylationModel:
+class LinearModel:
     def __init__(
         self, coeffecient_file, transform, preprocess=None, **metadata
     ) -> None:
@@ -611,23 +657,37 @@ class LinearMethylationModel:
         )
 
     def predict(self, geo_data):
-        dnam_data = self.preprocess(geo_data.dnam)
+        matrix_data = self._get_data_matrix(geo_data)
+        matrix_data = self.preprocess(matrix_data)
 
         # Join the coefficients and dnam_data on the index
-        methylation_df = self.coefficients.join(dnam_data, how="inner")
+        model_df = self.coefficients.join(matrix_data, how="inner")
 
         # Vectorized multiplication: multiply CoefficientTraining with all columns of dnam_data
         result = (
-            methylation_df.iloc[:, 1:]
-            .multiply(methylation_df["CoefficientTraining"], axis=0)
+            model_df.iloc[:, 1:]
+            .multiply(model_df["CoefficientTraining"], axis=0)
             .sum(axis=0)
         )
 
         # Return as a DataFrame
         return result.apply(self.transform).to_frame(name="Predicted")
 
+    def _get_data_matrix(self, geo_data):
+        raise NotImplementedError()
+
+
+class LinearMethylationModel(LinearModel):
+    def _get_data_matrix(self, geo_data):
+        return geo_data.dnam
+
     def methylation_sites(self):
         return list(self.coefficients.index)
+
+
+class LinearTranscriptomicModel(LinearModel):
+    def _get_data_matrix(self, geo_data):
+        return geo_data.rna
 
 
 class GrimageModel:

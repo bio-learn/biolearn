@@ -111,7 +111,7 @@ class GeoData:
                           and rows represent different methylation sites.
     """
 
-    def __init__(self, metadata, dnam):
+    def __init__(self, metadata, dnam=None, rna=None):
         """
         Initializes the GeoData instance.
 
@@ -121,6 +121,7 @@ class GeoData:
         """
         self.metadata = metadata
         self.dnam = dnam
+        self.rna = rna
 
     def copy(self):
         """
@@ -130,7 +131,9 @@ class GeoData:
             GeoData: A new instance of GeoData with copies of the metadata and dnam DataFrames.
         """
         return GeoData(
-            self.metadata.copy(deep=True), self.dnam.copy(deep=True)
+            metadata=self.metadata.copy(deep=True),
+            dnam=self.dnam.copy(deep=True) if self.dnam is not None else None,
+            rna=self.rna.copy(deep=True) if self.rna is not None else None,
         )
 
     def quality_report(self, sites=None):
@@ -236,6 +239,8 @@ class GeoMatrixParser:
             data.get("matrix-file-seperator")
         )
         self.matrix_file_key_line = data.get("matrix-file-key-line")
+        self.matrix_file_format = data.get("matrix-file-format")
+        self.data_type = data.get("data-type")
 
     def parse(self, file_path):
         load_list = self._metadata_load_list()
@@ -254,43 +259,75 @@ class GeoMatrixParser:
             parser = self.parsers[parser_name]
             metadata[col] = metadata[col].apply(parser)
         if self.matrix_start:
-            dnam = pd.read_table(
+            matrix_data = pd.read_table(
                 file_path, index_col=0, skiprows=self.matrix_start - 1
             )
-            dnam = dnam.drop(["!series_matrix_table_end"], axis=0)
-            dnam.index.name = "id"
+            matrix_data = matrix_data.drop(
+                ["!series_matrix_table_end"], axis=0
+            )
+            matrix_data.index.name = "id"
         elif self.matrix_file:
             matrix_file_path = cached_download(self.matrix_file)
             print(
-                f"Note: This dataset will take a few minutes to load and may fail if you have insufficient memory"
+                "Note: This dataset will take a few minutes to load and may fail if you have insufficient memory"
             )
             df = pd.read_csv(
                 matrix_file_path, index_col=0, sep=self.matrix_file_seperator
             )
-            methylation_df = df.iloc[:, ::2]
-            pval_df = df.iloc[:, 1::2]
-            pval_df = pval_df.replace("<1E-16", "0", regex=False).astype(
-                float, errors="ignore"
-            )
-            pval_df = pval_df.map(lambda x: np.nan if x > 0.05 else 0)
-            # NaN values in pval_df will cause corresponding values in methylation_df to be NaN
-            dnam = methylation_df + pval_df.values
-            dnam = self._remap_and_prune_columns(dnam, file_path)
-        return GeoData(metadata, dnam)
+            if self.matrix_file_format == "pvalue":
+                reading_df = df.iloc[:, ::2]
+                pval_df = df.iloc[:, 1::2]
+                pval_df = pval_df.replace("<1E-16", "0", regex=False).astype(
+                    float, errors="ignore"
+                )
+                pval_df = pval_df.map(lambda x: np.nan if x > 0.05 else x)
+                # NaN values in pval_df will cause corresponding values in methylation_df to be NaN
+                matrix_data = reading_df + pval_df.values
+                matrix_data = self._remap_and_prune_columns(
+                    matrix_data, file_path
+                )
+
+            elif self.matrix_file_format == "standard":
+                matrix_data = df
+                matrix_data = self._remap_and_prune_columns(
+                    matrix_data, file_path
+                )
+
+            else:
+                raise ValueError(
+                    f"Unsupported matrix file format: {self.matrix_file_format}"
+                )
+
+        if self.data_type == "rna":
+            return GeoData(metadata, rna=matrix_data)
+        else:
+            return GeoData(metadata, dnam=matrix_data)
 
     def _remap_and_prune_columns(self, data, matrix_file_path):
-        mapping_df = pd.read_table(
-            matrix_file_path,
-            index_col=0,
-            skiprows=lambda x: x != self.id_row - 1
-            and x != self.matrix_file_key_line - 1,
-        )
-        column_mapping = mapping_df.to_dict("records")[0]
+        if self.matrix_file_key_line is None:
+            # No key line for mapping so assume the ordering is sufficient
+            header_row = pd.read_table(
+                matrix_file_path,
+                index_col=0,
+                header=None,
+                skiprows=lambda x: x != self.id_row - 1,
+                nrows=1,
+            )
+            column_mapping = dict(zip(data.columns, header_row.iloc[0]))
+        else:
+            # Use the key line for the mapping
+            mapping_df = pd.read_table(
+                matrix_file_path,
+                index_col=0,
+                skiprows=lambda x: x != self.id_row - 1
+                and x != self.matrix_file_key_line - 1,
+            )
+            column_mapping = mapping_df.to_dict("records")[0]
 
-        # Reverse the mapping if needed as key is based on first line loaded
-        reverse_mapping = self.id_row < self.matrix_file_key_line
-        if reverse_mapping:
-            column_mapping = {v: k for k, v in column_mapping.items()}
+            # Reverse the mapping if needed as key is based on first line loaded
+            reverse_mapping = self.id_row < self.matrix_file_key_line
+            if reverse_mapping:
+                column_mapping = {v: k for k, v in column_mapping.items()}
 
         data = data.rename(columns=column_mapping)
         data = data[

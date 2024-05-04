@@ -2,6 +2,7 @@ import pandas as pd
 from biolearn.model import (
     model_definitions,
     LinearMethylationModel,
+    LinearTranscriptomicModel,
     GrimageModel,
     SexEstimationModel,
     ImputationDecorator,
@@ -22,6 +23,7 @@ class ModelGallery:
 
     model_builders = {
         "LinearMethylationModel": LinearMethylationModel.from_definition,
+        "LinearTranscriptomicModel": LinearTranscriptomicModel.from_definition,
         "GrimageModel": GrimageModel.from_definition,
         "SexEstimationModel": SexEstimationModel.from_definition,
         "DeconvolutionModel": DeconvolutionModel.from_definition,

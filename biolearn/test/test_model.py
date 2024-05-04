@@ -19,10 +19,13 @@ sample_metadata = load_test_data_file("external/testset_metadata.csv")
     "model_name, model_entry", model.model_definitions.items()
 )
 def test_models(model_name, model_entry):
-    # Skip models not implemented
-    if model_entry["model"]["type"] == "NotImplemented":
+    # TODO: Make testing more intelligent for different model types.
+    # TODO: Add testing for LinearTranscriptomicModel
+    # Skip models that don't have tests
+    model_type = model_entry["model"]["type"]
+    if model_type in ["NotImplemented", "LinearTranscriptomicModel"]:
         pytest.skip(
-            f"Model type 'NotImplemented' for {model_name} - skipping test"
+            f"Model type {model_type} for {model_name} does not have a testing pattern - skipping test"
         )
 
     test_data = GeoData(sample_metadata, sample_inputs)

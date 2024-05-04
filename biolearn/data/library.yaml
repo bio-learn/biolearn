@@ -750,6 +750,7 @@ items:
       id-row: 33
       matrix-file: "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE157nnn/GSE157131/suppl/GSE157131_Matrix_processed_beta_geo_08252020.txt.gz"
       matrix-file-seperator: "space"
+      matrix-file-format: pvalue
       matrix-file-key-line: 53
       metadata:
         tissue:
@@ -782,6 +783,7 @@ items:
       id-row: 31
       matrix-file: "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE132nnn/GSE132203/suppl/GSE132203_Geo_Submission_GTPEpic.csv.gz"
       matrix-file-seperator: "comma"
+      matrix-file-format: pvalue
       matrix-file-key-line: 30
       metadata:
         sex:
@@ -832,3 +834,24 @@ items:
         age_acceleration:
           row: 54
           parse: string
+  - id: GSE134080
+    title: RNASeq whole blood of Dutch 500FG cohort
+    summary: "Expression levels from bulk whole blood from 96 individuals within the 500FG cohort. The aim of the 500FG project is to characterize the interaction between the genetic background of the host, the microbiome composition of different niches, and the consequences on an array of physiological functions: the immune response against important human pathogens, thrombocyte function, and in a subgroup of individuals the cognitive function of the brain. These aims are approached by a combination of advanced -omics technology, cutting edge functional tests (immune tests, functional brain MRI, etc) and systems biology-based bioinformatics."
+    format: IlluminaHiSeq2500
+    organism: human
+    samples: 100
+    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE134nnn/GSE134080/matrix/GSE134080_series_matrix.txt.gz
+    parser:
+      type: geo-matrix
+      id-row: 32
+      data-type: rna
+      matrix-file: "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE134nnn/GSE134080/suppl/GSE134080%5F500FG%5FRNASeq%5Fcounts.txt.gz"
+      matrix-file-format: standard
+      matrix-file-seperator: "comma"
+      metadata:
+        sex:
+          row: 43
+          parse: sex
+        age:
+          row: 42
+          parse: numeric
