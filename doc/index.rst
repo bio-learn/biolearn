@@ -54,7 +54,7 @@ Featured examples
 .. grid::
 
   .. grid-item-card::
-    :link: auto_examples/00_epigenetic_biomarkers/plot_epigenetic_clocks_on_geo.html
+    :link: auto_examples/00_omics_biomarkers/plot_epigenetic_clocks_on_geo.html
     :link-type: url
     :columns: 12 12 12 12
     :class-card: sd-shadow-sm
@@ -68,7 +68,7 @@ Featured examples
       .. grid-item::
         :columns: 12 4 4 4
 
-        .. image:: auto_examples/00_epigenetic_biomarkers/images/sphx_glr_plot_epigenetic_clocks_on_geo_001.png
+        .. image:: auto_examples/00_omics_biomarkers/images/sphx_glr_plot_epigenetic_clocks_on_geo_001.png
           
 
       .. grid-item::
