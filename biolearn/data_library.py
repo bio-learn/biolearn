@@ -228,11 +228,9 @@ class JenAgeCustomParser:
         self.data = data
 
     def parse(self, _):
-        # Download and read the metadata for jen1
+        #Load up part 1
         jen1_meta_url = 'https://ftp.ncbi.nlm.nih.gov/geo/series/GSE103nnn/GSE103232/matrix/GSE103232_series_matrix.txt.gz'
         jen1_meta = pd.read_table(jen1_meta_url, index_col=0, skiprows=32)
-
-        # Download and read the data for jen1
         jen1_url = 'https://ftp.ncbi.nlm.nih.gov/geo/series/GSE103nnn/GSE103232/suppl/GSE103232%5Fhs%5Fblood%5Fbatch2%5Fcounts%5Frpkm.xls.gz'
         response1 = requests.get(jen1_url)
         with gzip.open(BytesIO(response1.content)) as f:
@@ -241,7 +239,7 @@ class JenAgeCustomParser:
         jen1 = jen1.drop(['external_gene_id', 'description', 'gene_biotype'], axis=1)
         jen1 = jen1[jen1.sum(1) > 0].T
 
-        # Extract age data for jen1
+        # Age is in a 5 year range so we add 2 to the low number to get closer to the average
         age = jen1_meta.iloc[8].str[5:7].astype(int) + 2
         age.index = age.index.str[-3:]
         jen1 = jen1.join(age.rename('age'))
@@ -250,7 +248,7 @@ class JenAgeCustomParser:
         jen2_meta_url = 'https://ftp.ncbi.nlm.nih.gov/geo/series/GSE75nnn/GSE75337/matrix/GSE75337_series_matrix.txt.gz'
         jen2_meta = pd.read_table(jen2_meta_url, index_col=0, skiprows=34)
 
-        # Download and read the data for jen2
+        # Load up part 2
         jen2_url = 'https://ftp.ncbi.nlm.nih.gov/geo/series/GSE75nnn/GSE75337/suppl/GSE75337%5Fcounts%5FRPKMs.xls.gz'
         response2 = requests.get(jen2_url)
         with gzip.open(BytesIO(response2.content)) as f:
@@ -261,17 +259,14 @@ class JenAgeCustomParser:
         jen2 = jen2[[c for c in jen2.columns if 'blood' in c]]
         jen2 = jen2[jen2.sum(1) > 0].T
 
-        # Extract age data for jen2
+        # Age is in a 5 year range so we add 2 to the low number to get closer to the average
         age2 = jen2_meta.iloc[8].str[5:7].astype(int) + 2
         jen2 = jen2.merge(age2.rename('age'), left_index=True, right_index=True)
 
-        # Combine jen1 and jen2 data
+        #Build GeoData
         jen = pd.concat([jen1, jen2], ignore_index=True, join='inner').copy()
-
-        # Prepare metadata and rna data
         metadata = jen[['age']].copy()
-        rna = jen.drop(['age'], axis=1).T.copy()  # Transpose rna data before assigning
-
+        rna = jen.drop(['age'], axis=1).T.copy() 
         return GeoData(metadata=metadata, rna=rna)
 
 
