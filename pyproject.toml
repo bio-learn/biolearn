@@ -20,7 +20,8 @@ dependencies = [
   "appdirs",
   "pyyaml",
   "scipy",
-  "cvxpy"
+  "cvxpy",
+  "xlrd"
 ]
 
 keywords = ["biomarker"]
