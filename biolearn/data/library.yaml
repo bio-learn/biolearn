@@ -855,3 +855,13 @@ items:
         age:
           row: 42
           parse: numeric
+  - id: JenAge
+    title: Deep sequencing of endogenous mRNA from Homo sapiens from four age categories
+    summary: "Comparison of temporal gene expression profiles to identify genes/pathways changing during ageing. Contains data from GSE103232 and GSE75337"
+    format: IlluminaHiSeq2500
+    organism: human
+    samples: 62
+    path: custom
+    parser:
+      type: jen-age-custom
+      data-type: rna
