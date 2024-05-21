@@ -1,4 +1,3 @@
-
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -8,14 +7,13 @@ from lifelines import CoxPHFitter
 from biolearn.model_gallery import ModelGallery
 
 
-
 def run_predictions(data, predictors_dict):
     """
     Runs predictions using a collection of models specified in predictors_dict and returns a DataFrame with the results.
 
     Args:
         data (GeoData): GeoData object used for predictions
-        predictors_dict (dict): A dictionary where keys are model names and values are lists of column names 
+        predictors_dict (dict): A dictionary where keys are model names and values are lists of column names
                                 in the prediction output to be used. ex ("Horvathv1": "Predicted")
 
     Returns:
@@ -48,14 +46,18 @@ def calculate_mortality_hazard_ratios(data, predictor_results):
     Returns:
         pd.DataFrame: A DataFrame containing hazard ratios, confidence intervals, and p-values for each predictor.
     """
-    analysis_df = pd.merge(predictor_results, data.metadata, left_index=True, right_index=True)
+    analysis_df = pd.merge(
+        predictor_results, data.metadata, left_index=True, right_index=True
+    )
 
     # Standardize the clock values
     for clock in predictor_results.columns:
-        analysis_df[clock] = (analysis_df[clock] - analysis_df[clock].mean()) / analysis_df[clock].std()
+        analysis_df[clock] = (
+            analysis_df[clock] - analysis_df[clock].mean()
+        ) / analysis_df[clock].std()
 
     # Remove rows where 'dead' column is null
-    analysis_df = analysis_df.dropna(subset=['dead'])
+    analysis_df = analysis_df.dropna(subset=["dead"])
 
     hazard_ratios = []
     ci_lower_list = []
@@ -94,7 +96,7 @@ def plot_hazard_ratios(hazard_ratio_data):
     Plots hazard ratios from the provided data in a forest plot.
 
     Args:
-        hazard_ratio_data (pd.DataFrame): A DataFrame containing hazard ratios, confidence intervals, and p-values 
+        hazard_ratio_data (pd.DataFrame): A DataFrame containing hazard ratios, confidence intervals, and p-values
                                           for each predictor.
 
     Returns:
