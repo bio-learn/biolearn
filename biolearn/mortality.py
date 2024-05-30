@@ -132,7 +132,7 @@ def plot_hazard_ratios(hazard_ratio_data):
     ax.set_yticks(range(len(sorted_data)))
     ax.set_yticklabels(sorted_data["Clock"])
     ax.set_xlabel("Hazard Ratio (95% CI) per SD increase, adjusted for age")
-    ax.set_title("Epigenetic Clocks Predicting Mortality in the NAS Cohort")
+    ax.set_title("Mortality Hazard Ratio From Clock Predictions")
     ax.axvline(x=1, color="black", linestyle="--", linewidth=1)
 
     plt.tight_layout()
