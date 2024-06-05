@@ -741,7 +741,7 @@ items:
     title: Methylation data from stored peripheral blood leukocytes from African American
       participants in the GENOA study
     summary: African-American individuals of the GENOA cohort
-    format: IlluminaEPIC
+    format: Illumina450k
     organism: human
     samples: 946
     path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE157nnn/GSE157131/matrix/GSE157131-GPL21145_series_matrix.txt.gz
