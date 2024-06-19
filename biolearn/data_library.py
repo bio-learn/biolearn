@@ -405,6 +405,109 @@ class GeoMatrixParser:
         return load_list
 
 
+class JsonCustomParser():
+
+    def __init__(self, data) -> None:
+        self._check_keys_exist(data, ["matrix_file", "metadata_keys_parse", "metadata_query_url"])
+        self.matrix_file = data['matrix_file']
+        self.metadata_keys_parse = data['metadata_keys_parse']
+        self.metadata_keys = list(self.metadata_keys_parse.keys())
+        self.metadata_query_url = data['metadata_query_url']
+
+    def _check_keys_exist(self, data, keys: list[str]):
+        for key in keys:
+            if key not in data:
+                raise ValueError(f"Parser not valid: missing {key}")
+
+    def _create_metadata(self, metadata_query_url):
+        response = requests.get(metadata_query_url)
+        json_data = response.json()
+        json_smaples = [item for item in json_data['GeoMetaData']]
+        return self._convert_to_metadata_df(self.metadata_keys, json_smaples)
+
+    def _map_characteristics_dict(self, item):
+
+        def extract_key(item):
+            if 'tag' in item:
+                return item['tag']
+            else:
+                return item['value'].split(":")[0]
+
+        def extract_value(item):
+            if 'tag' in item:
+                return item['value']
+            else:
+                return item['value'].split(":")[1]
+
+        return {extract_key(char).lower(): extract_value(char) for char in item["entity"]["sample"]["channels"][0]["characteristics"]}
+
+    def _convert_to_metadata_df(self, metadata_keys, json_samples):
+
+        def _convert_item(keys, item):
+            data_cols = []
+            characteristics = self._map_characteristics_dict(item)
+
+            for key in keys:
+                parse_type = self.metadata_keys_parse[key]
+                if parse_type == "sex":
+                    data_cols.append(sex_parser(characteristics[key]))
+                elif parse_type == "numeric":
+                    data_cols.append(extract_numeric(characteristics[key]))
+                else:
+                    data_cols.append(characteristics.get(key))
+
+            return data_cols
+
+        data = {sample["acc"]: _convert_item(metadata_keys, sample) for sample in json_samples}
+        df = pd.DataFrame(data).transpose()
+        df = df.reset_index(drop=False)
+        columns = ["id"]
+        columns.extend(metadata_keys)
+        df.columns = columns
+        return df
+
+    def _create_matrix(self, sample_ids, matrix_file):
+        matrix_file_path = cached_download(matrix_file)
+        rows = self._read_matrix_rows(matrix_file_path)
+        rows = rows[1:-1]
+        header = self._get_matrix_colums(rows)
+        data = self._get_matrix_data(rows)
+        df = pd.DataFrame(data, columns=header)
+        df.set_index("ID_REF", inplace=True)
+        df.index.name = 'id'
+        df = df[sample_ids]
+        return df
+
+    def _get_matrix_colums(self, matrix_rows):
+        return [r.replace('"', "") for r in matrix_rows[0]]
+
+    def _get_matrix_data(self, matrix_rows):
+        data = matrix_rows[1:]
+        for d in data:
+            d[0] = d[0].replace('"', "")
+        return data
+
+    def _read_matrix_rows(self, matrix_file):
+        rows = []
+        with gzip.open(matrix_file, 'rt', encoding='utf-8') as file:
+            inside_matrix = False
+            for line in file:
+                line = line.strip()
+                if line == "!series_matrix_table_begin":
+                    inside_matrix = True
+                elif line == "!series_matrix_table_end":
+                    inside_matrix = False
+                if inside_matrix or line == "!series_matrix_table_end":
+                    rows.append(line.split())
+
+        return rows
+
+    def parse(self, _):
+        meatadata = self._create_metadata(self.metadata_query_url)
+        matrix = self._create_matrix(meatadata["id"], self.matrix_file)
+        return GeoData(meatadata, matrix)
+
+
 class DataSource:
     """
     Represents a single data source in the DataLibrary.
@@ -489,6 +592,8 @@ class DataSource:
             return JenAgeCustomParser(parser_data)
         if parser_type == "geo-matrix":
             return GeoMatrixParser(parser_data)
+        if parser_type == "cutsom_json_query_parser":
+            return JsonCustomParser(parser_data)
         raise ValueError(f"Unknown parser type: {parser_type}")
 
 

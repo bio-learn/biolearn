@@ -215,6 +215,34 @@ def test_can_load_dnam():
     )
 
 
+def test_can_load_json_custom_library_file():
+    data_source_spec = {
+        "id": "TestData",
+        "path": "no path",
+        "parser": {
+            "type": "cutsom_json_query_parser",
+            "matrix_file": "https://ftp.ncbi.nlm.nih.gov/geo/series//GSE224nnn/GSE224218/matrix/GSE224218-GPL13534_series_matrix.txt.gz",
+            "metadata_keys_parse": {
+              "sex": "sex",
+              "age": "numeric",
+              "incoming diagnosis": "string",
+              "tumor location": "string",
+              "progression-free survival (months)": "string",
+              "progression (0=no, 1=yes)": "string",
+              "overall survival (months)": "string",
+              "death (0=no, 1=yes)": "string",
+              "material type": "string",
+            },
+            "metadata_query_url": "https://www.ncbi.nlm.nih.gov/geo/geo2r/backend/?type=samples&series=GSE224218&platform=GPL13534"
+        },
+    }
+    source = DataSource(data_source_spec)
+
+    source.load()
+
+    pass
+
+
 def test_load_dnam_with_matrix_file():
     data_source_spec = {
         "id": "TestMatrixFile",
