@@ -4,11 +4,15 @@ import numpy as np
 import re
 import requests
 import gzip
+import shutil
+import os
+
 
 from biolearn.util import cached_download, get_data_file
 from biolearn.defaults import default_cache
 from biolearn.cache import NoCache
 from io import BytesIO
+from file_read_backwards import FileReadBackwards
 
 
 def parse_after_colon(s):
@@ -511,41 +515,53 @@ class JsonCustomParser():
     def _create_matrix(self, sample_ids, matrix_file):
         if not self._too_small_matrix_file(matrix_file):
             matrix_file_path = cached_download(matrix_file)
+
             rows = self._read_matrix_rows(matrix_file_path)
-            rows = rows[1:-1]
-            header = self._get_matrix_colums(rows)
-            data = self._get_matrix_data(rows)
-            df = pd.DataFrame(data, columns=header)
-            df.set_index("ID_REF", inplace=True)
-            df.index.name = 'id'
-            df = df[sample_ids]
-            return df
+
+            matrix_data = pd.read_table(
+                matrix_file_path, index_col=0, skiprows=rows + 1
+            )
+            matrix_data = matrix_data.drop(
+                ["!series_matrix_table_end"], axis=0
+            )
+            matrix_data.index.name = "id"
+
+            return matrix_data
         else:
             return None
 
-    def _get_matrix_colums(self, matrix_rows):
-        return [r.replace('"', "") for r in matrix_rows[0]]
-
-    def _get_matrix_data(self, matrix_rows):
-        data = matrix_rows[1:]
-        for d in data:
-            d[0] = d[0].replace('"', "")
-        return data
-
     def _read_matrix_rows(self, matrix_file):
-        rows = []
-        with gzip.open(matrix_file, 'rt', encoding='utf-8') as file:
-            inside_matrix = False
-            for line in file:
-                line = line.strip()
-                if line == "!series_matrix_table_begin":
-                    inside_matrix = True
-                elif line == "!series_matrix_table_end":
-                    inside_matrix = False
-                if inside_matrix or line == "!series_matrix_table_end":
-                    rows.append(line.split())
 
-        return rows
+        def total_lines(file):
+            def blocks(files, size=65536):
+                while True:
+                    b = files.read(size)
+                    if not b:
+                        break
+                    yield b
+
+            with open(file, "r", encoding="utf-8", errors='ignore') as f:
+                return sum(bl.count("\n") for bl in blocks(f))
+
+        output_file = f"{matrix_file}.txt"
+
+        with gzip.open(matrix_file, 'rb') as f_in:
+            with open(output_file, 'wb') as f_out:
+                shutil.copyfileobj(f_in, f_out)
+
+        total_lines = total_lines(output_file)
+
+        with FileReadBackwards(output_file) as frb:
+
+            line_num = 0
+            for l in frb:
+                line_num += 1
+                if "!series_matrix_table_begin" in l:
+                    break
+
+        print(f"total: {total_lines}, line_num: {line_num}")
+        os.remove(output_file)
+        return total_lines - line_num
 
     def parse(self, _):
         meatadata = self._create_metadata(self.metadata_query_url)

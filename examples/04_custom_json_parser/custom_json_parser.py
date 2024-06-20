@@ -15,7 +15,8 @@ def get_data_file(relative_path):
 library = DataLibrary(get_data_file("new_all_geo_ids.yaml"))
 print(library.cache.path)
 
-data_source = library.get("GSE56046")
+data_source = library.get("GSE50660")
+# data_source = library.get("GSE37988")
 data = data_source.load()
 
 print("\nMetadata:")
