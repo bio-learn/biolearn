@@ -479,17 +479,49 @@ class JsonCustomParser():
         df.columns = columns
         return df
 
+    def _get_matrix_file_size_from_url(self, url):
+        try:
+            response = requests.head(url)
+            response.raise_for_status()
+
+            content_length = response.headers.get('Content-Length')
+
+            if content_length is None:
+                print("Content-Length header is not present.")
+                return None
+
+            file_size = int(content_length)
+            return file_size
+
+        except requests.RequestException as e:
+            print(f"HTTP request failed: {e}")
+            return None
+
+    def _too_small_matrix_file(self, matrix_file) -> True:
+        ten_mb_in_bytes = 10 * 1024 * 1024
+        size = self._get_matrix_file_size_from_url(matrix_file)
+        if size is None:
+            return True
+
+        if size < ten_mb_in_bytes:
+            return True
+
+        return False
+
     def _create_matrix(self, sample_ids, matrix_file):
-        matrix_file_path = cached_download(matrix_file)
-        rows = self._read_matrix_rows(matrix_file_path)
-        rows = rows[1:-1]
-        header = self._get_matrix_colums(rows)
-        data = self._get_matrix_data(rows)
-        df = pd.DataFrame(data, columns=header)
-        df.set_index("ID_REF", inplace=True)
-        df.index.name = 'id'
-        df = df[sample_ids]
-        return df
+        if not self._too_small_matrix_file(matrix_file):
+            matrix_file_path = cached_download(matrix_file)
+            rows = self._read_matrix_rows(matrix_file_path)
+            rows = rows[1:-1]
+            header = self._get_matrix_colums(rows)
+            data = self._get_matrix_data(rows)
+            df = pd.DataFrame(data, columns=header)
+            df.set_index("ID_REF", inplace=True)
+            df.index.name = 'id'
+            df = df[sample_ids]
+            return df
+        else:
+            return None
 
     def _get_matrix_colums(self, matrix_rows):
         return [r.replace('"', "") for r in matrix_rows[0]]

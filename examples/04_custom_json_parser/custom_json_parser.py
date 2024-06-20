@@ -26,7 +26,7 @@ print("\nMethylation data:")
 print("-" * 40)
 print(data.dnam)
 
-if (data.dnam.shape[0] == 0):
+if (data.dnam is None or data.dnam.shape[0] == 0):
     print("\nList Supplementary Files:")
     print("-" * 40)
     if "supplementary_files" in data_source.data:
