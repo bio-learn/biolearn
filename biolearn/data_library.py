@@ -443,6 +443,12 @@ class JsonCustomParser():
 
     def _convert_to_metadata_df(self, metadata_keys, json_samples):
 
+        def _special_age_case(char) -> int:
+            if "age (yrs)" in char:
+                return extract_numeric(char["age (yrs)"])
+
+            return None
+
         def _convert_item(keys, item):
             data_cols = []
             characteristics = self._map_characteristics_dict(item)
@@ -450,9 +456,16 @@ class JsonCustomParser():
             for key in keys:
                 parse_type = self.metadata_keys_parse[key]
                 if parse_type == "sex":
-                    data_cols.append(sex_parser(characteristics[key]))
+                    data_cols.append(sex_parser(characteristics.get(key)))
                 elif parse_type == "numeric":
-                    data_cols.append(extract_numeric(characteristics[key]))
+
+                    if key == "age":
+                        if key in characteristics:
+                            data_cols.append(extract_numeric(characteristics[key]))
+                        else:
+                            data_cols.append(_special_age_case(characteristics))
+                    else:
+                        data_cols.append(extract_numeric(characteristics.get(key, "")))
                 else:
                     data_cols.append(characteristics.get(key))
 
@@ -546,6 +559,7 @@ class DataSource:
             if getattr(self, field) is None:
                 raise ValueError(error_message)
         self.cache = cache if cache else NoCache()
+        self.data = data
         self.title = data.get(
             "title", ""
         )  # Default empty string if title is not provided

@@ -12,7 +12,23 @@ def get_data_file(relative_path):
     return data_file_path
 
 
-data = DataLibrary(get_data_file("new_all_geo_ids.yaml")).get("GSE28094").load()
+library = DataLibrary(get_data_file("new_all_geo_ids.yaml"))
+print(library.cache.path)
+
+data_source = library.get("GSE56046")
+data = data_source.load()
+
+print("\nMetadata:")
+print("-" * 40)
 print(data.metadata)
+
+print("\nMethylation data:")
 print("-" * 40)
 print(data.dnam)
+
+if (data.dnam.shape[0] == 0):
+    print("\nList Supplementary Files:")
+    print("-" * 40)
+    if "supplementary_files" in data_source.data:
+        for suppl_file in data_source.data['supplementary_files']:
+            print(suppl_file['name'], suppl_file['size'], suppl_file['links'])
