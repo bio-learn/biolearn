@@ -89,11 +89,15 @@ def hybrid_impute(dnam, cpg_source, required_cpgs, threshold=0.8):
         )
 
     # Create a DataFrame for missing CpGs with the same columns as dnam
-    missing_cpgs_to_fill = {cpg: [cpg_source[cpg]] * len(dnam.columns) for cpg in missing_cpgs_from_dataset}
-    missing_cpgs_df = pd.DataFrame.from_dict(missing_cpgs_to_fill, orient='index', columns=dnam.columns)
+    missing_cpgs_to_fill = {
+        cpg: [cpg_source[cpg]] * len(dnam.columns)
+        for cpg in missing_cpgs_from_dataset
+    }
+    missing_cpgs_df = pd.DataFrame.from_dict(
+        missing_cpgs_to_fill, orient="index", columns=dnam.columns
+    )
 
     # Concatenate the filled DataFrame with the missing CpGs DataFrame
     df_filled = pd.concat([df_filled, missing_cpgs_df])
 
     return df_filled.sort_index()
-
