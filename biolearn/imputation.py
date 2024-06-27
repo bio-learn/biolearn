@@ -71,12 +71,12 @@ def hybrid_impute(dnam, cpg_source, required_cpgs, threshold=0.8):
     Raises:
         ValueError: If certain required CpG sites are missing from both the dataset and the cpg_source.
     """
-    # Drop rows below the threshold, these will be replaced entirely from cpg_source
-    cpgs_below_threshold = dnam.notna().mean(axis=1) < threshold
-    dnam = dnam.drop(dnam[cpgs_below_threshold].index)
+    # Filter out rows below the threshold
+    mask_above_threshold = dnam.notna().mean(axis=1) >= threshold
+    dnam_filtered = dnam[mask_above_threshold]
 
     # Impute remaining rows using impute_from_average
-    df_filled = impute_from_average(dnam)
+    df_filled = impute_from_average(dnam_filtered)
 
     missing_cpgs_from_dataset = set(required_cpgs) - set(df_filled.index)
     missing_cpgs_from_source = [
@@ -88,7 +88,19 @@ def hybrid_impute(dnam, cpg_source, required_cpgs, threshold=0.8):
             f"Tried to fill the following cpgs but they were missing from cpg_source: {missing_cpgs_from_source}"
         )
 
-    for cpg in missing_cpgs_from_dataset:
-        df_filled.loc[cpg] = cpg_source.loc[cpg]
+    # Create a DataFrame for missing CpGs with the same columns as dnam
+    missing_cpgs_to_fill = {
+        cpg: [cpg_source[cpg]] * len(dnam.columns)
+        for cpg in missing_cpgs_from_dataset
+    }
+    missing_cpgs_df = pd.DataFrame.from_dict(
+        missing_cpgs_to_fill, orient="index", columns=dnam.columns
+    )
+
+    # Exclude empty or all-NA columns before concatenation
+    missing_cpgs_df = missing_cpgs_df.dropna(how="all", axis=1)
+
+    # Concatenate the filled DataFrame with the missing CpGs DataFrame
+    df_filled = pd.concat([df_filled, missing_cpgs_df])
 
     return df_filled.sort_index()
