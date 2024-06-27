@@ -97,6 +97,9 @@ def hybrid_impute(dnam, cpg_source, required_cpgs, threshold=0.8):
         missing_cpgs_to_fill, orient="index", columns=dnam.columns
     )
 
+    # Exclude empty or all-NA columns before concatenation
+    missing_cpgs_df = missing_cpgs_df.dropna(how="all", axis=1)
+
     # Concatenate the filled DataFrame with the missing CpGs DataFrame
     df_filled = pd.concat([df_filled, missing_cpgs_df])
 
