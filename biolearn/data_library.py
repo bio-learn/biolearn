@@ -40,6 +40,13 @@ def extract_numeric(s):
     return float(match.group(1)) if match else None
 
 
+def extract_informal_age(char) -> int:
+    if "age (yrs)" in char:
+        return extract_numeric(char["age (yrs)"])
+
+    return None
+
+
 class QualityReport:
     def __init__(self, sample_report, methylation_site_report, summary):
         self.sample_report = sample_report
@@ -409,14 +416,14 @@ class GeoMatrixParser:
         return load_list
 
 
-class JsonCustomParser():
+class CustomGeoMatrixParser():
 
     def __init__(self, data) -> None:
-        self._check_keys_exist(data, ["matrix_file", "metadata_keys_parse", "metadata_query_url"])
+        self._check_keys_exist(data, ["matrix_file", "metadata_keys_parse", "metadata_query"])
         self.matrix_file = data['matrix_file']
         self.metadata_keys_parse = data['metadata_keys_parse']
         self.metadata_keys = list(self.metadata_keys_parse.keys())
-        self.metadata_query_url = data['metadata_query_url']
+        self.metadata_query_url = data['metadata_query']
 
     def _check_keys_exist(self, data, keys: list[str]):
         for key in keys:
@@ -426,10 +433,10 @@ class JsonCustomParser():
     def _create_metadata(self, metadata_query_url):
         response = requests.get(metadata_query_url)
         json_data = response.json()
-        json_smaples = [item for item in json_data['GeoMetaData']]
-        return self._convert_to_metadata_df(self.metadata_keys, json_smaples)
+        smaples = [item for item in json_data['GeoMetaData']]
+        return self._convert_to_metadata_df(self.metadata_keys, smaples)
 
-    def _map_characteristics_dict(self, item):
+    def _map_characteristics_to_dict(self, sample):
 
         def extract_key(item):
             if 'tag' in item:
@@ -443,39 +450,38 @@ class JsonCustomParser():
             else:
                 return item['value'].split(":")[1]
 
-        return {extract_key(char).lower(): extract_value(char) for char in item["entity"]["sample"]["channels"][0]["characteristics"]}
+        characteristics = sample["entity"]["sample"]["channels"][0]["characteristics"]
 
-    def _convert_to_metadata_df(self, metadata_keys, json_samples):
+        return {extract_key(char).lower(): extract_value(char) for char in characteristics}
 
-        def _special_age_case(char) -> int:
-            if "age (yrs)" in char:
-                return extract_numeric(char["age (yrs)"])
+    def _convert_characteristics_to_df_cols_data(self, metadata_keys, item):
+        cols_data = []
 
-            return None
+        characteristics = self._map_characteristics_to_dict(item)
 
-        def _convert_item(keys, item):
-            data_cols = []
-            characteristics = self._map_characteristics_dict(item)
+        for key in metadata_keys:
+            parse_type = self.metadata_keys_parse[key]
+            if parse_type == "sex":
+                cols_data.append(sex_parser(characteristics.get(key)))
+            elif parse_type == "numeric":
 
-            for key in keys:
-                parse_type = self.metadata_keys_parse[key]
-                if parse_type == "sex":
-                    data_cols.append(sex_parser(characteristics.get(key)))
-                elif parse_type == "numeric":
-
-                    if key == "age":
-                        if key in characteristics:
-                            data_cols.append(extract_numeric(characteristics[key]))
-                        else:
-                            data_cols.append(_special_age_case(characteristics))
+                if key == "age":
+                    if key in characteristics:
+                        cols_data.append(extract_numeric(characteristics[key]))
                     else:
-                        data_cols.append(extract_numeric(characteristics.get(key, "")))
+                        cols_data.append(extract_informal_age(characteristics))
                 else:
-                    data_cols.append(characteristics.get(key))
+                    cols_data.append(extract_numeric(characteristics.get(key, "")))
+            else:
+                cols_data.append(characteristics.get(key))
 
-            return data_cols
+        return cols_data
 
-        data = {sample["acc"]: _convert_item(metadata_keys, sample) for sample in json_samples}
+    def _convert_to_metadata_df(self, metadata_keys, samples):
+
+        data = {sample["acc"]: self._convert_characteristics_to_df_cols_data(
+            metadata_keys, sample) for sample in samples}
+
         df = pd.DataFrame(data).transpose()
         df = df.reset_index(drop=False)
         columns = ["id"]
@@ -501,72 +507,70 @@ class JsonCustomParser():
             print(f"HTTP request failed: {e}")
             return None
 
-    def _too_small_matrix_file(self, matrix_file) -> True:
-        ten_mb_in_bytes = 10 * 1024 * 1024
-        size = self._get_matrix_file_size_from_url(matrix_file)
-        if size is None:
-            return True
+    def _create_matrix(self, matrix_file):
+        matrix_file_path = cached_download(matrix_file)
 
-        if size < ten_mb_in_bytes:
-            return True
+        row_num = self._get_matrix_table_row_num(matrix_file_path)
 
-        return False
+        matrix_data = pd.read_table(
+            matrix_file_path, index_col=0, skiprows=row_num + 1
+        )
+        matrix_data = matrix_data.drop(
+            ["!series_matrix_table_end"], axis=0
+        )
+        matrix_data.index.name = "id"
 
-    def _create_matrix(self, sample_ids, matrix_file):
-        if not self._too_small_matrix_file(matrix_file):
-            matrix_file_path = cached_download(matrix_file)
+        return matrix_data
 
-            rows = self._read_matrix_rows(matrix_file_path)
+    def _get_matrix_file_line_count(self, matrix_file):
+        def blocks(files, size=65536):
+            while True:
+                b = files.read(size)
+                if not b:
+                    break
+                yield b
 
-            matrix_data = pd.read_table(
-                matrix_file_path, index_col=0, skiprows=rows + 1
-            )
-            matrix_data = matrix_data.drop(
-                ["!series_matrix_table_end"], axis=0
-            )
-            matrix_data.index.name = "id"
+        with open(matrix_file, "r", encoding="utf-8", errors='ignore') as f:
+            return sum(bl.count("\n") for bl in blocks(f))
 
-            return matrix_data
-        else:
-            return None
-
-    def _read_matrix_rows(self, matrix_file):
-
-        def total_lines(file):
-            def blocks(files, size=65536):
-                while True:
-                    b = files.read(size)
-                    if not b:
-                        break
-                    yield b
-
-            with open(file, "r", encoding="utf-8", errors='ignore') as f:
-                return sum(bl.count("\n") for bl in blocks(f))
-
-        output_file = f"{matrix_file}.txt"
-
+    def _ungzip_file(self, matrix_file, output_file):
         with gzip.open(matrix_file, 'rb') as f_in:
             with open(output_file, 'wb') as f_out:
                 shutil.copyfileobj(f_in, f_out)
 
-        total_lines = total_lines(output_file)
-
-        with FileReadBackwards(output_file) as frb:
-
+    def _find_matrix_table_begin_line_num_backwards(self, matrix_file):
+        with FileReadBackwards(matrix_file) as frb:
             line_num = 0
             for l in frb:
                 line_num += 1
                 if "!series_matrix_table_begin" in l:
                     break
+            return line_num
 
-        print(f"total: {total_lines}, line_num: {line_num}")
+    def _get_matrix_table_row_num(self, matrix_file):
+
+        output_file = f"{matrix_file}.txt"
+        self._ungzip_file(matrix_file, output_file)
+
+        total_lines = self._get_matrix_file_line_count(output_file)
+        line_num_bw = self._find_matrix_table_begin_line_num_backwards(output_file)
+
         os.remove(output_file)
-        return total_lines - line_num
+        return total_lines - line_num_bw
 
     def parse(self, _):
-        meatadata = self._create_metadata(self.metadata_query_url)
-        matrix = self._create_matrix(meatadata["id"], self.matrix_file)
-        return GeoData(meatadata, matrix)
+        metadata = self._create_metadata(self.metadata_query_url)
+        matrix = self._create_matrix(self.matrix_file)
+        if matrix is None or matrix.empty:
+            raise NoMatrixDataError(f"Series {metadata['id']} has no matrix data")
+
+        return GeoData(metadata, matrix)
+
+
+class NoMatrixDataError(Exception):
+
+    def __init__(self, message):
+        super().__init__(message)
 
 
 class DataSource:
@@ -654,8 +658,8 @@ class DataSource:
             return JenAgeCustomParser(parser_data)
         if parser_type == "geo-matrix":
             return GeoMatrixParser(parser_data)
-        if parser_type == "cutsom_json_query_parser":
-            return JsonCustomParser(parser_data)
+        if parser_type == "geo-matrix-custom":
+            return CustomGeoMatrixParser(parser_data)
         raise ValueError(f"Unknown parser type: {parser_type}")
 
 
