@@ -416,7 +416,12 @@ class GeoMatrixParser:
         return load_list
 
 
-class CustomGeoMatrixParser():
+class AutoScanGeoMatrixParser():
+    """
+    Retrieve Series Metadata via geo2r API
+
+    When dealing with a large number of geo series data, instead of downloading the matrix file for each series to read metadata information, we can reduce the time spent generating the library.yaml by using the geo2r API to obtain metadata during data loading.
+    """
 
     def __init__(self, data) -> None:
         self._check_keys_exist(data, ["matrix_file", "metadata_keys_parse", "metadata_query"])
@@ -559,6 +564,11 @@ class CustomGeoMatrixParser():
         return total_lines - line_num_bw
 
     def parse(self, _):
+        """
+        Parse metadata and matrix data for a geo series.
+
+        This function retrieves metadata and matrix data, raising an error if the matrix is empty or None. 
+        """
         metadata = self._create_metadata(self.metadata_query_url)
         matrix = self._create_matrix(self.matrix_file)
         if matrix is None or matrix.empty:
@@ -658,8 +668,8 @@ class DataSource:
             return JenAgeCustomParser(parser_data)
         if parser_type == "geo-matrix":
             return GeoMatrixParser(parser_data)
-        if parser_type == "geo-matrix-custom":
-            return CustomGeoMatrixParser(parser_data)
+        if parser_type == "geo-matrix-auto-scan":
+            return AutoScanGeoMatrixParser(parser_data)
         raise ValueError(f"Unknown parser type: {parser_type}")
 
 

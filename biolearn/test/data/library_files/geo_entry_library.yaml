@@ -42,7 +42,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sex: string
@@ -80,7 +80,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -126,7 +126,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       diagnosis: string
@@ -161,7 +161,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       patientid: string
@@ -219,7 +219,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -267,7 +267,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -322,7 +322,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -363,7 +363,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -421,7 +421,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -461,7 +461,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -516,7 +516,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -553,7 +553,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       diagnosis: string
@@ -627,7 +627,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       diagnosis: string
@@ -688,7 +688,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       patient: string
@@ -735,7 +735,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sample id: string
@@ -771,7 +771,7 @@ items:
     type: TAR (of IDAT, TXT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sample id: string
@@ -831,7 +831,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue_type: string
@@ -867,7 +867,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       time point: string
@@ -923,7 +923,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -969,7 +969,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       disease status: string
@@ -1016,7 +1016,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       age: numeric
@@ -1065,7 +1065,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       age: numeric
@@ -1138,7 +1138,7 @@ items:
     type: XLSX
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       disease: string
@@ -1176,7 +1176,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       cell type: string
@@ -1209,7 +1209,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sex: string
@@ -1248,7 +1248,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sex: string
@@ -1307,7 +1307,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       diagnosis: string
@@ -1378,7 +1378,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       individual: string
@@ -1440,7 +1440,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -1485,7 +1485,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -1518,7 +1518,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -1565,7 +1565,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -1623,7 +1623,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sample_plate: string
@@ -1676,7 +1676,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sample_plate: string
@@ -1740,7 +1740,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       group: string
@@ -1791,7 +1791,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       dx: string
@@ -1838,7 +1838,7 @@ items:
     type: TAR (of CEL, IDAT, TXT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       group: string
@@ -1914,7 +1914,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sample_plate: string
@@ -1956,7 +1956,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       disease state: string
@@ -2023,7 +2023,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       cell type: string
@@ -2065,7 +2065,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       disease state: string
@@ -2107,7 +2107,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -2145,7 +2145,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -2205,7 +2205,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -2265,7 +2265,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sample_well: string
@@ -2323,7 +2323,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -2386,7 +2386,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -2456,7 +2456,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -2497,7 +2497,7 @@ items:
     type: TAR (of IDAT, TXT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL16791
     metadata_keys_parse:
       tissue: string
@@ -2554,7 +2554,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue type: string
@@ -2592,7 +2592,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -2641,7 +2641,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -2694,7 +2694,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sex: string
@@ -2740,7 +2740,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -2777,7 +2777,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -2828,7 +2828,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sample_id: string
@@ -2895,7 +2895,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -2964,7 +2964,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -3008,7 +3008,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -3072,7 +3072,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -3109,7 +3109,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       patient: string
@@ -3148,7 +3148,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -3188,7 +3188,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -3247,7 +3247,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       age: numeric
@@ -3327,7 +3327,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       age: numeric
@@ -3408,7 +3408,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -3448,7 +3448,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -3503,7 +3503,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -3537,7 +3537,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sample id: string
@@ -3575,7 +3575,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -3613,7 +3613,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -3654,7 +3654,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -3711,7 +3711,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -3768,7 +3768,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sample type: string
@@ -3807,7 +3807,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       subject status: string
@@ -3860,7 +3860,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       individual id: string
@@ -3909,7 +3909,7 @@ items:
     type: TAR (of IDAT, TXT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL16791
     metadata_keys_parse:
       ancestry: string
@@ -3953,7 +3953,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       cell type: string
@@ -3991,7 +3991,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       diagnosis: string
@@ -4029,7 +4029,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -4087,7 +4087,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sample_plate: string
@@ -4141,7 +4141,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -4181,7 +4181,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       diagnosis: string
@@ -4242,7 +4242,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       patient number: string
@@ -4300,7 +4300,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       cell type: string
@@ -4358,7 +4358,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -4411,7 +4411,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       cell type: string
@@ -4462,7 +4462,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       cell type: string
@@ -4504,7 +4504,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -4559,7 +4559,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       methylation class: string
@@ -4604,7 +4604,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -4665,7 +4665,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       age: numeric
@@ -4707,7 +4707,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       source: string
@@ -4762,7 +4762,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -4801,7 +4801,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       disease state: string
@@ -4922,7 +4922,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       plate: string
@@ -4966,7 +4966,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       das28: string
@@ -5011,7 +5011,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -5057,7 +5057,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       diagnosis: string
@@ -5098,7 +5098,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       subject id: string
@@ -5138,7 +5138,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       individual: string
@@ -5179,7 +5179,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -5254,7 +5254,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -5294,7 +5294,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sex: string
@@ -5331,7 +5331,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sex: string
@@ -5367,7 +5367,7 @@ items:
     type: TAR (of CEL)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sex: string
@@ -5421,7 +5421,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       cell type: string
@@ -5475,7 +5475,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       cell type: string
@@ -5513,7 +5513,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       cell type: string
@@ -5553,7 +5553,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -5596,7 +5596,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -5634,7 +5634,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -5686,7 +5686,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       disease state: string
@@ -5742,7 +5742,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       age: numeric
@@ -5799,7 +5799,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -5856,7 +5856,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -5913,7 +5913,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -5955,7 +5955,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sofa: string
@@ -5999,7 +5999,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -6054,7 +6054,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       patient order: string
@@ -6090,7 +6090,7 @@ items:
     type: TAR (of CEL, IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       patient order: string
@@ -6152,7 +6152,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       disease state: string
@@ -6199,7 +6199,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       disease state: string
@@ -6253,7 +6253,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       cell type: string
@@ -6294,7 +6294,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -6332,7 +6332,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -6372,7 +6372,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -6411,7 +6411,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -6453,7 +6453,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -6495,7 +6495,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -6553,7 +6553,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       cell type: string
@@ -6596,7 +6596,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       cell type: string
@@ -6644,7 +6644,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       source_site: string
@@ -6693,7 +6693,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -6732,7 +6732,7 @@ items:
     type: TAR (of IDAT, TXT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -6782,7 +6782,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -6828,7 +6828,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       individual: string
@@ -6880,7 +6880,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -6926,7 +6926,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       age: numeric
@@ -6963,7 +6963,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sample type: string
@@ -7001,7 +7001,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       responder: string
@@ -7049,7 +7049,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       hiv infection group: string
@@ -7087,7 +7087,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -7128,7 +7128,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tb_status: string
@@ -7173,7 +7173,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       cell type: string
@@ -7213,7 +7213,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       cell type: string
@@ -7259,7 +7259,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sex: string
@@ -7307,7 +7307,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -7360,7 +7360,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -7420,7 +7420,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       age: numeric
@@ -7476,7 +7476,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       age: numeric
@@ -7538,7 +7538,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -7601,7 +7601,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -7637,7 +7637,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -7676,7 +7676,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -7727,7 +7727,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -7780,7 +7780,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       participant id: string
@@ -7835,7 +7835,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender,age, tissue type: string
@@ -7881,7 +7881,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -7921,7 +7921,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       age: numeric
@@ -7951,7 +7951,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       person id: string
@@ -7992,7 +7992,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sex: string
@@ -8028,7 +8028,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sex: string
@@ -8065,7 +8065,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sex: string
@@ -8096,7 +8096,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sex: string
@@ -8139,7 +8139,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       phenotype: string
@@ -8178,7 +8178,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -8217,7 +8217,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -8268,7 +8268,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -8322,7 +8322,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -8372,7 +8372,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -8419,7 +8419,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -8459,7 +8459,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL16791
     metadata_keys_parse:
       tissue: string
@@ -8523,7 +8523,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sample_group: string
@@ -8567,7 +8567,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -8614,7 +8614,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       age: numeric
@@ -8698,7 +8698,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       gender: sex
@@ -8739,7 +8739,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -8775,7 +8775,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -8840,7 +8840,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       disease: string
@@ -8902,7 +8902,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -8954,7 +8954,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -8990,7 +8990,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       cell type: string
@@ -9032,7 +9032,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       remission: string
@@ -9072,7 +9072,7 @@ items:
     type: TAR (of IDAT, TXT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       remission: string
@@ -9110,7 +9110,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       disease: string
@@ -9161,7 +9161,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -9210,7 +9210,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       age: numeric
@@ -9250,7 +9250,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -9303,7 +9303,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       experiment: string
@@ -9354,7 +9354,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       race: string
@@ -9415,7 +9415,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL16791
     metadata_keys_parse:
       race: string
@@ -9459,7 +9459,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       material type: string
@@ -9505,7 +9505,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -9590,7 +9590,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       disease state: string
@@ -9625,7 +9625,7 @@ items:
     type: TAR (of CEL, IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -9660,7 +9660,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -9699,7 +9699,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -9759,7 +9759,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       age: numeric
@@ -9811,7 +9811,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sample_plate: string
@@ -9896,7 +9896,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       disease state: string
@@ -9940,7 +9940,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -9976,7 +9976,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       disease: string
@@ -10023,7 +10023,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sex: string
@@ -10062,7 +10062,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       disease: string
@@ -10118,7 +10118,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -10163,7 +10163,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -10203,7 +10203,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       subject id: string
@@ -10266,7 +10266,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -10310,7 +10310,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sample_id: string
@@ -10363,7 +10363,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL16791
     metadata_keys_parse:
       sample.id: string
@@ -10425,7 +10425,7 @@ items:
     type: TAR (of IDAT, TXT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -10463,7 +10463,7 @@ items:
     type: TAR (of IDAT, TXT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -10502,7 +10502,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       duplicate_id: string
@@ -10557,7 +10557,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       histological type: string
@@ -10613,7 +10613,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       age: numeric
@@ -10667,7 +10667,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sex: string
@@ -10729,7 +10729,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -10808,7 +10808,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -10851,7 +10851,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -10898,7 +10898,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL16791
     metadata_keys_parse:
       tumor type: string
@@ -10942,7 +10942,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       disease state: string
@@ -10997,7 +10997,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sex: string
@@ -11033,7 +11033,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sex: string
@@ -11065,7 +11065,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -11114,7 +11114,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       timepoint: string
@@ -11148,7 +11148,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -11185,7 +11185,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       age: numeric
@@ -11218,7 +11218,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       subject status: string
@@ -11283,7 +11283,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       patient id: string
@@ -11330,7 +11330,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -11375,7 +11375,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       clincal phenotype: string
@@ -11417,7 +11417,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -11475,7 +11475,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       diagnosis: string
@@ -11517,7 +11517,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sample_plate: string
@@ -11594,7 +11594,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -11627,7 +11627,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -11668,7 +11668,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       disease state: string
@@ -11714,7 +11714,7 @@ items:
     type: TAR (of CEL, IDAT, OSCHP)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       disease state: string
@@ -11768,7 +11768,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -11809,7 +11809,7 @@ items:
     type: TAR (of IDAT, MTX, TSV)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -11853,7 +11853,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       disease state: string
@@ -11896,7 +11896,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       donor id: string
@@ -11970,7 +11970,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -12026,7 +12026,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sex: string
@@ -12079,7 +12079,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -12142,7 +12142,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       cell type: string
@@ -12205,7 +12205,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       cell type: string
@@ -12246,7 +12246,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       cell type: string
@@ -12301,7 +12301,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       diagnosis: string
@@ -12359,7 +12359,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       cell tnype: string
@@ -12398,7 +12398,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       donor: string
@@ -12461,7 +12461,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       methylation class: string
@@ -12514,7 +12514,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -12558,7 +12558,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       donor: string
@@ -12619,7 +12619,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -12658,7 +12658,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -12699,7 +12699,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       age: numeric
@@ -12743,7 +12743,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       patient: string
@@ -12790,7 +12790,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       patient: string
@@ -12862,7 +12862,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -12903,7 +12903,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       age: numeric
@@ -12942,7 +12942,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL16791
     metadata_keys_parse:
       gender: sex
@@ -12992,7 +12992,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -13034,7 +13034,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       methylation class: string
@@ -13079,7 +13079,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sex: string
@@ -13124,7 +13124,7 @@ items:
     type: TSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sex: string
@@ -13172,7 +13172,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -13217,7 +13217,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sex: string
@@ -13284,7 +13284,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -13330,7 +13330,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -13408,7 +13408,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -13491,7 +13491,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -13574,7 +13574,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -13604,7 +13604,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -13652,7 +13652,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -13689,7 +13689,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -13753,7 +13753,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sex: string
@@ -13806,7 +13806,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       diagnosis: string
@@ -13864,7 +13864,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       cell type: string
@@ -13909,7 +13909,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       age: numeric
@@ -13964,7 +13964,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       age: numeric
@@ -14026,7 +14026,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sex: string
@@ -14061,7 +14061,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sex: string
@@ -14104,7 +14104,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -14146,7 +14146,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -14186,7 +14186,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -14230,7 +14230,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       cell type: string
@@ -14292,7 +14292,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       classification: string
@@ -14331,7 +14331,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL16791
     metadata_keys_parse:
       tissue: string
@@ -14394,7 +14394,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       geo_id: string
@@ -14453,7 +14453,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -14496,7 +14496,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sex: string
@@ -14543,7 +14543,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       age: numeric
@@ -14604,7 +14604,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -14707,7 +14707,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -14742,7 +14742,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -14808,7 +14808,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       smoke status: string
@@ -14846,7 +14846,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       diagnosis: string
@@ -14900,7 +14900,7 @@ items:
     type: TAR (of IDAT, TXT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       diagnosis: string
@@ -14971,7 +14971,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sex: string
@@ -15013,7 +15013,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       cell type: string
@@ -15075,7 +15075,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       subject_id: string
@@ -15138,7 +15138,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       disease state: string
@@ -15188,7 +15188,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sex: string
@@ -15238,7 +15238,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       geo_id: string
@@ -15297,7 +15297,7 @@ items:
     type: TSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -15350,7 +15350,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sex: string
@@ -15399,7 +15399,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sex: string
@@ -15454,7 +15454,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -15510,7 +15510,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       age: numeric
@@ -15575,7 +15575,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       material: string
@@ -15625,7 +15625,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -15685,7 +15685,7 @@ items:
     type: TSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       individual: string
@@ -15731,7 +15731,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       meth-plate: string
@@ -15802,7 +15802,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -15843,7 +15843,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sex: string
@@ -15887,7 +15887,7 @@ items:
     type: TSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -15943,7 +15943,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       subject: string
@@ -15994,7 +15994,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       type: string
@@ -16063,7 +16063,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       age: numeric
@@ -16104,7 +16104,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sex: string
@@ -16194,7 +16194,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -16259,7 +16259,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sex: string
@@ -16328,7 +16328,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -16402,7 +16402,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -16444,7 +16444,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -16495,7 +16495,7 @@ items:
     type: XLSX
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       age: numeric
@@ -16532,7 +16532,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       age: numeric
@@ -16585,7 +16585,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -16636,7 +16636,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL16791
     metadata_keys_parse:
       tissue: string
@@ -16680,7 +16680,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       subject id: string
@@ -16744,7 +16744,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       cell type: string
@@ -16781,7 +16781,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       cell type: string
@@ -16822,7 +16822,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sex: string
@@ -16859,7 +16859,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -16918,7 +16918,7 @@ items:
     type: TAR (of CEL)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       age: numeric
@@ -16978,7 +16978,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       disease state: string
@@ -17046,7 +17046,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       tissue: string
@@ -17095,7 +17095,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -17137,7 +17137,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       patientid: string
@@ -17185,7 +17185,7 @@ items:
     type: TAR (of CEL, IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       patientid: string
@@ -17234,7 +17234,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       age: numeric
@@ -17310,7 +17310,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -17388,7 +17388,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
@@ -17437,7 +17437,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       cell type: string
@@ -17476,7 +17476,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       sample id: string
@@ -17526,7 +17526,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       cell line: string
@@ -17592,7 +17592,7 @@ items:
     type: TAR (of CEL)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       cell line: string
@@ -17655,7 +17655,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       gender: sex
@@ -17712,7 +17712,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       gender: sex
@@ -17768,7 +17768,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       cell type: string
@@ -17823,7 +17823,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       age: numeric
@@ -17865,7 +17865,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       pair id number: string
@@ -17906,7 +17906,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       cell type: string
@@ -17944,7 +17944,7 @@ items:
     type: TAR (of TXT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       cell type: string
@@ -17987,7 +17987,7 @@ items:
     type: TAR (of TXT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       cell type: string
@@ -18031,7 +18031,7 @@ items:
     type: TAR (of TXT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       cell type: string
@@ -18077,7 +18077,7 @@ items:
     type: TAR (of TXT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       gender: sex
@@ -18122,7 +18122,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       gender: sex
@@ -18186,7 +18186,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       age: numeric
@@ -18249,7 +18249,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       age: numeric
@@ -18289,7 +18289,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       age: numeric
@@ -18332,7 +18332,7 @@ items:
     type: TAR (of TXT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       sample type: string
@@ -18383,7 +18383,7 @@ items:
     type: TAR (of TXT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       sample type: string
@@ -18447,7 +18447,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       sample id: string
@@ -18493,7 +18493,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       sample id: string
@@ -18541,7 +18541,7 @@ items:
     type: TAR (of TXT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       sample type: string
@@ -18602,7 +18602,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       bisulfite batch: string
@@ -18642,7 +18642,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       tissue: string
@@ -18685,7 +18685,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       cell type: string
@@ -18724,7 +18724,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       race: string
@@ -18771,7 +18771,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       type: string
@@ -18814,7 +18814,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       age: numeric
@@ -18855,7 +18855,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       type 2 diabetes status: string
@@ -18910,7 +18910,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       tissue: string
@@ -18948,7 +18948,7 @@ items:
     type: TAR (of CEL)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       race: string
@@ -19006,7 +19006,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -19058,7 +19058,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sex: string
@@ -19097,7 +19097,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -19139,7 +19139,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       gender: sex
@@ -19181,7 +19181,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -19229,7 +19229,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       suicide status (1 = suicide, 0 = no): string
@@ -19287,7 +19287,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       tissue: string
@@ -19335,7 +19335,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -19397,7 +19397,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       cell type: string
@@ -19440,7 +19440,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -19478,7 +19478,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -19522,7 +19522,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       age: numeric
@@ -19564,7 +19564,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -19619,7 +19619,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       fto: string
@@ -19668,7 +19668,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       tissue: string
@@ -19707,7 +19707,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -19745,7 +19745,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       group: string
@@ -19807,7 +19807,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       os (years): string
@@ -19881,7 +19881,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       os (years): string
@@ -19935,7 +19935,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       os (years): string
@@ -19994,7 +19994,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       gender: sex
@@ -20044,7 +20044,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -20089,7 +20089,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -20127,7 +20127,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -20172,7 +20172,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -20210,7 +20210,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       gender: sex
@@ -20242,7 +20242,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       gender: sex
@@ -20284,7 +20284,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       gender: sex
@@ -20342,7 +20342,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -20397,7 +20397,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sex: string
@@ -20448,7 +20448,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       gender: sex
@@ -20500,7 +20500,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       smoking (0, 1 and 2, which represent never, former and current smokers): string
@@ -20544,7 +20544,7 @@ items:
     type: TAR (of CEL)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -20586,7 +20586,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -20630,7 +20630,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -20691,7 +20691,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       gender: sex
@@ -20748,7 +20748,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -20795,7 +20795,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       group: string
@@ -20837,7 +20837,7 @@ items:
     type: TAR (of CEL, IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -20879,7 +20879,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -20921,7 +20921,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sex: string
@@ -20969,7 +20969,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       diagnosis: string
@@ -21008,7 +21008,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       gender: sex
@@ -21051,7 +21051,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -21113,7 +21113,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -21154,7 +21154,7 @@ items:
     type: TAR (of TXT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -21212,7 +21212,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       gender: sex
@@ -21249,7 +21249,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -21301,7 +21301,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -21350,7 +21350,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       chip: string
@@ -21391,7 +21391,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       chip: string
@@ -21437,7 +21437,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -21473,7 +21473,7 @@ items:
     type: TAR (of CEL)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       gender: sex
@@ -21512,7 +21512,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sex: string
@@ -21566,7 +21566,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -21607,7 +21607,7 @@ items:
     type: TAR (of CEL)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -21649,7 +21649,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       condition: string
@@ -21686,7 +21686,7 @@ items:
     type: TAR (of BED)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       condition: string
@@ -21742,7 +21742,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       gender: sex
@@ -21803,7 +21803,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -21852,7 +21852,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       subjectid: string
@@ -21900,7 +21900,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       ancestry: string
@@ -21952,7 +21952,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -21990,7 +21990,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -22048,7 +22048,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       disease status (1=control, 2=scz patient): string
@@ -22113,7 +22113,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -22147,7 +22147,7 @@ items:
     type: TAR (of CEL)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       subjectid: string
@@ -22198,7 +22198,7 @@ items:
     type: PDF
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       subjectid: string
@@ -22249,7 +22249,7 @@ items:
     type: PDF
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       subjectid: string
@@ -22305,7 +22305,7 @@ items:
     type: PDF
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       subjectid: string
@@ -22371,7 +22371,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -22433,7 +22433,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       subjectid: string
@@ -22472,7 +22472,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -22521,7 +22521,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sid: string
@@ -22587,7 +22587,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -22623,7 +22623,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       age: numeric
@@ -22674,7 +22674,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       parient id: string
@@ -22736,7 +22736,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       batch: string
@@ -22796,7 +22796,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -22840,7 +22840,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -22892,7 +22892,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       tissue: string
@@ -22938,7 +22938,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sentrix_id: string
@@ -22983,7 +22983,7 @@ items:
     type: TAR (of CEL, IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sentrix_id: string
@@ -23033,7 +23033,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -23071,7 +23071,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       cell line: string
@@ -23109,7 +23109,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       cell line: string
@@ -23154,7 +23154,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -23199,7 +23199,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -23249,7 +23249,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -23298,7 +23298,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -23335,7 +23335,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -23373,7 +23373,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -23407,7 +23407,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -23442,7 +23442,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -23497,7 +23497,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -23540,7 +23540,7 @@ items:
     type: TAR (of IDAT, TXT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -23587,7 +23587,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       pair id number: string
@@ -23633,7 +23633,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       cell type: string
@@ -23702,7 +23702,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -23742,7 +23742,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       male: string
@@ -23793,7 +23793,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -23839,7 +23839,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -23887,7 +23887,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -23935,7 +23935,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -24009,7 +24009,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -24045,7 +24045,7 @@ items:
     type: TAR (of TXT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -24084,7 +24084,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       gender: sex
@@ -24119,7 +24119,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       gender: sex
@@ -24155,7 +24155,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       disease state: string
@@ -24194,7 +24194,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -24239,7 +24239,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -24306,7 +24306,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -24347,7 +24347,7 @@ items:
     type: TAR (of IDAT, TXT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       cell type: string
@@ -24411,7 +24411,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -24461,7 +24461,7 @@ items:
     type: PDF
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -24505,7 +24505,7 @@ items:
     type: TAR (of IDAT, NARROWPEAK)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -24543,7 +24543,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       cell type: string
@@ -24589,7 +24589,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sex: string
@@ -24657,7 +24657,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sex: string
@@ -24722,7 +24722,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sex: string
@@ -24788,7 +24788,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sex: string
@@ -24849,7 +24849,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sex: string
@@ -24912,7 +24912,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sex: string
@@ -24977,7 +24977,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       personid: string
@@ -25048,7 +25048,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sex: string
@@ -25180,7 +25180,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       lesion: string
@@ -25250,7 +25250,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       subject: string
@@ -25295,7 +25295,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -25337,7 +25337,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       diseasestate: string
@@ -25390,7 +25390,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       subject id: string
@@ -25433,7 +25433,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       subject id: string
@@ -25486,7 +25486,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -25526,7 +25526,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -25571,7 +25571,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -25640,7 +25640,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -25676,7 +25676,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -25716,7 +25716,7 @@ items:
     type: TAR (of IDAT, TXT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       subject status: string
@@ -25763,7 +25763,7 @@ items:
     type: TAR (of CEL, CYCHP, IDAT, TXT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       subject status: string
@@ -25810,7 +25810,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -25857,7 +25857,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       race: string
@@ -25907,7 +25907,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -25964,7 +25964,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       internal tissue id: string
@@ -26004,7 +26004,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -26038,7 +26038,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sex: string
@@ -26094,7 +26094,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -26150,7 +26150,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       cell type: string
@@ -26232,7 +26232,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sex: string
@@ -26273,7 +26273,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue_background: string
@@ -26314,7 +26314,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL8490
     metadata_keys_parse:
       age: numeric
@@ -26360,7 +26360,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -26413,7 +26413,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -26494,7 +26494,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sentrixids: string
@@ -26538,7 +26538,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -26572,7 +26572,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -26608,7 +26608,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue type (primary=0, recurrent=1, recurrent2=2): string
@@ -26670,7 +26670,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -26707,7 +26707,7 @@ items:
     type: TAR (of TXT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -26750,7 +26750,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -26794,7 +26794,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -26844,7 +26844,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -26883,7 +26883,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -26920,7 +26920,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       subject status: string
@@ -26965,7 +26965,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       disease state: string
@@ -27001,7 +27001,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -27059,7 +27059,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       cell type: string
@@ -27102,7 +27102,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       cell type: string
@@ -27149,7 +27149,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       donor: string
@@ -27186,7 +27186,7 @@ items:
     type: TAR (of CEL, IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       donor: string
@@ -27233,7 +27233,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       case id: string
@@ -27309,7 +27309,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -27347,7 +27347,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -27410,7 +27410,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       run: string
@@ -27475,7 +27475,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       diagnosis: string
@@ -27537,7 +27537,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       diagnosis: string
@@ -27599,7 +27599,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       diagnosis: string
@@ -27661,7 +27661,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       diagnosis: string
@@ -27692,7 +27692,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       diagnosis: string
@@ -27733,7 +27733,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       time point: string
@@ -27772,7 +27772,7 @@ items:
     type: TAR (of TXT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       case id: string
@@ -27820,7 +27820,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tumor stage: string
@@ -27863,7 +27863,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -27908,7 +27908,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       public id: string
@@ -27949,7 +27949,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       age: numeric
@@ -27981,7 +27981,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -28028,7 +28028,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       subject: string
@@ -28103,7 +28103,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sex: string
@@ -28144,7 +28144,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       tissue: string
@@ -28203,7 +28203,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       class: string
@@ -28256,7 +28256,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sentrix_id: string
@@ -28298,7 +28298,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       ethnicity: string
@@ -28332,7 +28332,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       histology: string
@@ -28372,7 +28372,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       cohort: string
@@ -28438,7 +28438,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       sex: string
@@ -28483,7 +28483,7 @@ items:
     type: CSV
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -28527,7 +28527,7 @@ items:
     type: TAR
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       gender: sex
@@ -28572,7 +28572,7 @@ items:
     type: TAR (of IDAT)
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL13534
     metadata_keys_parse:
       donor id: string
@@ -28616,7 +28616,7 @@ items:
     type: TXT
   path: no path
   parser:
-    type: geo-matrix-custom
+    type: geo-matrix-auto-scan
     platform: GPL21145
     metadata_keys_parse:
       gender: sex
