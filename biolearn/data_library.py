@@ -4,11 +4,15 @@ import numpy as np
 import re
 import requests
 import gzip
+import shutil
+import os
+
 
 from biolearn.util import cached_download, get_data_file
 from biolearn.defaults import default_cache
 from biolearn.cache import NoCache
 from io import BytesIO
+from file_read_backwards import FileReadBackwards
 
 
 def parse_after_colon(s):
@@ -34,6 +38,13 @@ def extract_numeric(s):
     """Extract the first numeric value from a string."""
     match = re.search(r"(\d+(\.\d+)?)", s)
     return float(match.group(1)) if match else None
+
+
+def extract_informal_age(char) -> int:
+    if "age (yrs)" in char:
+        return extract_numeric(char["age (yrs)"])
+
+    return None
 
 
 class QualityReport:
@@ -405,6 +416,173 @@ class GeoMatrixParser:
         return load_list
 
 
+class AutoScanGeoMatrixParser():
+    """
+    Retrieve Series Metadata via geo2r API
+
+    When dealing with a large number of geo series data, instead of downloading the matrix file for each series to read metadata information, we can reduce the time spent generating the library.yaml by using the geo2r API to obtain metadata during data loading.
+    """
+
+    def __init__(self, data) -> None:
+        self._check_keys_exist(data, ["matrix_file", "metadata_keys_parse", "metadata_query"])
+        self.matrix_file = data['matrix_file']
+        self.metadata_keys_parse = data['metadata_keys_parse']
+        self.metadata_keys = list(self.metadata_keys_parse.keys())
+        self.metadata_query_url = data['metadata_query']
+
+    def _check_keys_exist(self, data, keys: list[str]):
+        for key in keys:
+            if key not in data:
+                raise ValueError(f"Parser not valid: missing {key}")
+
+    def _create_metadata(self, metadata_query_url):
+        response = requests.get(metadata_query_url)
+        json_data = response.json()
+        smaples = [item for item in json_data['GeoMetaData']]
+        return self._convert_to_metadata_df(self.metadata_keys, smaples)
+
+    def _map_characteristics_to_dict(self, sample):
+
+        def extract_key(item):
+            if 'tag' in item:
+                return item['tag']
+            else:
+                return item['value'].split(":")[0]
+
+        def extract_value(item):
+            if 'tag' in item:
+                return item['value']
+            else:
+                return item['value'].split(":")[1]
+
+        characteristics = sample["entity"]["sample"]["channels"][0]["characteristics"]
+
+        return {extract_key(char).lower(): extract_value(char) for char in characteristics}
+
+    def _convert_characteristics_to_df_cols_data(self, metadata_keys, item):
+        cols_data = []
+
+        characteristics = self._map_characteristics_to_dict(item)
+
+        for key in metadata_keys:
+            parse_type = self.metadata_keys_parse[key]
+            if parse_type == "sex":
+                cols_data.append(sex_parser(characteristics.get(key)))
+            elif parse_type == "numeric":
+
+                if key == "age":
+                    if key in characteristics:
+                        cols_data.append(extract_numeric(characteristics[key]))
+                    else:
+                        cols_data.append(extract_informal_age(characteristics))
+                else:
+                    cols_data.append(extract_numeric(characteristics.get(key, "")))
+            else:
+                cols_data.append(characteristics.get(key))
+
+        return cols_data
+
+    def _convert_to_metadata_df(self, metadata_keys, samples):
+
+        data = {sample["acc"]: self._convert_characteristics_to_df_cols_data(
+            metadata_keys, sample) for sample in samples}
+
+        df = pd.DataFrame(data).transpose()
+        df = df.reset_index(drop=False)
+        columns = ["id"]
+        columns.extend(metadata_keys)
+        df.columns = columns
+        return df
+
+    def _get_matrix_file_size_from_url(self, url):
+        try:
+            response = requests.head(url)
+            response.raise_for_status()
+
+            content_length = response.headers.get('Content-Length')
+
+            if content_length is None:
+                print("Content-Length header is not present.")
+                return None
+
+            file_size = int(content_length)
+            return file_size
+
+        except requests.RequestException as e:
+            print(f"HTTP request failed: {e}")
+            return None
+
+    def _create_matrix(self, matrix_file):
+        matrix_file_path = cached_download(matrix_file)
+
+        row_num = self._get_matrix_table_row_num(matrix_file_path)
+
+        matrix_data = pd.read_table(
+            matrix_file_path, index_col=0, skiprows=row_num + 1
+        )
+        matrix_data = matrix_data.drop(
+            ["!series_matrix_table_end"], axis=0
+        )
+        matrix_data.index.name = "id"
+
+        return matrix_data
+
+    def _get_matrix_file_line_count(self, matrix_file):
+        def blocks(files, size=65536):
+            while True:
+                b = files.read(size)
+                if not b:
+                    break
+                yield b
+
+        with open(matrix_file, "r", encoding="utf-8", errors='ignore') as f:
+            return sum(bl.count("\n") for bl in blocks(f))
+
+    def _ungzip_file(self, matrix_file, output_file):
+        with gzip.open(matrix_file, 'rb') as f_in:
+            with open(output_file, 'wb') as f_out:
+                shutil.copyfileobj(f_in, f_out)
+
+    def _find_matrix_table_begin_line_num_backwards(self, matrix_file):
+        with FileReadBackwards(matrix_file) as frb:
+            line_num = 0
+            for l in frb:
+                line_num += 1
+                if "!series_matrix_table_begin" in l:
+                    break
+            return line_num
+
+    def _get_matrix_table_row_num(self, matrix_file):
+
+        output_file = f"{matrix_file}.txt"
+        self._ungzip_file(matrix_file, output_file)
+
+        total_lines = self._get_matrix_file_line_count(output_file)
+        line_num_bw = self._find_matrix_table_begin_line_num_backwards(output_file)
+
+        os.remove(output_file)
+        return total_lines - line_num_bw
+
+    def parse(self, _):
+        """
+        Parse metadata and matrix data for a geo series.
+
+        This function retrieves metadata and matrix data, raising an error if the matrix is empty or None. 
+        """
+        metadata = self._create_metadata(self.metadata_query_url)
+        matrix = self._create_matrix(self.matrix_file)
+        if matrix is None or matrix.empty:
+            raise NoMatrixDataError(f"Series {metadata['id']} has no matrix data")
+
+        return GeoData(metadata, matrix)
+
+
+class NoMatrixDataError(Exception):
+
+    def __init__(self, message):
+        super().__init__(message)
+
+
 class DataSource:
     """
     Represents a single data source in the DataLibrary.
@@ -443,6 +621,7 @@ class DataSource:
             if getattr(self, field) is None:
                 raise ValueError(error_message)
         self.cache = cache if cache else NoCache()
+        self.data = data
         self.title = data.get(
             "title", ""
         )  # Default empty string if title is not provided
@@ -489,6 +668,8 @@ class DataSource:
             return JenAgeCustomParser(parser_data)
         if parser_type == "geo-matrix":
             return GeoMatrixParser(parser_data)
+        if parser_type == "geo-matrix-auto-scan":
+            return AutoScanGeoMatrixParser(parser_data)
         raise ValueError(f"Unknown parser type: {parser_type}")
 
 
