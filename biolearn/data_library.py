@@ -589,14 +589,14 @@ class DataSource:
         "parser": "'parser' key is missing in item",
     }
 
-    def __init__(self, data, cache=None):
+    def __init__(self, source_definition, cache=None):
         """
         Initializes the DataSource instance with configuration data and an optional cache mechanism.
         This method parses a dictionary typically loaded from a YAML configuration file for a data source.
         It checks for essential fields, sets up attributes, and configures a parser for data handling.
 
         Args:
-            data (dict): A dictionary containing the data source's properties. Must include keys like 'id',
+            source_definition (dict): A dictionary containing the data source's properties. Must include keys like 'id',
                         'path', 'parser', and optionally 'title', 'summary', 'format', and 'organism'.
             cache (object, optional): An object that adheres to the caching interface used in the caching module.
                         If no cache is provided, a default NoCache instance is used.
@@ -605,25 +605,25 @@ class DataSource:
             ValueError: If any of the required fields ('id', 'path', 'parser') are missing in the input data.
         """
         for field, error_message in self.REQUIRED_FIELDS.items():
-            setattr(self, field, data.get(field))
+            setattr(self, field, source_definition.get(field))
             if getattr(self, field) is None:
                 raise ValueError(error_message)
         self.cache = cache if cache else NoCache()
-        self.data = data
-        self.title = data.get(
+        self.source_definition = source_definition
+        self.title = source_definition.get(
             "title", ""
         )  # Default empty string if title is not provided
-        self.summary = data.get(
+        self.summary = source_definition.get(
             "summary", ""
         )  # Default empty string if summary is not provided
-        self.format = data.get(
+        self.format = source_definition.get(
             "format", ""
         )  # Default empty string if format is not provided
-        self.organism = data.get(
+        self.organism = source_definition.get(
             "organism", ""
         )  # Default empty string if organism is not provided
 
-        self.parser = self._create_parser(data["parser"])
+        self.parser = self._create_parser(source_definition["parser"])
 
     def load(self):
         """
