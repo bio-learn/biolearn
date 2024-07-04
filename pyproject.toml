@@ -21,8 +21,7 @@ dependencies = [
   "pyyaml",
   "scipy",
   "cvxpy",
-  "xlrd",
-  "file_read_backwards"
+  "xlrd"
 ]
 
 keywords = ["biomarker"]

@@ -12,7 +12,6 @@ from biolearn.util import cached_download, get_data_file
 from biolearn.defaults import default_cache
 from biolearn.cache import NoCache
 from io import BytesIO
-from file_read_backwards import FileReadBackwards
 
 
 def parse_after_colon(s):
@@ -518,7 +517,7 @@ class AutoScanGeoMatrixParser():
         row_num = self._get_matrix_table_row_num(matrix_file_path)
 
         matrix_data = pd.read_table(
-            matrix_file_path, index_col=0, skiprows=row_num + 1
+            matrix_file_path, index_col=0, skiprows=row_num 
         )
         matrix_data = matrix_data.drop(
             ["!series_matrix_table_end"], axis=0
@@ -527,41 +526,30 @@ class AutoScanGeoMatrixParser():
 
         return matrix_data
 
-    def _get_matrix_file_line_count(self, matrix_file):
-        def blocks(files, size=65536):
-            while True:
-                b = files.read(size)
-                if not b:
-                    break
-                yield b
-
-        with open(matrix_file, "r", encoding="utf-8", errors='ignore') as f:
-            return sum(bl.count("\n") for bl in blocks(f))
 
     def _ungzip_file(self, matrix_file, output_file):
         with gzip.open(matrix_file, 'rb') as f_in:
             with open(output_file, 'wb') as f_out:
                 shutil.copyfileobj(f_in, f_out)
 
-    def _find_matrix_table_begin_line_num_backwards(self, matrix_file):
-        with FileReadBackwards(matrix_file) as frb:
-            line_num = 0
-            for l in frb:
-                line_num += 1
-                if "!series_matrix_table_begin" in l:
-                    break
-            return line_num
+    def _find_matrix_table_begin_line_num(self, matrix_file):
+        with open(matrix_file, 'r', encoding='utf-8') as file:
+            for line_number, line in enumerate(file, start=1):
+                if "!series_matrix_table_begin" in line:
+                    return line_number
+        return -1
 
     def _get_matrix_table_row_num(self, matrix_file):
 
         output_file = f"{matrix_file}.txt"
-        self._ungzip_file(matrix_file, output_file)
+        try:
+            self._ungzip_file(matrix_file, output_file)
+            line_num = self._find_matrix_table_begin_line_num(output_file)
+        finally:
+            if os.path.exists(output_file):
+                os.remove(output_file)
 
-        total_lines = self._get_matrix_file_line_count(output_file)
-        line_num_bw = self._find_matrix_table_begin_line_num_backwards(output_file)
-
-        os.remove(output_file)
-        return total_lines - line_num_bw
+        return line_num
 
     def parse(self, _):
         """
