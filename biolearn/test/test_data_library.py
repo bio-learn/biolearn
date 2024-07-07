@@ -183,6 +183,13 @@ def test_can_load_library_file():
 
     assert len(actual) > 1
 
+def test_can_load_autoscan_library_file():
+    library_file = get_data_file("geo_autoscan_library.yaml")
+    with open(library_file, "r") as the_file:
+        actual = parse_library_file(the_file)
+
+    assert len(actual) > 1
+
 
 def test_can_load_dnam():
     data_source_spec = {
