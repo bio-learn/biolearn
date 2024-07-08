@@ -415,7 +415,7 @@ class GeoMatrixParser:
         return load_list
 
 
-class AutoScanGeoMatrixParser():
+class AutoScanGeoMatrixParser:
     """
     Retrieve Series Metadata via geo2r API
 
@@ -423,11 +423,13 @@ class AutoScanGeoMatrixParser():
     """
 
     def __init__(self, data) -> None:
-        self._check_keys_exist(data, ["matrix_file", "metadata_keys_parse", "metadata_query"])
-        self.matrix_file = data['matrix_file']
-        self.metadata_keys_parse = data['metadata_keys_parse']
+        self._check_keys_exist(
+            data, ["matrix_file", "metadata_keys_parse", "metadata_query"]
+        )
+        self.matrix_file = data["matrix_file"]
+        self.metadata_keys_parse = data["metadata_keys_parse"]
         self.metadata_keys = list(self.metadata_keys_parse.keys())
-        self.metadata_query_url = data['metadata_query']
+        self.metadata_query_url = data["metadata_query"]
 
     def _check_keys_exist(self, data, keys: list[str]):
         for key in keys:
@@ -437,26 +439,31 @@ class AutoScanGeoMatrixParser():
     def _create_metadata(self, metadata_query_url):
         response = requests.get(metadata_query_url)
         json_data = response.json()
-        smaples = [item for item in json_data['GeoMetaData']]
+        smaples = [item for item in json_data["GeoMetaData"]]
         return self._convert_to_metadata_df(self.metadata_keys, smaples)
 
     def _map_characteristics_to_dict(self, sample):
 
         def extract_key(item):
-            if 'tag' in item:
-                return item['tag']
+            if "tag" in item:
+                return item["tag"]
             else:
-                return item['value'].split(":")[0]
+                return item["value"].split(":")[0]
 
         def extract_value(item):
-            if 'tag' in item:
-                return item['value']
+            if "tag" in item:
+                return item["value"]
             else:
-                return item['value'].split(":")[1]
+                return item["value"].split(":")[1]
 
-        characteristics = sample["entity"]["sample"]["channels"][0]["characteristics"]
+        characteristics = sample["entity"]["sample"]["channels"][0][
+            "characteristics"
+        ]
 
-        return {extract_key(char).lower(): extract_value(char) for char in characteristics}
+        return {
+            extract_key(char).lower(): extract_value(char)
+            for char in characteristics
+        }
 
     def _convert_characteristics_to_df_cols_data(self, metadata_keys, item):
         cols_data = []
@@ -475,7 +482,9 @@ class AutoScanGeoMatrixParser():
                     else:
                         cols_data.append(extract_informal_age(characteristics))
                 else:
-                    cols_data.append(extract_numeric(characteristics.get(key, "")))
+                    cols_data.append(
+                        extract_numeric(characteristics.get(key, ""))
+                    )
             else:
                 cols_data.append(characteristics.get(key))
 
@@ -483,8 +492,12 @@ class AutoScanGeoMatrixParser():
 
     def _convert_to_metadata_df(self, metadata_keys, samples):
 
-        data = {sample["acc"]: self._convert_characteristics_to_df_cols_data(
-            metadata_keys, sample) for sample in samples}
+        data = {
+            sample["acc"]: self._convert_characteristics_to_df_cols_data(
+                metadata_keys, sample
+            )
+            for sample in samples
+        }
 
         df = pd.DataFrame(data).transpose()
         df = df.reset_index(drop=False)
@@ -498,7 +511,7 @@ class AutoScanGeoMatrixParser():
             response = requests.head(url)
             response.raise_for_status()
 
-            content_length = response.headers.get('Content-Length')
+            content_length = response.headers.get("Content-Length")
 
             if content_length is None:
                 print("Content-Length header is not present.")
@@ -517,23 +530,20 @@ class AutoScanGeoMatrixParser():
         row_num = self._get_matrix_table_row_num(matrix_file_path)
 
         matrix_data = pd.read_table(
-            matrix_file_path, index_col=0, skiprows=row_num 
+            matrix_file_path, index_col=0, skiprows=row_num
         )
-        matrix_data = matrix_data.drop(
-            ["!series_matrix_table_end"], axis=0
-        )
+        matrix_data = matrix_data.drop(["!series_matrix_table_end"], axis=0)
         matrix_data.index.name = "id"
 
         return matrix_data
 
-
     def _ungzip_file(self, matrix_file, output_file):
-        with gzip.open(matrix_file, 'rb') as f_in:
-            with open(output_file, 'wb') as f_out:
+        with gzip.open(matrix_file, "rb") as f_in:
+            with open(output_file, "wb") as f_out:
                 shutil.copyfileobj(f_in, f_out)
 
     def _find_matrix_table_begin_line_num(self, matrix_file):
-        with open(matrix_file, 'r', encoding='utf-8') as file:
+        with open(matrix_file, "r", encoding="utf-8") as file:
             for line_number, line in enumerate(file, start=1):
                 if "!series_matrix_table_begin" in line:
                     return line_number
@@ -555,12 +565,14 @@ class AutoScanGeoMatrixParser():
         """
         Parse metadata and matrix data for a geo series.
 
-        This function retrieves metadata and matrix data, raising an error if the matrix is empty or None. 
+        This function retrieves metadata and matrix data, raising an error if the matrix is empty or None.
         """
         metadata = self._create_metadata(self.metadata_query_url)
         matrix = self._create_matrix(self.matrix_file)
         if matrix is None or matrix.empty:
-            raise NoMatrixDataError(f"Series {metadata['id']} has no matrix data")
+            raise NoMatrixDataError(
+                f"Series {metadata['id']} has no matrix data"
+            )
 
         return GeoData(metadata, matrix)
 

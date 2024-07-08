@@ -1,9 +1,6 @@
 import pytest
 
-from biolearn.data_library import (
-    DataLibrary,
-    NoMatrixDataError
-)
+from biolearn.data_library import DataLibrary, NoMatrixDataError
 from biolearn.util import get_data_file
 
 
