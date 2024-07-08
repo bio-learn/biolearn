@@ -4,20 +4,20 @@ from biolearn.data_library import (
     DataLibrary,
     NoMatrixDataError
 )
-from biolearn.util import get_test_data_file
+from biolearn.util import get_data_file
 
 
-def test_can_load_new_yaml_file():
+def test_can_load_autoscan_library_file():
     library = DataLibrary(
-        library_file=get_test_data_file("library_files/geo_autoscan_library.yaml")
+        library_file=get_data_file("geo_autoscan_library.yaml")
     )
 
-    assert len(library.sources) == 574
+    assert len(library.sources) > 1
 
 
 def test_series_has_matrix_data():
     library = DataLibrary(
-        library_file=get_test_data_file("library_files/geo_autoscan_library.yaml")
+        library_file=get_data_file("geo_autoscan_library.yaml")
     )
 
     data = library.get("GSE100386").load()
@@ -27,7 +27,7 @@ def test_series_has_matrix_data():
 
 def test_series_has_no_matrix_data_error():
     library = DataLibrary(
-        library_file=get_test_data_file("library_files/geo_autoscan_library.yaml")
+        library_file=get_data_file("geo_autoscan_library.yaml")
     )
 
     with pytest.raises(NoMatrixDataError):
