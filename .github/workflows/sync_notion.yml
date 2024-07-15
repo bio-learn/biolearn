@@ -1,0 +1,32 @@
+name: Sync Library Entry to Notion
+
+on:
+  push:
+    paths:
+      - biolearn/data/geo_autoscan_library.yaml
+
+jobs:
+  sync_to_notion:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install python-dotenv
+          pip install notion-client
+          pip install pyyaml
+
+      - name: Run sync script
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_SERIES_DATABASE_ID: ${{ secrets.NOTION_SERIES_DATABASE_ID }}
+        run: python scripts/sync_library_entry_to_notion.py
