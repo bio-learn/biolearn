@@ -45,19 +45,20 @@ def extract_informal_age(char) -> int:
 
     return None
 
+
 parsers = {
     "numeric": lambda s: extract_numeric(parse_after_colon(s)),
     "string": lambda s: parse_after_colon(s),
     "sex": lambda s: sex_parser(parse_after_colon(s)),
 }
 
+
 def build_column_mapping(matrix_file_path, from_key_line, to_key_line):
     # Use the key line for the mapping
     mapping_df = pd.read_table(
         matrix_file_path,
         index_col=0,
-        skiprows=lambda x: x != from_key_line - 1
-        and x != to_key_line - 1,
+        skiprows=lambda x: x != from_key_line - 1 and x != to_key_line - 1,
     )
     column_mapping = mapping_df.to_dict("records")[0]
 
@@ -67,6 +68,7 @@ def build_column_mapping(matrix_file_path, from_key_line, to_key_line):
         column_mapping = {v: k for k, v in column_mapping.items()}
     return column_mapping
 
+
 def map_and_prune_columns(data, column_mapping):
     data = data.rename(columns=column_mapping)
     data = data[
@@ -74,11 +76,9 @@ def map_and_prune_columns(data, column_mapping):
     ]
     return data
 
+
 def load_geo_metadata(metadata_file, filekey, id_row):
-    load_list = [
-        (key, filekey[key]["row"] - 1)
-        for key in filekey.keys()
-    ]
+    load_list = [(key, filekey[key]["row"] - 1) for key in filekey.keys()]
     load_list.sort(key=lambda x: x[1])
     load_rows = [x[1] for x in load_list]
     column_names = [x[0] for x in load_list]
@@ -355,11 +355,14 @@ class ChallengeDataParser:
     def parse(self, file_path):
         metadata = load_geo_metadata(file_path, self.metadata, self.id_row)
         dnam_data = pd.read_csv(self.matrix_file, index_col=0)
-        column_mapping = build_column_mapping(file_path, self.matrix_file_key_line ,self.id_row)
+        column_mapping = build_column_mapping(
+            file_path, self.matrix_file_key_line, self.id_row
+        )
         fixed_dnam = map_and_prune_columns(dnam_data, column_mapping)
         geodata = GeoData.from_methylation_matrix(fixed_dnam)
         geodata.metadata = metadata
         return geodata
+
 
 class GeoMatrixParser:
     seperators = {"space": " ", "comma": ","}
