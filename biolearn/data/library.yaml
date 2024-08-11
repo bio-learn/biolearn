@@ -889,7 +889,7 @@ items:
     path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE167nnn/GSE167998/matrix/GSE167998_series_matrix.txt.gz
     parser:
       type: geo-matrix
-      matrix-file: "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE167998&format=file&file=GSE167998%5Fmatrix%5Fprocessed%2Etxt%2Egz"
+      matrix-file: "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE167nnn/GSE167998/suppl/GSE167998%5Fmatrix%5Fprocessed.txt.gz"
       matrix-file-format: pvalue
       matrix-file-seperator: "tab"
       metadata:
@@ -1047,7 +1047,7 @@ items:
     path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE180nnn/GSE180683/matrix/GSE180683_series_matrix.txt.gz
     parser:
       type: geo-matrix
-      matrix-file: "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE180683&format=file&file=GSE180683%5FMatrix%5Fprocessed%2Etxt%2Egz"
+      matrix-file: "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE180nnn/GSE180683/suppl/GSE180683%5FMatrix%5Fprocessed.txt.gz"
       matrix-file-format: pvalue
       matrix-file-key-line: 70
       matrix-file-seperator: "tab"

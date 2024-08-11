@@ -297,7 +297,7 @@ class GeoMatrixParser:
         "string": lambda s: parse_after_colon(s),
         "sex": lambda s: sex_parser(parse_after_colon(s)),
     }
-    seperators = {"space": " ", "comma": ","}
+    seperators = {"space": " ", "comma": ",", "tab": "\t"}
 
     def __init__(self, data):
         if data.get("id-row") is None:
