@@ -1122,7 +1122,6 @@ items:
     path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE180nnn/GSE180970/matrix/GSE180970_series_matrix.txt.gz
     parser:
       type: geo-matrix
-      id_row: null
       matrix-start: 78
       metadata:
         cd4t:
