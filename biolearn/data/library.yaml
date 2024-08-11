@@ -865,3 +865,284 @@ items:
     parser:
       type: jen-age-custom
       data-type: rna
+  - id: GSE167998
+    title: "FlowSorted.BloodExtended.EPIC: An Enhanced DNA Methylation Library for
+      Deconvoluting Peripheral Blood"
+    summary: DNA methylation microarrays have been extensively used for
+      understanding cell type composition in complex tissue samples. Here we
+      expand on existing libraries for reference-based deconvolution of blood DNA
+      methylation data assayed using the Illumina HumanMethylationEPIC array to
+      include 12 different leukocyte subtypes (neutrophils, eosinophils,
+      basophils, monocytes, B cells naïve and memory, CD4+ and CD8+ naïve and
+      memory cells, natural killers, and T regulatory cells). Application of the
+      IDOL algorithm for identifying optimal libraries for the
+      deconvolution of blood-derived DNA methylation data led to to a library
+      consisting of 1200 CpGs. The accuracy of deconvolution estimates obtained
+      using our IDOL-optimized library was evaluated using artificial mixtures
+      with known cellular composition and in samples were both whole-blood DNA
+      methylation data and FACS information were available. We further
+      showcase potential applications of our expanded library using
+      publicly available cancer, aging, and autoimmune disease data sets.
+    format: Unknown
+    organism: human
+    samples: 68
+    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE167nnn/GSE167998/matrix/GSE167998_series_matrix.txt.gz
+    parser:
+      type: geo-matrix
+      matrix-file: "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE167nnn/GSE167998/suppl/GSE167998%5Fmatrix%5Fprocessed.txt.gz"
+      matrix-file-format: pvalue
+      matrix-file-seperator: "tab"
+      metadata:
+        sample_plate:
+          row: 48
+          parse: string
+        age:
+          row: 49
+          parse: numeric
+        horvath_age:
+          row: 50
+          parse: string
+        mage:
+          row: 51
+          parse: string
+        purity:
+          row: 52
+          parse: string
+        meth_purity:
+          row: 53
+          parse: string
+        ethnicity_wide:
+          row: 54
+          parse: string
+        ethnic_self:
+          row: 55
+          parse: string
+        meth_ethnicity:
+          row: 56
+          parse: string
+        weight_kg:
+          row: 57
+          parse: string
+        height_cm:
+          row: 58
+          parse: string
+        smoker:
+          row: 59
+          parse: string
+        bmi:
+          row: 60
+          parse: string
+        bmi_clas:
+          row: 61
+          parse: string
+        blood.type:
+          row: 62
+          parse: string
+        smp_type:
+          row: 63
+          parse: string
+        chip:
+          row: 64
+          parse: string
+        arraytypes:
+          row: 65
+          parse: string
+        fetal:
+          row: 66
+          parse: string
+        flag:
+          row: 67
+          parse: string
+        flag2:
+          row: 68
+          parse: string
+        include:
+          row: 69
+          parse: string
+        exclude:
+          row: 70
+          parse: string
+        exclude2:
+          row: 71
+          parse: string
+        neu.cbc:
+          row: 72
+          parse: string
+        lymph.cbc:
+          row: 73
+          parse: string
+        mono.cbc:
+          row: 74
+          parse: string
+        treg:
+          row: 75
+          parse: string
+        cd4nv:
+          row: 76
+          parse: string
+        cd4mem:
+          row: 77
+          parse: string
+        cd4t:
+          row: 78
+          parse: string
+        cd8t:
+          row: 79
+          parse: string
+        bnv:
+          row: 80
+          parse: string
+        bmem:
+          row: 81
+          parse: string
+        bcell:
+          row: 82
+          parse: string
+        nk:
+          row: 83
+          parse: string
+        mono:
+          row: 84
+          parse: string
+        neu:
+          row: 85
+          parse: string
+        eos:
+          row: 86
+          parse: string
+        gran:
+          row: 87
+          parse: string
+        array:
+          row: 88
+          parse: string
+        slide:
+          row: 89
+          parse: string
+        basename:
+          row: 91
+          parse: string
+      id-row: 40
+  - id: GSE180683
+    title: "CD4T and CD8T naive and memory validation dataset: An Enhanced DNA
+      Methylation Library for Deconvoluting Peripheral Blood"
+    summary: DNA methylation microarrays have been extensively used for
+      understanding cell type composition in complex tissue samples. Here we
+      expand on existing libraries for reference-based deconvolution of blood DNA
+      methylation data assayed using the Illumina HumanMethylationEPIC array to
+      include 12 different leukocyte subtypes (neutrophils, eosinophils,
+      basophils, monocytes, B cells naive and memory, CD4+ and CD8+ naive and
+      memory cells, natural killers, and T regulatory cells). Application of the
+      IDOL algorithm for identifying optimal libraries for the deconvolution of
+      blood-derived DNA methylation data led to a library consisting of 1200 CpGs.
+      The accuracy of deconvolution estimates obtained using our IDOL-optimized
+      library was evaluated using artificial mixtures with known cellular
+      composition and in samples were both whole-blood DNA methylation data and
+      FACS information were available. We further showcase potential applications
+      of our expanded library using publicly available cancer, aging, and
+      autoimmune disease data sets.
+    format: Unknown
+    organism: human
+    samples: 76
+    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE180nnn/GSE180683/matrix/GSE180683_series_matrix.txt.gz
+    parser:
+      type: geo-matrix
+      matrix-file: "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE180nnn/GSE180683/suppl/GSE180683%5FMatrix%5Fprocessed.txt.gz"
+      matrix-file-format: pvalue
+      matrix-file-key-line: 70
+      matrix-file-seperator: "tab"
+      metadata:
+        diagnosis:
+          row: 48
+          parse: string
+        tissue:
+          row: 49
+          parse: string
+        sex:
+          row: 50
+          parse: string
+        age:
+          row: 51
+          parse: numeric
+        karyotype:
+          row: 52
+          parse: string
+        time.point:
+          row: 53
+          parse: string
+        histological.group:
+          row: 54
+          parse: string
+        cd4t:
+          row: 55
+          parse: string
+        cd4nv:
+          row: 56
+          parse: string
+        cd4mem:
+          row: 57
+          parse: string
+        cd8t:
+          row: 58
+          parse: string
+        cd8mem:
+          row: 59
+          parse: string
+        cd8nv:
+          row: 60
+          parse: string
+        nontcell:
+          row: 61
+          parse: string
+        arraytypes:
+          row: 62
+          parse: string
+      id-row: 40
+  - id: GSE180970
+    title: "Umbilical cord blood artificial mixtures validation dataset: An Enhanced
+      DNA Methylation Library for Deconvoluting Peripheral Blood"
+    summary: DNA methylation microarrays have been extensively used for
+      understanding cell type composition in complex tissue samples. Here we
+      expand on existing libraries for reference-based deconvolution of blood DNA
+      methylation data assayed using the Illumina HumanMethylationEPIC array to
+      include 12 different leukocyte subtypes (neutrophils, eosinophils,
+      basophils, monocytes, B cells naive and memory, CD4+ and CD8+ naive and
+      memory cells, natural killers, and T regulatory cells). Application of the
+      IDOL algorithm for identifying optimal libraries for the deconvolution of
+      blood-derived DNA methylation data led to to a library consisting of 1200
+      CpGs. The accuracy of deconvolution estimates obtained using our
+      IDOL-optimized library was evaluated using artificial mixtures with known
+      cellular composition and in samples were both whole-blood DNA methylation
+      data and FACS information were available.  We further showcase potential
+      applications of our expanded library using publicly available cancer, aging,
+      and autoimmune disease data sets.
+    format: Unknown
+    organism: human
+    samples: 12
+    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE180nnn/GSE180970/matrix/GSE180970_series_matrix.txt.gz
+    parser:
+      type: geo-matrix
+      matrix-start: 78
+      metadata:
+        cd4t:
+          row: 47
+          parse: string
+        cd8t:
+          row: 48
+          parse: string
+        bcell:
+          row: 49
+          parse: string
+        nk:
+          row: 50
+          parse: string
+        mono:
+          row: 51
+          parse: string
+        neu:
+          row: 52
+          parse: string
+        arraytypes:
+          row: 53
+          parse: string
+      id-row: 39
