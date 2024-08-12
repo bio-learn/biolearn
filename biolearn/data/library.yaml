@@ -26,7 +26,7 @@ items:
       different generations of array platforms, and may be helpful in generating larger
       DMR libraries that include novel cell subtypes. A  dataset of six whole blood
       samples were FACS sorted and the DNA was processed as a validation dataset.
-    format: Unknown
+    format: IlluminaEPIC
     organism: human
     samples: 6
     path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE112nnn/GSE112618/matrix/GSE112618_series_matrix.txt.gz
@@ -100,7 +100,7 @@ items:
       to reduce any unintended technical differences arising from the combination of
       different generations of array platforms, and may be helpful in generating larger
       DMR libraries that include novel cell subtypes.
-    format: Unknown
+    format: IlluminaEPIC
     organism: human
     samples: 49
     path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE110nnn/GSE110554/matrix/GSE110554_series_matrix.txt.gz
@@ -865,6 +865,29 @@ items:
     parser:
       type: jen-age-custom
       data-type: rna
+  - id: BoAChallengeData
+    title: 2024 Biomarkers of Aging Challenge Sample Data
+    summary: We generated DNA methylation profiles of 500 diverse individuals to enable
+      to construction and validation of DNA methylation biomarkers of aging.
+    format: IlluminaEPIC
+    organism: human
+    samples: 500
+    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE246nnn/GSE246337/matrix/GSE246337_series_matrix.txt.gz
+    parser:
+      type: biomarkers-challenge-2024
+      id-row: 30
+      matrix-file: "ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE246nnn/GSE246337/suppl/GSE246337%5Fbetas.csv.gz"
+      matrix-file-key-line: 48
+      metadata:
+        subject_id:
+          row: 38
+          parse: string
+        sex:
+          row: 39
+          parse: string
+        tissue:
+          row: 40
+          parse: string
   - id: GSE167998
     title: "FlowSorted.BloodExtended.EPIC: An Enhanced DNA Methylation Library for
       Deconvoluting Peripheral Blood"
@@ -883,7 +906,7 @@ items:
       methylation data and FACS information were available. We further
       showcase potential applications of our expanded library using
       publicly available cancer, aging, and autoimmune disease data sets.
-    format: Unknown
+    format: IlluminaEPIC
     organism: human
     samples: 68
     path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE167nnn/GSE167998/matrix/GSE167998_series_matrix.txt.gz
@@ -1041,7 +1064,7 @@ items:
       FACS information were available. We further showcase potential applications
       of our expanded library using publicly available cancer, aging, and
       autoimmune disease data sets.
-    format: Unknown
+    format: IlluminaEPIC
     organism: human
     samples: 76
     path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE180nnn/GSE180683/matrix/GSE180683_series_matrix.txt.gz
@@ -1116,7 +1139,7 @@ items:
       data and FACS information were available.  We further showcase potential
       applications of our expanded library using publicly available cancer, aging,
       and autoimmune disease data sets.
-    format: Unknown
+    format: IlluminaEPIC
     organism: human
     samples: 12
     path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE180nnn/GSE180970/matrix/GSE180970_series_matrix.txt.gz

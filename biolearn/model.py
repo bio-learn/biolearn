@@ -294,7 +294,7 @@ model_definitions = {
         "year": 2024,
         "species": "Human",
         "tissue": "Blood",
-        "source": "",
+        "source": "https://www.biorxiv.org/content/10.1101/2023.12.02.569722v6",
         "output": "Cell Proportions",
         "model": {
             "type": "DeconvolutionModel",
@@ -307,7 +307,7 @@ model_definitions = {
         "year": 2024,
         "species": "Human",
         "tissue": "Blood",
-        "source": "",
+        "source": "https://www.biorxiv.org/content/10.1101/2023.12.02.569722v6",
         "output": "Cell Proportions",
         "model": {
             "type": "DeconvolutionModel",

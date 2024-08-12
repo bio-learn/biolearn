@@ -46,6 +46,57 @@ def extract_informal_age(char) -> int:
     return None
 
 
+parsers = {
+    "numeric": lambda s: extract_numeric(parse_after_colon(s)),
+    "string": lambda s: parse_after_colon(s),
+    "sex": lambda s: sex_parser(parse_after_colon(s)),
+}
+
+
+def build_column_mapping(matrix_file_path, from_key_line, to_key_line):
+    # Use the key line for the mapping
+    mapping_df = pd.read_table(
+        matrix_file_path,
+        index_col=0,
+        skiprows=lambda x: x != from_key_line - 1 and x != to_key_line - 1,
+    )
+    column_mapping = mapping_df.to_dict("records")[0]
+
+    # Reverse the mapping if needed as key is based on first line loaded
+    reverse_mapping = to_key_line < from_key_line
+    if reverse_mapping:
+        column_mapping = {v: k for k, v in column_mapping.items()}
+    return column_mapping
+
+
+def map_and_prune_columns(data, column_mapping):
+    data = data.rename(columns=column_mapping)
+    data = data[
+        [col for col in data.columns if col in column_mapping.values()]
+    ]
+    return data
+
+
+def load_geo_metadata(metadata_file, filekey, id_row):
+    load_list = [(key, filekey[key]["row"] - 1) for key in filekey.keys()]
+    load_list.sort(key=lambda x: x[1])
+    load_rows = [x[1] for x in load_list]
+    column_names = [x[0] for x in load_list]
+    metadata = pd.read_table(
+        metadata_file,
+        index_col=0,
+        skiprows=lambda x: x != id_row - 1 and x not in load_rows,
+    )
+    metadata.index = column_names
+    metadata = metadata.transpose()
+    metadata.index.name = "id"
+    for col in metadata.columns:
+        parser_name = filekey[col]["parse"]
+        parser = parsers[parser_name]
+        metadata[col] = metadata[col].apply(parser)
+    return metadata
+
+
 class QualityReport:
     def __init__(self, sample_report, methylation_site_report, summary):
         self.sample_report = sample_report
@@ -291,12 +342,29 @@ class JenAgeCustomParser:
         return GeoData(metadata=metadata, rna=rna)
 
 
+class ChallengeDataParser:
+    def __init__(self, data):
+        if data.get("id-row") is None:
+            raise ValueError("Parser not valid: missing id-row")
+        self.id_row = data.get("id-row")
+        self.metadata = data.get("metadata")
+        self.matrix_file = data.get("matrix-file")
+        self.matrix_file_key_line = data.get("matrix-file-key-line")
+        self.data_type = data.get("data-type")
+
+    def parse(self, file_path):
+        metadata = load_geo_metadata(file_path, self.metadata, self.id_row)
+        dnam_data = pd.read_csv(self.matrix_file, index_col=0)
+        column_mapping = build_column_mapping(
+            file_path, self.matrix_file_key_line, self.id_row
+        )
+        fixed_dnam = map_and_prune_columns(dnam_data, column_mapping)
+        geodata = GeoData.from_methylation_matrix(fixed_dnam)
+        geodata.metadata = metadata
+        return geodata
+
+
 class GeoMatrixParser:
-    parsers = {
-        "numeric": lambda s: extract_numeric(parse_after_colon(s)),
-        "string": lambda s: parse_after_colon(s),
-        "sex": lambda s: sex_parser(parse_after_colon(s)),
-    }
     seperators = {"space": " ", "comma": ",", "tab": "\t"}
 
     def __init__(self, data):
@@ -314,21 +382,7 @@ class GeoMatrixParser:
         self.data_type = data.get("data-type")
 
     def parse(self, file_path):
-        load_list = self._metadata_load_list()
-        load_rows = [x[1] for x in load_list]
-        column_names = [x[0] for x in load_list]
-        metadata = pd.read_table(
-            file_path,
-            index_col=0,
-            skiprows=lambda x: x != self.id_row - 1 and x not in load_rows,
-        )
-        metadata.index = column_names
-        metadata = metadata.transpose()
-        metadata.index.name = "id"
-        for col in metadata.columns:
-            parser_name = self.metadata[col]["parse"]
-            parser = self.parsers[parser_name]
-            metadata[col] = metadata[col].apply(parser)
+        metadata = load_geo_metadata(file_path, self.metadata, self.id_row)
         if self.matrix_start:
             matrix_data = pd.read_table(
                 file_path, index_col=0, skiprows=self.matrix_start - 1
@@ -670,6 +724,8 @@ class DataSource:
             return GeoMatrixParser(parser_data)
         if parser_type == "geo-matrix-auto-scan":
             return AutoScanGeoMatrixParser(parser_data)
+        if parser_type == "biomarkers-challenge-2024":
+            return ChallengeDataParser(parser_data)
         raise ValueError(f"Unknown parser type: {parser_type}")
 
 
