@@ -906,7 +906,7 @@ items:
       methylation data and FACS information were available. We further
       showcase potential applications of our expanded library using
       publicly available cancer, aging, and autoimmune disease data sets.
-    format: Unknown
+    format: IlluminaEPIC
     organism: human
     samples: 68
     path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE167nnn/GSE167998/matrix/GSE167998_series_matrix.txt.gz
@@ -1064,7 +1064,7 @@ items:
       FACS information were available. We further showcase potential applications
       of our expanded library using publicly available cancer, aging, and
       autoimmune disease data sets.
-    format: Unknown
+    format: IlluminaEPIC
     organism: human
     samples: 76
     path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE180nnn/GSE180683/matrix/GSE180683_series_matrix.txt.gz
@@ -1139,7 +1139,7 @@ items:
       data and FACS information were available.  We further showcase potential
       applications of our expanded library using publicly available cancer, aging,
       and autoimmune disease data sets.
-    format: Unknown
+    format: IlluminaEPIC
     organism: human
     samples: 12
     path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE180nnn/GSE180970/matrix/GSE180970_series_matrix.txt.gz
