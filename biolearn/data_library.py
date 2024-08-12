@@ -365,7 +365,7 @@ class ChallengeDataParser:
 
 
 class GeoMatrixParser:
-    seperators = {"space": " ", "comma": ","}
+    seperators = {"space": " ", "comma": ",", "tab": "\t"}
 
     def __init__(self, data):
         if data.get("id-row") is None:
@@ -405,7 +405,7 @@ class GeoMatrixParser:
                 pval_df = pval_df.replace("<1E-16", "0", regex=False).astype(
                     float, errors="ignore"
                 )
-                pval_df = pval_df.map(lambda x: np.nan if x > 0.05 else x)
+                pval_df = pval_df.map(lambda x: np.nan if x > 0.05 else 0)
                 # NaN values in pval_df will cause corresponding values in methylation_df to be NaN
                 matrix_data = reading_df + pval_df.values
                 matrix_data = self._remap_and_prune_columns(
