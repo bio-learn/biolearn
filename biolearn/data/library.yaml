@@ -1036,14 +1036,8 @@ items:
         gran:
           row: 87
           parse: string
-        array:
-          row: 88
-          parse: string
-        slide:
-          row: 89
-          parse: string
-        basename:
-          row: 91
+        cell_type:
+          row: 99
           parse: string
       id-row: 40
   - id: GSE180683
@@ -1169,3 +1163,65 @@ items:
           row: 53
           parse: string
       id-row: 39
+  - id: GSE182379
+    title: '12-cell-type artificial mixtures validation dataset: An Enhanced DNA Methylation
+      Library for Deconvoluting Peripheral Blood'
+    summary: "DNA methylation microarrays have been extensively used for understanding\
+      \ cell type composition in complex tissue samples. Here we expand on existing\
+      \ libraries for reference-based deconvolution of blood DNA methylation data assayed\
+      \ using the Illumina HumanMethylationEPIC array to include 12 different leukocyte\
+      \ subtypes (neutrophils, eosinophils, basophils, monocytes, B cells na\xEFve and\
+      \ memory, CD4+ and CD8+ na\xEFve and memory cells, natural killers, and T regulatory\
+      \ cells). Application of the IDOL algorithm for identifying optimal libraries\
+      \ for the deconvolution of blood-derived DNA methylation data led to to a library\
+      \ consisting of 1200 CpGs. The accuracy of deconvolution estimates obtained using\
+      \ our IDOL-optimized library was evaluated using artificial mixtures with known\
+      \ cellular composition and in samples were both whole-blood DNA methylation data\
+      \ and FACS information were available.  We further showcase potential applications\
+      \ of our expanded library using publicly available cancer, aging, and autoimmune\
+      \ disease data sets."
+    format: IlluminaEPIC
+    organism: human
+    samples: 12
+    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE182nnn/GSE182379/matrix/GSE182379_series_matrix.txt.gz
+    parser:
+      type: geo-matrix
+      id-row: 39
+      matrix-start: 83
+      metadata:
+        cd4nv:
+          row: 47
+          parse: string
+        cd4mem:
+          row: 48
+          parse: string
+        treg:
+          row: 49
+          parse: string
+        cd8nv:
+          row: 50
+          parse: string
+        cd8mem:
+          row: 51
+          parse: string
+        bnv:
+          row: 52
+          parse: string
+        bmem:
+          row: 53
+          parse: string
+        nk:
+          row: 54
+          parse: string
+        mono:
+          row: 55
+          parse: string
+        neu:
+          row: 56
+          parse: string
+        eos:
+          row: 57
+          parse: string
+        bas:
+          row: 58
+          parse: string
