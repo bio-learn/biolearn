@@ -587,11 +587,6 @@ class DeconvolutionModel:
         # omit rows with missing values
         meth.dropna(inplace=True)
 
-        print(
-            "Estimating cell proportions using %r platform reference..."
-            % self.platform
-        )
-
         # filter methylation array and reference to include only shared CpGs
         intersecting_cpgs = meth.index.intersection(self.reference.index)
 
