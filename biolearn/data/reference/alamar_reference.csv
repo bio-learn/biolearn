@@ -1,0 +1,323 @@
+AlamarTargetID,UniProtID,Target,ProteinName
+t10034,O75888,TNFSF13,TNF superfamily member 13
+t10319,O95760,IL33,Interleukin 33
+t10412,P01258,CALCA,Calcitonin [Cleaved into: Calcitonin; Katacalcin
+t10417,P01903,HLA-DRA,"Major histocompatibility complex, class II, DR alpha"
+t10433,P02745,C1QA,Complement C1q A chain
+t10438,P02794,FTH1,Ferritin heavy chain 1
+t10514,P06731,CEACAM5,Carcinoembryonic antigen related cell adhesion molecule 5
+t10876,P13236,CCL4,C-C motif chemokine ligand 4
+t10883,P13521,SCG2,Secretogranin II
+t11041,P18827,SDC1,Syndecan 1
+t11070,P19875,CXCL2,C-X-C motif chemokine ligand 2
+t11071,P19876,CXCL3,C-X-C motif chemokine ligand 3
+t11248,P25942,CD40,CD40 molecule
+t12859,Q12866,MERTK,"MER proto-oncogene, tyrosine kinase"
+t13217,Q14627,IL13RA2,Interleukin 13 receptor subunit alpha 2
+t14662,Q5ZPR3,CD276,CD276 molecule
+t15215,Q6UX27,VSTM1,V-set and transmembrane domain containing 1
+t21015,Q9NSA1,FGF21,Fibroblast growth factor 21
+t21611,Q9UBV4,WNT16,Wnt family member 16
+t22133,Q9UQV4,LAMP3,Lysosomal associated membrane protein 3
+t22601,Q9Y6K9,IKBKG,Inhibitor of nuclear factor kappa B kinase subunit gamma
+t22619,Q9Y6Q6,TNFRSF11A,TNF receptor superfamily member 11a
+t22682,O43915,VEGFD,Vascular endothelial growth factor D
+t22700,Q16552|Q96PD4,IL17A|IL17F, Interleukin-17A|Interleukin-17F
+t22707,P01562,IFNA1; IFNA13,Interferon alpha-1/13
+t22710,Q8NEV9|Q14213,IL27,Interleukin 27|Interleukin-27 subunit beta
+t22901,Q8IZJ0; Q8IZI9,IFNL2; IFNL3,Interferon lambda-2; Interferon lambda-3
+t3808,P26022,PTX3,Pentraxin-related protein PTX3
+t3817,P78324,SIRPA,Tyrosine-protein phosphatase non-receptor type substrate 1
+t4075,P49763,PGF,Placenta growth factor
+t4107,P01127,PDGFB,Platelet-derived growth factor subunit B
+t4109,P04085,PDGFA,Platelet-derived growth factor subunit A
+t4125,Q15116,PDCD1,Programmed cell death protein 1
+t4177,P09958,FURIN,Furin
+t4190,Q99650,OSMR,Oncostatin-M-specific receptor subunit beta
+t4191,P13725,OSM,Oncostatin-M
+t4232,P20783,NTF3,Neurotrophin-3
+t4292,P01138,NGF,Beta-nerve growth factor
+t4395,P05164,MPO,Myeloperoxidase
+t4399,P41217,CD200,OX-2 membrane glycoprotein
+t4402,P14780,MMP9,Matrix metalloproteinase-9
+t4403,P22894,MMP8,Neutrophil collagenase
+t4405,P08254,MMP3,Stromelysin-1
+t4413,P39900,MMP12,Macrophage metalloelastase
+t4415,P03956,MMP1,Interstitial collagenase
+t4426,Q07325,CXCL9,C-X-C motif chemokine 9
+t4427,P14174,MIF,Macrophage migration inhibitory factor
+t4429,Q29980,MICB,MHC class I polypeptide-related sequence B
+t4430,Q29983,MICA,MHC class I polypeptide-related sequence A
+t4459,P15529,CD46,Membrane cofactor protein
+t4532,O76036,NCR1,Natural cytotoxicity triggering receptor 1
+t4545,P01374|Q06643,LTA|LTB,Lymphotoxin-alpha|Lymphotoxin-beta
+t4546,P01374,LTA,Lymphotoxin-alpha
+t4571,Q8N423,LILRB2,Leukocyte immunoglobulin-like receptor subfamily B member 2
+t4576,P15018,LIF,Leukemia inhibitory factor
+t4581,O00182,LGALS9,Galectin-9
+t4602,P80188,LCN2,Neutrophil gelatinase-associated lipocalin
+t4610,P15514,AREG,Amphiregulin
+t4620,P18627,LAG3,Lymphocyte activation gene 3 protein
+t4640,P01042,KNG1,Kininogen-1
+t4661,P21583,KITLG,Kit ligand
+t4678,P35968,KDR,Vascular endothelial growth factor receptor 2
+t4760,P15248,IL9,Interleukin-9
+t4761,P10145,CXCL8,"Interleukin-8, IL8"
+t4762,P16871,IL7R,Interleukin-7 receptor subunit alpha
+t4763,P13232,IL7,Interleukin-7
+t4764,P40189,IL6ST,Interleukin-6 receptor subunit beta
+t4766,P08887,IL6R,Interleukin-6 receptor subunit alpha
+t4767,P05231,IL6,Interleukin-6
+t4768,Q01344,IL5RA,Interleukin-5 receptor subunit alpha
+t4769,P05113,IL5,Interleukin-5
+t4770,P24394,IL4R,Interleukin-4 receptor subunit alpha
+t4771,P05112,IL4,Interleukin-4
+t4772,P26951,IL3RA,Interleukin-3 receptor subunit alpha
+t4775,P14784,IL2RB,Interleukin-2 receptor subunit beta
+t4776,P01589,IL2RA,Interleukin-2 receptor subunit alpha
+t4781,Q9NYY1,IL20,Interleukin-20
+t4782,P60568,IL2,Interleukin-2
+t4783,P18510,IL1RN,Interleukin-1 receptor antagonist protein
+t4786,Q01638,IL1RL1,Interleukin-1 receptor-like 1
+t4789,P27930,IL1R2,Interleukin-1 receptor type 2
+t4790,P14778,IL1R1,Interleukin-1 receptor type 1
+t4791,P01584,IL1B,Interleukin-1 beta
+t4793,Q9UHD0,IL19,Interleukin-19
+t4795,Q13478,IL18R1,Interleukin-18 receptor 1
+t4796,O95998,IL18BP,Interleukin-18-binding protein
+t4797,Q14116,IL18,Interleukin-18
+t4798,Q96F46,IL17RA,Interleukin-17 receptor A
+t4800,Q9P0M4,IL17C,Interleukin-17C
+t4801,Q9UHF5,IL17B,Interleukin-17B
+t4802,Q16552,IL17A,Interleukin-17A
+t4803,Q14005,IL16,Pro-interleukin-16
+t4805,Q13261,IL15RA,Interleukin-15 receptor subunit alpha
+t4806,P40933,IL15,Interleukin-15
+t4808,P35225,IL13,Interleukin-13
+t4810,P42701,IL12RB1,Interleukin-12 receptor subunit beta-1
+t4811,P29460,IL12B,Interleukin-12 subunit beta
+t4813,P29459|P29460,IL12p70,Interleukin-12 subunit beta|Interleukin-12 subunit alpha
+t4815,P20809,IL11,Interleukin-11
+t4816,Q08334,IL10RB,Interleukin-10 receptor subunit beta
+t4818,P22301,IL10,Interleukin-10
+t4863,P05000,IFNW1,Interferon omega-1
+t4867,P01579,IFNG,Interferon gamma
+t4868,P01574,IFNB1,Interferon beta
+t4877,P01563,IFNA2,Interferon alpha-2
+t4906,P05362,ICAM1,Intercellular adhesion molecule 1
+t4910,P04083,ANXA1,Annexin A1
+t5002,P14210,HGF,Hepatocyte growth factor
+t5015,O15123,ANGPT2,Angiopoietin-2
+t5018,Q15389,ANGPT1,Angiopoietin-1
+t5045,P10144,GZMB,Granzyme B
+t5046,P12544,GZMA,Granzyme A
+t5070,P09341,CXCL1,Growth-regulated alpha protein
+t5071,P28799,GRN,Progranulin
+t5158,P14136,GFAP,Glial fibrillary acidic protein
+t5169,Q9UK05,GDF2,Growth/differentiation factor 2
+t5271,P35916,FLT4,Vascular endothelial growth factor receptor 3
+t5272,P49771,FLT3LG,Fms-related tyrosine kinase 3 ligand
+t5274,P17948,FLT1,Vascular endothelial growth factor receptor 1
+t5313,Q9GZV9,FGF23,Fibroblast growth factor 23
+t5316,P09038,FGF2,Fibroblast growth factor 2
+t5317,O95750,FGF19,Fibroblast growth factor 19
+t5404,P01588,EPO,Erythropoietin
+t5469,O00253,AGRP,Agouti-related protein
+t5505,P01133,EGF,Pro-epidermal growth factor
+t5521,Q15109,AGER,Advanced glycosylation end product-specific receptor
+t5586,Q969D9,TSLP,Thymic stromal lymphopoietin
+t5665,Q99988,GDF15,Growth/differentiation factor 15
+t5671,P43490,NAMPT,Nicotinamide phosphoribosyltransferase
+t5855,Q6ZMJ4,IL34,Interleukin-34
+t6074,P78310,CXADR,Coxsackievirus and adenovirus receptor
+t6100,P25774,CTSS,Cathepsin S
+t6154,P16410,CTLA4,Cytotoxic T-lymphocyte protein 4
+t6166,Q16619,CTF1,Cardiotrophin-1
+t6198,O76096,CST7,Cystatin-F
+t6262,Q99062,CSF3R,Granulocyte colony-stimulating factor receptor
+t6263,P09919,CSF3,"Granulocyte colony-stimulating factor, G-CSF"
+t6266,P32927,CSF2RB,Cytokine receptor common subunit beta
+t6271,P04141,CSF2,Granulocyte-macrophage colony-stimulating factor
+t6273,P07333,CSF1R,Macrophage colony-stimulating factor 1 receptor
+t6276,P09603,CSF1,Macrophage colony-stimulating factor 1
+t6290,Q8TD46,CD200R1,Cell surface glycoprotein CD200 receptor 1
+t6336,P02741,CRP,C-reactive protein
+t6500,P26441,CNTF,Ciliary neurotrophic factor
+t6509,Q7Z5A7,TAFA5,Chemokine-like protein TAFA-5
+t6758,P36222,CHI3L1,Chitinase-3-like protein 1
+t6836,P26718,KLRK1,NKG2-D type II integral membrane protein
+t6841,Q9BQ51,PDCD1LG2,Programmed cell death 1 ligand 2
+t6899,Q8IU54,IFNL1,Interferon lambda-1
+t6931,O14836,TNFRSF13B,Tumor necrosis factor receptor superfamily member 13B
+t6962,Q9NRM6,IL17RB,Interleukin-17 receptor B
+t6972,Q9NWZ3,IRAK4,Interleukin-1 receptor-associated kinase 4
+t6994,Q96D42,HAVCR1,Hepatitis A virus cellular receptor 1
+t7014,Q9NZC2,TREM2,Triggering receptor expressed on myeloid cells 2
+t7015,Q9NP99,TREM1,Triggering receptor expressed on myeloid cells 1
+t7018,Q96RJ3,TNFRSF13C,Tumor necrosis factor receptor superfamily member 13C
+t7024,Q9NRJ3,CCL28,C-C motif chemokine 28
+t7035,Q9NZQ7,CD274,"Programmed cell death 1 ligand 1, PD-L1"
+t7130,O75144,ICOSLG,ICOS ligand
+t7143,Q01151,CD83,CD83 antigen
+t7151,P33681,CD80,T-lymphocyte activation antigen CD80
+t7216,P24001,IL32,Interleukin-32
+t7229,P01730,CD4,T-cell surface glycoprotein CD4
+t7235,P07766,CD3E,T-cell surface glycoprotein CD3 epsilon chain
+t7255,Q9H2A7,CXCL16,C-X-C motif chemokine 16
+t7277,Q96PD4,IL17F,Interleukin-17F
+t7380,Q9NPY3,CD93,Complement component C1q receptor
+t7408,Q9NZH8,IL36G,Interleukin-36 gamma
+t7427,Q8WXI7,MUC16,Mucin-16
+t7431,Q9NZH7,IL36B,Interleukin-36 beta
+t7433,Q9UHA7,IL36A,Interleukin-36 alpha
+t7450,P29460|Q9NPF7,IL23,Interleukin-12 subunit beta|Interleukin-23 subunit alpha
+t7506,Q9GZX6,IL22,Interleukin-22
+t7702,O75509,TNFRSF21,Tumor necrosis factor receptor superfamily member 21
+t7726,Q9UMR7,CLEC4A,C-type lectin domain family 4 member A
+t7772,O00755,WNT7A,Protein Wnt-7a
+t7785,P62760,VSNL1,Visinin-like protein 1
+t7796,P49767,VEGFC,Vascular endothelial growth factor C
+t7798,P15692,VEGFA,Vascular endothelial growth factor A
+t7802,P19320,VCAM1,Vascular cell adhesion protein 1
+t7927,P41273,TNFSF9,Tumor necrosis factor ligand superfamily member 9
+t7928,P32971,TNFSF8,Tumor necrosis factor ligand superfamily member 8
+t7929,P32970,CD70,CD70 antigen
+t7930,P48023,FASLG,Tumor necrosis factor ligand superfamily member 6
+t7931,P29965,CD40LG,CD40 ligand
+t7932,P23510,TNFSF4,Tumor necrosis factor ligand superfamily member 4
+t7933,Q9UNG2,TNFSF18,Tumor necrosis factor ligand superfamily member 18
+t7934,O95150,TNFSF15,Tumor necrosis factor ligand superfamily member 15
+t7935,O43557,TNFSF14,Tumor necrosis factor ligand superfamily member 14
+t7937,O43508,TNFSF12,Tumor necrosis factor ligand superfamily member 12
+t7938,O14788,TNFSF11,Tumor necrosis factor ligand superfamily member 11
+t7939,P50591,TNFSF10,Tumor necrosis factor ligand superfamily member 10
+t7940,Q07011,TNFRSF9,Tumor necrosis factor receptor superfamily member 9
+t7941,P28908,TNFRSF8,Tumor necrosis factor receptor superfamily member 8
+t7942,P26842,CD27,CD27 antigen
+t7945,P43489,TNFRSF4,Tumor necrosis factor receptor superfamily member 4
+t7946,P20333,TNFRSF1B,Tumor necrosis factor receptor superfamily member 1B
+t7947,P19438,TNFRSF1A,Tumor necrosis factor receptor superfamily member 1A
+t7949,Q9Y5U5,TNFRSF18,Tumor necrosis factor receptor superfamily member 18
+t7950,Q02223,TNFRSF17,Tumor necrosis factor receptor superfamily member 17
+t7951,Q92956,TNFRSF14,Tumor necrosis factor receptor superfamily member 14
+t7952,O00300,TNFRSF11B,Tumor necrosis factor receptor superfamily member 11B
+t7958,P01375,TNF,Tumor necrosis factor
+t7971,O15455,TLR3,Toll-like receptor 3
+t7982,P16035,TIMP2,Metalloproteinase inhibitor 2
+t7983,P01033,TIMP1,Metalloproteinase inhibitor 1
+t7992,P40225,THPO,Thrombopoietin
+t7995,P35442,THBS2,Thrombospondin-2
+t8004,P10600,TGFB3,Transforming growth factor beta-3 proprotein
+t8006,P01137,TGFB1,Transforming growth factor beta-1 proprotein
+t8018,Q02763,TEK,Angiopoietin-1 receptor
+t8112,Q13007,IL24,Interleukin-24
+t8131,P10451,SPP1,Osteopontin
+t8151,Q10589,BST2,Bone marrow stromal antigen 2
+t8209,Q13291,SLAMF1,Signaling lymphocytic activation molecule
+t8269,P18075,BMP7,Bone morphogenetic protein 7
+t8284,P16109,SELP,P-selectin
+t8286,P16581,SELE,E-selectin
+t8295,P48061,CXCL12,Stromal cell-derived factor 1
+t8300,P78423,CX3CL1,Fractalkine
+t8303,P80162,CXCL6,C-X-C motif chemokine 6
+t8304,P42830,CXCL5,C-X-C motif chemokine 5
+t8305,O95715,CXCL14,C-X-C motif chemokine 14
+t8306,O43927,CXCL13,C-X-C motif chemokine 13
+t8307,O14625,CXCL11,C-X-C motif chemokine 11
+t8308,P02778,CXCL10,C-X-C motif chemokine 10
+t8309,P80075,CCL8,C-C motif chemokine 8
+t8310,P80098,CCL7,C-C motif chemokine 7
+t8311,P13501,CCL5,C-C motif chemokine 5
+t8315,P10147,CCL3,C-C motif chemokine 3
+t8316,Q9Y4X3,CCL27,C-C motif chemokine 27
+t8317,Q9Y258,CCL26,C-C motif chemokine 26
+t8318,O15444,CCL25,C-C motif chemokine 25
+t8319,O00175,CCL24,C-C motif chemokine 24
+t8320,P55773,CCL23,C-C motif chemokine 23
+t8321,O00626,CCL22,C-C motif chemokine 22
+t8322,O00585,CCL21,C-C motif chemokine 21
+t8324,P78556,CCL20,C-C motif chemokine 20
+t8325,P13500,CCL2,C-C motif chemokine 2
+t8326,Q99731,CCL19,C-C motif chemokine 19
+t8328,Q92583,CCL17,C-C motif chemokine 17
+t8329,O15467,CCL16,C-C motif chemokine 16
+t8330,Q16663,CCL15,C-C motif chemokine 15
+t8331,Q16627,CCL14,C-C motif chemokine 14
+t8332,Q99616,CCL13,C-C motif chemokine 13
+t8333,P51671,CCL11,Eotaxin
+t8334,P22362,CCL1,C-C motif chemokine 1
+t8358,P06702,S100A9,Protein S100-A9
+t8367,P80511,S100A12,Protein S100-A12
+t8399,P23560,BDNF,Brain-derived neurotrophic factor
+t10413,P01303,NPY,Neuropeptide Y
+t10466,P04271,S100B,S100 calcium binding protein B
+t10563,P08473,MME,Membrane metalloendopeptidase
+t11654,P42858,HTT,Huntingtin
+t11852,P49768,PSEN1,Presenilin 1
+t12142,P56817,BACE1,Beta-secretase 1
+t12399,P69905,HBA1,Hemoglobin subunit alpha
+t12453,P80723,BASP1,Brain abundant membrane attached signal protein 1
+t12930,Q13127,REST,RE1 silencing transcription factor
+t13489,Q16143,SNCB,Synuclein beta
+t18697,Q96HC4,PDLIM5,PDZ and LIM domain 5
+t22144,Q9Y230,RUVBL2,RuvB like AAA ATPase 2
+t22690,P05067,AÎ²42,Amyloid-beta precursor protein
+t22714,P10636,pTau-231,Microtubule-associated protein tau
+t22716,P10636,pTau-181,Microtubule-associated protein tau
+t22717,P10636,pTau-217,Microtubule-associated protein tau
+t22718,Q13148,pTDP43-409,TAR DNA-binding protein 43
+t22902,P05067,AÎ²38,Amyloid-beta precursor protein
+t22903,P05067,AÎ²40,Amyloid-beta precursor protein
+t22904,P37840,Oligo-SNCA,Alpha-synuclein
+t22907,P02649,APOE4,Apolipoprotein E
+t22911,P37840,pSNCA-129,Alpha-synuclein
+t3829,P21246,PTN,Pleiotrophin
+t4074,P00558,PGK1,Phosphoglycerate kinase 1
+t4104,P09619,PDGFRB,Platelet-derived growth factor receptor beta
+t4242,Q92686,NRGN,Neurogranin
+t4258,O95502,NPTXR,Neuronal pentraxin receptor
+t4259,P47972,NPTX2,Neuronal pentraxin-2
+t4260,Q15818,NPTX1,Neuronal pentraxin-1
+t4305,P07196,NEFL,Neurofilament light polypeptide
+t4306,P12036,NEFH,Neurofilament heavy polypeptide
+t4380,Q13421,MSLN,Mesothelin
+t4421,P15289,ARSA,Arylsulfatase A
+t4456,P40925,MDH1,"Malate dehydrogenase, cytoplasmic"
+t4480,P10636,MAPT,Microtubule-associated protein tau
+t4650,Q92876,KLK6,Kallikrein-6
+t4725,P02649,APOE,Apolipoprotein E
+t4847,Q16270,IGFBP7,Insulin-like growth factor-binding protein 7
+t4858,P08069,IGF1R,Insulin-like growth factor 1 receptor
+t4870,P08758,ANXA5,Annexin A5
+t5106,P17174,GOT1,"Aspartate aminotransferase, cytoplasmic"
+t5160,P39905,GDNF,Glial cell line-derived neurotrophic factor
+t5162,P31150,GDI1,Rab GDP dissociation inhibitor alpha
+t5265,P15328,FOLR1,Folate receptor alpha
+t5331,Q15485,FCN2,Ficolin-2
+t5359,P05413,FABP3,"Fatty acid-binding protein, heart"
+t5444,P09104,ENO2,Gamma-enolase
+t5479,O00468,AGRN,Agrin
+t6205,P01034,CST3,Cystatin-C
+t6352,P06850,CRH,Corticoliberin
+t6491,Q02246,CNTN2,Contactin-2
+t6650,Q9H4F8,SMOC1,SPARC-related modular calcium-binding protein 1
+t6748,Q13231,CHIT1,Chitotriosidase-1
+t7173,Q15063,POSTN,Periostin
+t7189,P08962,CD63,CD63 antigen
+t7232,P30041,PRDX6,Peroxiredoxin-6
+t7285,Q99497,PARK7,Protein/nucleic acid deglycase DJ-1
+t7588,P22676,CALB2,Calretinin
+t7758,P63104,YWHAZ,14-3-3 protein zeta/delta
+t7841,P09936,UCHL1,Ubiquitin carboxyl-terminal hydrolase isozyme L1
+t7981,P35625,TIMP3,Metalloproteinase inhibitor 3
+t8050,Q13148,TARDBP,TAR DNA-binding protein 43
+t8126,Q13501,SQSTM1,Sequestosome-1
+t8158,P00441,SOD1,Superoxide dismutase [Cu-Zn]
+t8172,P37840,SNCA,Alpha-synuclein
+t8174,P60880,SNAP25,Synaptosomal-associated protein 25
+t8186,O94813,SLIT2,Slit homolog 2 protein
+t8244,P35247,SFTPD,Pulmonary surfactant-associated protein D
+t8246,P22303,ACHE,Acetylcholinesterase
+t8254,Q8N474,SFRP1,Secreted frizzled-related protein 1
+t8355,P0DJI8,SAA1,Serum amyloid A-1 protein
+t9441,O15240,VGF,VGF nerve growth factor inducible

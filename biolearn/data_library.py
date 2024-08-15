@@ -353,7 +353,7 @@ class ChallengeDataParser:
         self.matrix_file_key_line = data.get("matrix-file-key-line")
         self.data_type = data.get("data-type")
         self.protein_matrix_url = "https://storage.googleapis.com/boa-challenge-2024/challenge_alamar_data.csv"
-        self.metadata_url = "https://storage.googleapis.com/boa-challenge-2024/challenge_metadata.csv"
+        self.metadata_url = "https://storage.googleapis.com/boa-challenge-2024/challenge_proteomic_metadata.csv"
         self.id_map_file = get_data_file("reference/challenge_id_map.csv")
 
     def parse(self, file_path):
@@ -385,6 +385,7 @@ class ChallengeDataParser:
         
         # Map additional_metadata index from PlasmaID to GeoID
         additional_metadata.rename(index=plasma_to_geo_mapping, inplace=True)
+        additional_metadata['sex'] = additional_metadata['sex'].apply(sex_parser)
         
         # Merge the original metadata with the additional metadata
         merged_metadata = metadata.combine_first(additional_metadata)

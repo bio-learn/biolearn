@@ -877,7 +877,7 @@ items:
       type: biomarkers-challenge-2024
       id-row: 31
       matrix-file: "ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE246nnn/GSE246337/suppl/GSE246337%5Fbetas.csv.gz"
-      matrix-file-key-line: 48
+      matrix-file-key-line: 49
       metadata:
         subject_id:
           row: 39
