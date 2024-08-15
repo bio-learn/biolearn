@@ -19,8 +19,8 @@ def parse_after_colon(s):
 
     if isinstance(s, str) and s.strip() and ":" in s:
         return s.split(":")[1].strip()
-
-    return ""
+    else:
+        return s
 
 
 def sex_parser(s):

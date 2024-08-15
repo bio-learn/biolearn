@@ -316,6 +316,19 @@ model_definitions = {
             "default_imputation": "none",
         },
     },
+    "TwelveCellDeconvoluteBloodEPIC": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.biorxiv.org/content/10.1101/2023.12.02.569722v6",
+        "output": "Cell Proportions",
+        "model": {
+            "type": "DeconvolutionModel",
+            "file": "twelve_cell_deconv.csv",
+            "platform": "EPIC",
+            "default_imputation": "none",
+        },
+    },
     "BMI_McCartney": {
         "year": 2018,
         "species": "Human",
@@ -538,9 +551,6 @@ class DeconvolutionModel:
         # cell_prop_estimate.value: ndarray vector of estimated cell type proportions
         def solve_qp(meth_vector, deconv_reference):
 
-            # confirm number of rows in reference equals methylation vector length
-            assert deconv_reference.shape[0] == len(meth_vector)
-
             # define cell proportion variable being solved for
             cell_prop_estimate = cp.Variable(deconv_reference.shape[1])
 
@@ -590,14 +600,26 @@ class DeconvolutionModel:
         reference_filtered = self.reference.loc[intersecting_cpgs]
 
         # confirm same number of rows in reference and methylation samples
-        assert meth_filtered.shape[0] == reference_filtered.shape[0]
+        if meth_filtered.shape[0] != reference_filtered.shape[0]:
+            diff = abs(meth_filtered.shape[0] - reference_filtered.shape[0])
+            if meth_filtered.shape[0] > reference_filtered.shape[0]:
+                bigger = "meth_filtered"
+                smaller = "reference_filtered"
+            else:
+                bigger = "reference_filtered"
+                smaller = "meth_filtered"
 
-        # print number of reference cpgs
-        print("Number of CpGs in reference:", len(self.reference.index))
-        print(
-            "Number of CpGs in methylation data intersecting with reference CpGs:",
-            len(intersecting_cpgs),
-        )
+            msg = (
+                f"Mismatch in row numbers: {bigger} has more rows than {smaller} "
+                f"by {diff} rows."
+            )
+
+            if diff < 50:
+                index_difference = set(meth_filtered.index) ^ set(reference_filtered.index)
+                msg += f"\nIndex differences (limited to 50): {list(index_difference)}"
+
+            raise ValueError(msg)
+
 
         # save reference cell types
         cell_types = reference_filtered.columns
@@ -608,8 +630,6 @@ class DeconvolutionModel:
         # convert methylation samples and reference to ndarray
         meth_filtered_ndarray = meth_filtered.to_numpy()
         reference_filtered_ndarray = reference_filtered.to_numpy()
-
-        print("Running deconvolution...")
 
         # deconvolve each sample (each column of meth)
         cell_prop = np.apply_along_axis(
@@ -623,9 +643,8 @@ class DeconvolutionModel:
         cell_prop_df = pd.DataFrame(cell_prop, columns=sample_names)
         cell_prop_df.index = cell_types
 
-        print("Deconvolution complete!")
-
         return cell_prop_df
+
 
     # returns required methylation sites
     def methylation_sites(self):
