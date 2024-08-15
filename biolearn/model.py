@@ -615,11 +615,12 @@ class DeconvolutionModel:
             )
 
             if diff < 50:
-                index_difference = set(meth_filtered.index) ^ set(reference_filtered.index)
+                index_difference = set(meth_filtered.index) ^ set(
+                    reference_filtered.index
+                )
                 msg += f"\nIndex differences (limited to 50): {list(index_difference)}"
 
             raise ValueError(msg)
-
 
         # save reference cell types
         cell_types = reference_filtered.columns
@@ -644,7 +645,6 @@ class DeconvolutionModel:
         cell_prop_df.index = cell_types
 
         return cell_prop_df
-
 
     # returns required methylation sites
     def methylation_sites(self):
