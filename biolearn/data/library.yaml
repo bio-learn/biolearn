@@ -884,7 +884,7 @@ items:
           parse: string
         sex:
           row: 40
-          parse: string
+          parse: sex
         tissue:
           row: 41
           parse: string

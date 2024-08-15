@@ -176,7 +176,7 @@ class GeoData:
                           and rows represent different methylation sites.
     """
 
-    def __init__(self, metadata, dnam=None, rna=None):
+    def __init__(self, metadata, dnam=None, rna=None, protein=None):
         """
         Initializes the GeoData instance.
 
@@ -187,6 +187,7 @@ class GeoData:
         self.metadata = metadata
         self.dnam = dnam
         self.rna = rna
+        self.protein = protein
 
     def copy(self):
         """
@@ -351,9 +352,15 @@ class ChallengeDataParser:
         self.matrix_file = data.get("matrix-file")
         self.matrix_file_key_line = data.get("matrix-file-key-line")
         self.data_type = data.get("data-type")
+        self.protein_matrix_url = "https://storage.googleapis.com/boa-challenge-2024/challenge_alamar_data.csv"
+        self.metadata_url = "https://storage.googleapis.com/boa-challenge-2024/challenge_metadata.csv"
+        self.id_map_file = get_data_file("reference/challenge_id_map.csv")
 
     def parse(self, file_path):
+        # Load the original metadata
         metadata = load_geo_metadata(file_path, self.metadata, self.id_row)
+        
+        # Load the DNAm data
         dnam_data = pd.read_csv(self.matrix_file, index_col=0)
         column_mapping = build_column_mapping(
             file_path, self.matrix_file_key_line, self.id_row
@@ -361,6 +368,28 @@ class ChallengeDataParser:
         fixed_dnam = map_and_prune_columns(dnam_data, column_mapping)
         geodata = GeoData.from_methylation_matrix(fixed_dnam)
         geodata.metadata = metadata
+        
+        # Download and process the protein matrix
+        protein_matrix = pd.read_csv(self.protein_matrix_url, index_col=0)
+        
+        # Load the ID mapping from PlasmaID to GeoID
+        id_map = pd.read_csv(self.id_map_file)
+        plasma_to_geo_mapping = id_map.set_index('PlasmaID')['GeoID'].to_dict()
+        
+        # Map protein_matrix columns from PlasmaID to GeoID
+        protein_matrix.rename(columns=plasma_to_geo_mapping, inplace=True)
+        geodata.protein = protein_matrix
+        
+        # Download and process the additional metadata
+        additional_metadata = pd.read_csv(self.metadata_url, index_col=0)
+        
+        # Map additional_metadata index from PlasmaID to GeoID
+        additional_metadata.rename(index=plasma_to_geo_mapping, inplace=True)
+        
+        # Merge the original metadata with the additional metadata
+        merged_metadata = metadata.combine_first(additional_metadata)
+        geodata.metadata = merged_metadata
+        
         return geodata
 
 
