@@ -357,10 +357,11 @@ class ChallengeDataParser:
         self.id_map_file = get_data_file("reference/challenge_id_map.csv")
 
     def parse(self, file_path):
-        # Load the original metadata
+        print(
+            "Note: This dataset will take a few minutes to load"
+        )
+        #Load methylation data and metadata from GEO
         metadata = load_geo_metadata(file_path, self.metadata, self.id_row)
-
-        # Load the DNAm data
         dnam_data = pd.read_csv(self.matrix_file, index_col=0)
         column_mapping = build_column_mapping(
             file_path, self.matrix_file_key_line, self.id_row
@@ -369,28 +370,22 @@ class ChallengeDataParser:
         geodata = GeoData.from_methylation_matrix(fixed_dnam)
         geodata.metadata = metadata
 
-        # Download and process the protein matrix
+        #Load proteomic data and metadata from google cloud
         protein_matrix = pd.read_csv(self.protein_matrix_url, index_col=0)
-
-        # Load the ID mapping from PlasmaID to GeoID
-        id_map = pd.read_csv(self.id_map_file)
-        plasma_to_geo_mapping = id_map.set_index("PlasmaID")["GeoID"].to_dict()
-
-        # Map protein_matrix columns from PlasmaID to GeoID
-        protein_matrix.rename(columns=plasma_to_geo_mapping, inplace=True)
-        geodata.protein = protein_matrix
-
-        # Download and process the additional metadata
-        additional_metadata = pd.read_csv(self.metadata_url, index_col=0)
-
-        # Map additional_metadata index from PlasmaID to GeoID
-        additional_metadata.rename(index=plasma_to_geo_mapping, inplace=True)
-        additional_metadata["sex"] = additional_metadata["sex"].apply(
+        proteomic_metadata = pd.read_csv(self.metadata_url, index_col=0)
+        proteomic_metadata["sex"] = proteomic_metadata["sex"].apply(
             sex_parser
         )
 
-        # Merge the original metadata with the additional metadata
-        merged_metadata = metadata.combine_first(additional_metadata)
+        # Use ID mapping to unify the ids
+        id_map = pd.read_csv(self.id_map_file)
+        plasma_to_geo_mapping = id_map.set_index("PlasmaID")["GeoID"].to_dict()
+        protein_matrix.rename(columns=plasma_to_geo_mapping, inplace=True)
+        proteomic_metadata.rename(index=plasma_to_geo_mapping, inplace=True)
+
+        # Add the proteomic metadata and merge the metadata
+        geodata.protein = protein_matrix
+        merged_metadata = metadata.combine_first(proteomic_metadata)
         geodata.metadata = merged_metadata
 
         return geodata
