@@ -176,7 +176,7 @@ class GeoData:
                           and rows represent different methylation sites.
     """
 
-    def __init__(self, metadata, dnam=None, rna=None):
+    def __init__(self, metadata, dnam=None, rna=None, protein=None):
         """
         Initializes the GeoData instance.
 
@@ -187,6 +187,7 @@ class GeoData:
         self.metadata = metadata
         self.dnam = dnam
         self.rna = rna
+        self.protein = protein
 
     def copy(self):
         """
@@ -351,8 +352,13 @@ class ChallengeDataParser:
         self.matrix_file = data.get("matrix-file")
         self.matrix_file_key_line = data.get("matrix-file-key-line")
         self.data_type = data.get("data-type")
+        self.protein_matrix_url = "https://storage.googleapis.com/boa-challenge-2024/challenge_alamar_data.csv"
+        self.metadata_url = "https://storage.googleapis.com/boa-challenge-2024/challenge_proteomic_metadata.csv"
+        self.id_map_file = get_data_file("reference/challenge_id_map.csv")
 
     def parse(self, file_path):
+        print("Note: This dataset will take a few minutes to load")
+        # Load methylation data and metadata from GEO
         metadata = load_geo_metadata(file_path, self.metadata, self.id_row)
         dnam_data = pd.read_csv(self.matrix_file, index_col=0)
         column_mapping = build_column_mapping(
@@ -361,6 +367,23 @@ class ChallengeDataParser:
         fixed_dnam = map_and_prune_columns(dnam_data, column_mapping)
         geodata = GeoData.from_methylation_matrix(fixed_dnam)
         geodata.metadata = metadata
+
+        # Load proteomic data and metadata from google cloud
+        protein_matrix = pd.read_csv(self.protein_matrix_url, index_col=0)
+        proteomic_metadata = pd.read_csv(self.metadata_url, index_col=0)
+        proteomic_metadata["sex"] = proteomic_metadata["sex"].apply(sex_parser)
+
+        # Use ID mapping to unify the ids
+        id_map = pd.read_csv(self.id_map_file)
+        plasma_to_geo_mapping = id_map.set_index("PlasmaID")["GeoID"].to_dict()
+        protein_matrix.rename(columns=plasma_to_geo_mapping, inplace=True)
+        proteomic_metadata.rename(index=plasma_to_geo_mapping, inplace=True)
+
+        # Add the proteomic metadata and merge the metadata
+        geodata.protein = protein_matrix
+        merged_metadata = metadata.combine_first(proteomic_metadata)
+        geodata.metadata = merged_metadata
+
         return geodata
 
 

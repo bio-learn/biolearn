@@ -875,18 +875,18 @@ items:
     path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE246nnn/GSE246337/matrix/GSE246337_series_matrix.txt.gz
     parser:
       type: biomarkers-challenge-2024
-      id-row: 30
+      id-row: 31
       matrix-file: "ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE246nnn/GSE246337/suppl/GSE246337%5Fbetas.csv.gz"
-      matrix-file-key-line: 48
+      matrix-file-key-line: 49
       metadata:
         subject_id:
-          row: 38
-          parse: string
-        sex:
           row: 39
           parse: string
-        tissue:
+        sex:
           row: 40
+          parse: sex
+        tissue:
+          row: 41
           parse: string
   - id: GSE167998
     title: "FlowSorted.BloodExtended.EPIC: An Enhanced DNA Methylation Library for
