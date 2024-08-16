@@ -357,10 +357,8 @@ class ChallengeDataParser:
         self.id_map_file = get_data_file("reference/challenge_id_map.csv")
 
     def parse(self, file_path):
-        print(
-            "Note: This dataset will take a few minutes to load"
-        )
-        #Load methylation data and metadata from GEO
+        print("Note: This dataset will take a few minutes to load")
+        # Load methylation data and metadata from GEO
         metadata = load_geo_metadata(file_path, self.metadata, self.id_row)
         dnam_data = pd.read_csv(self.matrix_file, index_col=0)
         column_mapping = build_column_mapping(
@@ -370,12 +368,10 @@ class ChallengeDataParser:
         geodata = GeoData.from_methylation_matrix(fixed_dnam)
         geodata.metadata = metadata
 
-        #Load proteomic data and metadata from google cloud
+        # Load proteomic data and metadata from google cloud
         protein_matrix = pd.read_csv(self.protein_matrix_url, index_col=0)
         proteomic_metadata = pd.read_csv(self.metadata_url, index_col=0)
-        proteomic_metadata["sex"] = proteomic_metadata["sex"].apply(
-            sex_parser
-        )
+        proteomic_metadata["sex"] = proteomic_metadata["sex"].apply(sex_parser)
 
         # Use ID mapping to unify the ids
         id_map = pd.read_csv(self.id_map_file)
