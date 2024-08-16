@@ -1,8 +1,8 @@
 """
-Building a competition submission using an existing model
+Exploring the Challenge Data
 =============================================================
 
-This example shows you how to generate a submission for the community warmup using an existing model
+This example shows you how to load and explore the challenge data with biolearn
 """
 
 #############################################################################
