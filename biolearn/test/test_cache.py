@@ -80,3 +80,19 @@ def test_store_item_larger_than_cache_size(cache):
 
     assert cache.get("large_key") is None
     assert cache.get("small_key") == small_item
+
+def test_remove_key(cache):
+    # Store multiple keys in the cache
+    cache.store("key1", "value1")
+    cache.store("key2", "value2")
+    cache.store("key3", "value3")
+
+    # Remove one key
+    cache.remove("key2")
+
+    # Verify that the removed key is no longer in the cache
+    assert cache.get("key2") is None
+
+    # Verify that the other keys are still in the cache
+    assert cache.get("key1") == "value1"
+    assert cache.get("key3") == "value3"

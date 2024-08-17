@@ -877,17 +877,29 @@ items:
       type: biomarkers-challenge-2024
       id-row: 31
       matrix-file: "ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE246nnn/GSE246337/suppl/GSE246337%5Fbetas.csv.gz"
-      matrix-file-key-line: 49
+      matrix-file-key-line: 53
       metadata:
         subject_id:
           row: 39
           parse: string
         sex:
-          row: 40
+          row: 41
           parse: sex
         tissue:
-          row: 41
+          row: 40
           parse: string
+        race1:
+          row: 42
+          parse: string
+        race2:
+          row: 43
+          parse: string
+        ethnicity:
+          row: 44
+          parse: string
+        age:
+          row: 45
+          parse: numeric
   - id: GSE167998
     title: "FlowSorted.BloodExtended.EPIC: An Enhanced DNA Methylation Library for
       Deconvoluting Peripheral Blood"

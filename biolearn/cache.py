@@ -36,6 +36,12 @@ class NoCache:
         """
         pass
 
+    def remove(self, key):
+        """
+        Remove a specific entry from the cache
+        """
+        pass
+
 
 class LocalFolderCache:
     """
@@ -125,3 +131,10 @@ class LocalFolderCache:
         Clears the cache by removing the cache directory and all its contents.
         """
         shutil.rmtree(self.path, ignore_errors=True)
+
+    def remove(self, key):
+        """
+        Remove a specific entry from the cache
+        """
+        file_path = os.path.join(self.path, key)
+        os.remove(file_path)
