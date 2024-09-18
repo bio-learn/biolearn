@@ -27,6 +27,11 @@ Other contributors
 * `Albert Ying`_ / `Harvard Universiy <https://scholar.google.com/citations?user=JS7AdkcAAAAJ&hl=zh-CN>`_
 * `Alec Eames`_ / `Harvard Universiy <https://www.linkedin.com/in/alec-eames-589a3917a/>`_
 * `Dayoon Kwon`_ /  `University of California <https://scholar.google.com/citations?user=5L9djqsAAAAJ&hl=en>`_
+* `Mehrnoosh Emamifar`_/ `Northeastern university <https://www.linkedin.com/in/mehrnoosh-emamifar/>`_
 
+
+Partner Organizations
+.....................
+* `AI4Life Institute`_
 
 Special thanks to scientific and executive members of the :BoA:`Biomarkers of Aging Consortium <>`
