@@ -3,6 +3,8 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from lifelines import CoxPHFitter
+from lifelines.statistics import logrank_test
+from lifelines.utils import concordance_index
 
 from biolearn.model_gallery import ModelGallery
 
@@ -28,6 +30,52 @@ def run_predictions(data, predictors_dict):
         model = gallery.get(model_name)
         prediction = model.predict(data)
         results_df[model_name] = prediction[keys]
+
+    return results_df
+
+
+def calculate_c_index(data, predictor_results):
+    """
+    Calculates the C-index for each predictor in the predictor_results DataFrame without adjusting for age.
+
+    Args:
+        data (Dataset): A Dataset object containing metadata with columns:
+            'dead' - boolean indicating if the subject is dead
+            'years_until_death' - time until death or censoring
+        predictor_results (pd.DataFrame): DataFrame containing predictor results. Columns are the names of the predictors, and rows are IDs from data.
+
+    Returns:
+        pd.DataFrame: A DataFrame containing C-index values for each predictor.
+    """
+    # Merge predictor results with metadata
+    analysis_df = pd.merge(
+        predictor_results, data.metadata, left_index=True, right_index=True
+    )
+
+    # Remove rows with missing 'dead' or 'years_until_death' values
+    analysis_df = analysis_df.dropna(subset=["dead", "years_until_death"])
+
+    c_index_values = []
+
+    for clock in predictor_results.columns:
+        # Ensure predictor values are numeric
+        predictor_values = analysis_df[clock].astype(float)
+
+        # Calculate the C-index directly
+        c_index = concordance_index(
+            event_times=analysis_df["years_until_death"],
+            predicted_scores=-predictor_values,  # Negative if higher scores indicate higher risk
+            event_observed=analysis_df["dead"],
+        )
+        c_index_values.append(c_index)
+
+    # Create a DataFrame with the results
+    results_df = pd.DataFrame(
+        {
+            "Clock": predictor_results.columns,
+            "C_index": c_index_values,
+        }
+    )
 
     return results_df
 
@@ -84,6 +132,115 @@ def calculate_mortality_hazard_ratios(data, predictor_results):
             "HR": hazard_ratios,
             "CI_lower": ci_lower_list,
             "CI_upper": ci_upper_list,
+            "P_value": p_values,
+        }
+    )
+
+    return results_df
+
+
+def calculate_age_adjusted_c_index(data, predictor_results):
+    """
+    Calculates the C-index for each predictor in the predictor_results DataFrame, adjusted for age.
+
+    Args:
+        data (Dataset): A Dataset object containing metadata with columns:
+            'dead' - boolean indicating if the subject is dead
+            'years_until_death' - if dead this should be years between sample collection and death. Otherwise years between sample collection and last known contact with live subject
+            'age' - age of the subject at sample collection
+        predictor_results (pd.DataFrame): The DataFrame containing predictor results. Columns are the name of the predictor model and rows must be ids from data
+
+    Returns:
+        pd.DataFrame: A DataFrame containing C-index values for each predictor.
+    """
+    analysis_df = pd.merge(
+        predictor_results, data.metadata, left_index=True, right_index=True
+    )
+
+    # Remove rows where 'dead' column is null
+    analysis_df = analysis_df.dropna(subset=["dead", "age"])
+
+    c_index_values = []
+
+    for clock in predictor_results.columns:
+        cph = CoxPHFitter()
+        cph.fit(
+            analysis_df[[clock, "age", "years_until_death", "dead"]],
+            duration_col="years_until_death",
+            event_col="dead",
+        )
+        c_index = concordance_index(
+            analysis_df["years_until_death"],
+            -cph.predict_partial_hazard(analysis_df),
+            analysis_df["dead"],
+        )
+        c_index_values.append(c_index)
+
+    results_df = pd.DataFrame(
+        {
+            "Clock": predictor_results.columns,
+            "C_index": c_index_values,
+        }
+    )
+
+    return results_df
+
+
+def calculate_log_rank_test(data, predictor_results):
+    """
+    Calculates the log-rank test for each predictor in the predictor_results DataFrame, adjusted for age.
+
+    Args:
+        data (Dataset): A Dataset object containing metadata with columns:
+            'dead' - boolean indicating if the subject is dead
+            'years_until_death' - if dead this should be years between sample collection and death. Otherwise years between sample collection and last known contact with live subject
+            'age' - age of the subject at sample collection
+        predictor_results (pd.DataFrame): The DataFrame containing predictor results. Columns are the name of the predictor model and rows must be ids from data
+
+    Returns:
+        pd.DataFrame: A DataFrame containing log-rank test statistics and p-values for each predictor.
+    """
+    analysis_df = pd.merge(
+        predictor_results, data.metadata, left_index=True, right_index=True
+    )
+
+    # Remove rows where 'dead' column is null
+    analysis_df = analysis_df.dropna(subset=["dead", "age"])
+
+    log_rank_stats = []
+    p_values = []
+
+    for clock in predictor_results.columns:
+        # Fit Cox model with age and clock
+        cph = CoxPHFitter()
+        cph.fit(
+            analysis_df[[clock, "age", "years_until_death", "dead"]],
+            duration_col="years_until_death",
+            event_col="dead",
+        )
+
+        # Calculate age-adjusted risk scores
+        risk_scores = cph.predict_partial_hazard(analysis_df)
+
+        # Divide the age-adjusted risk scores into two groups based on median
+        median_value = risk_scores.median()
+        high_risk = risk_scores > median_value
+
+        # Perform log-rank test
+        results = logrank_test(
+            analysis_df["years_until_death"][~high_risk],
+            analysis_df["years_until_death"][high_risk],
+            analysis_df["dead"][~high_risk],
+            analysis_df["dead"][high_risk],
+        )
+
+        log_rank_stats.append(results.test_statistic)
+        p_values.append(results.p_value)
+
+    results_df = pd.DataFrame(
+        {
+            "Clock": predictor_results.columns,
+            "Chi_square": log_rank_stats,
             "P_value": p_values,
         }
     )
