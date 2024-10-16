@@ -667,7 +667,9 @@ class LinearModel:
 
             self.coefficients = pd.read_csv(file_path, index_col=0)
         else:
-            raise ValueError("coefficient_file_or_df must be either a DataFrame or a file path as a string.")
+            raise ValueError(
+                "coefficient_file_or_df must be either a DataFrame or a file path as a string."
+            )
 
     @classmethod
     def from_definition(cls, clock_definition):
