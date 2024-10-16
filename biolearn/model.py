@@ -1,3 +1,4 @@
+import os
 import cvxpy as cp
 import numpy as np
 import pandas as pd
@@ -648,14 +649,25 @@ class DeconvolutionModel:
 
 class LinearModel:
     def __init__(
-        self, coeffecient_file, transform, preprocess=None, **metadata
+        self, coefficient_file_or_df, transform, preprocess=None, **metadata
     ) -> None:
         self.transform = transform
-        self.coefficients = pd.read_csv(
-            get_data_file(coeffecient_file), index_col=0
-        )
         self.preprocess = preprocess
         self.metadata = metadata
+
+        if isinstance(coefficient_file_or_df, pd.DataFrame):
+            self.coefficients = coefficient_file_or_df
+        elif isinstance(coefficient_file_or_df, str):
+            if os.path.isabs(coefficient_file_or_df):
+                # Absolute path: load the file directly
+                file_path = coefficient_file_or_df
+            else:
+                # Relative path: get the full path from the data folder
+                file_path = get_data_file(coefficient_file_or_df)
+
+            self.coefficients = pd.read_csv(file_path, index_col=0)
+        else:
+            raise ValueError("coefficient_file_or_df must be either a DataFrame or a file path as a string.")
 
     @classmethod
     def from_definition(cls, clock_definition):
