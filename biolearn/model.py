@@ -46,7 +46,6 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "Lin.csv",
-            "transform": lambda sum: sum + 12.2169841,
         },
     },
     "PhenoAge": {
@@ -58,7 +57,6 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "PhenoAge.csv",
-            "transform": lambda sum: sum + 60.664,
         },
     },
     "YingCausAge": {
@@ -70,7 +68,6 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "YingCausAge.csv",
-            "transform": lambda sum: sum + 86.80816381,
         },
     },
     "YingDamAge": {
@@ -82,7 +79,6 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "YingDamAge.csv",
-            "transform": lambda sum: sum + 543.4315887,
         },
     },
     "YingAdaptAge": {
@@ -94,7 +90,6 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "YingAdaptAge.csv",
-            "transform": lambda sum: sum - 511.9742762,
         },
     },
     "Horvathv2": {
@@ -138,7 +133,6 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "DunedinPoAm38.csv",
-            "transform": lambda sum: sum - 0.06929805,
         },
     },
     "DunedinPACE": {
@@ -150,7 +144,6 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "DunedinPACE.csv",
-            "transform": lambda sum: sum - 1.949859,
             "preprocess": dunedin_pace_normalization,
             "default_imputation": "none",
         },
@@ -196,7 +189,6 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "DNAmTL.csv",
-            "transform": lambda sum: sum - 7.924780053,
         },
     },
     "HRSInCHPhenoAge": {
@@ -208,7 +200,6 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "HRSInCHPhenoAge.csv",
-            "transform": lambda sum: sum + 52.8334080,
         },
     },
     "Knight": {
@@ -220,7 +211,6 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "Knight.csv",
-            "transform": lambda sum: sum + 41.7,
         },
     },
     "LeeControl": {
@@ -232,7 +222,6 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "LeeControl.csv",
-            "transform": lambda sum: sum + 13.06182,
         },
     },
     "SexEstimation": {
@@ -256,7 +245,6 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "LeeRefinedRobust.csv",
-            "transform": lambda sum: sum + 30.74966,
         },
     },
     "LeeRobust": {
@@ -268,7 +256,6 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "LeeRobust.csv",
-            "transform": lambda sum: sum + 24.99772,
         },
     },
     "SmokingMcCartney": {
@@ -411,7 +398,6 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "BMI_Reed.csv",
-            "transform": lambda sum: sum + 0,
         },
     },
     "ProstateCancerKirby": {
@@ -423,7 +409,6 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "ProstateCancerKirby.csv",
-            "transform": lambda sum: sum + 6.524,
         },
     },
     "HepatoXu": {
@@ -435,7 +420,6 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "HepatoXu.csv",
-            "transform": lambda sum: sum + 15.595,
         },
     },
     "CVD_Westerman": {
@@ -471,7 +455,6 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "DepressionBarbu.csv",
-            "transform": lambda sum: sum + 12.2169841,
         },
     },
     "TranscriptomicPredictionModel": {
@@ -687,6 +670,7 @@ class LinearModel:
     def predict(self, geo_data):
         matrix_data = self._get_data_matrix(geo_data)
         matrix_data = self.preprocess(matrix_data)
+        matrix_data.loc["intercept"] = 1
 
         # Join the coefficients and dnam_data on the index
         model_df = self.coefficients.join(matrix_data, how="inner")
