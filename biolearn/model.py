@@ -14,6 +14,7 @@ def anti_trafo(x, adult_age=20):
     )
     return y
 
+CLOCK_FOUNDATION_USAGE = "For cosmetics or life insurance applications, contact UCLA TDG regarding licensing status. For all other commercial usage `contact the Clock Foundation <https://clockfoundation.org/contact-us/>`_."
 
 model_definitions = {
     "Horvathv1": {
@@ -47,6 +48,10 @@ model_definitions = {
             "file": "Lin.csv",
             "transform": lambda sum: sum + 12.2169841,
         },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
+        },
     },
     "PhenoAge": {
         "year": 2018,
@@ -58,6 +63,9 @@ model_definitions = {
             "type": "LinearMethylationModel",
             "file": "PhenoAge.csv",
             "transform": lambda sum: sum + 60.664,
+        },
+        "usage": {
+            "commercial": CLOCK_FOUNDATION_USAGE,
         },
     },
     "YingCausAge": {
@@ -71,6 +79,10 @@ model_definitions = {
             "file": "YingCausAge.csv",
             "transform": lambda sum: sum + 86.80816381,
         },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
+        },
     },
     "YingDamAge": {
         "year": 2022,
@@ -82,6 +94,10 @@ model_definitions = {
             "type": "LinearMethylationModel",
             "file": "YingDamAge.csv",
             "transform": lambda sum: sum + 543.4315887,
+        },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
         },
     },
     "YingAdaptAge": {
@@ -95,6 +111,10 @@ model_definitions = {
             "file": "YingAdaptAge.csv",
             "transform": lambda sum: sum - 511.9742762,
         },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
+        },
     },
     "Horvathv2": {
         "year": 2018,
@@ -106,6 +126,9 @@ model_definitions = {
             "type": "LinearMethylationModel",
             "file": "Horvath2.csv",
             "transform": lambda sum: anti_trafo(sum - 0.447119319),
+        },
+        "usage": {
+            "commercial": CLOCK_FOUNDATION_USAGE,
         },
     },
     "PEDBE": {
@@ -119,6 +142,10 @@ model_definitions = {
             "file": "PEDBE.csv",
             "transform": lambda sum: anti_trafo(sum - 2.1),
         },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
+        },
     },
     "Zhang_10": {
         "year": 2019,
@@ -127,6 +154,10 @@ model_definitions = {
         "source": "https://www.nature.com/articles/ncomms14617",
         "output": "Mortality Risk",
         "model": {"type": "LinearMethylationModel", "file": "Zhang_10.csv"},
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
+        },
     },
     "DunedinPoAm38": {
         "year": 2020,
@@ -138,6 +169,10 @@ model_definitions = {
             "type": "LinearMethylationModel",
             "file": "DunedinPoAm38.csv",
             "transform": lambda sum: sum - 0.06929805,
+        },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
         },
     },
     "DunedinPACE": {
@@ -153,6 +188,10 @@ model_definitions = {
             "preprocess": dunedin_pace_normalization,
             "default_imputation": "none",
         },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
+        },
     },
     "GrimAgeV1": {
         "year": 2019,
@@ -161,6 +200,9 @@ model_definitions = {
         "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6366976/",
         "output": "Mortality Adjusted Age (Years)",
         "model": {"type": "GrimageModel", "file": "GrimAgeV1.csv"},
+        "usage": {
+            "commercial": CLOCK_FOUNDATION_USAGE,
+        },
     },
     "GrimAgeV2": {
         "year": 2022,
@@ -169,6 +211,9 @@ model_definitions = {
         "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9792204/",
         "output": "Mortality Adjusted Age (Years)",
         "model": {"type": "GrimageModel", "file": "GrimAgeV2.csv"},
+        "usage": {
+            "commercial": CLOCK_FOUNDATION_USAGE,
+        },
     },
     "AlcoholMcCartney": {
         "year": 2018,
@@ -177,14 +222,10 @@ model_definitions = {
         "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6158884/",
         "output": "Alcohol Consumption",
         "model": {"type": "LinearMethylationModel", "file": "Alcohol.csv"},
-    },
-    "BMI_McCartney": {
-        "year": 2018,
-        "species": "Human",
-        "tissue": "Blood",
-        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6158884/",
-        "output": "BMI",
-        "model": {"type": "LinearMethylationModel", "file": "BMI.csv"},
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
+        },
     },
     "DNAmTL": {
         "year": 2019,
@@ -196,6 +237,9 @@ model_definitions = {
             "type": "LinearMethylationModel",
             "file": "DNAmTL.csv",
             "transform": lambda sum: sum - 7.924780053,
+        },
+        "usage": {
+            "commercial": CLOCK_FOUNDATION_USAGE,
         },
     },
     "HRSInCHPhenoAge": {
@@ -209,6 +253,10 @@ model_definitions = {
             "file": "HRSInCHPhenoAge.csv",
             "transform": lambda sum: sum + 52.8334080,
         },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
+        },
     },
     "Knight": {
         "year": 2016,
@@ -220,6 +268,10 @@ model_definitions = {
             "type": "LinearMethylationModel",
             "file": "Knight.csv",
             "transform": lambda sum: sum + 41.7,
+        },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
         },
     },
     "LeeControl": {
@@ -233,6 +285,10 @@ model_definitions = {
             "file": "LeeControl.csv",
             "transform": lambda sum: sum + 13.06182,
         },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
+        },
     },
     "SexEstimation": {
         "year": 2021,
@@ -244,6 +300,10 @@ model_definitions = {
             "type": "SexEstimationModel",
             "file": "estimateSex.csv",
             "default_imputation": "averaging",
+        },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
         },
     },
     "LeeRefinedRobust": {
@@ -257,6 +317,10 @@ model_definitions = {
             "file": "LeeRefinedRobust.csv",
             "transform": lambda sum: sum + 30.74966,
         },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
+        },
     },
     "LeeRobust": {
         "year": 2019,
@@ -269,6 +333,10 @@ model_definitions = {
             "file": "LeeRobust.csv",
             "transform": lambda sum: sum + 24.99772,
         },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
+        },
     },
     "SmokingMcCartney": {
         "year": 2018,
@@ -277,6 +345,10 @@ model_definitions = {
         "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6158884/",
         "output": "Smoking Status",
         "model": {"type": "LinearMethylationModel", "file": "Smoking.csv"},
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
+        },
     },
     "DownSyndrome": {
         "year": 2021,
@@ -288,6 +360,10 @@ model_definitions = {
             "type": "LinearMethylationModel",
             "file": "down_syndrome.csv",
             "default_imputation": "averaging",
+        },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
         },
     },
     "DeconvoluteBlood450K": {
@@ -302,6 +378,10 @@ model_definitions = {
             "platform": "450K",
             "default_imputation": "none",
         },
+        "usage": {
+            "commercial": "Free to use",
+            "non-commercial": "Free to use"
+        },
     },
     "DeconvoluteBloodEPIC": {
         "year": 2024,
@@ -314,6 +394,10 @@ model_definitions = {
             "file": "EPIC_salas_18_reference.csv",
             "platform": "EPIC",
             "default_imputation": "none",
+        },
+        "usage": {
+            "commercial": "Free to use",
+            "non-commercial": "Free to use"
         },
     },
     "TwelveCellDeconvoluteBloodEPIC": {
@@ -328,6 +412,10 @@ model_definitions = {
             "platform": "EPIC",
             "default_imputation": "none",
         },
+        "usage": {
+            "commercial": "Free to use",
+            "non-commercial": "Free to use"
+        },
     },
     "BMI_McCartney": {
         "year": 2018,
@@ -339,6 +427,10 @@ model_definitions = {
             "type": "LinearMethylationModel",
             "file": "BMI_McCartney.csv",
             "transform": lambda x: 1 / (1 + np.exp(-x)),
+        },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
         },
     },
     "EducationMcCartney": {
@@ -352,6 +444,10 @@ model_definitions = {
             "file": "EducationMcCartney.csv",
             "transform": lambda x: 1 / (1 + np.exp(-x)),
         },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
+        },
     },
     "TotalCholesterolMcCartney": {
         "year": 2018,
@@ -363,6 +459,10 @@ model_definitions = {
             "type": "LinearMethylationModel",
             "file": "TotalCholesterolMcCartney.csv",
             "transform": lambda x: 1 / (1 + np.exp(-x)),
+        },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
         },
     },
     "HDLCholesterolMcCartney": {
@@ -376,6 +476,10 @@ model_definitions = {
             "file": "HDLCholesterolMcCartney.csv",
             "transform": lambda x: 1 / (1 + np.exp(-x)),
         },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
+        },
     },
     "LDLCholesterolMcCartney": {
         "year": 2018,
@@ -387,6 +491,10 @@ model_definitions = {
             "type": "LinearMethylationModel",
             "file": "LDLCholesterolMcCartney.csv",
             "transform": lambda x: 1 / (1 + np.exp(-x)),
+        },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
         },
     },
     "BodyFatMcCartney": {
@@ -400,6 +508,10 @@ model_definitions = {
             "file": "BodyFatMcCartney.csv",
             "transform": lambda x: 1 / (1 + np.exp(-x)),
         },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
+        },
     },
     "BMI_Reed": {
         "year": 2020,
@@ -411,6 +523,10 @@ model_definitions = {
             "type": "LinearMethylationModel",
             "file": "BMI_Reed.csv",
             "transform": lambda sum: sum + 0,
+        },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
         },
     },
     "ProstateCancerKirby": {
@@ -424,6 +540,10 @@ model_definitions = {
             "file": "ProstateCancerKirby.csv",
             "transform": lambda sum: sum + 6.524,
         },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
+        },
     },
     "HepatoXu": {
         "year": 2017,
@@ -435,6 +555,10 @@ model_definitions = {
             "type": "LinearMethylationModel",
             "file": "HepatoXu.csv",
             "transform": lambda sum: sum + 15.595,
+        },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
         },
     },
     "CVD_Westerman": {
@@ -448,6 +572,10 @@ model_definitions = {
             "file": "CVD_Westermann.csv",
             "transform": lambda x: 1 / (1 + np.exp(-x)),
         },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
+        },
     },
     "AD_Bahado-Singh": {
         "year": 2021,
@@ -460,6 +588,10 @@ model_definitions = {
             "file": "AD_Bahado-Singh.csv",
             "transform": lambda x: 1 / (1 + np.exp(-x - 0.072)),
         },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
+        },
     },
     "DepressionBarbu": {
         "year": 2021,
@@ -471,6 +603,10 @@ model_definitions = {
             "type": "LinearMethylationModel",
             "file": "DepressionBarbu.csv",
             "transform": lambda sum: sum + 12.2169841,
+        },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
         },
     },
     "TranscriptomicPredictionModel": {
@@ -486,6 +622,10 @@ model_definitions = {
                 map_ensembl_to_gene(rna_data)
             ),
             "transform": lambda sum: sum + 55.808884324,
+        },
+        "usage": {
+            "commercial": "unknown",
+            "non-commercial": "Free to use"
         },
     },
 }
