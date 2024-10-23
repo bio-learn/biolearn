@@ -698,8 +698,6 @@ class LinearMethylationModel(LinearModel):
         return list(unique_vars)
 
 
-
-
 class LinearTranscriptomicModel(LinearModel):
     def _get_data_matrix(self, geo_data):
         return geo_data.rna

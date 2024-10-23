@@ -9,6 +9,7 @@ from lifelines.utils import concordance_index
 from biolearn.model_gallery import ModelGallery
 import warnings
 
+
 def run_predictions(data, predictors_dict):
     """
     Runs predictions using a collection of models specified in predictors_dict and returns a DataFrame with the results.
@@ -33,11 +34,12 @@ def run_predictions(data, predictors_dict):
             results_df[model_name] = prediction[keys]
         except Exception as e:
             # Catch any errors, issue a warning, and continue with the next model
-            warnings.warn(f"Error running model '{model_name}': {str(e)}", RuntimeWarning)
+            warnings.warn(
+                f"Error running model '{model_name}': {str(e)}", RuntimeWarning
+            )
             continue
 
     return results_df
-
 
 
 def calculate_c_index(data, predictor_results):
