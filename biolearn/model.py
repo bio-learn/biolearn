@@ -14,6 +14,7 @@ def anti_trafo(x, adult_age=20):
     )
     return y
 
+
 CLOCK_FOUNDATION_USAGE = "For cosmetics or life insurance applications, contact UCLA TDG regarding licensing status. For all other commercial usage `contact the Clock Foundation <https://clockfoundation.org/contact-us/>`_."
 
 model_definitions = {
@@ -74,7 +75,7 @@ model_definitions = {
             "type": "LinearMethylationModel",
             "file": "YingCausAge.csv",
             "transform": lambda sum: sum + 86.80816381,
-        }
+        },
     },
     "YingDamAge": {
         "year": 2022,
@@ -312,7 +313,7 @@ model_definitions = {
         },
         "usage": {
             "commercial": "Free to use",
-            "non-commercial": "Free to use"
+            "non-commercial": "Free to use",
         },
     },
     "DeconvoluteBloodEPIC": {
@@ -329,7 +330,7 @@ model_definitions = {
         },
         "usage": {
             "commercial": "Free to use",
-            "non-commercial": "Free to use"
+            "non-commercial": "Free to use",
         },
     },
     "TwelveCellDeconvoluteBloodEPIC": {
@@ -346,7 +347,7 @@ model_definitions = {
         },
         "usage": {
             "commercial": "Free to use",
-            "non-commercial": "Free to use"
+            "non-commercial": "Free to use",
         },
     },
     "BMI_McCartney": {
