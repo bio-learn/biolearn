@@ -163,12 +163,19 @@ class QualityReport:
         print("\n")
 
 
-import pandas as pd
-import time
-import os
-
-
 class GeoData:
+    """
+    Represents genomic data with a focus on metadata and methylation data.
+
+    GeoData facilitates the organization and access to metadata and methylation data.
+
+    Attributes:
+        metadata (DataFrame): A pandas DataFrame where rows represent different samples
+                              and columns represent different data fields.
+        dnam (DataFrame): A pandas DataFrame where columns represent different samples
+                          and rows represent different methylation sites.
+    """
+
     def __init__(self, metadata, dnam=None, rna=None, protein=None):
         self.metadata = metadata
         self.dnam = dnam
