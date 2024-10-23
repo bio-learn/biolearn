@@ -177,6 +177,13 @@ class GeoData:
     """
 
     def __init__(self, metadata, dnam=None, rna=None, protein=None):
+        """
+        Initializes the GeoData instance.
+
+        Args:
+            metadata (DataFrame): Metadata associated with genomic samples.
+            dnam (DataFrame): Methylation data associated with genomic samples.
+        """
         self.metadata = metadata
         self.dnam = dnam
         self.rna = rna
