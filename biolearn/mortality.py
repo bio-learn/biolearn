@@ -7,7 +7,7 @@ from lifelines.statistics import logrank_test
 from lifelines.utils import concordance_index
 
 from biolearn.model_gallery import ModelGallery
-
+import warnings
 
 def run_predictions(data, predictors_dict):
     """
@@ -27,11 +27,17 @@ def run_predictions(data, predictors_dict):
 
     # Loop through each model and make predictions
     for model_name, keys in predictors_dict.items():
-        model = gallery.get(model_name)
-        prediction = model.predict(data)
-        results_df[model_name] = prediction[keys]
+        try:
+            model = gallery.get(model_name)
+            prediction = model.predict(data)
+            results_df[model_name] = prediction[keys]
+        except Exception as e:
+            # Catch any errors, issue a warning, and continue with the next model
+            warnings.warn(f"Error running model '{model_name}': {str(e)}", RuntimeWarning)
+            continue
 
     return results_df
+
 
 
 def calculate_c_index(data, predictor_results):
