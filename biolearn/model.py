@@ -694,7 +694,8 @@ class LinearMethylationModel(LinearModel):
         return geo_data.dnam
 
     def methylation_sites(self):
-        return list(self.coefficients.index)
+        unique_vars = set(self.coefficients.index) - {"intercept"}
+        return list(unique_vars)
 
 
 class LinearTranscriptomicModel(LinearModel):
