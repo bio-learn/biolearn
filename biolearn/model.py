@@ -16,6 +16,8 @@ def anti_trafo(x, adult_age=20):
     return y
 
 
+CLOCK_FOUNDATION_USAGE = "For cosmetics or life insurance applications, contact UCLA TDG regarding licensing status. For all other commercial usage `contact the Clock Foundation <https://clockfoundation.org/contact-us/>`_."
+
 model_definitions = {
     "Horvathv1": {
         "year": 2013,
@@ -57,6 +59,9 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "PhenoAge.csv",
+        },
+        "usage": {
+            "commercial": CLOCK_FOUNDATION_USAGE,
         },
     },
     "YingCausAge": {
@@ -102,6 +107,9 @@ model_definitions = {
             "type": "LinearMethylationModel",
             "file": "Horvath2.csv",
             "transform": lambda sum: anti_trafo(sum - 0.447119319),
+        },
+        "usage": {
+            "commercial": CLOCK_FOUNDATION_USAGE,
         },
     },
     "PEDBE": {
@@ -155,6 +163,9 @@ model_definitions = {
         "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6366976/",
         "output": "Mortality Adjusted Age (Years)",
         "model": {"type": "GrimageModel", "file": "GrimAgeV1.csv"},
+        "usage": {
+            "commercial": CLOCK_FOUNDATION_USAGE,
+        },
     },
     "GrimAgeV2": {
         "year": 2022,
@@ -163,6 +174,9 @@ model_definitions = {
         "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9792204/",
         "output": "Mortality Adjusted Age (Years)",
         "model": {"type": "GrimageModel", "file": "GrimAgeV2.csv"},
+        "usage": {
+            "commercial": CLOCK_FOUNDATION_USAGE,
+        },
     },
     "AlcoholMcCartney": {
         "year": 2018,
@@ -171,14 +185,6 @@ model_definitions = {
         "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6158884/",
         "output": "Alcohol Consumption",
         "model": {"type": "LinearMethylationModel", "file": "Alcohol.csv"},
-    },
-    "BMI_McCartney": {
-        "year": 2018,
-        "species": "Human",
-        "tissue": "Blood",
-        "source": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6158884/",
-        "output": "BMI",
-        "model": {"type": "LinearMethylationModel", "file": "BMI.csv"},
     },
     "DNAmTL": {
         "year": 2019,
@@ -189,6 +195,9 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "DNAmTL.csv",
+        },
+        "usage": {
+            "commercial": CLOCK_FOUNDATION_USAGE,
         },
     },
     "HRSInCHPhenoAge": {
@@ -290,6 +299,10 @@ model_definitions = {
             "platform": "450K",
             "default_imputation": "none",
         },
+        "usage": {
+            "commercial": "Free to use",
+            "non-commercial": "Free to use",
+        },
     },
     "DeconvoluteBloodEPIC": {
         "year": 2024,
@@ -303,6 +316,10 @@ model_definitions = {
             "platform": "EPIC",
             "default_imputation": "none",
         },
+        "usage": {
+            "commercial": "Free to use",
+            "non-commercial": "Free to use",
+        },
     },
     "TwelveCellDeconvoluteBloodEPIC": {
         "year": 2024,
@@ -315,6 +332,10 @@ model_definitions = {
             "file": "twelve_cell_deconv.csv",
             "platform": "EPIC",
             "default_imputation": "none",
+        },
+        "usage": {
+            "commercial": "Free to use",
+            "non-commercial": "Free to use",
         },
     },
     "BMI_McCartney": {

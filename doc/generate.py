@@ -73,7 +73,48 @@ def generate_data_csv_from_yaml(yaml_file, output_file="generated/data_table.csv
 
     print(f"CSV generated at: {output_file}")
 
+def generate_model_usage_csv(models, output_file="generated/model_usage.csv"):
+    # Define the CSV header
+    header = ["Name", "Commercial Usage", "Non-Commercial Usage"]
+
+    # Ensure the folder exists
+    ensure_folder_exists(output_file)
+
+    # Generate the CSV data
+    with open(output_file, "w", newline='') as csvfile:
+        writer = csv.writer(csvfile)
+
+        # Write the header
+        writer.writerow(header)
+
+        # Add each model's usage data to the CSV
+        for name, details in models.items():
+            usage = details.get("usage", {})
+            source = details.get("source", "unknown")
+
+            # Handle commercial usage
+            commercial_usage = usage.get("commercial", "unknown")
+            if commercial_usage == "unknown" and source != "unknown":
+                commercial_usage = f"Contact `paper <{source}>`_ author"
+            
+            # Handle non-commercial usage
+            non_commercial_usage = usage.get("non-commercial", "unknown")
+            if non_commercial_usage == "unknown":
+                non_commercial_usage = "Free to use"
+
+            row = [
+                name,
+                commercial_usage,
+                non_commercial_usage
+            ]
+            writer.writerow(row)
+
+    print(f"Model usage CSV generated at: {output_file}")
+
+
+
 if __name__ == "__main__":
     ensure_folder_exists("generated/")
     generate_models_csv(model_definitions)
+    generate_model_usage_csv(model_definitions)
     generate_data_csv_from_yaml(get_data_file("library.yaml"))
