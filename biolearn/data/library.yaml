@@ -1237,3 +1237,860 @@ items:
         bas:
           row: 58
           parse: string
+- id: GSE106648
+  title: Differential DNA methylation in Multiple Sclerosis
+  summary: We used Illumina HumanMethylation450 BeadChip array to determine the genome-wide
+    DNA methylation difference in peripheral blood from multiple sclerosis patients
+    (cases) and normal controls
+  format: Illumina450k
+  organism: human
+  samples: 279
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE106nnn/GSE106648/matrix/GSE106648_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 29
+    matrix-start: 61
+    metadata:
+      disease_status:
+        row: 37
+        parse: string
+      gender:
+        row: 38
+        parse: sex
+      age:
+        row: 39
+        parse: numeric
+      smoking_status:
+        row: 40
+        parse: string
+      tissue:
+        row: 41
+        parse: string
+- id: GSE120307
+  title: Genome-wide DNA methylation analysis in peripheral blood of monozygotic twins
+    informative for psychopathology
+  summary: 'Peripheral blood from thirty-four monozygotic twin subjects from the general
+    population (n = 17 twin pairs) was collected for epigenomic analysis via Illumina
+    Infinium HumanMethylation450 Beadchip. All subjects were screened for DSM-IV based
+    criteria for both current and lifetime psychiatric disorders. Out of 17 twin pairs,
+    there were: 7 healthy twin pairs where none of the twins of a pair met criteria
+    for any DSM-IV disorder; 6 discordant twin pairs where only one of the twins of
+    each pair met diagnostic criteria; and 4 concordant twin pairs where both twins
+    of a pair met clinical DSM-IV based criteria.'
+  format: Illumina450k
+  organism: human
+  samples: 34
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE120nnn/GSE120307/matrix/GSE120307_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 29
+    matrix-start: 63
+    metadata:
+      tissue:
+        row: 37
+        parse: string
+      pair_number:
+        row: 38
+        parse: string
+      gender:
+        row: 39
+        parse: sex
+      age:
+        row: 40
+        parse: numeric
+      diagnosis:
+        row: 41
+        parse: string
+- id: GSE134429
+  title: Inflammatory Cytokines shape a Changing DNA Methylome in Monocytes Mirroring
+    Disease Activity in Rheumatoid Arthritis (patients)
+  summary: Genome wide DNA methylation profiling of monocytes from healthy donors
+    and rheumatoid arthritis patients. The Illumina Infinium MethylationEPIC Beadchip
+    was used to obtain DNA methylation profiles across approximately 850,000 CpGs
+    in CD11b+CD33+CD15neg monocytes isolated from PBMCs of 17 healthy donors and 47
+    rheumatoid arthritis patients with different disease activity scores (DAS28).
+  format: Unknown
+  organism: human
+  samples: 64
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE134nnn/GSE134429/matrix/GSE134429_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 41
+    matrix-start: 79
+    metadata:
+      das28:
+        row: 49
+        parse: string
+      sex:
+        row: 50
+        parse: sex
+      age:
+        row: 51
+        parse: numeric
+      patient_cohort:
+        row: 52
+        parse: string
+      donor:
+        row: 53
+        parse: string
+      batch:
+        row: 54
+        parse: string
+- id: GSE151278
+  title: Genome-wide DNA methylation analysis of peripheral blood samples of moderate-to-severe
+    psoriasis patients treated with anti-TNF drugs
+  summary: Genome wide DNA methylation profiling of peripheral blood samples of moderate-to-severe
+    psoriasis patients treated with anti-TNF drugs. Patients were distributed on Excellent
+    Responders (ER) if they achieved PASI90 (a 90% reduction with respect to baseline
+    PASI) at 3 and 6 months of treatment with anti-TNF drugs and Partial responders
+    if they did not achieve a PASI75 (a 75% reduction with respect to baseline PASI)
+    at 3 and 6 months of treatment. The Illumina Infinium 450k Human DNA methylation
+    Beadchip v1.2 was used to obtain DNA methylation profiles across approximately
+    485,000 CpGs in 49 ER and 21 PR which were obtained from peripheral blood samples
+    of anti-TNF drug treated patients. We have searched for pharmaoepigenetic biomarkers
+    of anti-TNF response in moderate-to-severe psoriasis patients.
+  format: Illumina450k
+  organism: human
+  samples: 70
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE151nnn/GSE151278/matrix/GSE151278_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 33
+    matrix-start: 70
+    metadata:
+      gender:
+        row: 41
+        parse: sex
+      tissue:
+        row: 42
+        parse: string
+      disease_state:
+        row: 43
+        parse: string
+      response:
+        row: 44
+        parse: string
+      age:
+        row: 45
+        parse: numeric
+      age_at_initiation:
+        row: 46
+        parse: numeric
+      biological_drug:
+        row: 47
+        parse: string
+- id: GSE164056
+  title: DNA Methylation Differences Associated with Social Anxiety Disorder and Early
+    Life Adversity
+  summary: Social anxiety disorder (SAD) is a psychiatric disorder characterized by
+    extensive fear in social situations. Multiple genetic and environmental factors
+    are known to contribute to its pathogenesis. One of the main environmental risk
+    factors is early life adversity (ELA). Evidence is emerging that epigenetic mechanisms
+    such as DNA methylation might play an important role in the biological mechanisms
+    underlying SAD and ELA. To investigate the relationship between ELA, DNA methylation,
+    and SAD, we performed an epigenome-wide association study for SAD and ELA examining
+    DNA from whole blood of a cohort of 143 individuals using DNA methylation arrays.
+    We identified two differentially methylated regions (DMRs) associated with SAD
+    located within the genes SLC43A2 and TNXB. As this was the first epigenome-wide
+    association study for SAD, it is worth noting that both genes have previously
+    been associated with panic disorder. Further, we identified two DMRs associated
+    with ELA within the SLC17A3 promoter region and the SIAH3 gene and several DMRs
+    that were associated with the interaction of SAD and ELA. Of these, the regions
+    within C2CD2L and MRPL28 showed the largest difference in DNA methylation. Lastly,
+    we found that two DMRs were associated with both the severity of social anxiety
+    and ELA, however, neither of them was found to mediate the contribution of ELA
+    to SAD later in life. Future studies are needed to replicate our findings in independent
+    cohorts and to investigate the biological pathways underlying these effects.
+  format: Unknown
+  organism: human
+  samples: 143
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE164nnn/GSE164056/matrix/GSE164056_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 36
+    matrix-start: 72
+    metadata:
+      age:
+        row: 44
+        parse: numeric
+      sex:
+        row: 45
+        parse: sex
+      sad:
+        row: 46
+        parse: string
+      ela:
+        row: 47
+        parse: string
+      lsas_total:
+        row: 48
+        parse: string
+      ctq_total:
+        row: 49
+        parse: string
+- id: GSE166611
+  title: Trait related and differential DNA Methylation in obese and normal weight
+    Brazilian women.
+  summary: Obesity has been linked to lifestyle and recently have been associated
+    to DNA methylation changes that may cause alterations in the adipogenesis and
+    lipid storage processes and contribute to the pathological state. We enrolled
+    Obese (Ob) and Normal Weight (NW) women. We observed that DNA methylation patterns
+    are different between normal weight and obese women. This can alter gene expression
+    patterns affecting adipogenesis and lipid storage. This results confirms that
+    an obesogenic lifestyle can promote epigenetic changes in the human DNA.
+  format: Unknown
+  organism: human
+  samples: 32
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE166nnn/GSE166611/matrix/GSE166611_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 31
+    matrix-start: 69
+    metadata:
+      gender:
+        row: 39
+        parse: sex
+      age:
+        row: 40
+        parse: numeric
+      bmi:
+        row: 41
+        parse: string
+      ac:
+        row: 42
+        parse: string
+      fm:
+        row: 43
+        parse: string
+      fm%:
+        row: 44
+        parse: string
+      cell_type:
+        row: 45
+        parse: string
+- id: GSE20236
+  title: Human Aging-associated DNA Hypermethylation Occurs Preferentially at Bivalent
+    Chromatin Domains
+  summary: There is a growing realization that some aging-associated phenotypes/diseases
+    have an epigenetic basis. Here we report the first genome-scale study of epigenomic
+    dynamics during normal human aging. We identify aging-associated differentially
+    methylated regions (aDMRs) in whole blood in a discovery cohort, and then replicate
+    these aDMRs in sorted CD4+ T-cells and CD14+ monocytes in an independent cohort,
+    suggesting that aDMRs occur in precursor haematopoietic cells. Further replication
+    of the aDMRs in buccal cells, representing a tissue that originates from a different
+    germ-layer compared with blood, demonstrates that the aDMR signature is a multi-tissue
+    phenomenon. Moreover, we demonstrate that aging-associated DNA hypermethylation
+    occurs predominantly at bivalent chromatin domain promoters. This same category
+    of promoters, associated with key developmental genes, is frequently hypermethylated
+    in cancers and in vitro cell culture, pointing to a novel mechanistic link between
+    aberrant hypermethylation in cancer, aging, and cell culture.
+  format: Unknown
+  organism: human
+  samples: 93
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE20nnn/GSE20236/matrix/GSE20236_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 40
+    matrix-start: 72
+    metadata:
+      age:
+        row: 48
+        parse: numeric
+      gender:
+        row: 49
+        parse: sex
+      tissue:
+        row: 50
+        parse: string
+- id: GSE32148
+  title: DNA methylation in peripheral blood from individuals with Crohns' disease
+    or ulcerative colitis and normal controls
+  summary: Genome wide DNA methylation profiling of Crohn's disease, ulcerative colitis,
+    and normal peripheral blood samples. The Illumina Infinium HumanMethylation450
+    BeadChip v1.1 was used to obtain DNA methylation profiles across 482,421 CpGs
+    in peripheral blood samples. Samples came from 17 Crohn's disease affected, 11
+    ulcerative colitis affected, and 20 normal individuals. Within these samples were
+    three twin sets discordant for Crohn's disease and three twin sets discordant
+    for ulcerative colitis.
+  format: Illumina450k
+  organism: human
+  samples: 48
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE32nnn/GSE32148/matrix/GSE32148_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 32
+    matrix-start: 67
+    metadata:
+      gender:
+        row: 40
+        parse: sex
+      age_(y):
+        row: 41
+        parse: numeric
+      tissue:
+        row: 42
+        parse: string
+      disease_state:
+        row: 43
+        parse: string
+      twin:
+        row: 44
+        parse: string
+- id: GSE41037
+  title: Aging effects on DNA methylation modules in blood tissue
+  summary: Genome wide DNA methylation profiling of whole blood in schizophrenia patients
+    and healthy subjects. The Illumina Infinium 27k Human DNA methylation Beadchip
+    v1.2 was used to obtain DNA methylation profiles across approximately 27,000 CpGs.
+    Raw data included 325 schizophrenia patients (2) and 394 controls (1) from Dutch
+    descent. One sample was excluded since it was a bipolar patient, indicated by
+    3 in diseaseStatus column. The column used_in_analysis shows the samples that
+    were used in our study. The excluded samples failed quality control. Normalized
+    data are also included in the non_normalized.txt (i.e. AVG_Beta column).
+  format: Unknown
+  organism: human
+  samples: 720
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41037/matrix/GSE41037_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 33
+    matrix-start: 75
+    metadata:
+      gender:
+        row: 41
+        parse: sex
+      age:
+        row: 42
+        parse: numeric
+      diseasestatus:
+        row: 43
+        parse: string
+      tissue:
+        row: 44
+        parse: string
+      used_in_analysis:
+        row: 45
+        parse: string
+      dataset:
+        row: 46
+        parse: string
+      plate:
+        row: 47
+        parse: string
+      sentrixbarcode:
+        row: 48
+        parse: string
+      sentrixposition:
+        row: 49
+        parse: string
+      wellid:
+        row: 50
+        parse: string
+      trackingsheet:
+        row: 51
+        parse: string
+- id: GSE49904
+  title: Differential DNA methylation with age displays both common and dynamic features
+    across human tissues that are influenced by CpG landscape [blood]
+  summary: Sentrix barcode provided for batch correction
+  format: Unknown
+  organism: human
+  samples: 71
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE49nnn/GSE49904/matrix/GSE49904_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 37
+    matrix-start: 77
+    metadata:
+      gender:
+        row: 45
+        parse: sex
+      age_(yrs):
+        row: 46
+        parse: numeric
+      ethnicity:
+        row: 47
+        parse: string
+      sentrix_barcode:
+        row: 48
+        parse: string
+      primary_diagnosis:
+        row: 49
+        parse: string
+      smoking_history:
+        row: 50
+        parse: string
+      alcohol_history:
+        row: 51
+        parse: string
+      height_(inch):
+        row: 52
+        parse: string
+      weight_(lb):
+        row: 53
+        parse: string
+      tissue:
+        row: 54
+        parse: string
+- id: GSE50660
+  title: Cigarette Smoking Reduces DNA Methylation Levels at Multiple Genomic Loci
+    but the Effect is Partially Reversible upon Cessation
+  summary: DNA methylation is an epigenetic event whose pattern is altered frequently
+    in a wide variety of human diseases. Smoking affects DNA methylation possibly
+    leading to abnormal expression of a broad spectrum of genes which in turn may
+    result to the various side effects and diseases associated with smoking. The long
+    term effects of smoking have been widely studied but the mechanism(s) by which
+    those effects may be reversible by smoking cessation are not clearly understood.
+    Here, we conducted an epigenome-wide association study in peripheral-blood DNA
+    in 464 individuals who were current, former and never-smokers. We identified 15
+    distinct loci (10 of which were novel) where DNA methylation was reduced in smokers
+    and was reversed (but did not reach non-smoking levels) upon smoking cessation
+    within 12 weeks. Although the functional impact of this reversal of DNA methylation
+    is still not understood, this study illustrates the potential of epigenomics to
+    provide insights into mechanisms of environmental and lifestyle exposures, and
+    to suggest new avenues for clinical intervention
+  format: Illumina450k
+  organism: human
+  samples: 464
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE50nnn/GSE50660/matrix/GSE50660_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 50
+    matrix-start: 83
+    metadata:
+      smoking_(0,_1_and_2,_which_represent_never,_former_and_current_smokers):
+        row: 58
+        parse: string
+      age:
+        row: 59
+        parse: numeric
+      gender:
+        row: 60
+        parse: sex
+      tissue:
+        row: 61
+        parse: string
+- id: GSE53740
+  title: An Epigenetic Signature in Peripheral Blood Associated with Neurodegenerative
+    Tauopathy and the Risk-Associated Haplotype on 17q21.31
+  summary: Progressive supranuclear palsy (PSP) and frontotemporal dementia (FTD)
+    are two neurodegenerative diseases linked, at the pathologic and genetic level,
+    to the macrutubule associated protein tau. We identified and replicated a dose-dependent
+    effect of the risk-associated H1 haplotype on methylation levels within the region
+    in independent datasets in blood and brain. These data reveal that the H1 haplotype
+    increases risk for tauopathy via differential methylation, indicating a mediating
+    role for methylation in dementia pathophysiology.
+  format: Illumina450k
+  organism: human
+  samples: 384
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE53nnn/GSE53740/matrix/GSE53740_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 47
+    matrix-start: 88
+    metadata:
+      diagnosis:
+        row: 55
+        parse: string
+      gender:
+        row: 56
+        parse: sex
+      race:
+        row: 57
+        parse: string
+      age:
+        row: 58
+        parse: numeric
+      tau_a1:
+        row: 59
+        parse: string
+      tau_a2:
+        row: 60
+        parse: string
+      batch:
+        row: 61
+        parse: string
+      tissue:
+        row: 62
+        parse: string
+- id: GSE53840
+  title: Whole blood DNA methylation samples from HIV positive men [2013 study]
+  summary: Genome wide DNA methylation profiles of whole blood from HIV positive men.
+    The Illumina Infinium 450k Human DNA methylation Beadchip v1.2 was used to obtain
+    DNA methylation profiles across approximately 480,000 CpGs. Dataset included 120
+    subjects from the USA but because of missing clinical characteristics only 109
+    subjects were used in the scientific publication. The study analyzed the effect
+    of HIV viral load on host DNA methylation levels.
+  format: Illumina450k
+  organism: human
+  samples: 120
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE53nnn/GSE53840/matrix/GSE53840_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 39
+    matrix-start: 95
+    metadata:
+      gender:
+        row: 47
+        parse: sex
+      tissue:
+        row: 48
+        parse: string
+      age_(yrs):
+        row: 49
+        parse: numeric
+      dnamage:
+        row: 50
+        parse: numeric
+      hivstatus:
+        row: 51
+        parse: string
+      hiv.viral.load:
+        row: 52
+        parse: string
+      logviralloadadjustedforage:
+        row: 53
+        parse: numeric
+      bmi:
+        row: 54
+        parse: string
+      nadir.cd4:
+        row: 55
+        parse: string
+      cd8tcellperc:
+        row: 56
+        parse: string
+      cd4tcellperc:
+        row: 57
+        parse: string
+      cd3tcellperc:
+        row: 58
+        parse: string
+      lymphocytesperc:
+        row: 59
+        parse: string
+      whitebloodcellperc:
+        row: 60
+        parse: string
+      granulocyteperc:
+        row: 61
+        parse: string
+      monocytesperc:
+        row: 62
+        parse: string
+      lymphocyteabscount:
+        row: 63
+        parse: string
+      cd8tcellabscount:
+        row: 64
+        parse: string
+      cd4tcellabscount:
+        row: 65
+        parse: string
+      cd3tcellabscount:
+        row: 66
+        parse: string
+      ratiocd4vscd8:
+        row: 67
+        parse: string
+      ratiocd38moleculesvscd8tcells:
+        row: 68
+        parse: string
+      samplechips12:
+        row: 69
+        parse: string
+      stripe:
+        row: 70
+        parse: string
+- id: GSE67705
+  title: Methylome-wide analysis of chronic HIV infected patients and healthy controls
+  summary: Current therapy has turned HIV infection into a chronic condition. Clinically,
+    some patients suffer prematurely from ailments associated with advanced age; however,
+    the relationship between HIV and aging is unclear. Here we have collected a large
+    cohort of HAART treated HIV+ subjects with both recent and chronic infection and
+    recapitulated the shared phenotype of HIV and age. To further understand this
+    signal, we applied validated models of DNA methylation-based biological age to
+    establish a clear link between HIV infection and molecular age advancement. We
+    then show this result to be robust to HIV duration, cellular composition, and
+    general methylome disorder. Finally we show a pattern of hypomethylation in HIV+
+    individuals at the HLA locus. Together these results lead to a much-needed better
+    understanding of the epigenetic consequences and gerontological aspects of chronic
+    HIV infection.
+  format: Illumina450k
+  organism: human
+  samples: 284
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE67nnn/GSE67705/matrix/GSE67705_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 49
+    matrix-start: 85
+    metadata:
+      gender:
+        row: 57
+        parse: sex
+      age:
+        row: 58
+        parse: numeric
+      tissue:
+        row: 59
+        parse: string
+      diabetes:
+        row: 60
+        parse: string
+      ethnicity:
+        row: 61
+        parse: string
+- id: GSE67751
+  title: Blood Illumina Inf 450 DNA methylation samples from HIV+ and HIV- human subjects
+  summary: Genome wide DNA methylation profiles of cerebellum from HIV positive and
+    HIV negative human subjects. The Illumina Infinium 450k Human DNA methylation
+    Beadchip v1.2 was used to obtain DNA methylation profiles across approximately
+    486,000 CpGs. Dataset included 92 subjects from the USA.  The epigenetic clock
+    software (Horvath 2013) was used to measure epigenetic age acceleration effects
+    and to relate them to HIV status.
+  format: Illumina450k
+  organism: human
+  samples: 92
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE67nnn/GSE67751/matrix/GSE67751_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 32
+    matrix-start: 81
+    metadata:
+      tissue:
+        row: 40
+        parse: string
+      age:
+        row: 41
+        parse: numeric
+      hivstatus:
+        row: 42
+        parse: string
+      gender:
+        row: 43
+        parse: sex
+      dnamage:
+        row: 44
+        parse: numeric
+      ageaccelerationvscontrols:
+        row: 45
+        parse: numeric
+      ageaccelerationresidual:
+        row: 46
+        parse: numeric
+      exhausted_cd8t_cells:
+        row: 47
+        parse: string
+      "na\xEFve_cd8_t_cells":
+        row: 48
+        parse: string
+      "na\xEFve_cd4_t_cells":
+        row: 49
+        parse: string
+      cd8_t_cells:
+        row: 50
+        parse: string
+      cd4_t_cells:
+        row: 51
+        parse: string
+      natural_killer:
+        row: 52
+        parse: string
+      b_cells:
+        row: 53
+        parse: string
+      monocytes:
+        row: 54
+        parse: string
+      granulocytes:
+        row: 55
+        parse: string
+- id: GSE69138
+  title: Epigenome analysis of ischemic stroke patients
+  summary: We performed a genome-wide methylation study in whole-blood DNA from 185
+    ischemic stroke patient cohort. Illumina HumanMethylation450 BeadChip array was
+    used to measure DNA methylation in CpG sites.
+  format: Illumina450k
+  organism: human
+  samples: 589
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE69nnn/GSE69138/matrix/GSE69138_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 46
+    matrix-start: 90
+    metadata:
+      gender:
+        row: 54
+        parse: sex
+      stroke_subtype:
+        row: 55
+        parse: string
+      sample_type:
+        row: 56
+        parse: string
+      disease_state:
+        row: 58
+        parse: string
+- id: GSE77445
+  title: Genome-wide DNA methylation levels and altered cortisol stress reactivity
+    following childhood trauma in humans
+  summary: DNA methylation likely plays a role in the regulation of human stress reactivity.
+    In a genome-wide analysis of blood DNA methylation in 85 healthy individuals a
+    locus in the Kit ligand (KITLG) gene (cg27512205) had the strongest association
+    with cortisol stress reactivity (p=5.8x10-6). Replication was obtained in two
+    independent samples, one using blood (N=45, p=0.001) and the other using buccal
+    cells (N=255,p=0.004). KITLG methylation strongly mediated the relationship between
+    childhood trauma and cortisol stress reactivity (32% mediation). Its genomic location
+    (CpG island shore within an H3K27ac enhancer mark) provide further evidence that
+    KITLG methylation is functionally relevant for the programming of stress reactivity.
+    Our results extend preclinical evidence for epigenetic regulation of stress reactivity
+    to humans and provide leads to enhance our understanding of the neurobiological
+    pathways underlying stress vulnerability.
+  format: Illumina450k
+  organism: human
+  samples: 85
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE77nnn/GSE77445/matrix/GSE77445_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 30
+    matrix-start: 75
+    metadata:
+      race:
+        row: 38
+        parse: string
+      gender:
+        row: 39
+        parse: sex
+      age:
+        row: 40
+        parse: numeric
+      cortisol_stress_response_area_under_the_curve_(auc)_with_respect_to_the_increase:
+        row: 41
+        parse: string
+      total_score_on_the_childhood_trauma_questionnaire:
+        row: 42
+        parse: string
+      total_score_on_the_life_stressor_checklist-_revised:
+        row: 43
+        parse: string
+      cd8_t_cell_proportion:
+        row: 44
+        parse: string
+      monocytes_cell_proportion:
+        row: 45
+        parse: string
+      natural_killer_cell_proportion:
+        row: 46
+        parse: string
+      cd4_t_cell_proportion:
+        row: 47
+        parse: string
+      bcell_proportion:
+        row: 48
+        parse: string
+      granulocytes_cell_proportion:
+        row: 49
+        parse: string
+      sentrix:
+        row: 50
+        parse: string
+      position:
+        row: 51
+        parse: string
+- id: GSE85311
+  title: Epigenetic patterns with aging and exercise are associated with indicators
+    of healthspan in humans
+  summary: Genome wise DNA methylation profiling of peripheral blood mononuclear cells
+    (PBMCs) obtained from younger sedentary (Y-SED), older sedentary (O-SED) and older
+    aerobically exercise trained (O-Ex) human subjects.  The Illumina 450K methylation
+    beadchip array was used to obtain DNA methylation profiles across approximately
+    450,000 CpG dinucleotide methylation loci in DNA isolated from PBMCs.  Samples
+    include 12 Y-SED subjects, 15 O-SED subjects and 11 O-Ex subjects.
+  format: Unknown
+  organism: human
+  samples: 38
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE85nnn/GSE85311/matrix/GSE85311_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 34
+    matrix-start: 70
+    metadata:
+      age:
+        row: 42
+        parse: numeric
+      sex:
+        row: 43
+        parse: sex
+      training_status:
+        row: 44
+        parse: string
+- id: GSE96879
+  title: 'Epigenome-Wide Methylation Profile in sustemic lupus erythematosus: Impact
+    of ethnicity and SLEDAI score'
+  summary: Epienome-wide DNA methylation profiling of systemic lupus erythematosus
+    (SLE). The Illumina HumanMethylation450K Beadchip was used to obtain DNA methylation
+    profiles across approximately 450,000 CpGs in normal human blood samples from
+    females.  Samples included 33 non-SLE female patients (control) and 57 SLE  female
+    patients. SLE patients:- Ethnicity included 39 African americans and 18 European
+    Americans. SLEDAI score ranged from 2-30. Non-SLE pateients:-Ethnicity indclued
+    17 African Americans and 16 European Americans, all with a SLEDAI score of zero.
+  format: Illumina450k
+  organism: human
+  samples: 90
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE96nnn/GSE96879/matrix/GSE96879_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 32
+    matrix-start: 81
+    metadata:
+      ethnicity:
+        row: 40
+        parse: string
+      disease_state:
+        row: 41
+        parse: string
+      sledai_score:
+        row: 42
+        parse: string
+      age:
+        row: 43
+        parse: numeric
+- id: GSE99624
+  title: Primary osteoporosis is not reflected by disease-specific DNA methylation
+    or accelerated epigenetic age in blood
+  summary: "Osteoporosis is an age-related metabolic bone disease. Hence, osteoporotic\
+    \ patients might suffer from molecular features of accelerated aging, which is\
+    \ generally reflected by specific age-associated DNA methylation (DNAm) changes.\
+    \ In this study, we analyzed genome wide DNAm profiles of peripheral blood from\
+    \ patients with manifest primary osteoporosis and non-osteoporotic controls. Statistical\
+    \ analysis did not reveal any individual CG dinucleotides (CpG sites) with significant\
+    \ aberrant DNAm in osteoporosis. Subsequently, we analyzed if age-associated DNAm\
+    \ patterns are increased in OP. Using three independent age-predictors we did\
+    \ not find any evidence for accelerated epigenetic age in blood of osteoporotic\
+    \ patients. Taken together, osteoporosis is not reflected by characteristic DNAm\
+    \ patterns of peripheral blood that might be used as biomarker for the disease.\
+    \ The prevalence of osteoporosis is age-associated \u2013 but it is not associated\
+    \ with premature epigenetic aging in peripheral blood."
+  format: Illumina450k
+  organism: human
+  samples: 48
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE99nnn/GSE99624/matrix/GSE99624_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 35
+    matrix-start: 71
+    metadata:
+      donor_id:
+        row: 43
+        parse: string
+      gender:
+        row: 44
+        parse: sex
+      disease_state:
+        row: 45
+        parse: string
+      age:
+        row: 46
+        parse: numeric
+      tissue:
+        row: 47
+        parse: string
