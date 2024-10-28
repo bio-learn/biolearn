@@ -1904,32 +1904,6 @@ items:
       granulocytes:
         row: 55
         parse: string
-- id: GSE69138
-  title: Epigenome analysis of ischemic stroke patients
-  summary: We performed a genome-wide methylation study in whole-blood DNA from 185
-    ischemic stroke patient cohort. Illumina HumanMethylation450 BeadChip array was
-    used to measure DNA methylation in CpG sites.
-  format: Illumina450k
-  organism: human
-  samples: 589
-  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE69nnn/GSE69138/matrix/GSE69138_series_matrix.txt.gz
-  parser:
-    type: geo-matrix
-    id-row: 46
-    matrix-start: 90
-    metadata:
-      gender:
-        row: 54
-        parse: sex
-      stroke_subtype:
-        row: 55
-        parse: string
-      sample_type:
-        row: 56
-        parse: string
-      disease_state:
-        row: 58
-        parse: string
 - id: GSE77445
   title: Genome-wide DNA methylation levels and altered cortisol stress reactivity
     following childhood trauma in humans
