@@ -7,6 +7,8 @@
    :no-members:
    :no-inherited-members:
 
+This module provides implementations for caching that can be provided to the data library
+
 **Classes**:
 
 .. currentmodule:: biolearn.cache

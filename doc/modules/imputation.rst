@@ -1,6 +1,6 @@
 .. _imputation_ref:
 
-:mod:`biolearn.imputation`: Data Imputation Utilities
+:mod:`biolearn.imputation`: Data Imputation Functions
 =================================================
 
 .. automodule:: biolearn.imputation

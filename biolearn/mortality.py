@@ -12,7 +12,7 @@ import warnings
 
 def run_predictions(data, predictors_dict):
     """
-    Runs predictions using a collection of models specified in predictors_dict and returns a DataFrame with the results.
+    Runs predictions using a collection of models from the model gallery specified in predictors_dict and returns a DataFrame with the results.
 
     Args:
         data (GeoData): GeoData object used for predictions
@@ -93,7 +93,7 @@ def calculate_mortality_hazard_ratios(data, predictor_results):
     Calculates mortality hazard ratios for predictor results using a Cox Proportional Hazards model.
 
     Args:
-        data (GeoData): GeoData object. The metadata must contain the followin columns
+        data (GeoData): GeoData object. The metadata must contain the following columns
              'age' - age in years
              'dead' - 0 for alive, 1 for dead
              'years_until_death' - if dead this should be years between sample collection and death. Otherwise years between sample collection and last known contact with live subject
