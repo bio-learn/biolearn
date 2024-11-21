@@ -13,4 +13,5 @@ This is the class and function reference of biolearn.
    model_gallery.rst
    cache.rst
    imputation.rst
+   mortality.rst
    load.rst

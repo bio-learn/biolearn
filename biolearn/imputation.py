@@ -2,13 +2,13 @@ import pandas as pd
 from biolearn.util import get_data_file
 
 
-def impute_from_standard(dnam, cpg_averages, cpgs_to_impute=None):
+def impute_from_standard(dnam, cpg_source, cpgs_to_impute=None):
     """
-    Impute all missing values in a DNA methylation dataset using the averages from an external dataset.
+    Impute all missing values in a DNA methylation dataset using the reference values from an external dataset.
 
     Args:
         dnam (pd.DataFrame): DataFrame with samples as columns and CpG sites as rows.
-        cpg_averages (pd.Series): Series containing reference averages for CpG sites.
+        cpg_source (pd.Series): Series containing reference values for CpG sites.
         cpgs_to_impute (list of str, optional): List of CpG sites to impute. Missing cpgs will only be imputed if in this list.
 
     Returns:
@@ -16,10 +16,10 @@ def impute_from_standard(dnam, cpg_averages, cpgs_to_impute=None):
     """
     if cpgs_to_impute:
         impute_rows = dnam.loc[cpgs_to_impute]
-        impute_rows = impute_rows.apply(lambda col: col.fillna(cpg_averages))
+        impute_rows = impute_rows.apply(lambda col: col.fillna(cpg_source))
         df_filled = dnam.combine_first(impute_rows)
     else:
-        df_filled = dnam.apply(lambda col: col.fillna(cpg_averages))
+        df_filled = dnam.apply(lambda col: col.fillna(cpg_source))
     return df_filled
 
 
@@ -29,7 +29,7 @@ def impute_from_average(dnam, cpgs_to_impute=None):
 
     Args:
         dnam (pd.DataFrame): DataFrame with samples as columns and CpG sites as rows.
-        cpgs_to_impute (list of str, optional): List of CpG sites to impute.
+        cpgs_to_impute (list of str, optional): List of CpG sites to impute. Missing cpgs will not be imputed.
 
     Returns:
         pd.DataFrame: DataFrame with missing values filled.
@@ -62,7 +62,7 @@ def hybrid_impute(dnam, cpg_source, required_cpgs, threshold=0.8):
     Args:
         dnam (pd.DataFrame): DataFrame with samples as columns and CpG sites as rows.
         cpg_source (pd.Series): Series containing reference values for CpG sites.
-        required_cpgs (list of str): List of CpG sites that need to be in the final dataset.
+        required_cpgs (list of str): List of CpG sites to impute. Missing cpgs will only be imputed if in this list.
         threshold (float, optional): Threshold for determining imputation strategy. Default is 0.8.
 
     Returns:
