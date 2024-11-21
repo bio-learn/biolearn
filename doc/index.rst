@@ -116,6 +116,7 @@ Featured examples
    quickstart.md
    clocks.rst
    data.rst
+   methylation-standard.rst
    auto_examples/index.rst
    modules/index.rst
 
