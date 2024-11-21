@@ -101,10 +101,14 @@ def cached_download(url_or_filepath):
                 with open(filepath, "wb") as out_file:
                     shutil.copyfileobj(response.raw, out_file)
             except requests.RequestException as e:
-                raise Exception(f"Failed to download the file from {url}. Error: {e}")
+                raise Exception(
+                    f"Failed to download the file from {url}. Error: {e}"
+                )
     else:
         if not os.path.exists(url_or_filepath):
-            raise FileNotFoundError(f"The file does not exist: {url_or_filepath}")
+            raise FileNotFoundError(
+                f"The file does not exist: {url_or_filepath}"
+            )
         filepath = url_or_filepath
 
     return filepath

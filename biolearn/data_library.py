@@ -216,7 +216,9 @@ class GeoData:
                            and a detailed section for missing percentages per site.
         """
         if self.dnam is None or self.dnam.empty:
-            raise ValueError("This dataset does not have Methylation data. Only methylation data is currently supported by quality_report")
+            raise ValueError(
+                "This dataset does not have Methylation data. Only methylation data is currently supported by quality_report"
+            )
 
         methylation_data = self.dnam.copy()
 
@@ -268,13 +270,17 @@ class GeoData:
         """
         if isinstance(matrix, str):
             # If the input is a string, assume it's a file path and read the CSV
-            dnam = pd.read_csv(matrix, index_col=0, na_values=["NaN", "", " "]).apply(pd.to_numeric, errors='coerce')
+            dnam = pd.read_csv(
+                matrix, index_col=0, na_values=["NaN", "", " "]
+            ).apply(pd.to_numeric, errors="coerce")
         elif isinstance(matrix, pd.DataFrame):
             # If the input is already a DataFrame, use it directly
             dnam = matrix.copy()
         else:
-            raise ValueError("The matrix must be either a DataFrame or a file path to a CSV.")
-        
+            raise ValueError(
+                "The matrix must be either a DataFrame or a file path to a CSV."
+            )
+
         # Strip extra spaces from index and ensure they are strings
         dnam.index = dnam.index.str.strip().str.split("_").str[0]
 
@@ -285,7 +291,6 @@ class GeoData:
         metadata = pd.DataFrame(index=dnam.columns)
 
         return cls(metadata, dnam)
-
 
 
 class JenAgeCustomParser:
