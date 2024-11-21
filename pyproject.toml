@@ -22,7 +22,8 @@ dependencies = [
   "scipy",
   "cvxpy",
   "xlrd",
-  "openpyxl"
+  "openpyxl",
+  "ecos"
 ]
 
 keywords = ["biomarker"]
