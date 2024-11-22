@@ -1254,7 +1254,7 @@ items:
       disease_status:
         row: 37
         parse: string
-      gender:
+      sex:
         row: 38
         parse: sex
       age:
@@ -1292,7 +1292,7 @@ items:
       pair_number:
         row: 38
         parse: string
-      gender:
+      sex:
         row: 39
         parse: sex
       age:
@@ -1309,7 +1309,7 @@ items:
     was used to obtain DNA methylation profiles across approximately 850,000 CpGs
     in CD11b+CD33+CD15neg monocytes isolated from PBMCs of 17 healthy donors and 47
     rheumatoid arthritis patients with different disease activity scores (DAS28).
-  format: Unknown
+  format: IlluminaEPIC
   organism: human
   samples: 64
   path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE134nnn/GSE134429/matrix/GSE134429_series_matrix.txt.gz
@@ -1358,7 +1358,7 @@ items:
     id-row: 33
     matrix-start: 70
     metadata:
-      gender:
+      sex:
         row: 41
         parse: sex
       tissue:
@@ -1401,7 +1401,7 @@ items:
     and ELA, however, neither of them was found to mediate the contribution of ELA
     to SAD later in life. Future studies are needed to replicate our findings in independent
     cohorts and to investigate the biological pathways underlying these effects.
-  format: Unknown
+  format: IlluminaEPIC
   organism: human
   samples: 143
   path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE164nnn/GSE164056/matrix/GSE164056_series_matrix.txt.gz
@@ -1438,7 +1438,7 @@ items:
     are different between normal weight and obese women. This can alter gene expression
     patterns affecting adipogenesis and lipid storage. This results confirms that
     an obesogenic lifestyle can promote epigenetic changes in the human DNA.
-  format: Unknown
+  format: Illumina450k
   organism: human
   samples: 32
   path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE166nnn/GSE166611/matrix/GSE166611_series_matrix.txt.gz
@@ -1447,7 +1447,7 @@ items:
     id-row: 31
     matrix-start: 69
     metadata:
-      gender:
+      sex:
         row: 39
         parse: sex
       age:
@@ -1484,7 +1484,7 @@ items:
     of promoters, associated with key developmental genes, is frequently hypermethylated
     in cancers and in vitro cell culture, pointing to a novel mechanistic link between
     aberrant hypermethylation in cancer, aging, and cell culture.
-  format: Unknown
+  format: Illumina27k
   organism: human
   samples: 93
   path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE20nnn/GSE20236/matrix/GSE20236_series_matrix.txt.gz
@@ -1496,7 +1496,7 @@ items:
       age:
         row: 48
         parse: numeric
-      gender:
+      sex:
         row: 49
         parse: sex
       tissue:
@@ -1521,10 +1521,10 @@ items:
     id-row: 32
     matrix-start: 67
     metadata:
-      gender:
+      sex:
         row: 40
         parse: sex
-      age_(y):
+      age:
         row: 41
         parse: numeric
       tissue:
@@ -1546,7 +1546,7 @@ items:
     3 in diseaseStatus column. The column used_in_analysis shows the samples that
     were used in our study. The excluded samples failed quality control. Normalized
     data are also included in the non_normalized.txt (i.e. AVG_Beta column).
-  format: Unknown
+  format: Illumina27k
   organism: human
   samples: 720
   path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41037/matrix/GSE41037_series_matrix.txt.gz
@@ -1555,7 +1555,7 @@ items:
     id-row: 33
     matrix-start: 75
     metadata:
-      gender:
+      sex:
         row: 41
         parse: sex
       age:
@@ -1592,7 +1592,7 @@ items:
   title: Differential DNA methylation with age displays both common and dynamic features
     across human tissues that are influenced by CpG landscape [blood]
   summary: Sentrix barcode provided for batch correction
-  format: Unknown
+  format: Illumina27k
   organism: human
   samples: 71
   path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE49nnn/GSE49904/matrix/GSE49904_series_matrix.txt.gz
@@ -1601,10 +1601,10 @@ items:
     id-row: 37
     matrix-start: 77
     metadata:
-      gender:
+      sex:
         row: 45
         parse: sex
-      age_(yrs):
+      age:
         row: 46
         parse: numeric
       ethnicity:
@@ -1663,7 +1663,7 @@ items:
       age:
         row: 59
         parse: numeric
-      gender:
+      sex:
         row: 60
         parse: sex
       tissue:
@@ -1691,7 +1691,7 @@ items:
       diagnosis:
         row: 55
         parse: string
-      gender:
+      sex:
         row: 56
         parse: sex
       race:
@@ -1729,13 +1729,13 @@ items:
     id-row: 39
     matrix-start: 95
     metadata:
-      gender:
+      sex:
         row: 47
         parse: sex
       tissue:
         row: 48
         parse: string
-      age_(yrs):
+      age:
         row: 49
         parse: numeric
       dnamage:
@@ -1824,7 +1824,7 @@ items:
     id-row: 49
     matrix-start: 85
     metadata:
-      gender:
+      sex:
         row: 57
         parse: sex
       age:
@@ -1865,7 +1865,7 @@ items:
       hivstatus:
         row: 42
         parse: string
-      gender:
+      sex:
         row: 43
         parse: sex
       dnamage:
@@ -1931,7 +1931,7 @@ items:
       race:
         row: 38
         parse: string
-      gender:
+      sex:
         row: 39
         parse: sex
       age:
@@ -1979,7 +1979,7 @@ items:
     beadchip array was used to obtain DNA methylation profiles across approximately
     450,000 CpG dinucleotide methylation loci in DNA isolated from PBMCs.  Samples
     include 12 Y-SED subjects, 15 O-SED subjects and 11 O-Ex subjects.
-  format: Unknown
+  format: Illumina450k
   organism: human
   samples: 38
   path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE85nnn/GSE85311/matrix/GSE85311_series_matrix.txt.gz
@@ -2056,7 +2056,7 @@ items:
       donor_id:
         row: 43
         parse: string
-      gender:
+      sex:
         row: 44
         parse: sex
       disease_state:
