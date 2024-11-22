@@ -7,6 +7,8 @@
    :no-members:
    :no-inherited-members:
 
+This module provides implementations of different biomarker models and clocks
+
 **Classes**:
 
 .. currentmodule:: biolearn.model_gallery

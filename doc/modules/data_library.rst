@@ -7,6 +7,8 @@
    :no-members:
    :no-inherited-members:
 
+This module provides implementations for loading data into the Biolearn format
+
 **Classes**:
 
 .. currentmodule:: biolearn.data_library
