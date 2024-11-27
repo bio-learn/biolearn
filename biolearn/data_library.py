@@ -256,6 +256,86 @@ class GeoData:
 
         return QualityReport(sample_report, methylation_site_report, summary)
 
+    def plot_sample_deviations(self, datasets, dataset_ids, output_path=None):
+        """
+        Plots distribution of sample deviations from the population mean in a ridge density plot.
+
+        Args:
+            datasets (list): A list of GeoData objects for each dataset.
+            dataset_ids (list): A list of dataset IDs (e.g., GSE IDs) for labeling.
+            output_path (str, optional): File path to save the plot. If None, displays the plot.
+
+        Returns:
+            None
+        """
+        # Ensure inputs are lists for uniform processing
+        if not isinstance(datasets, list):
+            datasets = [datasets]
+        if not isinstance(dataset_ids, list):
+            dataset_ids = [dataset_ids]
+
+        # Create a DataFrame to store deviations and dataset IDs
+        combined_data = []
+
+        for geodata, dataset_id in zip(datasets, dataset_ids):
+            quality_report = geodata.quality_report()
+            deviations = quality_report.sample_report["deviation"]
+            deviations = deviations.to_frame(name="Deviation")
+            deviations["Dataset"] = dataset_id
+            combined_data.append(deviations)
+
+        # Concatenate all data
+        combined_df = pd.concat(combined_data, ignore_index=True)
+
+        # Sort dataset IDs for consistent stacking
+        dataset_labels = combined_df["Dataset"].unique()[::-1]  # Reverse order for top-down stacking
+        num_datasets = len(dataset_labels)
+
+        # Prepare the figure and axes for subplots
+        fig, axes = plt.subplots(
+            nrows=num_datasets, 
+            ncols=1, 
+            figsize=(10, num_datasets * 1.5), 
+            sharex=True, 
+            gridspec_kw={"hspace": 0.5}
+        )
+
+        # If there's only one dataset, make axes a list for consistency
+        if num_datasets == 1:
+            axes = [axes]
+
+        # Loop through each dataset and create density plots
+        for idx, (dataset_id, ax) in enumerate(zip(dataset_labels, axes)):
+            subset = combined_df[combined_df["Dataset"] == dataset_id]["Deviation"]
+            sns.kdeplot(
+                subset,
+                ax=ax,
+                fill=True,
+                alpha=0.8,
+                linewidth=1,
+                color=sns.color_palette("viridis", num_datasets)[idx],
+                bw_adjust=0.5,  # Adjust for smoothness
+            )
+            ax.set_ylabel(dataset_id, fontsize=10, rotation=0, labelpad=40, va="center")
+            ax.set_yticks([])
+            ax.set_xlim(0, combined_df["Deviation"].max() + 0.01)  # Adjust x-axis limits
+
+            # Remove spines for clean look
+            for spine in ["top", "right", "left"]:
+                ax.spines[spine].set_visible(False)
+
+        # Add a shared x-axis label
+        axes[-1].set_xlabel("Deviation", fontsize=12)
+
+        # Add a shared title
+        fig.suptitle("Ridge Density Plot of Sample Deviations", fontsize=14)
+
+        # Save or display the plot
+        if output_path:
+            plt.savefig(output_path, dpi=300, bbox_inches="tight")
+        else:
+            plt.show()
+
     @classmethod
     def from_methylation_matrix(cls, matrix):
         """
