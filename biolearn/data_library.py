@@ -6,6 +6,8 @@ import requests
 import gzip
 import shutil
 import os
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 from biolearn.util import cached_download, get_data_file
