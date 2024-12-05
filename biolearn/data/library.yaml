@@ -1,1242 +1,1261 @@
 ---
 items:
-  - id: GSE112618
-    title: 'FACS validation dataset: An optimized library for reference-based deconvolution
-      of whole-blood biospecimens assayed using the Illumina HumanMethylationEPIC BeadArray
-      (III)'
-    summary: DNA methylation assessments of peripheral blood DNA can be used to accurately
-      estimate the relative proportions of underlying leukocyte subtypes. Such cell
-      deconvolution analysis relies on libraries of discriminating differentially methylated
-      regions that are developed for each specific cell type measured. The relationship
-      between estimated cell type proportions can then be tested for their association
-      with phenotypes, disease states, and subject outcomes, or used in multivariable
-      models as terms for adjustment in epigenome-wide association studies (EWAS). We
-      obtained purified neutrophils, monocytes, B-lymphocytes, natural killer (NK) cells,
-      CD4+ T-cells, and CD8+ T-cells from healthy subjects and measured DNA methylation
-      with the Illumina HumanMethylationEPIC array platform. In addition, we measured
-      DNA methylation with the EPIC array in two sets of artificial DNA mixtures comprising
-      the above cell types. We compared three separate approaches to select reference
-      differentially methylated region libraries (DMR library), for cell type proportion
-      inference. The IDOL algorithm identified an optimal DMR library consisting of
-      450 CpG sites for inferring leukocyte subtype proportions (average R2=99.2). Importantly,
-      the majority of CpG sites (69%) in the IDOL DMR library were unique to the new
-      EPIC methylation array, in that they were not present on the 450K array. Our new
-      reference DMR library is available as a Bioconductor package, has the potential
-      to reduce any unintended technical differences arising from the combination of
-      different generations of array platforms, and may be helpful in generating larger
-      DMR libraries that include novel cell subtypes. A  dataset of six whole blood
-      samples were FACS sorted and the DNA was processed as a validation dataset.
-    format: IlluminaEPIC
-    organism: human
-    samples: 6
-    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE112nnn/GSE112618/matrix/GSE112618_series_matrix.txt.gz
-    parser:
-      type: geo-matrix
-      id_row: null
-      matrix-start: 82
-      metadata:
-        sample_well:
-          row: 45
-          parse: string
-        chip:
-          row: 46
-          parse: string
-        sex:
-          row: 47
-          parse: sex
-        age:
-          row: 48
-          parse: numeric
-        array:
-          row: 49
-          parse: string
-        slide:
-          row: 50
-          parse: string
-        cd4t_proportion:
-          row: 51
-          parse: string
-        cd8t_proportion:
-          row: 52
-          parse: string
-        nk_proportion:
-          row: 53
-          parse: string
-        bcell_proportion:
-          row: 54
-          parse: string
-        monocytes_proportion:
-          row: 55
-          parse: string
-        granulocytes_proportion:
-          row: 56
-          parse: string
-        neutrophils_proportion:
-          row: 57
-          parse: string
-      id-row: 37
-  - id: GSE110554
-    title: 'FlowSorted.Blood.EPIC: An optimized library for reference-based deconvolution
-      of whole-blood biospecimens assayed using the Illumina HumanMethylationEPIC BeadArray
-      (II)'
-    summary: DNA methylation assessments of peripheral blood DNA can be used to accurately
-      estimate the relative proportions of underlying leukocyte subtypes. Such cell
-      deconvolution analysis relies on libraries of discriminating differentially methylated
-      regions that are developed for each specific cell type measured. The relationship
-      between estimated cell type proportions can then be tested for their association
-      with phenotypes, disease states, and subject outcomes, or used in multivariable
-      models as terms for adjustment in epigenome-wide association studies (EWAS). We
-      obtained purified neutrophils, monocytes, B-lymphocytes, natural killer (NK) cells,
-      CD4+ T-cells, and CD8+ T-cells from healthy subjects and measured DNA methylation
-      with the Illumina HumanMethylationEPIC array platform. In addition, we measured
-      DNA methylation with the EPIC array in two sets of artificial DNA mixtures comprising
-      the above cell types. We compared three separate approaches to select reference
-      differentially methylated region libraries (DMR library), for cell type proportion
-      inference. The IDOL algorithm identified an optimal DMR library consisting of
-      450 CpG sites for inferring leukocyte subtype proportions (average R2=99.2). Importantly,
-      the majority of CpG sites (69%) in the IDOL DMR library were unique to the new
-      EPIC methylation array, in that they were not present on the 450K array. Our new
-      reference DMR library is available as a Bioconductor package, has the potential
-      to reduce any unintended technical differences arising from the combination of
-      different generations of array platforms, and may be helpful in generating larger
-      DMR libraries that include novel cell subtypes.
-    format: IlluminaEPIC
-    organism: human
-    samples: 49
-    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE110nnn/GSE110554/matrix/GSE110554_series_matrix.txt.gz
-    parser:
-      type: geo-matrix
-      id_row: null
-      matrix-start: 98
-      metadata:
-        sample_plate:
-          row: 47
-          parse: string
-        sample_well:
-          row: 48
-          parse: string
-        sample_name:
-          row: 49
-          parse: string
-        sample_group:
-          row: 50
-          parse: string
-        chip:
-          row: 51
-          parse: string
-        array_well:
-          row: 52
-          parse: string
-        cell_type:
-          row: 53
-          parse: string
-        cd4t:
-          row: 54
-          parse: string
-        cd8t:
-          row: 55
-          parse: string
-        bcell:
-          row: 56
-          parse: string
-        nk:
-          row: 57
-          parse: string
-        mono:
-          row: 58
-          parse: string
-        neu:
-          row: 59
-          parse: string
-        purity:
-          row: 60
-          parse: string
-        sex:
-          row: 61
-          parse: sex
-        age:
-          row: 62
-          parse: numeric
-        weight_kg:
-          row: 63
-          parse: string
-        height_m:
-          row: 64
-          parse: string
-        bmi:
-          row: 65
-          parse: string
-        bmi_clas:
-          row: 66
-          parse: string
-        ethnicity_wide:
-          row: 67
-          parse: string
-        ethnic_self:
-          row: 68
-          parse: string
-        smoker:
-          row: 69
-          parse: string
-        array:
-          row: 70
-          parse: string
-        slide:
-          row: 72
-          parse: string
-      id-row: 39
-  - id: GSE40279
-    title: Genome-wide Methylation Profiles Reveal Quantitative Views of Human Aging Rates
-    summary: "Genome wide DNA methylation profiling of individuals across a large age range. The Illumina Infinium 450k Human DNA methylation Beadchip was used to obtain DNA methylation profiles across approximately 450k CpGs from human whole blood."
-    format: Illumina450k
-    organism: human
-    samples: 656
-    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE40nnn/GSE40279/matrix/GSE40279_series_matrix.txt.gz
-    parser:
-      type: geo-matrix
-      id-row: 36
-      metadata:
-        age:
-          row: 44
-          parse: numeric
-        sex:
-          row: 47
-          parse: sex
-        ethnicity:
-          row: 48
-          parse: string
-        tissue:
-          row: 49
-          parse: string
-      matrix-start: 71
-  - id: GSE19711
-    title: Genome wide DNA methylation profiling of United Kingdom Ovarian Cancer Population Study (UKOPS)
-    summary: "The Illumina Infinium 27k Human DNA methylation Beadchip v1.2 was used to obtain DNA methylation profiles across approximately 27,000 CpGs in whole blood samples from 540 samples, of which 266 were samples taken from postmenopausal women with ovarian cancer and 274 were from age-matched healthy controls"
-    format: Illumina27k
-    organism: human
-    samples: 540
-    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE19nnn/GSE19711/matrix/GSE19711_series_matrix.txt.gz
-    parser:
-      type: geo-matrix
-      id-row: 31
-      metadata:
-        age:
-          row: 41
-          parse: numeric
-        histology:
-          row: 43
-          parse: string
-      matrix-start: 75
-  - id: GSE51057
-    title: Methylome Analysis and Epigenetic Changes Associated with Menarcheal Age
-    summary: "Epigenome-wide association study of age at menarche in a group of 329 women from the EPIC-Italy cohort."
-    format: Illumina450k
-    organism: human
-    samples: 329
-    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE51nnn/GSE51057/matrix/GSE51057_series_matrix.txt.gz
-    parser:
-      type: geo-matrix
-      id-row: 66
-      metadata:
-        age:
-          row: 75
-          parse: numeric
-        sex:
-          row: 74
-          parse: sex
-        cancer:
-          row: 77
-          parse: string
-      matrix-start: 100
-  - id: GSE42861
-    title: Differential DNA methylation in Rheumatoid arthritis
-    summary: "Genome-wide DNA methylation level was studied to determine whether Rheumatoid arthritis patients (cases) has methylation differences comparing to normal controls in peripheral blood leukocytes (PBLs). We used Illumina HumanMethylation450 BeadChip array to determine the genome-wide DNA methylation difference in PBLs from Rheumatoid arthritis patients (cases) and normal controls"
-    format: Illumina450k
-    organism: human
-    samples: 689
-    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE42nnn/GSE42861/matrix/GSE42861_series_matrix.txt.gz
-    parser:
-      type: geo-matrix
-      id-row: 37
-      metadata:
-        age:
-          row: 48
-          parse: numeric
-        sex:
-          row: 49
-          parse: sex
-        smoking:
-          row: 50
-          parse: string
-        disease:
-          row: 46
-          parse: string
-      matrix-start: 71
-  - id: GSE41169
-    title: Blood DNA methylation profiles in a Dutch population
-    summary: "Genome wide DNA methylation profiling of whole blood in schizophrenia patients and healthy subjects of different ages. The Illumina Infinium 450k Human DNA methylation Beadchip v1.2 was used to obtain DNA methylation profiles across approximately 480,000 CpGs. Dataset included 62 schizophrenia patients and 33 healthy subjects from Dutch descent."
-    format: Illumina450k
-    organism: human
-    samples: 95
-    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41169/matrix/GSE41169_series_matrix.txt.gz
-    parser:
-      type: geo-matrix
-      id-row: 33
-      metadata:
-        age:
-          row: 47
-          parse: numeric
-        sex:
-          row: 41
-          parse: sex
-        disease:
-          row: 48
-          parse: numeric
-      matrix-start: 73
-  - id: GSE51032
-    title: EPIC-Italy at HuGeF
-    summary: Anthropometric measurements, and dietary and lifestyle information obtained
-      by questionnaire are also available.
-    format: Illumina450k
-    organism: human
-    samples: 845
-    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE51nnn/GSE51032/matrix/GSE51032_series_matrix.txt.gz
-    parser:
-      type: geo-matrix
-      id-row: 35
-      matrix-start: 69
-      metadata:
-        sex:
-          row: 43
-          parse: sex
-        age:
-          row: 44
-          parse: numeric
-        age_at_menarche:
-          row: 45
-          parse: string
-        cancer_type_(icd-10):
-          row: 46
-          parse: string
-        time_to_diagnosis:
-          row: 47
-          parse: string
-  - id: GSE73103
-    title: Many obesity-associated SNPs strongly associate with DNA methylation changes
-      at proximal promoters and enhancers
-    summary: 'Background: The mechanisms of how genetic variants (SNPs) identified in
-      genome-wide association studies act to influence body mass remain unknown for
-      most of these SNPs, which continue to puzzle the scientific community. Recent
-      evidence points to epigenetic and chromatin state of the genome to have an important
-      role.  Methods: 355 healthy young individuals were genotyped for 52 known obesity-associated
-      SNPs and we obtained DNA methylation levels in their blood using the Illumina
-      450K BeadChip. Associations between alleles and methylation at proximal cytosine
-      residues were tested using a linear model adjusted for age, sex, weight category
-      and a proxy for blood cell type counts. For replication in other tissues, we used
-      two open-access datasets (skin fibroblasts, n=62; four brain regions, n=121-133)
-      and an additional dataset in subcutaneous and visceral fat (n=149).  Results:
-      We found that alleles at 28 of these obesity-associated SNPs associate with methylation
-      levels at 107 proximal CpG sites. Out of 107 CpG sites, 38 are located in gene
-      promoters, including genes strongly implicated in obesity (MIR148A, BDNF, PTPMT1,
-      NR1H3, MGAT1, SCGB3A1, HOXC12, PMAIP1, PSIP1, RPS10-NUDT3, RPS10, SKOR1, MAP2K5,
-      SIX5, AGRN, IMMP1L, ELP4, ITIH4, SEMA3G, POMC, ADCY3, SSPN, LGR4, TUFM, MIR4721,
-      SULT1A1, SULT1A2, APOBR, CLN3, SPNS1,SH2B1, ATXN2L, and IL27). Interestingly,
-      the associated SNPs are in known eQTLs for some of these genes. We also found
-      that the 107 CpGs are enriched in enhancers in peripheral blood mononuclear cells.
-      Finally, our results indicate that some of these associations are not blood-specific
-      as we successfully replicated four associations in skin fibroblasts.  Conclusions:
-      Our results strongly suggest that many obesity-associated SNPs are associated
-      with proximal gene regulation, which was reflected by association of obesity risk
-      allele genotypes with differential DNA methylation. This study highlights the
-      importance of DNA methylation and other chromatin marks as a way to understand
-      the molecular basis of genetic variants associated to human diseases and traits.'
-    format: Illumina450k
-    organism: human
-    samples: 355
-    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE73nnn/GSE73103/matrix/GSE73103_series_matrix.txt.gz
-    parser:
-      type: geo-matrix
-      id-row: 45
-      matrix-start: 133
-      metadata:
-        sex:
-          row: 53
-          parse: string
-        tissue:
-          row: 54
-          parse: string
-        age:
-          row: 55
-          parse: numeric
-        weight_category:
-          row: 56
-          parse: string
-        rs1011731:
-          row: 57
-          parse: string
-        rs10150332:
-          row: 58
-          parse: string
-        rs10195252:
-          row: 59
-          parse: string
-        rs10458787:
-          row: 60
-          parse: string
-        rs1055144:
-          row: 61
-          parse: string
-        rs10767664:
-          row: 62
-          parse: string
-        rs10769908:
-          row: 63
-          parse: string
-        rs10783050:
-          row: 64
-          parse: string
-        rs10838738:
-          row: 65
-          parse: string
-        rs10993160:
-          row: 66
-          parse: string
-        rs11142387:
-          row: 67
-          parse: string
-        rs1152846:
-          row: 68
-          parse: string
-        rs12517906:
-          row: 69
-          parse: string
-        rs12597579:
-          row: 70
-          parse: string
-        rs1294421:
-          row: 71
-          parse: string
-        rs13107325:
-          row: 72
-          parse: string
-        rs1443512:
-          row: 73
-          parse: string
-        rs1514175:
-          row: 74
-          parse: string
-        rs17782313:
-          row: 75
-          parse: string
-        rs1878047:
-          row: 76
-          parse: string
-        rs1927702:
-          row: 77
-          parse: string
-        rs206936:
-          row: 78
-          parse: string
-        rs2112347:
-          row: 79
-          parse: string
-        rs2145270:
-          row: 80
-          parse: string
-        rs2206734:
-          row: 81
-          parse: string
-        rs2241423:
-          row: 82
-          parse: string
-        rs2287019:
-          row: 83
-          parse: string
-        rs2383393:
-          row: 84
-          parse: string
-        rs2444217:
-          row: 85
-          parse: string
-        rs261967:
-          row: 86
-          parse: string
-        rs2815752:
-          row: 87
-          parse: string
-        rs3934834:
-          row: 88
-          parse: string
-        rs4377469:
-          row: 89
-          parse: string
-        rs4823006:
-          row: 90
-          parse: string
-        rs516636:
-          row: 91
-          parse: string
-        rs652722:
-          row: 92
-          parse: string
-        rs6784615:
-          row: 93
-          parse: string
-        rs6794092:
-          row: 94
-          parse: string
-        rs6795735:
-          row: 95
-          parse: string
-        rs6861681:
-          row: 96
-          parse: string
-        rs6905288:
-          row: 97
-          parse: string
-        rs713586:
-          row: 98
-          parse: string
-        rs7138803:
-          row: 99
-          parse: string
-        rs718314:
-          row: 100
-          parse: string
-        rs7481311:
-          row: 101
-          parse: string
-        rs7498665:
-          row: 102
-          parse: string
-        rs7647305:
-          row: 103
-          parse: string
-        rs7832552:
-          row: 104
-          parse: string
-        rs824931:
-          row: 105
-          parse: string
-        rs887912:
-          row: 106
-          parse: string
-        rs984222:
-          row: 107
-          parse: string
-        rs9939609:
-          row: 108
-          parse: string
-  - id: GSE69270
-    title: 'Aging-associated DNA methylation changes in middle-aged individuals: The
-      Young Finns Study'
-    summary: Background  Chronological aging-associated changes in the human DNA methylome
-      are studied by multiple epigenome-wide association studies (EWAS); however, the
-      aging-associated DNAmet changes identified among different age groups and tissues
-      vary and especially the rates of aging-associated alterations in the epigenome
-      during adulthood remain unclear. Here, we further explore and characterize CpG-sites
-      where DNA methylation levels alter at a constant rate during adulthood and are
-      also independent of blood cell type heterogeneity.   Results  In the study, we
-      observed 1,202 aging-associated CpG-sites (a-CpGs), of which 48% were hypermethylated
-      with advancing age in whole blood with an especially narrow age range (40 - 49
-      years). Repeatedly reported a-CpGs in ELOVL2, FHL2, PENK and KLF14 were also identified.
-      Regions with aging-associated hypermethylation were enriched to several gene ontology
-      terms (especially on the cluster of developmental processes), while hypomethylated
-      sites showed no enrichment. The genes with a higher number of a-CpG hits were
-      more often hypermethylated. Of the 1,202 aging-associated CpG-sites in the present
-      study, 987 were identified in previous study (Vitality 90+) as differentially
-      methylated also between nonagenarians and young adults in a previous study, and
-      importantly, the directions of changes were identical in the previous and in the
-      present study.   Conclusions  The set of 987 replicated a-CpGs presented here
-      are altered in strong association with chronological aging in the whole range
-      of adulthood. Consequently, future studies should note the variability of the
-      types of a-CpGs, and the a-CpGs presented here should be dissociated from the
-      environmental-sensitive CpG-sites or from regions that are associated with aging
-      in a non-linear manner due to the accumulation of senescence-related features.
-      This report offers detailed and verified pool of a-CpGs in which DNAmet levels
-      associate linearly with chronological age and of which are different from the
-      non-linearly changing ones.
-    format: Illumina450k
-    organism: human
-    samples: 184
-    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE69nnn/GSE69270/matrix/GSE69270_series_matrix.txt.gz
-    parser:
-      type: geo-matrix
-      id-row: 40
-      matrix-start: 79
-      metadata:
-        age:
-          row: 48
-          parse: numeric
-        gender_(1=woman;_0=man):
-          row: 49
-          parse: string
-        cd8t_cell_proportion:
-          row: 50
-          parse: string
-        cd4t_cell_proportion:
-          row: 51
-          parse: string
-        nk_cell_proportion:
-          row: 52
-          parse: string
-        bcell_cell_proportion:
-          row: 53
-          parse: string
-        monocyte_proportion:
-          row: 54
-          parse: string
-        granulocyte_proportion:
-          row: 55
-          parse: string
-  - id: GSE36054
-    title: Methylation Profiling of Blood DNA from Healthy Children
-    summary: Groupings by family membership requested but not provided by submitter
-    format: Illumina450k
-    organism: human
-    samples: 192
-    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE36nnn/GSE36054/matrix/GSE36054_series_matrix.txt.gz
-    parser:
-      type: geo-matrix
-      id-row: 36
-      matrix-start: 78
-      metadata:
-        group:
-          row: 44
-          parse: string
-        sentrix_id:
-          row: 45
-          parse: string
-        sentrix_position:
-          row: 46
-          parse: string
-        experiment:
-          row: 47
-          parse: string
-        cell_type:
-          row: 51
-          parse: string
-        age_at_collection_months:
-          row: 49
-          parse: string
-        ethnicity:
-          row: 50
-          parse: string
-  - id: GSE64495
-    title: DNA methylation profiles of human blood samples from a severe developmental
-      disorder and controls
-    summary: 'The main goal of the study was to measure the epigenetic age (also known
-      as DNA methylation age) of subjects with a severe developmental disorder (known
-      as syndrome X) and controls. To measure DNA methylation age, we used the epigenetic
-      clock software described in Horvath S (n=2013) DNA methylation age of human tissues
-      and cell types. Genome Biology.2013, 14:R115. DOI: 10.1186/10.1186/gb-2013-14-10-r115
-      PMID: 24138928.'
-    format: Illumina450k
-    organism: human
-    samples: 113
-    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE64nnn/GSE64495/matrix/GSE64495_series_matrix.txt.gz
-    parser:
-      type: geo-matrix
-      id-row: 34
-      matrix-start: 75
-      metadata:
-        tissue:
-          row: 42
-          parse: string
-        sex:
-          row: 43
-          parse: string
-        age:
-          row: 44
-          parse: numeric
-        dna_methylation_age:
-          row: 45
-          parse: string
-        age_acceleration_vs_controls:
-          row: 46
-          parse: string
-        age_acceleration_vs_controls_in_children:
-          row: 47
-          parse: string
-        cor_sample_vs_gold_standard:
-          row: 48
-          parse: string
-        disease_status:
-          row: 49
-          parse: string
-        family_number:
-          row: 50
-          parse: string
-        relation_to_proband:
-          row: 51
-          parse: string
-  - id: GSE30870
-    title: DNA methylomes of Newborns and Nonagenarians
-    summary: DNA methylation differences between Newborns and Nonagenarians
-    format: Illumina450k
-    organism: human
-    samples: 40
-    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE30nnn/GSE30870/matrix/GSE30870_series_matrix.txt.gz
-    parser:
-      type: geo-matrix
-      id-row: 32
-      matrix-start: 65
-      metadata:
-        age:
-          row: 40
-          parse: numeric
-        disease_status:
-          row: 41
-          parse: string
-        tissue:
-          row: 42
-          parse: string
-        cell_type:
-          row: 43
-          parse: string
-  - id: GSE52588
-    title: Identification of a DNA methylation signature in blood from subjects affected
-      by Down syndrome
-    summary: Down syndrome is characterized by a wide spectrum of clinical signs, which
-      include cognitive and endocrine disorders and haematological abnormalities. Although
-      it is well established that the causative defect of Down syndrome is the trisomy
-      of chromosome 21, the molecular bases of Down syndrome phenotype are still largely
-      unknown. We used the Infinium HumanMethylation450 BeadChip to investigate DNA
-      methylation patterns in whole blood from 29 subjects affected by Down syndrome
-      (DS), using their healthy relatives as controls (mothers  and unaffected siblings).
-      This family-based model allowed us to monitor possible confounding effects on
-      DNA methylation patterns deriving from genetic and environmental (lifestyle) factors.
-      The identified epigenetic signature of Down syndrome includes differentially methylated
-      regions that, although enriched on chromosome 21, interest most of the other chromosomes
-      and can be functionally linked to the developmental and haematological defects
-      characteristic of the disease.
-    format: Illumina450k
-    organism: human
-    samples: 87
-    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE52nnn/GSE52588/matrix/GSE52588_series_matrix.txt.gz
-    parser:
-      type: geo-matrix
-      id-row: 52
-      matrix-start: 88
-      metadata:
-        group:
-          row: 60
-          parse: string
-        disease_state:
-          row: 61
-          parse: string
-        family:
-          row: 62
-          parse: string
-        sex:
-          row: 63
-          parse: sex
-        age:
-          row: 64
-          parse: numeric
-        tissue:
-          row: 65
-          parse: string
-  - id: GSE157131
-    title: Methylation data from stored peripheral blood leukocytes from African American
-      participants in the GENOA study
-    summary: African-American individuals of the GENOA cohort
-    format: Illumina450k
-    organism: human
-    samples: 946
-    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE157nnn/GSE157131/matrix/GSE157131-GPL21145_series_matrix.txt.gz
-    parser:
-      type: geo-matrix
-      id-row: 33
-      matrix-file: "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE157nnn/GSE157131/suppl/GSE157131_Matrix_processed_beta_geo_08252020.txt.gz"
-      matrix-file-seperator: "space"
-      matrix-file-format: pvalue
-      matrix-file-key-line: 53
-      metadata:
-        tissue:
-          row: 41
-          parse: string
-        sex:
-          row: 42
-          parse: sex
-        age:
-          row: 43
-          parse: numeric
-        systolic_blood_pressure_(mmhg):
-          row: 44
-          parse: string
-        diastolic_blood_pressure_(mmhg):
-          row: 45
-          parse: string
-  - id: GSE132203
-    title: DNA Methylation (EPIC) from the Grady Trauma Project
-    summary: Childhood and cumulative exposure to trauma increases an individual's lifetime
-      risk for psychiatric and stress-related disorders. This study evaluates DNA methylation
-      in whole blood, with the goal of identifying associaitons between peripheral DNA
-      methylation and psychiatric symptoms.
-    format: IlluminaEPIC
-    organism: human
-    samples: 795
-    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE132nnn/GSE132203/matrix/GSE132203_series_matrix.txt.gz
-    parser:
-      type: geo-matrix
-      id-row: 31
-      matrix-file: "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE132nnn/GSE132203/suppl/GSE132203_Geo_Submission_GTPEpic.csv.gz"
-      matrix-file-seperator: "comma"
-      matrix-file-format: pvalue
-      matrix-file-key-line: 30
-      metadata:
-        sex:
-          row: 39
-          parse: sex
-        age:
-          row: 40
-          parse: numeric
-        race:
-          row: 41
-          parse: string
-        mergedcapsandpsswinthin30days:
-          row: 42
-          parse: string
-        tei_total_types_experienced_somewitness:
-          row: 43
-          parse: string
-        childabphyssexemot_ctq_01modandsev:
-          row: 44
-          parse: string
-        pc1:
-          row: 45
-          parse: string
-        pc2:
-          row: 46
-          parse: string
-        pc3:
-          row: 47
-          parse: string
-        cd8t:
-          row: 48
-          parse: string
-        cd4t:
-          row: 49
-          parse: string
-        nk:
-          row: 50
-          parse: string
-        bcell:
-          row: 51
-          parse: string
-        mono:
-          row: 52
-          parse: string
-        neu:
-          row: 53
-          parse: string
-        age_acceleration:
-          row: 54
-          parse: string
-  - id: GSE134080
-    title: RNASeq whole blood of Dutch 500FG cohort
-    summary: "Expression levels from bulk whole blood from 96 individuals within the 500FG cohort. The aim of the 500FG project is to characterize the interaction between the genetic background of the host, the microbiome composition of different niches, and the consequences on an array of physiological functions: the immune response against important human pathogens, thrombocyte function, and in a subgroup of individuals the cognitive function of the brain. These aims are approached by a combination of advanced -omics technology, cutting edge functional tests (immune tests, functional brain MRI, etc) and systems biology-based bioinformatics."
-    format: IlluminaHiSeq2500
-    organism: human
-    samples: 100
-    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE134nnn/GSE134080/matrix/GSE134080_series_matrix.txt.gz
-    parser:
-      type: geo-matrix
-      id-row: 32
-      data-type: rna
-      matrix-file: "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE134nnn/GSE134080/suppl/GSE134080%5F500FG%5FRNASeq%5Fcounts.txt.gz"
-      matrix-file-format: standard
-      matrix-file-seperator: "comma"
-      metadata:
-        sex:
-          row: 43
-          parse: sex
-        age:
-          row: 42
-          parse: numeric
-  - id: JenAge
-    title: Deep sequencing of endogenous mRNA from Homo sapiens from four age categories
-    summary: "Comparison of temporal gene expression profiles to identify genes/pathways changing during ageing. Contains data from GSE103232 and GSE75337"
-    format: IlluminaHiSeq2500
-    organism: human
-    samples: 62
-    path: custom
-    parser:
-      type: jen-age-custom
-      data-type: rna
-  - id: BoAChallengeData
-    title: 2024 Biomarkers of Aging Challenge Sample Data
-    summary: We generated DNA methylation profiles of 500 diverse individuals to enable
-      to construction and validation of DNA methylation biomarkers of aging.
-    format: IlluminaEPIC
-    organism: human
-    samples: 500
-    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE246nnn/GSE246337/matrix/GSE246337_series_matrix.txt.gz
-    parser:
-      type: biomarkers-challenge-2024
-      id-row: 31
-      matrix-file: "ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE246nnn/GSE246337/suppl/GSE246337%5Fbetas.csv.gz"
-      matrix-file-key-line: 53
-      metadata:
-        subject_id:
-          row: 39
-          parse: string
-        sex:
-          row: 41
-          parse: sex
-        tissue:
-          row: 40
-          parse: string
-        race1:
-          row: 42
-          parse: string
-        race2:
-          row: 43
-          parse: string
-        ethnicity:
-          row: 44
-          parse: string
-        age:
-          row: 45
-          parse: numeric
-  - id: GSE167998
-    title: "FlowSorted.BloodExtended.EPIC: An Enhanced DNA Methylation Library for
-      Deconvoluting Peripheral Blood"
-    summary: DNA methylation microarrays have been extensively used for
-      understanding cell type composition in complex tissue samples. Here we
-      expand on existing libraries for reference-based deconvolution of blood DNA
-      methylation data assayed using the Illumina HumanMethylationEPIC array to
-      include 12 different leukocyte subtypes (neutrophils, eosinophils,
-      basophils, monocytes, B cells naïve and memory, CD4+ and CD8+ naïve and
-      memory cells, natural killers, and T regulatory cells). Application of the
-      IDOL algorithm for identifying optimal libraries for the
-      deconvolution of blood-derived DNA methylation data led to to a library
-      consisting of 1200 CpGs. The accuracy of deconvolution estimates obtained
-      using our IDOL-optimized library was evaluated using artificial mixtures
-      with known cellular composition and in samples were both whole-blood DNA
-      methylation data and FACS information were available. We further
-      showcase potential applications of our expanded library using
-      publicly available cancer, aging, and autoimmune disease data sets.
-    format: IlluminaEPIC
-    organism: human
-    samples: 68
-    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE167nnn/GSE167998/matrix/GSE167998_series_matrix.txt.gz
-    parser:
-      type: geo-matrix
-      matrix-file: "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE167nnn/GSE167998/suppl/GSE167998%5Fmatrix%5Fprocessed.txt.gz"
-      matrix-file-format: pvalue
-      matrix-file-seperator: "tab"
-      metadata:
-        sample_plate:
-          row: 48
-          parse: string
-        age:
-          row: 49
-          parse: numeric
-        horvath_age:
-          row: 50
-          parse: string
-        mage:
-          row: 51
-          parse: string
-        purity:
-          row: 52
-          parse: string
-        meth_purity:
-          row: 53
-          parse: string
-        ethnicity_wide:
-          row: 54
-          parse: string
-        ethnic_self:
-          row: 55
-          parse: string
-        meth_ethnicity:
-          row: 56
-          parse: string
-        weight_kg:
-          row: 57
-          parse: string
-        height_cm:
-          row: 58
-          parse: string
-        smoker:
-          row: 59
-          parse: string
-        bmi:
-          row: 60
-          parse: string
-        bmi_clas:
-          row: 61
-          parse: string
-        blood.type:
-          row: 62
-          parse: string
-        smp_type:
-          row: 63
-          parse: string
-        chip:
-          row: 64
-          parse: string
-        arraytypes:
-          row: 65
-          parse: string
-        fetal:
-          row: 66
-          parse: string
-        flag:
-          row: 67
-          parse: string
-        flag2:
-          row: 68
-          parse: string
-        include:
-          row: 69
-          parse: string
-        exclude:
-          row: 70
-          parse: string
-        exclude2:
-          row: 71
-          parse: string
-        neu.cbc:
-          row: 72
-          parse: string
-        lymph.cbc:
-          row: 73
-          parse: string
-        mono.cbc:
-          row: 74
-          parse: string
-        treg:
-          row: 75
-          parse: string
-        cd4nv:
-          row: 76
-          parse: string
-        cd4mem:
-          row: 77
-          parse: string
-        cd4t:
-          row: 78
-          parse: string
-        cd8t:
-          row: 79
-          parse: string
-        bnv:
-          row: 80
-          parse: string
-        bmem:
-          row: 81
-          parse: string
-        bcell:
-          row: 82
-          parse: string
-        nk:
-          row: 83
-          parse: string
-        mono:
-          row: 84
-          parse: string
-        neu:
-          row: 85
-          parse: string
-        eos:
-          row: 86
-          parse: string
-        gran:
-          row: 87
-          parse: string
-        cell_type:
-          row: 99
-          parse: string
-      id-row: 40
-  - id: GSE180683
-    title: "CD4T and CD8T naive and memory validation dataset: An Enhanced DNA
-      Methylation Library for Deconvoluting Peripheral Blood"
-    summary: DNA methylation microarrays have been extensively used for
-      understanding cell type composition in complex tissue samples. Here we
-      expand on existing libraries for reference-based deconvolution of blood DNA
-      methylation data assayed using the Illumina HumanMethylationEPIC array to
-      include 12 different leukocyte subtypes (neutrophils, eosinophils,
-      basophils, monocytes, B cells naive and memory, CD4+ and CD8+ naive and
-      memory cells, natural killers, and T regulatory cells). Application of the
-      IDOL algorithm for identifying optimal libraries for the deconvolution of
-      blood-derived DNA methylation data led to a library consisting of 1200 CpGs.
-      The accuracy of deconvolution estimates obtained using our IDOL-optimized
-      library was evaluated using artificial mixtures with known cellular
-      composition and in samples were both whole-blood DNA methylation data and
-      FACS information were available. We further showcase potential applications
-      of our expanded library using publicly available cancer, aging, and
-      autoimmune disease data sets.
-    format: IlluminaEPIC
-    organism: human
-    samples: 76
-    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE180nnn/GSE180683/matrix/GSE180683_series_matrix.txt.gz
-    parser:
-      type: geo-matrix
-      matrix-file: "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE180nnn/GSE180683/suppl/GSE180683%5FMatrix%5Fprocessed.txt.gz"
-      matrix-file-format: pvalue
-      matrix-file-key-line: 70
-      matrix-file-seperator: "tab"
-      metadata:
-        diagnosis:
-          row: 48
-          parse: string
-        tissue:
-          row: 49
-          parse: string
-        sex:
-          row: 50
-          parse: string
-        age:
-          row: 51
-          parse: numeric
-        karyotype:
-          row: 52
-          parse: string
-        time.point:
-          row: 53
-          parse: string
-        histological.group:
-          row: 54
-          parse: string
-        cd4t:
-          row: 55
-          parse: string
-        cd4nv:
-          row: 56
-          parse: string
-        cd4mem:
-          row: 57
-          parse: string
-        cd8t:
-          row: 58
-          parse: string
-        cd8mem:
-          row: 59
-          parse: string
-        cd8nv:
-          row: 60
-          parse: string
-        nontcell:
-          row: 61
-          parse: string
-        arraytypes:
-          row: 62
-          parse: string
-      id-row: 40
-  - id: GSE180970
-    title: "Umbilical cord blood artificial mixtures validation dataset: An Enhanced
-      DNA Methylation Library for Deconvoluting Peripheral Blood"
-    summary: DNA methylation microarrays have been extensively used for
-      understanding cell type composition in complex tissue samples. Here we
-      expand on existing libraries for reference-based deconvolution of blood DNA
-      methylation data assayed using the Illumina HumanMethylationEPIC array to
-      include 12 different leukocyte subtypes (neutrophils, eosinophils,
-      basophils, monocytes, B cells naive and memory, CD4+ and CD8+ naive and
-      memory cells, natural killers, and T regulatory cells). Application of the
-      IDOL algorithm for identifying optimal libraries for the deconvolution of
-      blood-derived DNA methylation data led to to a library consisting of 1200
-      CpGs. The accuracy of deconvolution estimates obtained using our
-      IDOL-optimized library was evaluated using artificial mixtures with known
-      cellular composition and in samples were both whole-blood DNA methylation
-      data and FACS information were available.  We further showcase potential
-      applications of our expanded library using publicly available cancer, aging,
-      and autoimmune disease data sets.
-    format: IlluminaEPIC
-    organism: human
-    samples: 12
-    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE180nnn/GSE180970/matrix/GSE180970_series_matrix.txt.gz
-    parser:
-      type: geo-matrix
-      matrix-start: 78
-      metadata:
-        cd4t:
-          row: 47
-          parse: string
-        cd8t:
-          row: 48
-          parse: string
-        bcell:
-          row: 49
-          parse: string
-        nk:
-          row: 50
-          parse: string
-        mono:
-          row: 51
-          parse: string
-        neu:
-          row: 52
-          parse: string
-        arraytypes:
-          row: 53
-          parse: string
-      id-row: 39
-  - id: GSE182379
-    title: '12-cell-type artificial mixtures validation dataset: An Enhanced DNA Methylation
-      Library for Deconvoluting Peripheral Blood'
-    summary: "DNA methylation microarrays have been extensively used for understanding\
-      \ cell type composition in complex tissue samples. Here we expand on existing\
-      \ libraries for reference-based deconvolution of blood DNA methylation data assayed\
-      \ using the Illumina HumanMethylationEPIC array to include 12 different leukocyte\
-      \ subtypes (neutrophils, eosinophils, basophils, monocytes, B cells na\xEFve and\
-      \ memory, CD4+ and CD8+ na\xEFve and memory cells, natural killers, and T regulatory\
-      \ cells). Application of the IDOL algorithm for identifying optimal libraries\
-      \ for the deconvolution of blood-derived DNA methylation data led to to a library\
-      \ consisting of 1200 CpGs. The accuracy of deconvolution estimates obtained using\
-      \ our IDOL-optimized library was evaluated using artificial mixtures with known\
-      \ cellular composition and in samples were both whole-blood DNA methylation data\
-      \ and FACS information were available.  We further showcase potential applications\
-      \ of our expanded library using publicly available cancer, aging, and autoimmune\
-      \ disease data sets."
-    format: IlluminaEPIC
-    organism: human
-    samples: 12
-    path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE182nnn/GSE182379/matrix/GSE182379_series_matrix.txt.gz
-    parser:
-      type: geo-matrix
-      id-row: 39
-      matrix-start: 83
-      metadata:
-        cd4nv:
-          row: 47
-          parse: string
-        cd4mem:
-          row: 48
-          parse: string
-        treg:
-          row: 49
-          parse: string
-        cd8nv:
-          row: 50
-          parse: string
-        cd8mem:
-          row: 51
-          parse: string
-        bnv:
-          row: 52
-          parse: string
-        bmem:
-          row: 53
-          parse: string
-        nk:
-          row: 54
-          parse: string
-        mono:
-          row: 55
-          parse: string
-        neu:
-          row: 56
-          parse: string
-        eos:
-          row: 57
-          parse: string
-        bas:
-          row: 58
-          parse: string
+- id: GSE112618
+  title: 'FACS validation dataset: An optimized library for reference-based deconvolution
+    of whole-blood biospecimens assayed using the Illumina HumanMethylationEPIC BeadArray
+    (III)'
+  summary: DNA methylation assessments of peripheral blood DNA can be used to accurately
+    estimate the relative proportions of underlying leukocyte subtypes. Such cell
+    deconvolution analysis relies on libraries of discriminating differentially methylated
+    regions that are developed for each specific cell type measured. The relationship
+    between estimated cell type proportions can then be tested for their association
+    with phenotypes, disease states, and subject outcomes, or used in multivariable
+    models as terms for adjustment in epigenome-wide association studies (EWAS). We
+    obtained purified neutrophils, monocytes, B-lymphocytes, natural killer (NK) cells,
+    CD4+ T-cells, and CD8+ T-cells from healthy subjects and measured DNA methylation
+    with the Illumina HumanMethylationEPIC array platform. In addition, we measured
+    DNA methylation with the EPIC array in two sets of artificial DNA mixtures comprising
+    the above cell types. We compared three separate approaches to select reference
+    differentially methylated region libraries (DMR library), for cell type proportion
+    inference. The IDOL algorithm identified an optimal DMR library consisting of
+    450 CpG sites for inferring leukocyte subtype proportions (average R2=99.2). Importantly,
+    the majority of CpG sites (69%) in the IDOL DMR library were unique to the new
+    EPIC methylation array, in that they were not present on the 450K array. Our new
+    reference DMR library is available as a Bioconductor package, has the potential
+    to reduce any unintended technical differences arising from the combination of
+    different generations of array platforms, and may be helpful in generating larger
+    DMR libraries that include novel cell subtypes. A  dataset of six whole blood
+    samples were FACS sorted and the DNA was processed as a validation dataset.
+  format: IlluminaEPIC
+  organism: human
+  samples: 6
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE112nnn/GSE112618/matrix/GSE112618_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id_row: null
+    matrix-start: 82
+    metadata:
+      sample_well:
+        row: 45
+        parse: string
+      chip:
+        row: 46
+        parse: string
+      sex:
+        row: 47
+        parse: sex
+      age:
+        row: 48
+        parse: numeric
+      array:
+        row: 49
+        parse: string
+      slide:
+        row: 50
+        parse: string
+      cd4t_proportion:
+        row: 51
+        parse: string
+      cd8t_proportion:
+        row: 52
+        parse: string
+      nk_proportion:
+        row: 53
+        parse: string
+      bcell_proportion:
+        row: 54
+        parse: string
+      monocytes_proportion:
+        row: 55
+        parse: string
+      granulocytes_proportion:
+        row: 56
+        parse: string
+      neutrophils_proportion:
+        row: 57
+        parse: string
+    id-row: 37
+- id: GSE110554
+  title: 'FlowSorted.Blood.EPIC: An optimized library for reference-based deconvolution
+    of whole-blood biospecimens assayed using the Illumina HumanMethylationEPIC BeadArray
+    (II)'
+  summary: DNA methylation assessments of peripheral blood DNA can be used to accurately
+    estimate the relative proportions of underlying leukocyte subtypes. Such cell
+    deconvolution analysis relies on libraries of discriminating differentially methylated
+    regions that are developed for each specific cell type measured. The relationship
+    between estimated cell type proportions can then be tested for their association
+    with phenotypes, disease states, and subject outcomes, or used in multivariable
+    models as terms for adjustment in epigenome-wide association studies (EWAS). We
+    obtained purified neutrophils, monocytes, B-lymphocytes, natural killer (NK) cells,
+    CD4+ T-cells, and CD8+ T-cells from healthy subjects and measured DNA methylation
+    with the Illumina HumanMethylationEPIC array platform. In addition, we measured
+    DNA methylation with the EPIC array in two sets of artificial DNA mixtures comprising
+    the above cell types. We compared three separate approaches to select reference
+    differentially methylated region libraries (DMR library), for cell type proportion
+    inference. The IDOL algorithm identified an optimal DMR library consisting of
+    450 CpG sites for inferring leukocyte subtype proportions (average R2=99.2). Importantly,
+    the majority of CpG sites (69%) in the IDOL DMR library were unique to the new
+    EPIC methylation array, in that they were not present on the 450K array. Our new
+    reference DMR library is available as a Bioconductor package, has the potential
+    to reduce any unintended technical differences arising from the combination of
+    different generations of array platforms, and may be helpful in generating larger
+    DMR libraries that include novel cell subtypes.
+  format: IlluminaEPIC
+  organism: human
+  samples: 49
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE110nnn/GSE110554/matrix/GSE110554_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id_row: null
+    matrix-start: 98
+    metadata:
+      sample_plate:
+        row: 47
+        parse: string
+      sample_well:
+        row: 48
+        parse: string
+      sample_name:
+        row: 49
+        parse: string
+      sample_group:
+        row: 50
+        parse: string
+      chip:
+        row: 51
+        parse: string
+      array_well:
+        row: 52
+        parse: string
+      cell_type:
+        row: 53
+        parse: string
+      cd4t:
+        row: 54
+        parse: string
+      cd8t:
+        row: 55
+        parse: string
+      bcell:
+        row: 56
+        parse: string
+      nk:
+        row: 57
+        parse: string
+      mono:
+        row: 58
+        parse: string
+      neu:
+        row: 59
+        parse: string
+      purity:
+        row: 60
+        parse: string
+      sex:
+        row: 61
+        parse: sex
+      age:
+        row: 62
+        parse: numeric
+      weight_kg:
+        row: 63
+        parse: string
+      height_m:
+        row: 64
+        parse: string
+      bmi:
+        row: 65
+        parse: string
+      bmi_clas:
+        row: 66
+        parse: string
+      ethnicity_wide:
+        row: 67
+        parse: string
+      ethnic_self:
+        row: 68
+        parse: string
+      smoker:
+        row: 69
+        parse: string
+      array:
+        row: 70
+        parse: string
+      slide:
+        row: 72
+        parse: string
+    id-row: 39
+- id: GSE40279
+  title: Genome-wide Methylation Profiles Reveal Quantitative Views of Human Aging
+    Rates
+  summary: Genome wide DNA methylation profiling of individuals across a large age
+    range. The Illumina Infinium 450k Human DNA methylation Beadchip was used to obtain
+    DNA methylation profiles across approximately 450k CpGs from human whole blood.
+  format: Illumina450k
+  organism: human
+  samples: 656
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE40nnn/GSE40279/matrix/GSE40279_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 36
+    metadata:
+      age:
+        row: 44
+        parse: numeric
+      sex:
+        row: 47
+        parse: sex
+      ethnicity:
+        row: 48
+        parse: string
+      tissue:
+        row: 49
+        parse: string
+    matrix-start: 71
+- id: GSE19711
+  title: Genome wide DNA methylation profiling of United Kingdom Ovarian Cancer Population
+    Study (UKOPS)
+  summary: The Illumina Infinium 27k Human DNA methylation Beadchip v1.2 was used
+    to obtain DNA methylation profiles across approximately 27,000 CpGs in whole blood
+    samples from 540 samples, of which 266 were samples taken from postmenopausal
+    women with ovarian cancer and 274 were from age-matched healthy controls
+  format: Illumina27k
+  organism: human
+  samples: 540
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE19nnn/GSE19711/matrix/GSE19711_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 31
+    metadata:
+      age:
+        row: 41
+        parse: numeric
+      histology:
+        row: 43
+        parse: string
+    matrix-start: 75
+- id: GSE51057
+  title: Methylome Analysis and Epigenetic Changes Associated with Menarcheal Age
+  summary: Epigenome-wide association study of age at menarche in a group of 329 women
+    from the EPIC-Italy cohort.
+  format: Illumina450k
+  organism: human
+  samples: 329
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE51nnn/GSE51057/matrix/GSE51057_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 66
+    metadata:
+      age:
+        row: 75
+        parse: numeric
+      sex:
+        row: 74
+        parse: sex
+      cancer:
+        row: 77
+        parse: string
+    matrix-start: 100
+- id: GSE42861
+  title: Differential DNA methylation in Rheumatoid arthritis
+  summary: Genome-wide DNA methylation level was studied to determine whether Rheumatoid
+    arthritis patients (cases) has methylation differences comparing to normal controls
+    in peripheral blood leukocytes (PBLs). We used Illumina HumanMethylation450 BeadChip
+    array to determine the genome-wide DNA methylation difference in PBLs from Rheumatoid
+    arthritis patients (cases) and normal controls
+  format: Illumina450k
+  organism: human
+  samples: 689
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE42nnn/GSE42861/matrix/GSE42861_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 37
+    metadata:
+      age:
+        row: 48
+        parse: numeric
+      sex:
+        row: 49
+        parse: sex
+      smoking:
+        row: 50
+        parse: string
+      disease:
+        row: 46
+        parse: string
+    matrix-start: 71
+- id: GSE41169
+  title: Blood DNA methylation profiles in a Dutch population
+  summary: Genome wide DNA methylation profiling of whole blood in schizophrenia patients
+    and healthy subjects of different ages. The Illumina Infinium 450k Human DNA methylation
+    Beadchip v1.2 was used to obtain DNA methylation profiles across approximately
+    480,000 CpGs. Dataset included 62 schizophrenia patients and 33 healthy subjects
+    from Dutch descent.
+  format: Illumina450k
+  organism: human
+  samples: 95
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41169/matrix/GSE41169_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 33
+    metadata:
+      age:
+        row: 47
+        parse: numeric
+      sex:
+        row: 41
+        parse: sex
+      disease:
+        row: 48
+        parse: numeric
+    matrix-start: 73
+- id: GSE51032
+  title: EPIC-Italy at HuGeF
+  summary: Anthropometric measurements, and dietary and lifestyle information obtained
+    by questionnaire are also available.
+  format: Illumina450k
+  organism: human
+  samples: 845
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE51nnn/GSE51032/matrix/GSE51032_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 35
+    matrix-start: 69
+    metadata:
+      sex:
+        row: 43
+        parse: sex
+      age:
+        row: 44
+        parse: numeric
+      age_at_menarche:
+        row: 45
+        parse: string
+      cancer_type_(icd-10):
+        row: 46
+        parse: string
+      time_to_diagnosis:
+        row: 47
+        parse: string
+- id: GSE73103
+  title: Many obesity-associated SNPs strongly associate with DNA methylation changes
+    at proximal promoters and enhancers
+  summary: 'Background: The mechanisms of how genetic variants (SNPs) identified in
+    genome-wide association studies act to influence body mass remain unknown for
+    most of these SNPs, which continue to puzzle the scientific community. Recent
+    evidence points to epigenetic and chromatin state of the genome to have an important
+    role.  Methods: 355 healthy young individuals were genotyped for 52 known obesity-associated
+    SNPs and we obtained DNA methylation levels in their blood using the Illumina
+    450K BeadChip. Associations between alleles and methylation at proximal cytosine
+    residues were tested using a linear model adjusted for age, sex, weight category
+    and a proxy for blood cell type counts. For replication in other tissues, we used
+    two open-access datasets (skin fibroblasts, n=62; four brain regions, n=121-133)
+    and an additional dataset in subcutaneous and visceral fat (n=149).  Results:
+    We found that alleles at 28 of these obesity-associated SNPs associate with methylation
+    levels at 107 proximal CpG sites. Out of 107 CpG sites, 38 are located in gene
+    promoters, including genes strongly implicated in obesity (MIR148A, BDNF, PTPMT1,
+    NR1H3, MGAT1, SCGB3A1, HOXC12, PMAIP1, PSIP1, RPS10-NUDT3, RPS10, SKOR1, MAP2K5,
+    SIX5, AGRN, IMMP1L, ELP4, ITIH4, SEMA3G, POMC, ADCY3, SSPN, LGR4, TUFM, MIR4721,
+    SULT1A1, SULT1A2, APOBR, CLN3, SPNS1,SH2B1, ATXN2L, and IL27). Interestingly,
+    the associated SNPs are in known eQTLs for some of these genes. We also found
+    that the 107 CpGs are enriched in enhancers in peripheral blood mononuclear cells.
+    Finally, our results indicate that some of these associations are not blood-specific
+    as we successfully replicated four associations in skin fibroblasts.  Conclusions:
+    Our results strongly suggest that many obesity-associated SNPs are associated
+    with proximal gene regulation, which was reflected by association of obesity risk
+    allele genotypes with differential DNA methylation. This study highlights the
+    importance of DNA methylation and other chromatin marks as a way to understand
+    the molecular basis of genetic variants associated to human diseases and traits.'
+  format: Illumina450k
+  organism: human
+  samples: 355
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE73nnn/GSE73103/matrix/GSE73103_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 45
+    matrix-start: 133
+    metadata:
+      sex:
+        row: 53
+        parse: string
+      tissue:
+        row: 54
+        parse: string
+      age:
+        row: 55
+        parse: numeric
+      weight_category:
+        row: 56
+        parse: string
+      rs1011731:
+        row: 57
+        parse: string
+      rs10150332:
+        row: 58
+        parse: string
+      rs10195252:
+        row: 59
+        parse: string
+      rs10458787:
+        row: 60
+        parse: string
+      rs1055144:
+        row: 61
+        parse: string
+      rs10767664:
+        row: 62
+        parse: string
+      rs10769908:
+        row: 63
+        parse: string
+      rs10783050:
+        row: 64
+        parse: string
+      rs10838738:
+        row: 65
+        parse: string
+      rs10993160:
+        row: 66
+        parse: string
+      rs11142387:
+        row: 67
+        parse: string
+      rs1152846:
+        row: 68
+        parse: string
+      rs12517906:
+        row: 69
+        parse: string
+      rs12597579:
+        row: 70
+        parse: string
+      rs1294421:
+        row: 71
+        parse: string
+      rs13107325:
+        row: 72
+        parse: string
+      rs1443512:
+        row: 73
+        parse: string
+      rs1514175:
+        row: 74
+        parse: string
+      rs17782313:
+        row: 75
+        parse: string
+      rs1878047:
+        row: 76
+        parse: string
+      rs1927702:
+        row: 77
+        parse: string
+      rs206936:
+        row: 78
+        parse: string
+      rs2112347:
+        row: 79
+        parse: string
+      rs2145270:
+        row: 80
+        parse: string
+      rs2206734:
+        row: 81
+        parse: string
+      rs2241423:
+        row: 82
+        parse: string
+      rs2287019:
+        row: 83
+        parse: string
+      rs2383393:
+        row: 84
+        parse: string
+      rs2444217:
+        row: 85
+        parse: string
+      rs261967:
+        row: 86
+        parse: string
+      rs2815752:
+        row: 87
+        parse: string
+      rs3934834:
+        row: 88
+        parse: string
+      rs4377469:
+        row: 89
+        parse: string
+      rs4823006:
+        row: 90
+        parse: string
+      rs516636:
+        row: 91
+        parse: string
+      rs652722:
+        row: 92
+        parse: string
+      rs6784615:
+        row: 93
+        parse: string
+      rs6794092:
+        row: 94
+        parse: string
+      rs6795735:
+        row: 95
+        parse: string
+      rs6861681:
+        row: 96
+        parse: string
+      rs6905288:
+        row: 97
+        parse: string
+      rs713586:
+        row: 98
+        parse: string
+      rs7138803:
+        row: 99
+        parse: string
+      rs718314:
+        row: 100
+        parse: string
+      rs7481311:
+        row: 101
+        parse: string
+      rs7498665:
+        row: 102
+        parse: string
+      rs7647305:
+        row: 103
+        parse: string
+      rs7832552:
+        row: 104
+        parse: string
+      rs824931:
+        row: 105
+        parse: string
+      rs887912:
+        row: 106
+        parse: string
+      rs984222:
+        row: 107
+        parse: string
+      rs9939609:
+        row: 108
+        parse: string
+- id: GSE69270
+  title: 'Aging-associated DNA methylation changes in middle-aged individuals: The
+    Young Finns Study'
+  summary: Background  Chronological aging-associated changes in the human DNA methylome
+    are studied by multiple epigenome-wide association studies (EWAS); however, the
+    aging-associated DNAmet changes identified among different age groups and tissues
+    vary and especially the rates of aging-associated alterations in the epigenome
+    during adulthood remain unclear. Here, we further explore and characterize CpG-sites
+    where DNA methylation levels alter at a constant rate during adulthood and are
+    also independent of blood cell type heterogeneity.   Results  In the study, we
+    observed 1,202 aging-associated CpG-sites (a-CpGs), of which 48% were hypermethylated
+    with advancing age in whole blood with an especially narrow age range (40 - 49
+    years). Repeatedly reported a-CpGs in ELOVL2, FHL2, PENK and KLF14 were also identified.
+    Regions with aging-associated hypermethylation were enriched to several gene ontology
+    terms (especially on the cluster of developmental processes), while hypomethylated
+    sites showed no enrichment. The genes with a higher number of a-CpG hits were
+    more often hypermethylated. Of the 1,202 aging-associated CpG-sites in the present
+    study, 987 were identified in previous study (Vitality 90+) as differentially
+    methylated also between nonagenarians and young adults in a previous study, and
+    importantly, the directions of changes were identical in the previous and in the
+    present study.   Conclusions  The set of 987 replicated a-CpGs presented here
+    are altered in strong association with chronological aging in the whole range
+    of adulthood. Consequently, future studies should note the variability of the
+    types of a-CpGs, and the a-CpGs presented here should be dissociated from the
+    environmental-sensitive CpG-sites or from regions that are associated with aging
+    in a non-linear manner due to the accumulation of senescence-related features.
+    This report offers detailed and verified pool of a-CpGs in which DNAmet levels
+    associate linearly with chronological age and of which are different from the
+    non-linearly changing ones.
+  format: Illumina450k
+  organism: human
+  samples: 184
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE69nnn/GSE69270/matrix/GSE69270_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 40
+    matrix-start: 79
+    metadata:
+      age:
+        row: 48
+        parse: numeric
+      gender_(1=woman;_0=man):
+        row: 49
+        parse: string
+      cd8t_cell_proportion:
+        row: 50
+        parse: string
+      cd4t_cell_proportion:
+        row: 51
+        parse: string
+      nk_cell_proportion:
+        row: 52
+        parse: string
+      bcell_cell_proportion:
+        row: 53
+        parse: string
+      monocyte_proportion:
+        row: 54
+        parse: string
+      granulocyte_proportion:
+        row: 55
+        parse: string
+- id: GSE36054
+  title: Methylation Profiling of Blood DNA from Healthy Children
+  summary: Groupings by family membership requested but not provided by submitter
+  format: Illumina450k
+  organism: human
+  samples: 192
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE36nnn/GSE36054/matrix/GSE36054_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 36
+    matrix-start: 78
+    metadata:
+      group:
+        row: 44
+        parse: string
+      sentrix_id:
+        row: 45
+        parse: string
+      sentrix_position:
+        row: 46
+        parse: string
+      experiment:
+        row: 47
+        parse: string
+      cell_type:
+        row: 51
+        parse: string
+      age_at_collection_months:
+        row: 49
+        parse: string
+      ethnicity:
+        row: 50
+        parse: string
+- id: GSE64495
+  title: DNA methylation profiles of human blood samples from a severe developmental
+    disorder and controls
+  summary: 'The main goal of the study was to measure the epigenetic age (also known
+    as DNA methylation age) of subjects with a severe developmental disorder (known
+    as syndrome X) and controls. To measure DNA methylation age, we used the epigenetic
+    clock software described in Horvath S (n=2013) DNA methylation age of human tissues
+    and cell types. Genome Biology.2013, 14:R115. DOI: 10.1186/10.1186/gb-2013-14-10-r115
+    PMID: 24138928.'
+  format: Illumina450k
+  organism: human
+  samples: 113
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE64nnn/GSE64495/matrix/GSE64495_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 34
+    matrix-start: 75
+    metadata:
+      tissue:
+        row: 42
+        parse: string
+      sex:
+        row: 43
+        parse: string
+      age:
+        row: 44
+        parse: numeric
+      dna_methylation_age:
+        row: 45
+        parse: string
+      age_acceleration_vs_controls:
+        row: 46
+        parse: string
+      age_acceleration_vs_controls_in_children:
+        row: 47
+        parse: string
+      cor_sample_vs_gold_standard:
+        row: 48
+        parse: string
+      disease_status:
+        row: 49
+        parse: string
+      family_number:
+        row: 50
+        parse: string
+      relation_to_proband:
+        row: 51
+        parse: string
+- id: GSE30870
+  title: DNA methylomes of Newborns and Nonagenarians
+  summary: DNA methylation differences between Newborns and Nonagenarians
+  format: Illumina450k
+  organism: human
+  samples: 40
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE30nnn/GSE30870/matrix/GSE30870_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 32
+    matrix-start: 65
+    metadata:
+      age:
+        row: 40
+        parse: numeric
+      disease_status:
+        row: 41
+        parse: string
+      tissue:
+        row: 42
+        parse: string
+      cell_type:
+        row: 43
+        parse: string
+- id: GSE52588
+  title: Identification of a DNA methylation signature in blood from subjects affected
+    by Down syndrome
+  summary: Down syndrome is characterized by a wide spectrum of clinical signs, which
+    include cognitive and endocrine disorders and haematological abnormalities. Although
+    it is well established that the causative defect of Down syndrome is the trisomy
+    of chromosome 21, the molecular bases of Down syndrome phenotype are still largely
+    unknown. We used the Infinium HumanMethylation450 BeadChip to investigate DNA
+    methylation patterns in whole blood from 29 subjects affected by Down syndrome
+    (DS), using their healthy relatives as controls (mothers  and unaffected siblings).
+    This family-based model allowed us to monitor possible confounding effects on
+    DNA methylation patterns deriving from genetic and environmental (lifestyle) factors.
+    The identified epigenetic signature of Down syndrome includes differentially methylated
+    regions that, although enriched on chromosome 21, interest most of the other chromosomes
+    and can be functionally linked to the developmental and haematological defects
+    characteristic of the disease.
+  format: Illumina450k
+  organism: human
+  samples: 87
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE52nnn/GSE52588/matrix/GSE52588_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 52
+    matrix-start: 88
+    metadata:
+      group:
+        row: 60
+        parse: string
+      disease_state:
+        row: 61
+        parse: string
+      family:
+        row: 62
+        parse: string
+      sex:
+        row: 63
+        parse: sex
+      age:
+        row: 64
+        parse: numeric
+      tissue:
+        row: 65
+        parse: string
+- id: GSE157131
+  title: Methylation data from stored peripheral blood leukocytes from African American
+    participants in the GENOA study
+  summary: African-American individuals of the GENOA cohort
+  format: Illumina450k
+  organism: human
+  samples: 946
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE157nnn/GSE157131/matrix/GSE157131-GPL21145_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 33
+    matrix-file: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE157nnn/GSE157131/suppl/GSE157131_Matrix_processed_beta_geo_08252020.txt.gz
+    matrix-file-seperator: space
+    matrix-file-format: pvalue
+    matrix-file-key-line: 53
+    metadata:
+      tissue:
+        row: 41
+        parse: string
+      sex:
+        row: 42
+        parse: sex
+      age:
+        row: 43
+        parse: numeric
+      systolic_blood_pressure_(mmhg):
+        row: 44
+        parse: string
+      diastolic_blood_pressure_(mmhg):
+        row: 45
+        parse: string
+- id: GSE132203
+  title: DNA Methylation (EPIC) from the Grady Trauma Project
+  summary: Childhood and cumulative exposure to trauma increases an individual's lifetime
+    risk for psychiatric and stress-related disorders. This study evaluates DNA methylation
+    in whole blood, with the goal of identifying associaitons between peripheral DNA
+    methylation and psychiatric symptoms.
+  format: IlluminaEPIC
+  organism: human
+  samples: 795
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE132nnn/GSE132203/matrix/GSE132203_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 31
+    matrix-file: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE132nnn/GSE132203/suppl/GSE132203_Geo_Submission_GTPEpic.csv.gz
+    matrix-file-seperator: comma
+    matrix-file-format: pvalue
+    matrix-file-key-line: 30
+    metadata:
+      sex:
+        row: 39
+        parse: sex
+      age:
+        row: 40
+        parse: numeric
+      race:
+        row: 41
+        parse: string
+      mergedcapsandpsswinthin30days:
+        row: 42
+        parse: string
+      tei_total_types_experienced_somewitness:
+        row: 43
+        parse: string
+      childabphyssexemot_ctq_01modandsev:
+        row: 44
+        parse: string
+      pc1:
+        row: 45
+        parse: string
+      pc2:
+        row: 46
+        parse: string
+      pc3:
+        row: 47
+        parse: string
+      cd8t:
+        row: 48
+        parse: string
+      cd4t:
+        row: 49
+        parse: string
+      nk:
+        row: 50
+        parse: string
+      bcell:
+        row: 51
+        parse: string
+      mono:
+        row: 52
+        parse: string
+      neu:
+        row: 53
+        parse: string
+      age_acceleration:
+        row: 54
+        parse: string
+- id: GSE134080
+  title: RNASeq whole blood of Dutch 500FG cohort
+  summary: 'Expression levels from bulk whole blood from 96 individuals within the
+    500FG cohort. The aim of the 500FG project is to characterize the interaction
+    between the genetic background of the host, the microbiome composition of different
+    niches, and the consequences on an array of physiological functions: the immune
+    response against important human pathogens, thrombocyte function, and in a subgroup
+    of individuals the cognitive function of the brain. These aims are approached
+    by a combination of advanced -omics technology, cutting edge functional tests
+    (immune tests, functional brain MRI, etc) and systems biology-based bioinformatics.'
+  format: IlluminaHiSeq2500
+  organism: human
+  samples: 100
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE134nnn/GSE134080/matrix/GSE134080_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 32
+    data-type: rna
+    matrix-file: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE134nnn/GSE134080/suppl/GSE134080%5F500FG%5FRNASeq%5Fcounts.txt.gz
+    matrix-file-format: standard
+    matrix-file-seperator: comma
+    metadata:
+      sex:
+        row: 43
+        parse: sex
+      age:
+        row: 42
+        parse: numeric
+- id: JenAge
+  title: Deep sequencing of endogenous mRNA from Homo sapiens from four age categories
+  summary: Comparison of temporal gene expression profiles to identify genes/pathways
+    changing during ageing. Contains data from GSE103232 and GSE75337
+  format: IlluminaHiSeq2500
+  organism: human
+  samples: 62
+  path: custom
+  parser:
+    type: jen-age-custom
+    data-type: rna
+- id: BoAChallengeData
+  title: 2024 Biomarkers of Aging Challenge Sample Data
+  summary: We generated DNA methylation profiles of 500 diverse individuals to enable
+    to construction and validation of DNA methylation biomarkers of aging.
+  format: IlluminaEPIC
+  organism: human
+  samples: 500
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE246nnn/GSE246337/matrix/GSE246337_series_matrix.txt.gz
+  parser:
+    type: biomarkers-challenge-2024
+    id-row: 31
+    matrix-file: ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE246nnn/GSE246337/suppl/GSE246337%5Fbetas.csv.gz
+    matrix-file-key-line: 53
+    metadata:
+      subject_id:
+        row: 39
+        parse: string
+      sex:
+        row: 41
+        parse: sex
+      tissue:
+        row: 40
+        parse: string
+      race1:
+        row: 42
+        parse: string
+      race2:
+        row: 43
+        parse: string
+      ethnicity:
+        row: 44
+        parse: string
+      age:
+        row: 45
+        parse: numeric
+- id: GSE167998
+  title: 'FlowSorted.BloodExtended.EPIC: An Enhanced DNA Methylation Library for Deconvoluting
+    Peripheral Blood'
+  summary: "DNA methylation microarrays have been extensively used for understanding\
+    \ cell type composition in complex tissue samples. Here we expand on existing\
+    \ libraries for reference-based deconvolution of blood DNA methylation data assayed\
+    \ using the Illumina HumanMethylationEPIC array to include 12 different leukocyte\
+    \ subtypes (neutrophils, eosinophils, basophils, monocytes, B cells na\xC3\xAF\
+    ve and memory, CD4+ and CD8+ na\xC3\xAFve and memory cells, natural killers, and\
+    \ T regulatory cells). Application of the IDOL algorithm for identifying optimal\
+    \ libraries for the deconvolution of blood-derived DNA methylation data led to\
+    \ to a library consisting of 1200 CpGs. The accuracy of deconvolution estimates\
+    \ obtained using our IDOL-optimized library was evaluated using artificial mixtures\
+    \ with known cellular composition and in samples were both whole-blood DNA methylation\
+    \ data and FACS information were available. We further showcase potential applications\
+    \ of our expanded library using publicly available cancer, aging, and autoimmune\
+    \ disease data sets."
+  format: IlluminaEPIC
+  organism: human
+  samples: 68
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE167nnn/GSE167998/matrix/GSE167998_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    matrix-file: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE167nnn/GSE167998/suppl/GSE167998%5Fmatrix%5Fprocessed.txt.gz
+    matrix-file-format: pvalue
+    matrix-file-seperator: tab
+    metadata:
+      sample_plate:
+        row: 48
+        parse: string
+      age:
+        row: 49
+        parse: numeric
+      horvath_age:
+        row: 50
+        parse: string
+      mage:
+        row: 51
+        parse: string
+      purity:
+        row: 52
+        parse: string
+      meth_purity:
+        row: 53
+        parse: string
+      ethnicity_wide:
+        row: 54
+        parse: string
+      ethnic_self:
+        row: 55
+        parse: string
+      meth_ethnicity:
+        row: 56
+        parse: string
+      weight_kg:
+        row: 57
+        parse: string
+      height_cm:
+        row: 58
+        parse: string
+      smoker:
+        row: 59
+        parse: string
+      bmi:
+        row: 60
+        parse: string
+      bmi_clas:
+        row: 61
+        parse: string
+      blood.type:
+        row: 62
+        parse: string
+      smp_type:
+        row: 63
+        parse: string
+      chip:
+        row: 64
+        parse: string
+      arraytypes:
+        row: 65
+        parse: string
+      fetal:
+        row: 66
+        parse: string
+      flag:
+        row: 67
+        parse: string
+      flag2:
+        row: 68
+        parse: string
+      include:
+        row: 69
+        parse: string
+      exclude:
+        row: 70
+        parse: string
+      exclude2:
+        row: 71
+        parse: string
+      neu.cbc:
+        row: 72
+        parse: string
+      lymph.cbc:
+        row: 73
+        parse: string
+      mono.cbc:
+        row: 74
+        parse: string
+      treg:
+        row: 75
+        parse: string
+      cd4nv:
+        row: 76
+        parse: string
+      cd4mem:
+        row: 77
+        parse: string
+      cd4t:
+        row: 78
+        parse: string
+      cd8t:
+        row: 79
+        parse: string
+      bnv:
+        row: 80
+        parse: string
+      bmem:
+        row: 81
+        parse: string
+      bcell:
+        row: 82
+        parse: string
+      nk:
+        row: 83
+        parse: string
+      mono:
+        row: 84
+        parse: string
+      neu:
+        row: 85
+        parse: string
+      eos:
+        row: 86
+        parse: string
+      gran:
+        row: 87
+        parse: string
+      cell_type:
+        row: 99
+        parse: string
+    id-row: 40
+- id: GSE180683
+  title: 'CD4T and CD8T naive and memory validation dataset: An Enhanced DNA Methylation
+    Library for Deconvoluting Peripheral Blood'
+  summary: DNA methylation microarrays have been extensively used for understanding
+    cell type composition in complex tissue samples. Here we expand on existing libraries
+    for reference-based deconvolution of blood DNA methylation data assayed using
+    the Illumina HumanMethylationEPIC array to include 12 different leukocyte subtypes
+    (neutrophils, eosinophils, basophils, monocytes, B cells naive and memory, CD4+
+    and CD8+ naive and memory cells, natural killers, and T regulatory cells). Application
+    of the IDOL algorithm for identifying optimal libraries for the deconvolution
+    of blood-derived DNA methylation data led to a library consisting of 1200 CpGs.
+    The accuracy of deconvolution estimates obtained using our IDOL-optimized library
+    was evaluated using artificial mixtures with known cellular composition and in
+    samples were both whole-blood DNA methylation data and FACS information were available.
+    We further showcase potential applications of our expanded library using publicly
+    available cancer, aging, and autoimmune disease data sets.
+  format: IlluminaEPIC
+  organism: human
+  samples: 76
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE180nnn/GSE180683/matrix/GSE180683_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    matrix-file: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE180nnn/GSE180683/suppl/GSE180683%5FMatrix%5Fprocessed.txt.gz
+    matrix-file-format: pvalue
+    matrix-file-key-line: 70
+    matrix-file-seperator: tab
+    metadata:
+      diagnosis:
+        row: 48
+        parse: string
+      tissue:
+        row: 49
+        parse: string
+      sex:
+        row: 50
+        parse: string
+      age:
+        row: 51
+        parse: numeric
+      karyotype:
+        row: 52
+        parse: string
+      time.point:
+        row: 53
+        parse: string
+      histological.group:
+        row: 54
+        parse: string
+      cd4t:
+        row: 55
+        parse: string
+      cd4nv:
+        row: 56
+        parse: string
+      cd4mem:
+        row: 57
+        parse: string
+      cd8t:
+        row: 58
+        parse: string
+      cd8mem:
+        row: 59
+        parse: string
+      cd8nv:
+        row: 60
+        parse: string
+      nontcell:
+        row: 61
+        parse: string
+      arraytypes:
+        row: 62
+        parse: string
+    id-row: 40
+- id: GSE180970
+  title: 'Umbilical cord blood artificial mixtures validation dataset: An Enhanced
+    DNA Methylation Library for Deconvoluting Peripheral Blood'
+  summary: DNA methylation microarrays have been extensively used for understanding
+    cell type composition in complex tissue samples. Here we expand on existing libraries
+    for reference-based deconvolution of blood DNA methylation data assayed using
+    the Illumina HumanMethylationEPIC array to include 12 different leukocyte subtypes
+    (neutrophils, eosinophils, basophils, monocytes, B cells naive and memory, CD4+
+    and CD8+ naive and memory cells, natural killers, and T regulatory cells). Application
+    of the IDOL algorithm for identifying optimal libraries for the deconvolution
+    of blood-derived DNA methylation data led to to a library consisting of 1200 CpGs.
+    The accuracy of deconvolution estimates obtained using our IDOL-optimized library
+    was evaluated using artificial mixtures with known cellular composition and in
+    samples were both whole-blood DNA methylation data and FACS information were available.  We
+    further showcase potential applications of our expanded library using publicly
+    available cancer, aging, and autoimmune disease data sets.
+  format: IlluminaEPIC
+  organism: human
+  samples: 12
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE180nnn/GSE180970/matrix/GSE180970_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    matrix-start: 78
+    metadata:
+      cd4t:
+        row: 47
+        parse: string
+      cd8t:
+        row: 48
+        parse: string
+      bcell:
+        row: 49
+        parse: string
+      nk:
+        row: 50
+        parse: string
+      mono:
+        row: 51
+        parse: string
+      neu:
+        row: 52
+        parse: string
+      arraytypes:
+        row: 53
+        parse: string
+    id-row: 39
+- id: GSE182379
+  title: '12-cell-type artificial mixtures validation dataset: An Enhanced DNA Methylation
+    Library for Deconvoluting Peripheral Blood'
+  summary: "DNA methylation microarrays have been extensively used for understanding\
+    \ cell type composition in complex tissue samples. Here we expand on existing\
+    \ libraries for reference-based deconvolution of blood DNA methylation data assayed\
+    \ using the Illumina HumanMethylationEPIC array to include 12 different leukocyte\
+    \ subtypes (neutrophils, eosinophils, basophils, monocytes, B cells na\xEFve and\
+    \ memory, CD4+ and CD8+ na\xEFve and memory cells, natural killers, and T regulatory\
+    \ cells). Application of the IDOL algorithm for identifying optimal libraries\
+    \ for the deconvolution of blood-derived DNA methylation data led to to a library\
+    \ consisting of 1200 CpGs. The accuracy of deconvolution estimates obtained using\
+    \ our IDOL-optimized library was evaluated using artificial mixtures with known\
+    \ cellular composition and in samples were both whole-blood DNA methylation data\
+    \ and FACS information were available.  We further showcase potential applications\
+    \ of our expanded library using publicly available cancer, aging, and autoimmune\
+    \ disease data sets."
+  format: IlluminaEPIC
+  organism: human
+  samples: 12
+  path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE182nnn/GSE182379/matrix/GSE182379_series_matrix.txt.gz
+  parser:
+    type: geo-matrix
+    id-row: 39
+    matrix-start: 83
+    metadata:
+      cd4nv:
+        row: 47
+        parse: string
+      cd4mem:
+        row: 48
+        parse: string
+      treg:
+        row: 49
+        parse: string
+      cd8nv:
+        row: 50
+        parse: string
+      cd8mem:
+        row: 51
+        parse: string
+      bnv:
+        row: 52
+        parse: string
+      bmem:
+        row: 53
+        parse: string
+      nk:
+        row: 54
+        parse: string
+      mono:
+        row: 55
+        parse: string
+      neu:
+        row: 56
+        parse: string
+      eos:
+        row: 57
+        parse: string
+      bas:
+        row: 58
+        parse: string
 - id: GSE106648
   title: Differential DNA methylation in Multiple Sclerosis
   summary: We used Illumina HumanMethylation450 BeadChip array to determine the genome-wide
@@ -1371,9 +1390,6 @@ items:
         row: 44
         parse: string
       age:
-        row: 45
-        parse: numeric
-      age_at_initiation:
         row: 46
         parse: numeric
       biological_drug:
@@ -1546,7 +1562,7 @@ items:
     3 in diseaseStatus column. The column used_in_analysis shows the samples that
     were used in our study. The excluded samples failed quality control. Normalized
     data are also included in the non_normalized.txt (i.e. AVG_Beta column).
-  format: Illumina27k
+  format: Illumina27K
   organism: human
   samples: 720
   path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41037/matrix/GSE41037_series_matrix.txt.gz
@@ -1592,7 +1608,7 @@ items:
   title: Differential DNA methylation with age displays both common and dynamic features
     across human tissues that are influenced by CpG landscape [blood]
   summary: Sentrix barcode provided for batch correction
-  format: Illumina27k
+  format: Illumina27K
   organism: human
   samples: 71
   path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE49nnn/GSE49904/matrix/GSE49904_series_matrix.txt.gz
@@ -1736,10 +1752,7 @@ items:
         row: 48
         parse: string
       age:
-        row: 49
-        parse: numeric
-      dnamage:
-        row: 50
+        row: 53
         parse: numeric
       hivstatus:
         row: 51
@@ -1747,9 +1760,6 @@ items:
       hiv.viral.load:
         row: 52
         parse: string
-      logviralloadadjustedforage:
-        row: 53
-        parse: numeric
       bmi:
         row: 54
         parse: string
@@ -1860,7 +1870,7 @@ items:
         row: 40
         parse: string
       age:
-        row: 41
+        row: 46
         parse: numeric
       hivstatus:
         row: 42
@@ -1868,15 +1878,6 @@ items:
       sex:
         row: 43
         parse: sex
-      dnamage:
-        row: 44
-        parse: numeric
-      ageaccelerationvscontrols:
-        row: 45
-        parse: numeric
-      ageaccelerationresidual:
-        row: 46
-        parse: numeric
       exhausted_cd8t_cells:
         row: 47
         parse: string
@@ -1979,7 +1980,7 @@ items:
     beadchip array was used to obtain DNA methylation profiles across approximately
     450,000 CpG dinucleotide methylation loci in DNA isolated from PBMCs.  Samples
     include 12 Y-SED subjects, 15 O-SED subjects and 11 O-Ex subjects.
-  format: Illumina450k
+  format: Illumina450K
   organism: human
   samples: 38
   path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE85nnn/GSE85311/matrix/GSE85311_series_matrix.txt.gz
