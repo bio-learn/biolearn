@@ -258,8 +258,8 @@ class GeoData:
 
         return QualityReport(sample_report, methylation_site_report, summary)
 
-    @classmethod
-    def plot_sample_deviations(self, datasets, dataset_ids, output_path=None):
+    @staticmethod
+    def plot_sample_deviations(datasets, dataset_ids, output_path=None):
         """
         Creates a GeoData instance from a list of datasets and dataset ids
         that can be used to visualize the distribution of sample deviations 
