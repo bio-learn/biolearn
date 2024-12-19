@@ -81,25 +81,22 @@ def load_nhanes(year):
         )
     suffix = known_nhanes_year_suffix[year]
     dem_file = cached_download(
-        f"https://wwwn.cdc.gov/Nchs/Nhanes/{year-1}-{year}/DEMO_{suffix}.XPT"
+        f"https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/{year-1}/DataFiles/DEMO_{suffix}.xpt"
     )
     gluc_file = cached_download(
-        f"https://wwwn.cdc.gov/Nchs/Nhanes/{year-1}-{year}/GLU_{suffix}.XPT"
+        f"https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/{year-1}/DataFiles/GLU_{suffix}.xpt"
     )
     cbc_file = cached_download(
-        f"https://wwwn.cdc.gov/Nchs/Nhanes/{year-1}-{year}/CBC_{suffix}.XPT"
+        f"https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/{year-1}/DataFiles/CBC_{suffix}.xpt"
     )
     bioc_file = cached_download(
-        f"https://wwwn.cdc.gov/Nchs/Nhanes/{year-1}-{year}/BIOPRO_{suffix}.XPT"
+        f"https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/{year-1}/DataFiles/BIOPRO_{suffix}.xpt"
     )
     mortality_file = cached_download(
         f"https://ftp.cdc.gov/pub/Health_Statistics/NCHS/datalinkage/linked_mortality/NHANES_{year-1}_{year}_MORT_2019_PUBLIC.dat"
     )
-    crp_file = cached_download(
-        f"https://wwwn.cdc.gov/Nchs/Nhanes/{year-1}-{year}/CRP_{suffix}.XPT"
-    )
     hdl_file = cached_download(
-        f"https://wwwn.cdc.gov/Nchs/Nhanes/{year-1}-{year}/HDL_{suffix}.XPT"
+        f"https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/{year-1}/DataFiles/HDL_{suffix}.xpt"
     )
     dem = pd.read_sas(dem_file, index="SEQN")[["RIAGENDR", "RIDAGEYR"]]
     dem.index = dem.index.astype(int)
@@ -111,6 +108,9 @@ def load_nhanes(year):
     hdl.index = hdl.index.astype(int)
     # clumsy hack since 2012 doesn't have the CRP data. Will remove pending refactor of loading code
     if year == 2010:
+        crp_file = cached_download(
+            f"https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/{year-1}/DataFiles/CRP_{suffix}.xpt"
+        )
         crp = pd.read_sas(crp_file, index="SEQN")["LBXCRP"]
         crp.index = crp.index.astype(int)
     bioc = pd.read_sas(bioc_file, index="SEQN")[
