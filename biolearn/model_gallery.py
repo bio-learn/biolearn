@@ -76,6 +76,7 @@ class ModelGallery:
             raise KeyError(f"Model not found: {name}")
 
         model_def = self.model_definitions[name]
+        model_def["name"] = name
         model_type = model_def["model"]["type"]
         model_instance = self.model_builders[model_type](model_def)
 

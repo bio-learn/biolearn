@@ -178,7 +178,7 @@ class GeoData:
                           and rows represent different methylation sites.
     """
 
-    def __init__(self, metadata, dnam=None, rna=None, protein=None):
+    def __init__(self, metadata, dnam=None, rna=None, protein=None,):
         """
         Initializes the GeoData instance.
 
@@ -198,6 +198,7 @@ class GeoData:
         Returns:
             GeoData: A new instance of GeoData with copies of the metadata and dnam DataFrames.
         """
+        #!! Include protein in copy
         return GeoData(
             metadata=self.metadata.copy(deep=True),
             dnam=self.dnam.copy(deep=True) if self.dnam is not None else None,
@@ -259,43 +260,37 @@ class GeoData:
         return QualityReport(sample_report, methylation_site_report, summary)
 
     @staticmethod
-    def plot_sample_deviations(datasets, dataset_ids, output_path=None):
+    def plot_sample_deviations(datasets):
         """
-        Creates a GeoData instance from a list of datasets and dataset ids
+        Creates a GeoData instance from a dictionary of datasets and dataset ids
         that can be used to visualize the distribution of sample deviations 
         from the population mean in a ridge density plot.
 
         Args:
-            datasets (list): A list of GeoData objects for each dataset.
-            dataset_ids (list): A list of dataset IDs (e.g., GSE IDs) for labeling.
-            output_path (str, optional): File path to save the plot. If None, displays the plot.
+            datasets (dict): A dictionary of dataset names to dataset objects.
 
         Returns:
             None
         """
-        # Ensure inputs are lists for uniform processing
-        if not isinstance(datasets, list):
-            datasets = [datasets]
-        if not isinstance(dataset_ids, list):
-            dataset_ids = [dataset_ids]
+        # Ensure inputs are dict for uniform processing
+        if not isinstance(datasets, dict):
+            raise ValueError("Must pass in valid dictionary")
 
         # Create a DataFrame to store deviations and dataset IDs
         combined_data = []
 
-        for geodata, dataset_id in zip(datasets, dataset_ids):
-            quality_report = geodata.quality_report()
+        for name, dataset in datasets.items():
+            quality_report = dataset.quality_report()
             deviations = quality_report.sample_report["deviation"]
             deviations = deviations.to_frame(name="Deviation")
-            deviations["Dataset"] = dataset_id
+            deviations["Dataset"] = name
             combined_data.append(deviations)
 
         # Concatenate all data
         combined_df = pd.concat(combined_data, ignore_index=True)
-
         # Sort dataset IDs for consistent stacking
         dataset_labels = combined_df["Dataset"].unique()[::-1]  # Reverse order for top-down stacking
         num_datasets = len(dataset_labels)
-
         # Prepare the figure and axes for subplots
         fig, axes = plt.subplots(
             nrows=num_datasets, 
@@ -304,11 +299,9 @@ class GeoData:
             sharex=True, 
             gridspec_kw={"hspace": 0.5}
         )
-
         # If there's only one dataset, make axes a list for consistency
         if num_datasets == 1:
             axes = [axes]
-
         # Loop through each dataset and create density plots
         for idx, (dataset_id, ax) in enumerate(zip(dataset_labels, axes)):
             subset = combined_df[combined_df["Dataset"] == dataset_id]["Deviation"]
@@ -319,27 +312,15 @@ class GeoData:
                 alpha=0.8,
                 linewidth=1,
                 color=sns.color_palette("viridis", num_datasets)[idx],
-                bw_adjust=0.5,  # Adjust for smoothness
+                bw_adjust=0.5,
             )
             ax.set_ylabel(dataset_id, fontsize=10, rotation=0, labelpad=40, va="center")
             ax.set_yticks([])
-            ax.set_xlim(0, combined_df["Deviation"].max() + 0.01)  # Adjust x-axis limits
-
-            # Remove spines for clean look
+            ax.set_xlim(0, combined_df["Deviation"].max() + 0.01)
             for spine in ["top", "right", "left"]:
                 ax.spines[spine].set_visible(False)
-
-        # Add a shared x-axis label
         axes[-1].set_xlabel("Deviation", fontsize=12)
-
-        # Add a shared title
-        fig.suptitle("Ridge Density Plot of Sample Deviations", fontsize=14)
-
-        # Save or display the plot
-        if output_path:
-            plt.savefig(output_path, dpi=300, bbox_inches="tight")
-        else:
-            plt.show()
+        plt.show()
 
     @classmethod
     def from_methylation_matrix(cls, matrix):
@@ -790,19 +771,7 @@ class DataSource:
             if getattr(self, field) is None:
                 raise ValueError(error_message)
         self.cache = cache if cache else NoCache()
-        self.source_definition = source_definition
-        self.title = source_definition.get(
-            "title", ""
-        )  # Default empty string if title is not provided
-        self.summary = source_definition.get(
-            "summary", ""
-        )  # Default empty string if summary is not provided
-        self.format = source_definition.get(
-            "format", ""
-        )  # Default empty string if format is not provided
-        self.organism = source_definition.get(
-            "organism", ""
-        )  # Default empty string if organism is not provided
+        self.details = source_definition
 
         self.parser = self._create_parser(source_definition["parser"])
 
