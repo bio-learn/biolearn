@@ -653,7 +653,8 @@ class DeconvolutionModel:
 
 class LinearModel:
     def __init__(
-        self, coefficient_file_or_df, transform, preprocess=None, **metadata
+        # change metadata to details in all models
+        self, coefficient_file_or_df, transform, preprocess=None, **metadata,
     ) -> None:
         self.transform = transform
         self.preprocess = preprocess
