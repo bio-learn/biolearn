@@ -130,7 +130,7 @@ class NotionText:
 
 @dataclass
 class SeriesPageProperties:
-    Tags: SelectProperty
+    Tags: MultiSelectProperty
     AgePresent: SelectProperty
     SexPresent: SelectProperty
     Link: LinkProperty
@@ -186,6 +186,7 @@ class SeriesItem:
     platforms: list[dict]
     samples: int
     parser: dict
+    tags: list[str] = None
 
 
 async def get_series_dataset_from_notion() -> list[SeriesPage]:
@@ -238,12 +239,13 @@ def map_repsonse_series_page(page: dict) -> SeriesPage:
     )
 
 
-
 def get_data_to_add_to_notion(
     local_dataset: list[SeriesItem], remote_dataset: list[SeriesPage]
 ) -> list[dict]:
 
-    remote_series = [page.properties.Name.title[0].plain_text for page in remote_dataset]
+    remote_series = [
+        page.properties.Name.title[0].plain_text for page in remote_dataset
+    ]
 
     list_to_add = []
     for item in local_dataset:
@@ -268,6 +270,11 @@ def create_notion_page_creation(local_item: SeriesItem) -> dict:
     ]
     creation["properties"]["Platform"] = {"multi_select": platforms}
     creation["properties"]["Samples"] = {"number": local_item.samples}
+
+    if local_item.tags:
+        creation["properties"]["Tags"] = {
+            "multi_select": [{"name": tag} for tag in local_item.tags]
+        }
 
     has_age = "age" in local_item.parser["metadata_keys_parse"]
     local_age_select = "Yes" if has_age else "No"
@@ -305,7 +312,8 @@ def create_notion_page_update(
 
     if local_item.id != remote_item.properties.Name.title[0].plain_text:
         raise ValueError(
-            f"Local item id {local_item.id} does not match remote item id {remote_item.properties.Name.title[0].plain_text}"
+            f"Local item id {local_item.id} does not match remote item id {
+                remote_item.properties.Name.title[0].plain_text}"
         )
 
     update = {}
@@ -346,6 +354,15 @@ def create_notion_page_update(
             "rich_text": [{"text": {"content": local_item.title}}]
         }
 
+    if local_item.tags:
+        notion_tags = [
+            select.name for select in remote_item.properties.Tags.multi_select
+        ]
+        if set(local_item.tags) != set(notion_tags):
+            update["Tags"] = {
+                "multi_select": [{"name": tag} for tag in local_item.tags]
+            }
+
     if update:
         return {
             "page_id": remote_item.page_id,
@@ -379,9 +396,10 @@ def get_data_to_delete_in_notion(
 
     return list_to_delete
 
+
 async def limited_concurrent_run(tasks, max_concurrent_tasks):
     semaphore = asyncio.Semaphore(max_concurrent_tasks)
-    
+
     async def sem_task(task):
         async with semaphore:
             return await task
@@ -390,24 +408,31 @@ async def limited_concurrent_run(tasks, max_concurrent_tasks):
     wrapped_tasks = [sem_task(task) for task in tasks]
     await asyncio.gather(*wrapped_tasks)
 
+
 async def sync_library_entry_to_notion():
 
     series_items = read_series_dataset_from_library()
     series_pages = await get_series_dataset_from_notion()
 
-    list_to_add = get_data_to_add_to_notion(series_items,series_pages)
+    list_to_add = get_data_to_add_to_notion(series_items, series_pages)
     creations = [notion.pages.create(**item) for item in list_to_add]
     list_to_update = get_data_to_update_in_notoin(series_items, series_pages)
-    updates = [notion.pages.update(item["page_id"], **item["params"]) for item in list_to_update]
+    updates = [
+        notion.pages.update(item["page_id"], **item["params"])
+        for item in list_to_update
+    ]
     list_to_delete = get_data_to_delete_in_notion(series_items, series_pages)
-    deletes = [notion.pages.update(item["page_id"], **item["params"]) for item in list_to_delete]
+    deletes = [
+        notion.pages.update(item["page_id"], **item["params"])
+        for item in list_to_delete
+    ]
 
-    print(f"Has {len(creations)} to add, {len(updates)} to update and {len(deletes)} to delete")
+    print(
+        f"Has {len(creations)} to add, {len(updates)} to update and {len(deletes)} to delete"
+    )
 
     all_tasks = creations + updates + deletes
-    await limited_concurrent_run(all_tasks, 25)
-
-
+    await limited_concurrent_run(all_tasks, 10)
 
 
 asyncio.run(sync_library_entry_to_notion())
