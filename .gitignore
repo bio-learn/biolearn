@@ -38,3 +38,5 @@ notebooks/
 
 #large test files
 biolearn/test/data/external/
+
+.env
