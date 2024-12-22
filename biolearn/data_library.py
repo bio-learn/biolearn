@@ -141,8 +141,7 @@ class QualityReport:
             sites_with_missing_data / total_sites
         ) * 100
         print(
-            f"Methylation Sites With Over 20% of Reads Missing: {
-                sites_with_missing_data} ({missing_data_sites_percentage:.2f}%)"
+            f"Methylation Sites With Over 20% of Reads Missing: {sites_with_missing_data} ({missing_data_sites_percentage:.2f}%)"
         )
 
         print("\nNotes:")
