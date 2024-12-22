@@ -141,7 +141,8 @@ class QualityReport:
             sites_with_missing_data / total_sites
         ) * 100
         print(
-            f"Methylation Sites With Over 20% of Reads Missing: {sites_with_missing_data} ({missing_data_sites_percentage:.2f}%)"
+            f"Methylation Sites With Over 20% of Reads Missing: {
+                sites_with_missing_data} ({missing_data_sites_percentage:.2f}%)"
         )
 
         print("\nNotes:")
@@ -718,6 +719,9 @@ class DataSource:
         self.organism = source_definition.get(
             "organism", ""
         )  # Default empty string if organism is not provided
+        self.tags = source_definition.get(
+            "tags", []
+        )  # Default empty list if tags are not provided
 
         self.parser = self._create_parser(source_definition["parser"])
 
@@ -727,6 +731,10 @@ class DataSource:
         Returns:
             GeoData: An instance of the GeoData class containing the parsed geographical data.
         """
+
+        if self.tags and "work_needed" in self.tags:
+            self._show_work_needed_warning()
+
         cached = self.cache.get(self.id)
         if cached:
             return cached
@@ -757,6 +765,18 @@ class DataSource:
         if parser_type == "biomarkers-challenge-2024":
             return ChallengeDataParser(parser_data)
         raise ValueError(f"Unknown parser type: {parser_type}")
+
+    def _show_work_needed_warning(self):
+        """Display warning for datasets marked as needing work"""
+        warning_message = (
+            f"\nWARNING: Dataset {self.id} is marked as 'work_needed'.\n"
+            "This indicates the dataset may have one or more issues:\n"
+            "- DNA methylation data may not be populated\n"
+            "- Sex information is missing or not standardized\n"
+            "- Age values are not numeric or not standardized\n"
+            "Please verify and standardize these fields before using in production.\n"
+        )
+        print(warning_message)
 
 
 def parse_library_file(library_file, cache=None):
