@@ -653,12 +653,11 @@ class DeconvolutionModel:
 
 class LinearModel:
     def __init__(
-        # change metadata to details in all models
-        self, coefficient_file_or_df, transform, preprocess=None, **metadata,
+        self, coefficient_file_or_df, transform, preprocess=None, **details,
     ) -> None:
         self.transform = transform
         self.preprocess = preprocess
-        self.metadata = metadata
+        self.details = details
 
         if isinstance(coefficient_file_or_df, pd.DataFrame):
             self.coefficients = coefficient_file_or_df
@@ -726,11 +725,11 @@ class LinearTranscriptomicModel(LinearModel):
 
 
 class GrimageModel:
-    def __init__(self, coefficient_file, **metadata):
+    def __init__(self, coefficient_file, **details):
         self.coefficients = pd.read_csv(
             get_data_file(coefficient_file), index_col=0
         )
-        self.metadata = metadata
+        self.details = details
 
     @classmethod
     def from_definition(cls, clock_definition):
@@ -742,7 +741,7 @@ class GrimageModel:
 
     def predict(self, geo_data):
         if "sex" not in geo_data.metadata or "age" not in geo_data.metadata:
-            raise ValueError("Metadata must contain 'sex' and 'age' columns")
+            raise ValueError("metadata must contain 'sex' and 'age' columns")
 
         df = geo_data.dnam
 
@@ -827,11 +826,11 @@ class GrimageModel:
 
 
 class SexEstimationModel:
-    def __init__(self, coeffecient_file, **metadata):
+    def __init__(self, coeffecient_file, **details):
         self.coefficients = pd.read_csv(
             get_data_file(coeffecient_file), index_col=0, low_memory=False
         )
-        self.metadata = metadata
+        self.details = details
 
     @classmethod
     def from_definition(cls, clock_definition):
