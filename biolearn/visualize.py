@@ -10,6 +10,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.metrics import r2_score
 
+
 def identify_stable_cpg_sites(datasets, threshold=0.01):
     """
     Identifies top 10 stable CpG sites in each dataset based on variance.
@@ -26,10 +27,15 @@ def identify_stable_cpg_sites(datasets, threshold=0.01):
         # Compute variance for each CpG site (rows of DNA methylation matrix)
         variances = geo_data.dnam.var(axis=1)
         # Identify CpG sites with variance below the threshold
-        top_10_stable_sites = variances[variances < threshold].index.tolist()[:10]
+        top_10_stable_sites = variances[variances < threshold].index.tolist()[
+            :10
+        ]
         # Append results to the summary list
-        stable_sites_summary.append({'Dataset': dataset_name, 'Stable CpG Sites': top_10_stable_sites})
+        stable_sites_summary.append(
+            {"Dataset": dataset_name, "Stable CpG Sites": top_10_stable_sites}
+        )
     return stable_sites_summary
+
 
 def compute_age_group_stats(datasets, cpg_site, age_bins=5):
     """
@@ -50,55 +56,61 @@ def compute_age_group_stats(datasets, cpg_site, age_bins=5):
     for dataset_name, geo_data in datasets.items():
         # Check if the CpG site exists in the dataset
         if cpg_site not in geo_data.dnam.index:
-            print(f"Warning: CpG site '{cpg_site}' not found in dataset {dataset_name}. Skipping this dataset.")
+            print(
+                f"Warning: CpG site '{cpg_site}' not found in dataset {dataset_name}. Skipping this dataset."
+            )
             continue
 
         # Extract methylation data for the specified CpG site
         methylation_data = geo_data.dnam.loc[cpg_site]
         # Find valid samples with both metadata and methylation data
-        valid_samples = geo_data.metadata.index.intersection(methylation_data.index)
+        valid_samples = geo_data.metadata.index.intersection(
+            methylation_data.index
+        )
         # Prepare plot data by merging metadata with methylation values
-        plot_data = geo_data.metadata.loc[valid_samples, ['age', 'sex']].copy()
-        plot_data['methylation'] = methylation_data[valid_samples]
-        plot_data['dataset'] = dataset_name
+        plot_data = geo_data.metadata.loc[valid_samples, ["age", "sex"]].copy()
+        plot_data["methylation"] = methylation_data[valid_samples]
+        plot_data["dataset"] = dataset_name
         combined_data.append(plot_data)
 
     # Concatenate all datasets into a single DataFrame
-    combined_data = pd.concat(combined_data).dropna(subset=['age', 'methylation'])
+    combined_data = pd.concat(combined_data).dropna(
+        subset=["age", "methylation"]
+    )
 
     # Define bins for age groups with whole numbers
-    min_age = int(np.floor(combined_data['age'].min()))
-    max_age = int(np.ceil(combined_data['age'].max()))
+    min_age = int(np.floor(combined_data["age"].min()))
+    max_age = int(np.ceil(combined_data["age"].max()))
     bins = np.linspace(min_age, max_age, age_bins + 1).astype(int)
     # Assign age groups based on defined bins
-    combined_data['age_group'] = pd.cut(
-        combined_data['age'], 
-        bins=bins, 
-        include_lowest=True, 
-        labels=[f"{bins[i]}-{bins[i+1]-1}" for i in range(len(bins)-1)]
+    combined_data["age_group"] = pd.cut(
+        combined_data["age"],
+        bins=bins,
+        include_lowest=True,
+        labels=[f"{bins[i]}-{bins[i+1]-1}" for i in range(len(bins) - 1)],
     )
 
     stats_summary = []
 
     # Group by age_group to compute statistics for each age range
-    for age_group in combined_data['age_group'].unique():
-        group_data = combined_data[combined_data['age_group'] == age_group]
+    for age_group in combined_data["age_group"].unique():
+        group_data = combined_data[combined_data["age_group"] == age_group]
 
         # Separate data by sex within the age group
-        male_data = group_data[group_data['sex'] == '2']['methylation']
-        female_data = group_data[group_data['sex'] == '1']['methylation']
+        male_data = group_data[group_data["sex"] == "2"]["methylation"]
+        female_data = group_data[group_data["sex"] == "1"]["methylation"]
 
         # Calculate statistics
         stats_row = {
-            'age_group': age_group,
-            'male_mean': male_data.mean(),
-            'female_mean': female_data.mean(),
-            'male_median': male_data.median(),
-            'female_median': female_data.median(),
-            'male_std': male_data.std(),
-            'female_std': female_data.std(),
-            'male_count': male_data.count(),
-            'female_count': female_data.count()
+            "age_group": age_group,
+            "male_mean": male_data.mean(),
+            "female_mean": female_data.mean(),
+            "male_median": male_data.median(),
+            "female_median": female_data.median(),
+            "male_std": male_data.std(),
+            "female_std": female_data.std(),
+            "male_count": male_data.count(),
+            "female_count": female_data.count(),
         }
 
         # Append statistics for the current age group
@@ -107,6 +119,7 @@ def compute_age_group_stats(datasets, cpg_site, age_bins=5):
     # Convert the summary list to a DataFrame for easy viewing
     stats_df = pd.DataFrame(stats_summary)
     return stats_df, combined_data
+
 
 def plot_methylation_by_age_sex(combined_data, cpg_site):
     """
@@ -118,13 +131,21 @@ def plot_methylation_by_age_sex(combined_data, cpg_site):
     """
     plt.figure(figsize=(14, 8))
     # Create a violin plot for methylation levels grouped by age group and sex
-    sns.violinplot(x='age_group', y='methylation', hue='sex', data=combined_data, split=True, palette="Set2")
-    plt.xlabel('Age Group')
-    plt.ylabel(f'Methylation Level at {cpg_site}')
+    sns.violinplot(
+        x="age_group",
+        y="methylation",
+        hue="sex",
+        data=combined_data,
+        split=True,
+        palette="Set2",
+    )
+    plt.xlabel("Age Group")
+    plt.ylabel(f"Methylation Level at {cpg_site}")
     plt.legend(title="Sex")
     plt.xticks(rotation=45)
     plt.tight_layout()
     plt.show()
+
 
 def compute_methylation_stats(datasets, cpg_site, degree=2):
     """
@@ -144,23 +165,29 @@ def compute_methylation_stats(datasets, cpg_site, degree=2):
     # Combine data from all datasets
     for dataset_name, geo_data in datasets.items():
         if cpg_site not in geo_data.dnam.index:
-            print(f"Warning: CpG site '{cpg_site}' not found in dataset {dataset_name}. Skipping this dataset.")
+            print(
+                f"Warning: CpG site '{cpg_site}' not found in dataset {dataset_name}. Skipping this dataset."
+            )
             continue
 
         # Extract methylation data for the CpG site
         methylation_data = geo_data.dnam.loc[cpg_site]
-        valid_samples = geo_data.metadata.index.intersection(methylation_data.index)
-        plot_data = geo_data.metadata.loc[valid_samples, ['age']].copy()
-        plot_data['methylation'] = methylation_data[valid_samples]
-        plot_data['dataset'] = dataset_name
+        valid_samples = geo_data.metadata.index.intersection(
+            methylation_data.index
+        )
+        plot_data = geo_data.metadata.loc[valid_samples, ["age"]].copy()
+        plot_data["methylation"] = methylation_data[valid_samples]
+        plot_data["dataset"] = dataset_name
         combined_data.append(plot_data)
 
     # Combine data across datasets
-    combined_data = pd.concat(combined_data).dropna(subset=['age', 'methylation'])
+    combined_data = pd.concat(combined_data).dropna(
+        subset=["age", "methylation"]
+    )
 
     # Prepare data for regression
-    ages = combined_data['age'].values.reshape(-1, 1)
-    methylation_levels = combined_data['methylation'].values
+    ages = combined_data["age"].values.reshape(-1, 1)
+    methylation_levels = combined_data["methylation"].values
 
     # Perform linear regression
     linear_model = LinearRegression()
@@ -179,13 +206,13 @@ def compute_methylation_stats(datasets, cpg_site, degree=2):
 
     # Compile statistics
     statistics = {
-        'linear_pred': linear_pred,
-        'r_squared_linear': r_squared_linear,
-        'corr': corr,
-        'p_value': p_value,
-        'poly_pred': poly_pred,
-        'r_squared_poly': r_squared_poly,
-        'degree': degree
+        "linear_pred": linear_pred,
+        "r_squared_linear": r_squared_linear,
+        "corr": corr,
+        "p_value": p_value,
+        "poly_pred": poly_pred,
+        "r_squared_poly": r_squared_poly,
+        "degree": degree,
     }
 
     # Print statistics summary
@@ -196,6 +223,7 @@ def compute_methylation_stats(datasets, cpg_site, degree=2):
     print(f"Polynomial Regression (Degree {degree}) R^2: {r_squared_poly:.4f}")
 
     return combined_data, statistics
+
 
 def plot_methylation_vs_age(combined_data, statistics, cpg_site):
     """
@@ -208,8 +236,8 @@ def plot_methylation_vs_age(combined_data, statistics, cpg_site):
     - cpg_site: CpG site ID to visualize.
     """
     # Extract age and methylation data from the combined dataset
-    ages = combined_data['age'].values
-    methylation_levels = combined_data['methylation'].values
+    ages = combined_data["age"].values
+    methylation_levels = combined_data["methylation"].values
 
     plt.figure(figsize=(12, 6))
 
@@ -217,18 +245,20 @@ def plot_methylation_vs_age(combined_data, statistics, cpg_site):
     sns.scatterplot(
         x=ages,
         y=methylation_levels,
-        hue=combined_data['dataset'],
+        hue=combined_data["dataset"],
         palette="tab10",
         s=10,
         alpha=0.6,
-        legend='full'
+        legend="full",
     )
 
     # Linear fit line
-    sns.lineplot(x=ages, y=statistics['linear_pred'], color='red', linestyle="--")
+    sns.lineplot(
+        x=ages, y=statistics["linear_pred"], color="red", linestyle="--"
+    )
 
     # Polynomial fit line
-    sns.lineplot(x=ages, y=statistics['poly_pred'], color='green')
+    sns.lineplot(x=ages, y=statistics["poly_pred"], color="green")
 
     plt.xlabel("Age")
     plt.ylabel("DNA Methylation")
@@ -238,9 +268,10 @@ def plot_methylation_vs_age(combined_data, statistics, cpg_site):
     plt.tight_layout()
     plt.show()
 
+
 def plot_sample_deviations(datasets):
     """
-    Generates a ridge density plot to visualize the distribution of sample deviations 
+    Generates a ridge density plot to visualize the distribution of sample deviations
     from the population mean for multiple datasets.
 
     Args:
@@ -266,15 +297,17 @@ def plot_sample_deviations(datasets):
     # Concatenate all data
     combined_df = pd.concat(combined_data, ignore_index=True)
     # Sort dataset IDs for consistent stacking
-    dataset_labels = combined_df["Dataset"].unique()[::-1]  # Reverse order for top-down stacking
+    dataset_labels = combined_df["Dataset"].unique()[
+        ::-1
+    ]  # Reverse order for top-down stacking
     num_datasets = len(dataset_labels)
     # Prepare the figure and axes for subplots
     fig, axes = plt.subplots(
-        nrows=num_datasets, 
-        ncols=1, 
-        figsize=(10, num_datasets * 1.5), 
-        sharex=True, 
-        gridspec_kw={"hspace": 0.5}
+        nrows=num_datasets,
+        ncols=1,
+        figsize=(10, num_datasets * 1.5),
+        sharex=True,
+        gridspec_kw={"hspace": 0.5},
     )
     # Loop through each dataset and create density plots
     for idx, (dataset_id, ax) in enumerate(zip(dataset_labels, axes)):
@@ -288,13 +321,16 @@ def plot_sample_deviations(datasets):
             color=sns.color_palette("viridis", num_datasets)[idx],
             bw_adjust=0.5,
         )
-        ax.set_ylabel(dataset_id, fontsize=10, rotation=0, labelpad=40, va="center")
+        ax.set_ylabel(
+            dataset_id, fontsize=10, rotation=0, labelpad=40, va="center"
+        )
         ax.set_yticks([])
         ax.set_xlim(0, combined_df["Deviation"].max() + 0.01)
         for spine in ["top", "right", "left"]:
             ax.spines[spine].set_visible(False)
     axes[-1].set_xlabel("Deviation", fontsize=12)
     plt.show()
+
 
 def plot_health_outcome(models, data, health_outcome_col):
     """
@@ -310,7 +346,9 @@ def plot_health_outcome(models, data, health_outcome_col):
     """
     if health_outcome_col is None:
         # Raise an error if health outcome column is not provided
-        raise ValueError("health_outcome_col is required for 'health_outcome' plot.")
+        raise ValueError(
+            "health_outcome_col is required for 'health_outcome' plot."
+        )
 
     # Generate predictions for all models
     all_results = get_predictions(models, data)
@@ -328,7 +366,7 @@ def plot_health_outcome(models, data, health_outcome_col):
             data=merged_data,
             hue=health_outcome_col,
             width=0.3,
-            legend=False
+            legend=False,
         )
         # Overlay scatterplot to show individual data points
         sns.stripplot(
@@ -338,12 +376,13 @@ def plot_health_outcome(models, data, health_outcome_col):
             hue=health_outcome_col,
             jitter=True,
             dodge=False,
-            legend=False
+            legend=False,
         )
 
     plt.ylabel("Predicted Score")
     sns.despine()
     plt.show()
+
 
 def plot_clock_correlation_matrix(models, data):
     """
@@ -363,36 +402,47 @@ def plot_clock_correlation_matrix(models, data):
     # Ensure required columns are present in the dataset
     if "age" not in merged_data.columns or "sex" not in merged_data.columns:
         raise ValueError("The dataset must contain 'age' and 'sex' columns.")
-    
+
     # Convert 'sex' to numeric codes if it's a categorical variable
     if merged_data["sex"].dtype.name == "category":
         merged_data["sex"] = merged_data["sex"].cat.codes
 
     # Select columns for correlation analysis
-    correlation_columns = [col for col in merged_data.columns if col.endswith("_Predicted")] + ["age", "sex"]
+    correlation_columns = [
+        col for col in merged_data.columns if col.endswith("_Predicted")
+    ] + ["age", "sex"]
     correlation_matrix = merged_data[correlation_columns].corr()
 
     # Clean up column names for better readability
-    cleaned_labels = {col: col.replace("_Predicted", "") for col in correlation_matrix.columns}
-    correlation_matrix.rename(index=cleaned_labels, columns=cleaned_labels, inplace=True)
+    cleaned_labels = {
+        col: col.replace("_Predicted", "")
+        for col in correlation_matrix.columns
+    }
+    correlation_matrix.rename(
+        index=cleaned_labels, columns=cleaned_labels, inplace=True
+    )
     # Reorder columns for clustering with 'sex' and 'age' first
-    reorder_columns = ['sex', 'age'] + [col for col in correlation_matrix.columns if col not in ['sex', 'age']]
+    reorder_columns = ["sex", "age"] + [
+        col for col in correlation_matrix.columns if col not in ["sex", "age"]
+    ]
     reordered_matrix = correlation_matrix.loc[reorder_columns, reorder_columns]
 
     # Create a clustered heatmap
     sns.clustermap(
         reordered_matrix,
-        annot=True, 
-        cmap="coolwarm",  
-        vmin=-1, vmax=1,  
-        linewidths=0.5,  
-        fmt=".2f",  
-        figsize=(12, 12), 
-        cbar_kws={"label": "Correlation Coefficient"},  
-        row_cluster=True, 
-        col_cluster=True,  
+        annot=True,
+        cmap="coolwarm",
+        vmin=-1,
+        vmax=1,
+        linewidths=0.5,
+        fmt=".2f",
+        figsize=(12, 12),
+        cbar_kws={"label": "Correlation Coefficient"},
+        row_cluster=True,
+        col_cluster=True,
     )
     plt.show()
+
 
 def plot_age_prediction(models, data):
     """
@@ -409,7 +459,9 @@ def plot_age_prediction(models, data):
     merged_data = merge_predictions(data.metadata, all_results)
 
     # Extract prediction columns and ensure 'age' column exists
-    prediction_columns = [col for col in merged_data.columns if col.endswith("_Predicted")]
+    prediction_columns = [
+        col for col in merged_data.columns if col.endswith("_Predicted")
+    ]
     if "age" not in merged_data.columns:
         raise ValueError("The dataset must contain an 'age' column.")
 
@@ -434,7 +486,7 @@ def plot_age_prediction(models, data):
         label="Age",
         color="red",
         marker="+",
-        s=100
+        s=100,
     )
     plt.xlabel("Chronological Age", fontsize=14)
     plt.ylabel("Predicted Age", fontsize=14)
@@ -442,6 +494,7 @@ def plot_age_prediction(models, data):
     plt.grid(visible=True, linestyle="--", alpha=0.6)
     plt.tight_layout()
     plt.show()
+
 
 def plot_clock_deviation_heatmap(models, data):
     """
@@ -462,20 +515,27 @@ def plot_clock_deviation_heatmap(models, data):
         raise ValueError("The dataset must contain an 'age' column.")
 
     # Compute deviations for each model's predictions
-    prediction_columns = [col for col in merged_data.columns if col.endswith("_Predicted")]
+    prediction_columns = [
+        col for col in merged_data.columns if col.endswith("_Predicted")
+    ]
     for col in prediction_columns:
         merged_data[f"{col}_Deviation"] = merged_data[col] - merged_data["age"]
 
     # Extract deviation columns for the heatmap
     deviation_columns = [f"{col}_Deviation" for col in prediction_columns]
-    clock_names = [col.replace("_Predicted_Deviation", "") for col in deviation_columns]
+    clock_names = [
+        col.replace("_Predicted_Deviation", "") for col in deviation_columns
+    ]
 
     # Dynamically calculate figure size based on the number of samples and models
     num_samples = len(merged_data)
     num_models = len(clock_names)
     row_height = 0.2
-    col_width = 0.2   
-    figsize = (max(12, col_width * num_models), max(12, row_height * num_samples))
+    col_width = 0.2
+    figsize = (
+        max(12, col_width * num_models),
+        max(12, row_height * num_samples),
+    )
 
     plt.figure(figsize=(figsize))
     sns.heatmap(
@@ -485,12 +545,13 @@ def plot_clock_deviation_heatmap(models, data):
         annot=False,
         cbar_kws={"label": "Deviation (Epigenetic Age - Chronological Age)"},
         yticklabels=merged_data.index,
-        xticklabels=clock_names,  
+        xticklabels=clock_names,
     )
     plt.xlabel("Clocks")
     plt.ylabel("Samples (IDs)")
     plt.tight_layout(pad=2)
     plt.show()
+
 
 def get_predictions(models, data):
     """
@@ -512,11 +573,14 @@ def get_predictions(models, data):
         if "name" not in model.details:
             raise ValueError("Model metadata must contain a 'name'.")
         # Rename prediction column to include the model name
-        results.rename(columns={"Predicted": f"{name}_Predicted"}, inplace=True)
+        results.rename(
+            columns={"Predicted": f"{name}_Predicted"}, inplace=True
+        )
         # Ensure indices are strings for consistent merging
         results.set_index(results.index.astype(str), inplace=True)
         all_results.append(results)
     return all_results
+
 
 def merge_predictions(metadata, all_results):
     """
