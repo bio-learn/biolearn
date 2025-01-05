@@ -63,7 +63,7 @@ def test_init_with_bad_data():
 def test_get_model_by_name():
     gallery = ModelGallery(sample_data)
     model = gallery.get("Horvathv1")
-    assert model.metadata["year"] == 2013
+    assert model.details["year"] == 2013
 
 
 def test_get_nonexistent_model_by_name():
