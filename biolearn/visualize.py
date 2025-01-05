@@ -12,23 +12,23 @@ from sklearn.metrics import r2_score
 
 def identify_stable_cpg_sites(datasets, threshold=0.01):
     """
-    Identifies stable CpG sites in each dataset based on variance.
+    Identifies top 10 stable CpG sites in each dataset based on variance.
 
     Parameters:
     - datasets: Dictionary of dataset names to GeoData objects.
     - threshold: Variance threshold to determine stability (default: 0.01).
 
     Returns:
-    - stable_sites_summary: List of dictionaries with stable CpG sites per dataset.
+    - stable_sites_summary: List of dictionaries with the top 10 stable CpG sites per dataset.
     """
     stable_sites_summary = []
     for dataset_name, geo_data in datasets.items():
         # Compute variance for each CpG site (rows of DNA methylation matrix)
         variances = geo_data.dnam.var(axis=1)
         # Identify CpG sites with variance below the threshold
-        stable_sites = variances[variances < threshold].index.tolist()
+        top_10_stable_sites = variances[variances < threshold].index.tolist()[:10]
         # Append results to the summary list
-        stable_sites_summary.append({'Dataset': dataset_name, 'Stable CpG Sites': stable_sites})
+        stable_sites_summary.append({'Dataset': dataset_name, 'Stable CpG Sites': top_10_stable_sites})
     return stable_sites_summary
 
 def compute_age_group_stats(datasets, cpg_site, age_bins=5):
@@ -470,7 +470,14 @@ def plot_clock_deviation_heatmap(models, data):
     deviation_columns = [f"{col}_Deviation" for col in prediction_columns]
     clock_names = [col.replace("_Predicted_Deviation", "") for col in deviation_columns]
 
-    plt.figure(figsize=(10, len(merged_data) * 0.2))
+    # Dynamically calculate figure size based on the number of samples and models
+    num_samples = len(merged_data)
+    num_models = len(clock_names)
+    row_height = 0.2
+    col_width = 0.2   
+    figsize = (max(12, col_width * num_models), max(12, row_height * num_samples))
+
+    plt.figure(figsize=(figsize))
     sns.heatmap(
         merged_data[deviation_columns],
         cmap="coolwarm",

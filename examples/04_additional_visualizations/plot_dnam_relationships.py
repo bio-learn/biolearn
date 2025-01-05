@@ -29,7 +29,7 @@ library = DataLibrary()
 datasets = {id: library.get(id).load() for id in dataset_ids}
 
 #############################################################################
-# Identify stable CpG sites with low variance
+# Identify the top 10 stable CpG sites with low variance for each dataset
 # --------------------------------------------------------------------------
 stable_sites = identify_stable_cpg_sites(datasets, threshold=0.01)
 print("Stable CpG Sites:", stable_sites)

@@ -709,6 +709,18 @@ class DataSource:
                 raise ValueError(error_message)
         self.cache = cache if cache else NoCache()
         self.source_definition = source_definition
+        self.title = source_definition.get(
+            "title", ""
+        )  # Default empty string if title is not provided
+        self.summary = source_definition.get(
+            "summary", ""
+        )  # Default empty string if summary is not provided
+        self.format = source_definition.get(
+            "format", ""
+        )  # Default empty string if format is not provided
+        self.organism = source_definition.get(
+            "organism", ""
+        )  # Default empty string if organism is not provided
 
         self.parser = self._create_parser(source_definition["parser"])
 
