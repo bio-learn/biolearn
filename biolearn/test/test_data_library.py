@@ -296,3 +296,73 @@ def test_lookup_sources_by_organism():
 
     matches = library.lookup_sources(organism="human")
     assert len(matches) == 2
+
+
+def test_load_datasource_with_empty_tags(capsys):
+    """Test loading DataSource with empty tags list"""
+    source_def = {
+        "id": "TestData",
+        "path": get_test_data_file("geo_dnam_test_file"),
+        "parser": {
+            "type": "geo-matrix",
+            "id-row": 33,
+            "metadata": {
+                "age": {"row": 47, "parse": "numeric"},
+                "sex": {"row": 41, "parse": "sex"},
+                "cancer": {"row": 50, "parse": "string"},
+            },
+            "matrix-start": 74,
+        },
+        "tags": [],
+    }
+    source = DataSource(source_def)
+    df = source.load()
+    captured = capsys.readouterr()
+    assert captured.out == ""
+
+
+def test_load_datasource_with_work_needed_tag(capsys):
+    """Test loading DataSource with work_needed tag shows warning"""
+    source_def = {
+        "id": "TestData",
+        "path": get_test_data_file("geo_dnam_test_file"),
+        "parser": {
+            "type": "geo-matrix",
+            "id-row": 33,
+            "metadata": {
+                "age": {"row": 47, "parse": "numeric"},
+                "sex": {"row": 41, "parse": "sex"},
+                "cancer": {"row": 50, "parse": "string"},
+            },
+            "matrix-start": 74,
+        },
+        "tags": ["work_needed"],
+    }
+    source = DataSource(source_def)
+    df = source.load()
+    captured = capsys.readouterr()
+    expected_warning = "\nWARNING: Dataset TestData is marked as 'work_needed'.\nThis indicates the dataset may have one or more issues:\n- DNA methylation data may not be populated\n- Sex information is missing or not standardized\n- Age values are not numeric or not standardized\nPlease verify and standardize these fields before using in production.\n\n"
+    assert captured.out == expected_warning
+
+
+def test_load_datasource_with_curated_tag(capsys):
+    """Test loading DataSource with curated tag"""
+    source_def = {
+        "id": "TestData",
+        "path": get_test_data_file("geo_dnam_test_file"),
+        "parser": {
+            "type": "geo-matrix",
+            "id-row": 33,
+            "metadata": {
+                "age": {"row": 47, "parse": "numeric"},
+                "sex": {"row": 41, "parse": "sex"},
+                "cancer": {"row": 50, "parse": "string"},
+            },
+            "matrix-start": 74,
+        },
+        "tags": ["curated"],
+    }
+    source = DataSource(source_def)
+    df = source.load()
+    captured = capsys.readouterr()
+    assert captured.out == ""
