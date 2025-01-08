@@ -27,5 +27,6 @@ datasets = {id: library.get(id).load() for id in dataset_ids}
 ################################################################################
 # Visualize the distribution of sample deviations from the population mean
 # ------------------------------------------------------------------------------
+
 # Use the `plot_sample_deviations` function to generate a ridge density plot
 plot_sample_deviations(datasets=datasets)

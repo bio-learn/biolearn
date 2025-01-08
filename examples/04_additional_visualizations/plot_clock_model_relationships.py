@@ -21,6 +21,7 @@ from biolearn.visualize import (
 ################################################################################
 # Visualize a correlation matrix across aging clocks/models
 # ------------------------------------------------------------------------------
+
 # Load an appropriate GEO dataset for the models
 data = DataLibrary().get("GSE120307").load()
 
@@ -57,6 +58,7 @@ plot_age_prediction(
 ################################################################################
 # Visualize model predictions against its corresponding health outcome
 # ------------------------------------------------------------------------------
+
 # Load an appropriate GEO dataset for the corresponding model
 down_syndrome_data = DataLibrary().get("GSE52588").load()
 

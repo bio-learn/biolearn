@@ -13,26 +13,22 @@ from sklearn.metrics import r2_score
 
 def identify_stable_cpg_sites(datasets, threshold=0.01):
     """
-    Identifies top 10 stable CpG sites in each dataset based on variance.
-
+    Identifies stable CpG sites in each dataset based on variance.
     Parameters:
     - datasets: Dictionary of dataset names to GeoData objects.
     - threshold: Variance threshold to determine stability (default: 0.01).
-
     Returns:
-    - stable_sites_summary: List of dictionaries with the top 10 stable CpG sites per dataset.
+    - stable_sites_summary: List of dictionaries with stable CpG sites per dataset.
     """
     stable_sites_summary = []
     for dataset_name, geo_data in datasets.items():
         # Compute variance for each CpG site (rows of DNA methylation matrix)
         variances = geo_data.dnam.var(axis=1)
         # Identify CpG sites with variance below the threshold
-        top_10_stable_sites = variances[variances < threshold].index.tolist()[
-            :10
-        ]
+        stable_sites = variances[variances < threshold].index.tolist()
         # Append results to the summary list
         stable_sites_summary.append(
-            {"Dataset": dataset_name, "Stable CpG Sites": top_10_stable_sites}
+            {"Dataset": dataset_name, "Stable CpG Sites": stable_sites}
         )
     return stable_sites_summary
 
@@ -542,7 +538,7 @@ def plot_clock_deviation_heatmap(models, data):
         merged_data[deviation_columns],
         cmap="coolwarm",
         center=0,
-        annot=False,
+        annot=True,
         cbar_kws={"label": "Deviation (Epigenetic Age - Chronological Age)"},
         yticklabels=merged_data.index,
         xticklabels=clock_names,
