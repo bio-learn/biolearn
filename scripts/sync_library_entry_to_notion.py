@@ -311,10 +311,7 @@ def create_notion_page_update(
 ) -> dict:
 
     if local_item.id != remote_item.properties.Name.title[0].plain_text:
-        raise ValueError(
-            f"Local item id {local_item.id} does not match remote item id {
-                remote_item.properties.Name.title[0].plain_text}"
-        )
+        raise ValueError(f"Local item id {local_item.id} does not match remote item id {remote_item.properties.Name.title[0].plain_text}")
 
     update = {}
     if local_item.query != remote_item.properties.Link.url:
