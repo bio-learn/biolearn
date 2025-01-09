@@ -291,7 +291,7 @@ def create_notion_page_creation(local_item: SeriesItem) -> dict:
     return creation
 
 
-def get_data_to_update_in_notoin(
+def get_data_to_update_in_notion(
     local_dataset: list[SeriesItem], remote_dataset: list[SeriesPage]
 ) -> list[dict]:
 
@@ -416,7 +416,7 @@ async def sync_library_entry_to_notion():
 
     list_to_add = get_data_to_add_to_notion(series_items, series_pages)
     creations = [notion.pages.create(**item) for item in list_to_add]
-    list_to_update = get_data_to_update_in_notoin(series_items, series_pages)
+    list_to_update = get_data_to_update_in_notion(series_items, series_pages)
     updates = [
         notion.pages.update(item["page_id"], **item["params"])
         for item in list_to_update
