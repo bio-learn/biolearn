@@ -23,7 +23,9 @@ dependencies = [
   "cvxpy",
   "xlrd",
   "openpyxl",
-  "ecos"
+  "ecos",
+  "matplotlib",
+  "scikit-learn"
 ]
 
 keywords = ["biomarker"]

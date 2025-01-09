@@ -6,6 +6,8 @@ import requests
 import gzip
 import shutil
 import os
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 from biolearn.util import cached_download, get_data_file
@@ -200,6 +202,11 @@ class GeoData:
             metadata=self.metadata.copy(deep=True),
             dnam=self.dnam.copy(deep=True) if self.dnam is not None else None,
             rna=self.rna.copy(deep=True) if self.rna is not None else None,
+            protein=(
+                self.protein.copy(deep=True)
+                if self.protein is not None
+                else None
+            ),
         )
 
     def quality_report(self, sites=None):
