@@ -429,7 +429,7 @@ async def sync_library_entry_to_notion():
     )
 
     all_tasks = creations + updates + deletes
-    await limited_concurrent_run(all_tasks, 10)
+    await limited_concurrent_run(all_tasks, 3)
 
 
 asyncio.run(sync_library_entry_to_notion())
