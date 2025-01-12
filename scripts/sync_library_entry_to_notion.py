@@ -42,8 +42,9 @@ class SelectProperty(NotionDatabaseProperty):
             type=property["type"],
             select=(
                 SelectPropertyValue(**property["select"])
-                if property["select"]
+                if "select" in property
                 else None
+
             ),
         )
 
@@ -97,7 +98,7 @@ class NumberProperty(NotionDatabaseProperty):
         return NumberProperty(
             id=property["id"],
             type=property["type"],
-            number=int(property["number"]) if property["number"] else None,
+            number=int(property["number"]) if "number" in property else None,
         )
 
 
@@ -321,7 +322,7 @@ def create_notion_page_creation(local_item: SeriesItem) -> dict:
         "rich_text": [{"text": {"content": local_item.title}}]
     }
     platforms = [
-        {"name": platform["name"]} for platform in local_item.platforms
+        {"name": platform["name"]} for platform in (local_item.platforms or [])
     ]
     creation["properties"]["Platform"] = {"multi_select": platforms}
     creation["properties"]["Samples"] = {"number": local_item.samples}
@@ -384,7 +385,7 @@ def create_notion_page_update(
     notion_platforms = [
         select.name for select in remote_item.properties.Platform.multi_select
     ]
-    local_platforms = [platform["name"] for platform in local_item.platforms]
+    local_platforms = [platform["name"] for platform in (local_item.platforms or [])]
     if set(local_platforms) != set(notion_platforms):
         update["Platform"] = {
             "multi_select": [
