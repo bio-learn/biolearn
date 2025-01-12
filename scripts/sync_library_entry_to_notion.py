@@ -8,6 +8,9 @@ from notion_client.helpers import async_collect_paginated_api
 from dataclasses import dataclass, fields
 from typing import Any, Type
 
+YES = "Yes"
+NO = "No"
+
 load_dotenv()
 
 
@@ -181,11 +184,13 @@ class SeriesPage:
 @dataclass
 class SeriesItem:
     id: str
-    query: str
     title: str
-    platforms: list[dict]
     samples: int
     parser: dict
+    age_present: bool = False
+    sex_present: bool = False
+    query: str = None
+    platforms: list[dict] = None
     tags: list[str] = None
 
 
@@ -197,18 +202,68 @@ async def get_series_dataset_from_notion() -> list[SeriesPage]:
     return [page for page in result if len(page.properties.Name.title) > 0]
 
 
-def get_data_library_file() -> str:
-    file = "../biolearn/data/geo_autoscan_library.yaml"
+def get_data_library_file(name: str) -> str:
+    file = f"../biolearn/data/{name}"
     base_dir = os.path.dirname(os.path.abspath(__file__))
     return os.path.abspath(os.path.join(base_dir, file))
 
 
-def read_series_dataset_from_library() -> list[SeriesItem]:
-    library_file = get_data_library_file()
-    with open(library_file, "r") as file:
-        data = yaml.safe_load(file)
+def merge_libraries(target_library: list[SeriesItem], source_library: list[SeriesItem]) -> list[SeriesItem]:
+    """Merge two lists of SeriesItem with source taking precedence on conflicts.
+    
+    Args:
+        target_library: The base list of SeriesItem
+        source_library: The list of SeriesItem whose items take precedence
+        
+    Returns:
+        list[SeriesItem]: Merged list of SeriesItem
+    """
+    merged_items = {item.id: item for item in target_library}
+    
+    for item in source_library:
+        merged_items[item.id] = item
+        
+    return list(merged_items.values())
 
-    return [dict_to_dataclass(SeriesItem, item) for item in data["items"]]
+
+def read_series_dataset_from_library() -> list[SeriesItem]:
+    autoscan_library = get_data_library_file("geo_autoscan_library.yaml")
+    library = get_data_library_file("library.yaml")
+    
+    with open(autoscan_library, "r") as file:
+        autoscan_library_data = yaml.safe_load(file)
+        autoscan_library_items = [dict_to_dataclass(SeriesItem, item) for item in autoscan_library_data["items"]]
+
+        # Check if age and sex metadata keys are present in the parser and set corresponding flags
+        for item in autoscan_library_items:
+            if "age" in item.parser["metadata_keys_parse"]:
+                item.age_present = True
+            if "sex" in item.parser["metadata_keys_parse"]:
+                item.sex_present = True
+    
+    with open(library, "r") as file:
+        library_data = yaml.safe_load(file)
+        library_items = [dict_to_dataclass(SeriesItem, item) for item in library_data["items"]]
+
+        # Assume all handed generated ones are curated and loadable
+        default_tags = ["curated", "loadable"]
+        for item in library_items:
+            if item.tags is None:
+                item.tags = default_tags.copy()
+            else:
+                item.tags.extend(default_tags)
+        
+        # Assume all manually curated entries have age and sex metadata
+        for item in library_items:
+            item.age_present = True
+            item.sex_present = True
+
+        # Add GEO query URL if not specified
+        for item in library_items:
+            if item.query is None:
+                item.query = f"https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc={item.id}"
+
+    return merge_libraries(autoscan_library_items, library_items)
 
 
 def dict_to_dataclass(cls: Type[Any], data: dict) -> Any:
@@ -276,17 +331,16 @@ def create_notion_page_creation(local_item: SeriesItem) -> dict:
             "multi_select": [{"name": tag} for tag in local_item.tags]
         }
 
-    has_age = "age" in local_item.parser["metadata_keys_parse"]
-    local_age_select = "Yes" if has_age else "No"
+    local_age_select = YES if local_item.age_present else NO
     creation["properties"]["AgePresent"] = {
         "select": {"name": local_age_select}
     }
 
-    has_sex = "sex" in local_item.parser["metadata_keys_parse"]
-    local_sex_select = "Yes" if has_sex else "No"
+    local_sex_select = YES if local_item.sex_present else NO
     creation["properties"]["SexPresent"] = {
         "select": {"name": local_sex_select}
     }
+
 
     return creation
 
@@ -317,14 +371,12 @@ def create_notion_page_update(
     if local_item.query != remote_item.properties.Link.url:
         update["Link"] = {"url": local_item.query}
 
-    has_age = "age" in local_item.parser["metadata_keys_parse"]
-    local_age_select = "Yes" if has_age else "No"
+    local_age_select = YES if local_item.age_present else NO
     age_select = remote_item.properties.AgePresent.select.name
     if local_age_select != age_select:
         update["AgePresent"] = {"select": {"name": local_age_select}}
 
-    has_sex = "sex" in local_item.parser["metadata_keys_parse"]
-    local_sex_select = "Yes" if has_sex else "No"
+    local_sex_select = YES if local_item.sex_present else NO
     sex_select = remote_item.properties.SexPresent.select.name
     if local_sex_select != sex_select:
         update["SexPresent"] = {"select": {"name": local_sex_select}}
