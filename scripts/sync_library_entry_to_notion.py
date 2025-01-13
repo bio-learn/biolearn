@@ -245,16 +245,8 @@ def read_series_dataset_from_library() -> list[SeriesItem]:
     with open(library, "r") as file:
         library_data = yaml.safe_load(file)
         library_items = [dict_to_dataclass(SeriesItem, item) for item in library_data["items"]]
-
-        # Assume all handed generated ones are curated and loadable
-        default_tags = ["curated", "loadable"]
-        for item in library_items:
-            if item.tags is None:
-                item.tags = default_tags.copy()
-            else:
-                item.tags.extend(default_tags)
         
-        # Assume all manually curated entries have age and sex metadata
+        # Set age and sex presence fields for library items
         for item in library_items:
             item.age_present = True
             item.sex_present = True
