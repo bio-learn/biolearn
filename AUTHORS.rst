@@ -28,7 +28,10 @@ Other contributors
 * `Alec Eames`_ / `Harvard Universiy <https://www.linkedin.com/in/alec-eames-589a3917a/>`_
 * `Dayoon Kwon`_ /  `University of California <https://scholar.google.com/citations?user=5L9djqsAAAAJ&hl=en>`_
 * `Mehrnoosh Emamifar`_/ `Northeastern university <https://www.linkedin.com/in/mehrnoosh-emamifar/>`_
-
+* `Chancen Law`_/ `Harvard university <https://www.linkedin.com/in/chancenlaw/>`_
+* `Nureldin Mohamed`_/ `Harvard university <https://www.linkedin.com/in/nureldin-m-19738625b/>`_
+* `Yasamin Jodat`_/ `Gingko Bioworks <https://www.linkedin.com/in/yasamin-jodat/>`_
+* `Aneesh Mazumder`_/ `Harvard university <https://www.linkedin.com/in/aneesh-mazumder/>`_
 
 Partner Organizations
 .....................
