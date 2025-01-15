@@ -7,8 +7,8 @@
 .. _Alec Eames: https://www.linkedin.com/in/alec-eames-589a3917a/
 .. _Mehrnoosh Emamifar: https://www.linkedin.com/in/mehrnoosh-emamifar/
 .. _Chancen Law: https://www.linkedin.com/in/chancenlaw/
-.. _Nureldin Mohamed: https://www.linkedin.com/in/chancenlaw/
-.. _Yasamin Joda: https://www.linkedin.com/in/chancenlaw/
+.. _Nureldin Mohamed: https://www.linkedin.com/in/nureldin-m-19738625b/
+.. _Yasamin Joda: https://www.linkedin.com/in/yasamin-jodat/
 .. _Aneesh Mazumder: https://www.linkedin.com/in/aneesh-mazumder/
 
 .. _AI4Life Institute: https://www.ai4lifeinstitute.com/
