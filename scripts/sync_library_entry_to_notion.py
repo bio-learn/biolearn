@@ -42,9 +42,8 @@ class SelectProperty(NotionDatabaseProperty):
             type=property["type"],
             select=(
                 SelectPropertyValue(**property["select"])
-                if "select" in property
+                if property.get("select")
                 else None
-
             ),
         )
 
@@ -60,9 +59,10 @@ class MultiSelectProperty(NotionDatabaseProperty):
             type=property["type"],
             multi_select=[
                 SelectPropertyValue(**select)
-                for select in property["multi_select"]
+                for select in property.get("multi_select", [])
             ],
         )
+
 
 
 @dataclass
@@ -98,7 +98,7 @@ class NumberProperty(NotionDatabaseProperty):
         return NumberProperty(
             id=property["id"],
             type=property["type"],
-            number=int(property["number"]) if "number" in property else None,
+            number=int(property["number"]) if property.get("number") is not None else None,
         )
 
 
@@ -365,13 +365,21 @@ def create_notion_page_update(
         update["Link"] = {"url": local_item.query}
 
     local_age_select = YES if local_item.age_present else NO
-    age_select = remote_item.properties.AgePresent.select.name
-    if local_age_select != age_select:
+    remote_age_select = (
+        remote_item.properties.AgePresent.select.name 
+        if remote_item.properties.AgePresent.select is not None 
+        else None
+    )
+    if local_age_select != remote_age_select:
         update["AgePresent"] = {"select": {"name": local_age_select}}
 
     local_sex_select = YES if local_item.sex_present else NO
-    sex_select = remote_item.properties.SexPresent.select.name
-    if local_sex_select != sex_select:
+    remote_sex_select = (
+        remote_item.properties.SexPresent.select.name 
+        if remote_item.properties.SexPresent.select is not None 
+        else None
+    )
+    if local_sex_select != remote_sex_select:
         update["SexPresent"] = {"select": {"name": local_sex_select}}
 
     notion_platforms = [
@@ -388,10 +396,10 @@ def create_notion_page_update(
     if local_item.samples != remote_item.properties.Samples.number:
         update["Samples"] = {"number": local_item.samples}
 
-    if (
-        local_item.title
-        != remote_item.properties.Title.rich_text[0]["text"]["content"]
-    ):
+    remote_title = (remote_item.properties.Title.rich_text[0]["text"]["content"] 
+                   if remote_item.properties.Title.rich_text 
+                   else None)
+    if local_item.title != remote_title:
         update["Title"] = {
             "rich_text": [{"text": {"content": local_item.title}}]
         }
