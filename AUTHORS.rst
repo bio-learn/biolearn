@@ -12,23 +12,21 @@ the :BoA:`Biomarkers of Aging Consortium <>`
 
 .. _core_devs:
 
-Core developers
+Core Team
 ...............
 
-The biolearn core developers are:
-
+* `Seth Paulson`_  /  `Biolearn Lead <https://www.linkedin.com/in/seth-paulson-6ba80226/>`_
 * `Mahdi Moqri`_  /  `Researcher & BoA Executive <https://www.linkedin.com/in/mahdi-moqri-41432547/>`_
-* `Martin Perez-Guevara`_  /  `Machine Learning Engineer <https://www.linkedin.com/in/martin-perez-guevara/>`_
-* `Seth Paulson`_  /  `Software Architect <https://www.linkedin.com/in/seth-paulson-6ba80226/>`_
+* `Albert Ying`_ / `Harvard Universiy <https://scholar.google.com/citations?user=JS7AdkcAAAAJ&hl=zh-CN>`_
 
 Other contributors
 ..................
 
-* `Albert Ying`_ / `Harvard Universiy <https://scholar.google.com/citations?user=JS7AdkcAAAAJ&hl=zh-CN>`_
+* `Martin Perez-Guevara`_  /  `Machine Learning Engineer <https://www.linkedin.com/in/martin-perez-guevara/>`_
+* `Chancen Law`_/ `Harvard university <https://www.linkedin.com/in/chancenlaw/>`_
 * `Alec Eames`_ / `Harvard Universiy <https://www.linkedin.com/in/alec-eames-589a3917a/>`_
 * `Dayoon Kwon`_ /  `University of California <https://scholar.google.com/citations?user=5L9djqsAAAAJ&hl=en>`_
 * `Mehrnoosh Emamifar`_/ `Northeastern university <https://www.linkedin.com/in/mehrnoosh-emamifar/>`_
-* `Chancen Law`_/ `Harvard university <https://www.linkedin.com/in/chancenlaw/>`_
 * `Nureldin Mohamed`_/ `Harvard university <https://www.linkedin.com/in/nureldin-m-19738625b/>`_
 * `Yasamin Jodat`_/ `Gingko Bioworks <https://www.linkedin.com/in/yasamin-jodat/>`_
 * `Aneesh Mazumder`_/ `Harvard university <https://www.linkedin.com/in/aneesh-mazumder/>`_

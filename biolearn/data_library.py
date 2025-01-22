@@ -822,8 +822,12 @@ class DataLibrary:
         self.cache = cache if cache else default_cache()
         self.sources = []
         if library_file is None:
-            library_file = get_data_file("library.yaml")
-        self.load_sources(library_file)
+            curated_library_file = get_data_file("library.yaml")
+            self.load_sources(curated_library_file)
+            autoscan_library = get_data_file("geo_autoscan_library.yaml")
+            self.load_sources(autoscan_library)
+        else:
+            self.load_sources(library_file)
 
     def load_sources(self, library_file):
         """
