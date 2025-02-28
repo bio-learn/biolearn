@@ -209,6 +209,8 @@ class GeoData:
             ),
         )
 
+    # add code here
+
     def quality_report(self, sites=None):
         """
         Generates a quality control report for the genomic data, optionally filtered by specified methylation sites,
@@ -299,6 +301,141 @@ class GeoData:
 
         return cls(metadata, dnam)
 
+# add updates here
+
+    def save_csv(self, folder_path, name, max_samples_per_file=1000):
+        """
+        Save GeoData (metadata and dnam) into CSV files.
+
+        Args:
+            folder_path (str): The path to the directory where files will be saved.
+            name (str): The base name for saved CSV files.
+            max_samples_per_file (int): Maximum number of samples per dnam file.
+        """
+        os.makedirs(folder_path, exist_ok=True)
+
+        # Save metadata
+        metadata_file = os.path.join(folder_path, f"{name}_metadata.csv")
+        self.metadata.to_csv(metadata_file)
+
+        # Save dnam data in chunks if large
+        if self.dnam is not None:
+            for i in range(0, len(self.dnam.columns), max_samples_per_file):
+                chunk = self.dnam.iloc[:, i:i + max_samples_per_file]
+                chunk_file = os.path.join(folder_path, f"{name}_dnam_part_{i // max_samples_per_file + 1}.csv")
+                chunk.to_csv(chunk_file)
+
+        # Optionally save RNA and protein data
+        if self.rna is not None:
+            rna_file = os.path.join(folder_path, f"{name}_rna.csv")
+            self.rna.to_csv(rna_file)
+
+        if self.protein is not None:
+            protein_file = os.path.join(folder_path, f"{name}_protein.csv")
+            self.protein.to_csv(protein_file)
+    
+    @classmethod
+    def load_csv(cls, folder_path, name, series_part=None, load_all=True):
+        """
+        Load GeoData from saved CSV files.
+
+        Args:
+            folder_path (str): Directory containing the saved CSV files.
+            name (str): Base name used during the save process.
+            series_part (str, optional): Selectively load 'metadata', 'dnam', 'rna', or 'protein'.
+            load_all (bool): If True, load all parts of the dnam dataset.
+
+        Returns:
+            GeoData: The loaded GeoData instance.
+        """
+        # Load metadata
+        metadata_file = os.path.join(folder_path, f"{name}_metadata.csv")
+        metadata = pd.read_csv(metadata_file, index_col=0)
+
+        # Load dnam in parts or entirely
+        dnam = None
+        if series_part in [None, "dnam"]:
+            if load_all:
+                dnam_files = [os.path.join(folder_path, f) for f in os.listdir(folder_path) if f.startswith(f"{name}_dnam_part_")]
+                dnam = pd.concat([pd.read_csv(f, index_col=0) for f in dnam_files], axis=1)
+            else:
+                dnam_file = os.path.join(folder_path, f"{name}_dnam_part_1.csv")
+                if os.path.exists(dnam_file):
+                    dnam = pd.read_csv(dnam_file, index_col=0)
+
+        # Optionally load RNA and protein data
+        rna = None
+        if series_part in [None, "rna"]:
+            rna_file = os.path.join(folder_path, f"{name}_rna.csv")
+            if os.path.exists(rna_file):
+                rna = pd.read_csv(rna_file, index_col=0)
+
+        protein = None
+        if series_part in [None, "protein"]:
+            protein_file = os.path.join(folder_path, f"{name}_protein.csv")
+            if os.path.exists(protein_file):
+                protein = pd.read_csv(protein_file, index_col=0)
+
+        return cls(metadata, dnam=dnam, rna=rna, protein=protein)
+
+    def quality_report(self, sites=None):
+        
+        """
+        Generates a quality control report for the genomic data, optionally filtered by specific methylation and includes a detailed section
+        reporting the missing percentage for each methylation site
+
+        Args:
+            sites(list, optional): A list of methylation site identifiers to include the report.
+                If None, all sites are included
+        
+        Returns:
+            QualityReport: An object containing boht detailed methylation data, a summary, and a detailed section for missing percentages per site.
+        """
+
+        if self.dnam is None or self.dnam.empty:
+            raise ValueError(
+                "This dataset does not have Methylation data. Only methylation data is currently supported by quality_report"
+            )
+        
+        methylation_data = self.dnam.copy()
+        
+        # Filter methylation data if specific sites are provided
+        if sites is not None:
+            methylation_data = methylation_data.loc[sites]
+
+        # Calculate mean absolute deviation      
+        methylation_medians = methylation_data.median(axis=1)
+        
+        deviations = methylation_data.sub(methylation_medians, axis=0)
+       
+        mean_abs_deviation = deviations.abs().mean()
+        sample_report = mean_abs_deviation.to_frame(name="deviation")
+
+        # include 'age' in the detailed report if relevant and analyze all sites
+        if "age" in self.metadata.columns and sites is None:
+            sample_report["age"] = self.metadata["age"]
+        
+        # Calculate missing percentage for each methylation site
+        missing_percentage = methylation_data.isna().mean(axis=1)
+        methylation_site_report = missing_percentage.to_frame(name="missing")
+
+        # Summary calculations
+        total_nan = methylation_data.isna().sum().sum()
+        sites_with_20_percent_nan = (
+            methylation_data.isna().mean(axis=1) >= 0.2
+        ).sum()
+
+        summary = {
+            "missing_data_points": total_nan,
+             "sites_with_over_20_percent_missing": sites_with_20_percent_nan,
+             "samples_with_high_deviation": (mean_abs_deviation > 0.04).sum(),
+             "total_samples": methylation_data.shape[1],
+             "methylation_sites": methylation_data.shape[0],
+        }
+
+        return QualityReport(sample_report, methylation_site_report, summary)
+
+### issue-125 here
 
 class JenAgeCustomParser:
     def __init__(self, data):
