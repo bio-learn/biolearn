@@ -493,6 +493,18 @@ model_definitions = {
             "transform": lambda sum: sum + 55.808884324,
         },
     },
+    "Bohlin": {
+        "year": 2017,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.2217/epi-2016-0103",
+        "output": "Age (Years)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "Bohlin.csv",
+            "transform": lambda sum: sum + 277.2421,
+        },
+    }
 }
 
 
