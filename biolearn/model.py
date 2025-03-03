@@ -504,7 +504,7 @@ model_definitions = {
             "file": "Bohlin.csv",
             "transform": lambda sum: sum + 277.2421,
         },
-    }
+    },
 }
 
 
