@@ -478,6 +478,18 @@ model_definitions = {
             "file": "DepressionBarbu.csv",
         },
     },
+        "Weidner": {
+        "year": 2014,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/23061750/",
+        "output": "Age (Years)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "Weidner_CpGs.csv",
+            "transform": lambda sum: sum + 111.83,
+        },
+    },
     "TranscriptomicPredictionModel": {
         "year": 2015,
         "species": "Human",
