@@ -491,7 +491,17 @@ model_definitions = {
                 map_ensembl_to_gene(rna_data)
             ),
             "transform": lambda sum: sum + 55.808884324,
-        },
+    },
+    "Garagnani": {
+        "year": 2012,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/23061750/",
+        "output": "Age (Years)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "Garagnani_CpG.csv",
+            "transform": lambda sum: sum,
     },
 }
 
