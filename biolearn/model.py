@@ -497,7 +497,7 @@ model_definitions = {
         "year": 2017,
         "species": "Human",
         "tissue": "Blood",
-        "source": "https://doi.org/10.2217/epi-2016-0103",
+        "source": "https://doi.org/10.1186/s13059-016-1063-4",
         "output": "Age (Years)",
         "model": {
             "type": "LinearMethylationModel",
