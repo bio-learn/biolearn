@@ -37,9 +37,6 @@ def temp_dir(tmp_path):
     """Return a temporary directory as a string."""
     return str(tmp_path)
 
-# ---------------------------
-# Existing Tests for from_methylation_matrix
-# ---------------------------
 
 def test_metadata_population():
     data = {"Sample1": [0.1, 0.2, 0.3], "Sample2": [0.4, 0.5, 0.6]}
@@ -96,6 +93,24 @@ def test_sex_conversion(temp_dir):
     actual_sex = loaded_geodata.metadata["Sex"]
     pd.testing.assert_series_equal(expected_sex, actual_sex, check_names=False)
 
+def test_sex_conversion_on_disk(temp_dir):
+    """
+    Test that the metadata file on disk conforms to the spec:
+    The 'Sex' field should be saved in standard format: 0 for female and 1 for male.
+    Given our internal coding (1 for Female, 2 for Male), the expected values on disk for 3 samples are:
+      - For sample S1 (internal 2) -> 1
+      - For sample S2 (internal 1) -> 0
+      - For sample S3 (internal 2) -> 1
+    """
+    geodata = create_dummy_geodata(num_samples=3)
+    geodata.save_csv(temp_dir, "sex_disk")
+    metadata_file = os.path.join(temp_dir, "sex_disk_metadata.csv")
+    saved_metadata = pd.read_csv(metadata_file, index_col=0, keep_default_na=False)
+    expected_sex_on_disk = [1, 0, 1]  # Internal 2 becomes 1, internal 1 becomes 0
+    actual_sex_on_disk = saved_metadata["Sex"].tolist()
+    assert actual_sex_on_disk == expected_sex_on_disk, f"Expected Sex on disk {expected_sex_on_disk} but got {actual_sex_on_disk}"
+
+
 def test_split_large_methylation(temp_dir):
     """
     Test that methylation data with >1000 samples is split into multiple files.
@@ -121,10 +136,6 @@ def test_missing_files(temp_dir):
         os.remove(rna_file)
     loaded_geodata = GeoData.load_csv(temp_dir, "missing_test", series_part="all")
     assert loaded_geodata.rna is None, "Expected RNA attribute to be None when RNA file is missing"
-
-# ---------------------------
-# Additional Test Cases
-# ---------------------------
 
 def test_optional_field_content(temp_dir):
     """

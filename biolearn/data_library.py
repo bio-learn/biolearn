@@ -299,6 +299,42 @@ class GeoData:
 
         return cls(metadata, dnam)
     
+    @staticmethod
+    def convert_biolearn_to_standard_sex(s):
+        """
+        Convert internal sex representation (biolearn) to the standard format.
+        Internal: 1 = Female, 2 = Male, 0 = unknown.
+        Standard: 0 = female, 1 = male, "NaN" = unknown.
+        """
+        try:
+            s_int = int(s)
+        except Exception:
+            return "NaN"
+        if s_int == 1:
+            return 0  # Internal Female becomes standard 0
+        elif s_int == 2:
+            return 1  # Internal Male becomes standard 1
+        else:
+            return "NaN"
+
+    @staticmethod
+    def convert_standard_to_biolearn_sex(val):
+        """
+        Convert sex value from the standard format back to internal (biolearn) representation.
+        Standard: 0 = female, 1 = male, "NaN" or other = unknown.
+        Internal: 1 = Female, 2 = Male, 0 = unknown.
+        """
+        try:
+            num = int(val)
+        except Exception:
+            return 0
+        if num == 0:
+            return 1  # Standard 0 becomes internal 1 (Female)
+        elif num == 1:
+            return 2  # Standard 1 becomes internal 2 (Male)
+        else:
+            return 0
+
     def save_csv(self, folder_path, name):
         """
         Saves the GeoData instance to CSV files according to the DNA Methylation Array Data Standard V-2410.
@@ -319,21 +355,8 @@ class GeoData:
         # --- Save metadata ---
         if self.metadata is not None:
             metadata_to_save = self.metadata.copy()
-            # Convert internal Sex coding (1: Female, 2: Male, 0: Other) to standard coding:
-            # Standard: 0 for female, 1 for male, NaN for unknown.
-            def convert_sex_save(s):
-                try:
-                    s_int = int(s)
-                except Exception:
-                    return "NaN"
-                if s_int == 1:
-                    return 0  # Internal Female becomes standard 0
-                elif s_int == 2:
-                    return 1  # Internal Male becomes standard 1
-                else:
-                    return "NaN"
             if "Sex" in metadata_to_save.columns:
-                metadata_to_save["Sex"] = metadata_to_save["Sex"].apply(convert_sex_save)
+                metadata_to_save["Sex"] = metadata_to_save["Sex"].apply(GeoData.convert_biolearn_to_standard_sex)
             metadata_file = os.path.join(folder_path, f"{name}_metadata.csv")
             metadata_to_save.to_csv(metadata_file)
         else:
@@ -371,7 +394,7 @@ class GeoData:
             folder_path (str): Directory where the files are located.
             name (str): Base name for the files.
             series_part (str or int): If "all", load all methylation parts and concatenate;
-                                    otherwise, load the specified part number.
+                                      otherwise, load the specified part number.
         
         Returns:
             GeoData: A new instance populated with metadata, methylation, RNA, and protein data.
@@ -379,23 +402,9 @@ class GeoData:
         # --- Load metadata ---
         metadata_file = os.path.join(folder_path, f"{name}_metadata.csv")
         if os.path.exists(metadata_file):
-            # Use keep_default_na=False so that "None" is preserved as a string.
             metadata_df = pd.read_csv(metadata_file, index_col=0, keep_default_na=False)
-            # Reverse conversion: standard (0 for female, 1 for male) back to internal representation
-            # Internal: 1 for female, 2 for male, 0 for unknown.
-            def convert_sex_load(val):
-                try:
-                    num = int(val)
-                except Exception:
-                    return 0
-                if num == 0:
-                    return 1  # Standard 0 becomes internal 1 (Female)
-                elif num == 1:
-                    return 2  # Standard 1 becomes internal 2 (Male)
-                else:
-                    return 0
             if "Sex" in metadata_df.columns:
-                metadata_df["Sex"] = metadata_df["Sex"].apply(convert_sex_load)
+                metadata_df["Sex"] = metadata_df["Sex"].apply(GeoData.convert_standard_to_biolearn_sex)
         else:
             metadata_df = None
 
@@ -408,7 +417,10 @@ class GeoData:
                     dnam_dfs.append(part_df)
             dnam_df = pd.concat(dnam_dfs, axis=1) if dnam_dfs else None
         else:
-            part_number = int(series_part)
+            try:
+                part_number = int(series_part)
+            except Exception:
+                raise ValueError("series_part must be 'all' or an integer value")
             fname = f"{name}_methylation_part{part_number}.csv"
             file_path = os.path.join(folder_path, fname)
             dnam_df = pd.read_csv(file_path, index_col=0) if os.path.exists(file_path) else None
