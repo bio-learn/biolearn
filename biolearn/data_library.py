@@ -298,7 +298,7 @@ class GeoData:
         metadata = pd.DataFrame(index=dnam.columns)
 
         return cls(metadata, dnam)
-    
+
     @staticmethod
     def convert_biolearn_to_standard_sex(s):
         """
@@ -338,7 +338,7 @@ class GeoData:
     def save_csv(self, folder_path, name):
         """
         Save the GeoData instance to CSV files according to the DNA Methylation Array Data Standard V-2410.
-        
+
         Files:
           - <name>_metadata.csv (with Sex converted to standard)
           - <name>_methylation_part{n}.csv (split if >1000 samples)
@@ -349,7 +349,9 @@ class GeoData:
         if self.metadata is not None:
             metadata_to_save = self.metadata.copy()
             if "Sex" in metadata_to_save.columns:
-                metadata_to_save["Sex"] = metadata_to_save["Sex"].apply(GeoData.convert_biolearn_to_standard_sex)
+                metadata_to_save["Sex"] = metadata_to_save["Sex"].apply(
+                    GeoData.convert_biolearn_to_standard_sex
+                )
             metadata_file = os.path.join(folder_path, f"{name}_metadata.csv")
             metadata_to_save.to_csv(metadata_file)
 
@@ -361,10 +363,14 @@ class GeoData:
                     start = i * 1000
                     end = min((i + 1) * 1000, num_samples)
                     part_df = self.dnam.iloc[:, start:end]
-                    file_name = os.path.join(folder_path, f"{name}_methylation_part{i+1}.csv")
+                    file_name = os.path.join(
+                        folder_path, f"{name}_methylation_part{i+1}.csv"
+                    )
                     part_df.to_csv(file_name)
             else:
-                file_name = os.path.join(folder_path, f"{name}_methylation_part1.csv")
+                file_name = os.path.join(
+                    folder_path, f"{name}_methylation_part1.csv"
+                )
                 self.dnam.to_csv(file_name)
 
         if self.rna is not None:
@@ -378,7 +384,7 @@ class GeoData:
     def load_csv(cls, folder_path, name, series_part="all"):
         """
         Load a GeoData instance from CSV files saved with save_csv.
-        
+
         Parameters:
           folder_path: Directory where files are located.
           name: Base file name.
@@ -386,33 +392,55 @@ class GeoData:
         """
         metadata_file = os.path.join(folder_path, f"{name}_metadata.csv")
         if os.path.exists(metadata_file):
-            metadata_df = pd.read_csv(metadata_file, index_col=0, keep_default_na=False)
+            metadata_df = pd.read_csv(
+                metadata_file, index_col=0, keep_default_na=False
+            )
             if "Sex" in metadata_df.columns:
-                metadata_df["Sex"] = metadata_df["Sex"].apply(GeoData.convert_standard_to_biolearn_sex)
+                metadata_df["Sex"] = metadata_df["Sex"].apply(
+                    GeoData.convert_standard_to_biolearn_sex
+                )
         else:
             metadata_df = None
 
         dnam_dfs = []
         if series_part == "all":
             for fname in os.listdir(folder_path):
-                if fname.startswith(f"{name}_methylation_part") and fname.endswith(".csv"):
-                    part_df = pd.read_csv(os.path.join(folder_path, fname), index_col=0)
+                if fname.startswith(
+                    f"{name}_methylation_part"
+                ) and fname.endswith(".csv"):
+                    part_df = pd.read_csv(
+                        os.path.join(folder_path, fname), index_col=0
+                    )
                     dnam_dfs.append(part_df)
             dnam_df = pd.concat(dnam_dfs, axis=1) if dnam_dfs else None
         else:
             try:
                 part_number = int(series_part)
             except Exception:
-                raise ValueError("series_part must be 'all' or an integer value")
+                raise ValueError(
+                    "series_part must be 'all' or an integer value"
+                )
             fname = f"{name}_methylation_part{part_number}.csv"
             file_path = os.path.join(folder_path, fname)
-            dnam_df = pd.read_csv(file_path, index_col=0) if os.path.exists(file_path) else None
+            dnam_df = (
+                pd.read_csv(file_path, index_col=0)
+                if os.path.exists(file_path)
+                else None
+            )
 
         rna_file = os.path.join(folder_path, f"{name}_rna.csv")
-        rna_df = pd.read_csv(rna_file, index_col=0) if os.path.exists(rna_file) else None
+        rna_df = (
+            pd.read_csv(rna_file, index_col=0)
+            if os.path.exists(rna_file)
+            else None
+        )
 
         protein_file = os.path.join(folder_path, f"{name}_protein.csv")
-        protein_df = pd.read_csv(protein_file, index_col=0) if os.path.exists(protein_file) else None
+        protein_df = (
+            pd.read_csv(protein_file, index_col=0)
+            if os.path.exists(protein_file)
+            else None
+        )
 
         return cls(metadata_df, dnam=dnam_df, rna=rna_df, protein=protein_df)
 
