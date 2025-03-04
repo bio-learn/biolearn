@@ -302,7 +302,7 @@ class GeoData:
     @staticmethod
     def convert_biolearn_to_standard_sex(s):
         """
-        Convert internal sex representation (biolearn) to the standard format.
+        Convert internal sex representation to standard format.
         Internal: 1 = Female, 2 = Male, 0 = unknown.
         Standard: 0 = female, 1 = male, "NaN" = unknown.
         """
@@ -311,16 +311,16 @@ class GeoData:
         except Exception:
             return "NaN"
         if s_int == 1:
-            return 0  # Internal Female becomes standard 0
+            return 0
         elif s_int == 2:
-            return 1  # Internal Male becomes standard 1
+            return 1
         else:
             return "NaN"
 
     @staticmethod
     def convert_standard_to_biolearn_sex(val):
         """
-        Convert sex value from the standard format back to internal (biolearn) representation.
+        Convert standard sex format back to internal representation.
         Standard: 0 = female, 1 = male, "NaN" or other = unknown.
         Internal: 1 = Female, 2 = Male, 0 = unknown.
         """
@@ -329,40 +329,30 @@ class GeoData:
         except Exception:
             return 0
         if num == 0:
-            return 1  # Standard 0 becomes internal 1 (Female)
+            return 1
         elif num == 1:
-            return 2  # Standard 1 becomes internal 2 (Male)
+            return 2
         else:
             return 0
 
     def save_csv(self, folder_path, name):
         """
-        Saves the GeoData instance to CSV files according to the DNA Methylation Array Data Standard V-2410.
+        Save the GeoData instance to CSV files according to the DNA Methylation Array Data Standard V-2410.
         
-        Parameters:
-            folder_path (str): Directory where the files will be saved.
-            name (str): Base name for the saved files.
-        
-        Files saved:
-            - Metadata: <name>_metadata.csv (with Sex converted to standard: 0 for female, 1 for male, NaN for unknown)
-            - Methylation data (dnam): if samples > 1000, split into parts:
-                <name>_methylation_part1.csv, <name>_methylation_part2.csv, etc.
-            - RNA data (if present): <name>_rna.csv
-            - Protein data (if present): <name>_protein.csv
+        Files:
+          - <name>_metadata.csv (with Sex converted to standard)
+          - <name>_methylation_part{n}.csv (split if >1000 samples)
+          - <name>_rna.csv and <name>_protein.csv (if present)
         """
         os.makedirs(folder_path, exist_ok=True)
 
-        # --- Save metadata ---
         if self.metadata is not None:
             metadata_to_save = self.metadata.copy()
             if "Sex" in metadata_to_save.columns:
                 metadata_to_save["Sex"] = metadata_to_save["Sex"].apply(GeoData.convert_biolearn_to_standard_sex)
             metadata_file = os.path.join(folder_path, f"{name}_metadata.csv")
             metadata_to_save.to_csv(metadata_file)
-        else:
-            metadata_file = None
 
-        # --- Save methylation data (dnam) ---
         if self.dnam is not None:
             num_samples = self.dnam.shape[1]
             if num_samples > 1000:
@@ -377,7 +367,6 @@ class GeoData:
                 file_name = os.path.join(folder_path, f"{name}_methylation_part1.csv")
                 self.dnam.to_csv(file_name)
 
-        # --- Save RNA and protein data (if present) ---
         if self.rna is not None:
             rna_file = os.path.join(folder_path, f"{name}_rna.csv")
             self.rna.to_csv(rna_file)
@@ -388,18 +377,13 @@ class GeoData:
     @classmethod
     def load_csv(cls, folder_path, name, series_part="all"):
         """
-        Loads a GeoData instance from CSV files saved with save_csv.
+        Load a GeoData instance from CSV files saved with save_csv.
         
         Parameters:
-            folder_path (str): Directory where the files are located.
-            name (str): Base name for the files.
-            series_part (str or int): If "all", load all methylation parts and concatenate;
-                                      otherwise, load the specified part number.
-        
-        Returns:
-            GeoData: A new instance populated with metadata, methylation, RNA, and protein data.
+          folder_path: Directory where files are located.
+          name: Base file name.
+          series_part: "all" to load all methylation parts or a specific part number.
         """
-        # --- Load metadata ---
         metadata_file = os.path.join(folder_path, f"{name}_metadata.csv")
         if os.path.exists(metadata_file):
             metadata_df = pd.read_csv(metadata_file, index_col=0, keep_default_na=False)
@@ -408,7 +392,6 @@ class GeoData:
         else:
             metadata_df = None
 
-        # --- Load methylation data ---
         dnam_dfs = []
         if series_part == "all":
             for fname in os.listdir(folder_path):
@@ -425,7 +408,6 @@ class GeoData:
             file_path = os.path.join(folder_path, fname)
             dnam_df = pd.read_csv(file_path, index_col=0) if os.path.exists(file_path) else None
 
-        # --- Load RNA and protein data (if available) ---
         rna_file = os.path.join(folder_path, f"{name}_rna.csv")
         rna_df = pd.read_csv(rna_file, index_col=0) if os.path.exists(rna_file) else None
 
