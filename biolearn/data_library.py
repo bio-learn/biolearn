@@ -383,66 +383,55 @@ class GeoData:
     @classmethod
     def load_csv(cls, folder_path, name, series_part="all"):
         """
-        Load a GeoData instance from CSV files saved with save_csv.
-
+        Loads a GeoData instance from CSV files saved with save_csv.
+        
         Parameters:
-          folder_path: Directory where files are located.
-          name: Base file name.
-          series_part: "all" to load all methylation parts or a specific part number.
+            folder_path (str): Directory where the files are located.
+            name (str): Base name for the files.
+            series_part (str or int): If "all", load all methylation parts and concatenate;
+                                      otherwise, load the specified part number.
+        
+        Returns:
+            GeoData: A new instance populated with metadata, methylation, RNA, and protein data.
         """
+        # --- Load metadata ---
         metadata_file = os.path.join(folder_path, f"{name}_metadata.csv")
         if os.path.exists(metadata_file):
-            metadata_df = pd.read_csv(
-                metadata_file, index_col=0, keep_default_na=False
-            )
+            metadata_df = pd.read_csv(metadata_file, index_col=0, keep_default_na=False)
             if "Sex" in metadata_df.columns:
-                metadata_df["Sex"] = metadata_df["Sex"].apply(
-                    GeoData.convert_standard_to_biolearn_sex
-                )
+                metadata_df["Sex"] = metadata_df["Sex"].apply(GeoData.convert_standard_to_biolearn_sex)
         else:
             metadata_df = None
 
+        # --- Load methylation data ---
         dnam_dfs = []
         if series_part == "all":
-            for fname in os.listdir(folder_path):
-                if fname.startswith(
-                    f"{name}_methylation_part"
-                ) and fname.endswith(".csv"):
-                    part_df = pd.read_csv(
-                        os.path.join(folder_path, fname), index_col=0
-                    )
-                    dnam_dfs.append(part_df)
+            files = [fname for fname in os.listdir(folder_path)
+                     if fname.startswith(f"{name}_methylation_part") and fname.endswith(".csv")]
+            # Sort files based on the numeric part suffix
+            files_sorted = sorted(files, key=lambda f: int(f.split("methylation_part")[-1].split(".")[0]))
+            for fname in files_sorted:
+                part_df = pd.read_csv(os.path.join(folder_path, fname), index_col=0)
+                dnam_dfs.append(part_df)
             dnam_df = pd.concat(dnam_dfs, axis=1) if dnam_dfs else None
         else:
             try:
                 part_number = int(series_part)
             except Exception:
-                raise ValueError(
-                    "series_part must be 'all' or an integer value"
-                )
+                raise ValueError("series_part must be 'all' or an integer value")
             fname = f"{name}_methylation_part{part_number}.csv"
             file_path = os.path.join(folder_path, fname)
-            dnam_df = (
-                pd.read_csv(file_path, index_col=0)
-                if os.path.exists(file_path)
-                else None
-            )
+            dnam_df = pd.read_csv(file_path, index_col=0) if os.path.exists(file_path) else None
 
+        # --- Load RNA and protein data (if available) ---
         rna_file = os.path.join(folder_path, f"{name}_rna.csv")
-        rna_df = (
-            pd.read_csv(rna_file, index_col=0)
-            if os.path.exists(rna_file)
-            else None
-        )
+        rna_df = pd.read_csv(rna_file, index_col=0) if os.path.exists(rna_file) else None
 
         protein_file = os.path.join(folder_path, f"{name}_protein.csv")
-        protein_df = (
-            pd.read_csv(protein_file, index_col=0)
-            if os.path.exists(protein_file)
-            else None
-        )
+        protein_df = pd.read_csv(protein_file, index_col=0) if os.path.exists(protein_file) else None
 
         return cls(metadata_df, dnam=dnam_df, rna=rna_df, protein=protein_df)
+
 
 
 class JenAgeCustomParser:
