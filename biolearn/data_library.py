@@ -299,6 +299,180 @@ class GeoData:
 
         return cls(metadata, dnam)
 
+    @staticmethod
+    def convert_biolearn_to_standard_sex(s):
+        """
+        Converts internal sex representation to the standard format.
+
+        Args:
+            s (Any): The internal sex value (1 for Female, 2 for Male, 0 for unknown).
+
+        Returns:
+            Union[int, str]: Returns 0 if the input is 1 (Female), 1 if input is 2 (Male), or "NaN" otherwise.
+        """
+        try:
+            s_int = int(s)
+        except Exception:
+            return "NaN"
+        if s_int == 1:
+            return 0
+        elif s_int == 2:
+            return 1
+        else:
+            return "NaN"
+
+    @staticmethod
+    def convert_standard_to_biolearn_sex(val):
+        """
+        Converts a standard sex value back to the internal representation.
+
+        Args:
+            val (Any): The standard sex value (0 for female, 1 for male, "NaN" or other for unknown).
+
+        Returns:
+            int: Returns 1 for standard 0 (Female), 2 for standard 1 (Male), or 0 otherwise.
+        """
+        try:
+            num = int(val)
+        except Exception:
+            return 0
+        if num == 0:
+            return 1
+        elif num == 1:
+            return 2
+        else:
+            return 0
+
+    def save_csv(self, folder_path, name):
+        """
+        Saves the GeoData instance to CSV files according to the DNA Methylation Array Data Standard V-2410.
+
+        Args:
+            folder_path (str): The directory where the files will be saved.
+            name (str): The base name for the saved files.
+
+        Returns:
+            None
+        """
+        os.makedirs(folder_path, exist_ok=True)
+
+        # Save metadata
+        if self.metadata is not None:
+            metadata_to_save = self.metadata.copy()
+            if "Sex" in metadata_to_save.columns:
+                metadata_to_save["Sex"] = metadata_to_save["Sex"].apply(
+                    GeoData.convert_biolearn_to_standard_sex
+                )
+            metadata_file = os.path.join(folder_path, f"{name}_metadata.csv")
+            metadata_to_save.to_csv(metadata_file)
+
+        # Save methylation data (dnam)
+        if self.dnam is not None:
+            num_samples = self.dnam.shape[1]
+            if num_samples > 1000:
+                parts = (num_samples - 1) // 1000 + 1
+                for i in range(parts):
+                    start = i * 1000
+                    end = min((i + 1) * 1000, num_samples)
+                    part_df = self.dnam.iloc[:, start:end]
+                    file_name = os.path.join(
+                        folder_path, f"{name}_methylation_part{i+1}.csv"
+                    )
+                    part_df.to_csv(file_name)
+            else:
+                file_name = os.path.join(
+                    folder_path, f"{name}_methylation_part1.csv"
+                )
+                self.dnam.to_csv(file_name)
+
+        # Save RNA and protein data (if present)
+        if self.rna is not None:
+            rna_file = os.path.join(folder_path, f"{name}_rna.csv")
+            self.rna.to_csv(rna_file)
+        if self.protein is not None:
+            protein_file = os.path.join(folder_path, f"{name}_protein.csv")
+            self.protein.to_csv(protein_file)
+
+    @classmethod
+    def load_csv(cls, folder_path, name, series_part="all"):
+        """
+        Loads a GeoData instance from CSV files according to the DNA Methylation Array Data Standard V-2410.
+
+        Args:
+            folder_path (str): The directory where the files are located.
+            name (str): The base name for the files.
+            series_part (str or int): "all" to load all methylation parts and concatenate;
+                                      otherwise, an integer specifying the part number to load.
+
+        Returns:
+            GeoData: A GeoData instance with metadata, methylation data, RNA, and protein data loaded.
+        """
+        # Load metadata
+        metadata_file = os.path.join(folder_path, f"{name}_metadata.csv")
+        if os.path.exists(metadata_file):
+            metadata_df = pd.read_csv(
+                metadata_file, index_col=0, keep_default_na=False
+            )
+            if "Sex" in metadata_df.columns:
+                metadata_df["Sex"] = metadata_df["Sex"].apply(
+                    GeoData.convert_standard_to_biolearn_sex
+                )
+        else:
+            metadata_df = None
+
+        # Load methylation data
+        dnam_dfs = []
+        if series_part == "all":
+            files = [
+                fname
+                for fname in os.listdir(folder_path)
+                if fname.startswith(f"{name}_methylation_part")
+                and fname.endswith(".csv")
+            ]
+            files_sorted = sorted(
+                files,
+                key=lambda f: int(
+                    f.split("methylation_part")[-1].split(".")[0]
+                ),
+            )
+            for fname in files_sorted:
+                part_df = pd.read_csv(
+                    os.path.join(folder_path, fname), index_col=0
+                )
+                dnam_dfs.append(part_df)
+            dnam_df = pd.concat(dnam_dfs, axis=1) if dnam_dfs else None
+        else:
+            try:
+                part_number = int(series_part)
+            except Exception:
+                raise ValueError(
+                    "series_part must be 'all' or an integer value"
+                )
+            fname = f"{name}_methylation_part{part_number}.csv"
+            file_path = os.path.join(folder_path, fname)
+            dnam_df = (
+                pd.read_csv(file_path, index_col=0)
+                if os.path.exists(file_path)
+                else None
+            )
+
+        # Load RNA and protein data (if available)
+        rna_file = os.path.join(folder_path, f"{name}_rna.csv")
+        rna_df = (
+            pd.read_csv(rna_file, index_col=0)
+            if os.path.exists(rna_file)
+            else None
+        )
+
+        protein_file = os.path.join(folder_path, f"{name}_protein.csv")
+        protein_df = (
+            pd.read_csv(protein_file, index_col=0)
+            if os.path.exists(protein_file)
+            else None
+        )
+
+        return cls(metadata_df, dnam=dnam_df, rna=rna_df, protein=protein_df)
+
 
 class JenAgeCustomParser:
     def __init__(self, data):
