@@ -498,7 +498,7 @@ model_definitions = {
         "species": "Human",
         "tissue": "Blood",
         "source": "https://doi.org/10.1186/s13059-016-1063-4",
-        "output": "Age (Years)",
+        "output": "Age (days)",
         "model": {
             "type": "LinearMethylationModel",
             "file": "Bohlin.csv",
