@@ -496,7 +496,7 @@ model_definitions = {
     "Bohlin": {
         "year": 2017,
         "species": "Human",
-        "tissue": "Blood",
+        "tissue": "Cord Blood",
         "source": "https://doi.org/10.1186/s13059-016-1063-4",
         "output": "Age (days)",
         "model": {
