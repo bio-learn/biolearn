@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import pytest
 from biolearn.data_library import GeoData
+from biolearn.util import get_test_data_file
 
 
 def create_dummy_geodata(num_samples=5):
@@ -312,3 +313,18 @@ def test_type_preservation_in_metadata(temp_dir):
     assert pd.api.types.is_numeric_dtype(
         loaded_geodata.metadata["Age"]
     ), "Expected Age column to be numeric"
+
+
+def test_dnam_columns_numeric_and_single_nan():
+    file_path = get_test_data_file("")
+    data = GeoData.load_csv(file_path, "example")
+
+    # Check all columns in dnam are numeric
+    for col in data.dnam.columns:
+        assert pd.api.types.is_numeric_dtype(
+            data.dnam[col]
+        ), f"Column {col} is not numeric."
+
+    # Ensure there is exactly one NaN value in the dnam DataFrame
+    nan_count = data.dnam.isna().sum().sum()
+    assert nan_count == 1, f"Expected 1 NaN value, but found {nan_count}."

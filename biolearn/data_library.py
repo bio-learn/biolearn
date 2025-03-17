@@ -402,7 +402,7 @@ class GeoData:
             folder_path (str): The directory where the files are located.
             name (str): The base name for the files.
             series_part (str or int): "all" to load all methylation parts and concatenate;
-                                      otherwise, an integer specifying the part number to load.
+                                    otherwise, an integer specifying the part number to load.
 
         Returns:
             GeoData: A GeoData instance with metadata, methylation data, RNA, and protein data loaded.
@@ -437,7 +437,9 @@ class GeoData:
             )
             for fname in files_sorted:
                 part_df = pd.read_csv(
-                    os.path.join(folder_path, fname), index_col=0
+                    os.path.join(folder_path, fname),
+                    index_col=0,
+                    skipinitialspace=True,
                 )
                 dnam_dfs.append(part_df)
             dnam_df = pd.concat(dnam_dfs, axis=1) if dnam_dfs else None
@@ -451,7 +453,7 @@ class GeoData:
             fname = f"{name}_methylation_part{part_number}.csv"
             file_path = os.path.join(folder_path, fname)
             dnam_df = (
-                pd.read_csv(file_path, index_col=0)
+                pd.read_csv(file_path, index_col=0, skipinitialspace=True)
                 if os.path.exists(file_path)
                 else None
             )
@@ -459,14 +461,14 @@ class GeoData:
         # Load RNA and protein data (if available)
         rna_file = os.path.join(folder_path, f"{name}_rna.csv")
         rna_df = (
-            pd.read_csv(rna_file, index_col=0)
+            pd.read_csv(rna_file, index_col=0, skipinitialspace=True)
             if os.path.exists(rna_file)
             else None
         )
 
         protein_file = os.path.join(folder_path, f"{name}_protein.csv")
         protein_df = (
-            pd.read_csv(protein_file, index_col=0)
+            pd.read_csv(protein_file, index_col=0, skipinitialspace=True)
             if os.path.exists(protein_file)
             else None
         )
