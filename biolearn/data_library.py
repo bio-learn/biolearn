@@ -437,7 +437,9 @@ class GeoData:
             )
             for fname in files_sorted:
                 part_df = pd.read_csv(
-                    os.path.join(folder_path, fname), index_col=0, skipinitialspace=True
+                    os.path.join(folder_path, fname),
+                    index_col=0,
+                    skipinitialspace=True,
                 )
                 dnam_dfs.append(part_df)
             dnam_df = pd.concat(dnam_dfs, axis=1) if dnam_dfs else None
@@ -472,6 +474,7 @@ class GeoData:
         )
 
         return cls(metadata_df, dnam=dnam_df, rna=rna_df, protein=protein_df)
+
 
 class JenAgeCustomParser:
     def __init__(self, data):
