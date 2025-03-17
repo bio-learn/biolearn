@@ -1,0 +1,4 @@
+SampleID,Sex,Age,Disease_State
+GSM3074480,0,25.2,None
+GSM3074481,0,29.5,COVID
+GSM3074482,1,39.7,None
