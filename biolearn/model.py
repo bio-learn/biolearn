@@ -493,6 +493,18 @@ model_definitions = {
             "transform": lambda sum: sum + 55.808884324,
         },
     },
+    "MiAge" = {
+        "year": 2017,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/29160179/",
+        "output": "Mitotic Age (Years)",
+        "model": {
+            "type": "MiAgeNonlinearClock",
+            "file": "MiAge_coefficients.csv",  
+            "parameter_file": "MiAge_parameters.csv",  
+        },
+    },
 }
 
 
@@ -909,6 +921,59 @@ class ImputationDecorator:
     # Forwarding other methods and attributes to the clock
     def __getattr__(self, name):
         return getattr(self.clock, name)
+
+class MiAgeNonlinearClock:
+    def __init__(self, coefficient_file, parameter_file):
+        """
+        Initializes the MiAge nonlinear methylation clock.
+
+        :param coefficient_file: CSV file containing CpG site coefficients.
+        :param parameter_file: CSV file containing A, B, C nonlinear transformation parameters.
+        """
+        self.coefficients = pd.read_csv(get_data_file(coefficient_file), index_col=0)
+        self.parameters = pd.read_csv(get_data_file(parameter_file), index_col=0)
+
+        # Extract transformation parameters (A, B, C)
+        self.A = self.parameters.loc["A", "Coefficient"]
+        self.B = self.parameters.loc["B", "Coefficient"]
+        self.C = self.parameters.loc["C", "Coefficient"]
+
+    @classmethod
+    def from_definition(cls, clock_definition):
+        """
+        Instantiates the model from a dictionary definition.
+        """
+        model_def = clock_definition["model"]
+        return cls(model_def["file"], model_def["parameter_file"])
+
+    def predict(self, geo_data):
+        """
+        Predicts mitotic age (MiAge) using the nonlinear model.
+        """
+        methylation_data = geo_data.dnam
+
+        # Identify shared CpG sites between input data and model
+        shared_sites = methylation_data.index.intersection(self.coefficients.index)
+        if shared_sites.empty:
+            raise ValueError("No overlapping CpG sites found for MiAge clock.")
+
+        # Extract methylation values and corresponding weights
+        X = methylation_data.loc[shared_sites]
+        beta_weights = self.coefficients.loc[shared_sites, "CoefficientTraining"]
+
+        # Compute weighted sum of CpG values
+        weighted_sum = (X.T @ beta_weights).values
+
+        # Apply the MiAge-specific nonlinear transformation
+        miage_pred = self.A * np.exp(self.B * weighted_sum) + self.C
+
+        return pd.DataFrame(miage_pred, index=methylation_data.columns, columns=["Predicted MiAge"])
+
+    def methylation_sites(self):
+        """
+        Returns the required CpG sites for MiAge calculation.
+        """
+        return list(self.coefficients.index)
 
 
 def single_sample_clock(clock_function, data):
