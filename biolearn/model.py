@@ -505,8 +505,6 @@ model_definitions = {
             "transform": lambda sum: sum + 277.2421,
         },
     },
-<<<<<<< HEAD
-=======
     "Bocklandt": {
         "year": 2011,
         "species": "Human",
@@ -518,7 +516,6 @@ model_definitions = {
             "file": "Bocklandt.csv",
         }
     }
->>>>>>> d5ee234 (Add Bocklandt Clock)
 }
 
 
