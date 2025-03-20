@@ -514,8 +514,8 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "Bocklandt.csv",
-        }
-    }
+        },
+    },
 }
 
 
