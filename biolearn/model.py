@@ -493,6 +493,18 @@ model_definitions = {
             "transform": lambda sum: sum + 55.808884324,
         },
     },
+    "VidalBralo": {
+        "year": 2018,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.3389/fgene.2016.00126",
+        "output": "Age (Years)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "VidalBralo.csv",
+            "transform": lambda sum: sum + 84.7,
+        },
+    },
 }
 
 
