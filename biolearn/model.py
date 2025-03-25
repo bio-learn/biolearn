@@ -493,6 +493,18 @@ model_definitions = {
             "transform": lambda sum: sum + 55.808884324,
         },
     },
+    "DNAmClockCortical": {
+        "year": 2020,
+        "species": "Human",
+        "tissue": "Human Cortex",
+        "source": "https://doi.org/10.1093/brain/awaa334",
+        "output": "Human Cortex Age (Years)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "DNAmClockCortical.csv",
+            "transform": lambda sum: anti_trafo(sum + 0.577682570446177),
+        },
+    },
 }
 
 
