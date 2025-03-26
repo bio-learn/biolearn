@@ -245,6 +245,17 @@ model_definitions = {
             "default_imputation": "averaging",
         },
     },
+    "EpiTOC1": {
+        "year": 2016,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1186/s13059-016-1064-3",
+        "output": "Stem Cell Division Rate",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "EpiTOC1.csv",
+        },
+    },
     "LeeRefinedRobust": {
         "year": 2019,
         "species": "Human",
@@ -491,17 +502,6 @@ model_definitions = {
                 map_ensembl_to_gene(rna_data)
             ),
             "transform": lambda sum: sum + 55.808884324,
-        },
-    },
-    "EpiTOC1": {
-        "year": 2016,
-        "species": "Human",
-        "tissue": "Blood",
-        "source": "https://doi.org/10.1186/s13059-016-1064-3",
-        "output": "Stem Cell Division Rate",
-        "model": {
-            "type": "LinearMethylationModel",
-            "file": "EpiTOC1.csv",
         },
     },
 }
