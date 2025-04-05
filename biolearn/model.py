@@ -444,7 +444,7 @@ model_definitions = {
             "file": "ProstateCancerKirby.csv",
         },
     },
-    "StocP": {
+    "StocZ": {
         "year": 2024,
         "species": "Human",
         "tissue": "Blood",
@@ -452,7 +452,7 @@ model_definitions = {
         "output": "Age (Years)",
         "model": {
             "type": "LinearMethylationModel",
-            "file": "StocP.csv",
+            "file": "StocZ.csv",
             "transform": lambda sum: sum + 64.8077188694894,
         },
     },
