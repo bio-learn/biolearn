@@ -505,6 +505,18 @@ model_definitions = {
             "transform": lambda sum: sum + 55.808884324,
         },
     },
+    "Bohlin": {
+        "year": 2017,
+        "species": "Human",
+        "tissue": "Cord Blood",
+        "source": "https://doi.org/10.1186/s13059-016-1063-4",
+        "output": "Age (days)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "Bohlin.csv",
+            "transform": lambda sum: sum + 277.2421,
+        },
+    },
 }
 
 
