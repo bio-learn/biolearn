@@ -432,6 +432,18 @@ model_definitions = {
             "file": "ProstateCancerKirby.csv",
         },
     },
+    "StocP": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1038/s43587-024-00600-8",
+        "output": "Age (Years)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "StocP.csv",
+            "transform": lambda sum: sum + 64.8077188694894,
+        },
+    },
     "HepatoXu": {
         "year": 2017,
         "species": "Human",
@@ -455,18 +467,6 @@ model_definitions = {
             "transform": lambda x: 1 / (1 + np.exp(-x)),
         },
     },
-    "StocP": {
-        "year": 2024,
-        "species": "Human",
-        "tissue": "Blood",
-        "source": "https://doi.org/10.1038/s43587-024-00600-8",
-        "output": "Age (Years)",
-        "model": {
-            "type": "LinearMethylationModel",
-            "file": "StocP.csv",
-            "transform": lambda sum: sum + 92.8310813279039,
-        },
-    },
     "AD_Bahado-Singh": {
         "year": 2021,
         "species": "Human",
@@ -488,21 +488,6 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "DepressionBarbu.csv",
-        },
-    },
-    "TranscriptomicPredictionModel": {
-        "year": 2015,
-        "species": "Human",
-        "tissue": "Blood",
-        "source": "https://www.nature.com/articles/ncomms9570",
-        "output": "Age (Years)",
-        "model": {
-            "type": "LinearTranscriptomicModel",
-            "file": "TranscriptomicPrediction.csv",
-            "preprocess": lambda rna_data: preprocess_rna(
-                map_ensembl_to_gene(rna_data)
-            ),
-            "transform": lambda sum: sum + 55.808884324,
         },
     },
     "TranscriptomicPredictionModel": {
