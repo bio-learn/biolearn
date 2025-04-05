@@ -455,6 +455,18 @@ model_definitions = {
             "transform": lambda x: 1 / (1 + np.exp(-x)),
         },
     },
+    "StocP": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1038/s43587-024-00600-8",
+        "output": "Age (Years)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "StocP.csv",
+            "transform": lambda sum: sum + 92.8310813279039,
+        },
+    },
     "AD_Bahado-Singh": {
         "year": 2021,
         "species": "Human",
@@ -465,18 +477,6 @@ model_definitions = {
             "type": "LinearMethylationModel",
             "file": "AD_Bahado-Singh.csv",
             "transform": lambda x: 1 / (1 + np.exp(-x - 0.072)),
-        },
-    },
-    "StocH": {
-        "year": 2024,
-        "species": "Human",
-        "tissue": "Multi-tissue",
-        "source": "https://doi.org/10.1038/s43587-024-00600-8",
-        "output": "Age (Years)",
-        "model": {
-            "type": "LinearMethylationModel",
-            "file": "StocH.csv",
-            "transform": lambda sum: sum + 59.8015666314217,
         },
     },
     "DepressionBarbu": {
