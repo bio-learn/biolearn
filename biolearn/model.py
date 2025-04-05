@@ -467,6 +467,18 @@ model_definitions = {
             "transform": lambda x: 1 / (1 + np.exp(-x - 0.072)),
         },
     },
+    "StocH": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Multi-tissue",
+        "source": "https://doi.org/10.1038/s43587-024-00600-8",
+        "output": "Age (Years)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "StocH.csv",
+            "transform": lambda sum: sum + 59.8015666314217,
+        },
+    },
     "DepressionBarbu": {
         "year": 2021,
         "species": "Human",
@@ -506,18 +518,6 @@ model_definitions = {
                 map_ensembl_to_gene(rna_data)
             ),
             "transform": lambda sum: sum + 55.808884324,
-        },
-    },
-    "StocH": {
-        "year": 2024,
-        "species": "Human",
-        "tissue": "Multi-tissue",
-        "source": "https://doi.org/10.1038/s43587-024-00600-8",
-        "output": "Age (Years)",
-        "model": {
-            "type": "LinearMethylationModel",
-            "file": "StocH.csv",
-            "transform": lambda sum: sum + 59.8015666314217,
         },
     },
 }
