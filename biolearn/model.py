@@ -493,6 +493,33 @@ model_definitions = {
             "transform": lambda sum: sum + 55.808884324,
         },
     },
+    "TranscriptomicPredictionModel": {
+        "year": 2015,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.nature.com/articles/ncomms9570",
+        "output": "Age (Years)",
+        "model": {
+            "type": "LinearTranscriptomicModel",
+            "file": "TranscriptomicPrediction.csv",
+            "preprocess": lambda rna_data: preprocess_rna(
+                map_ensembl_to_gene(rna_data)
+            ),
+            "transform": lambda sum: sum + 55.808884324,
+        },
+    },
+    "StocH": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Multi-tissue",
+        "source": "https://doi.org/10.1038/s43587-024-00600-8",
+        "output": "Age (Years)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "StocH.csv",
+            "transform": lambda sum: sum + 59.8015666314217,
+        },
+    },
 }
 
 
