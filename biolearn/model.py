@@ -441,7 +441,7 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "StocP.csv",
-            "transform": lambda sum: sum + 64.8077188694894,
+            "transform": lambda sum: sum + 92.8310813279039,
         },
     },
     "HepatoXu": {
