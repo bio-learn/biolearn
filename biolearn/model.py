@@ -455,6 +455,18 @@ model_definitions = {
             "file": "ProstateCancerKirby.csv",
         },
     },
+    "Mayne": {
+        "year": 2016,
+        "species": "Human",
+        "tissue": "Placenta",
+        "source": "https://doi.org/10.2217/epi-2016-0103",
+        "output": "Gestational age",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "Mayne.csv",
+            "transform": lambda sum: sum + 24.99026,
+        },
+    },
     "HepatoXu": {
         "year": 2017,
         "species": "Human",
