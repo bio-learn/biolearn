@@ -190,6 +190,18 @@ model_definitions = {
             "commercial": CLOCK_FOUNDATION_USAGE,
         },
     },
+    "VidalBralo": {
+        "year": 2018,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.3389/fgene.2016.00126",
+        "output": "Age (Years)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "VidalBralo.csv",
+            "transform": lambda sum: sum + 84.7,
+        },
+    },
     "AlcoholMcCartney": {
         "year": 2018,
         "species": "Human",
