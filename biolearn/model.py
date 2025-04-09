@@ -467,6 +467,17 @@ model_definitions = {
             "file": "ProstateCancerKirby.csv",
         },
     },
+    "StocP": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1038/s43587-024-00600-8",
+        "output": "Age (Years)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "StocP.csv",
+            "transform": lambda sum: sum + 92.8310813279039,
+          },
     "Mayne": {
         "year": 2016,
         "species": "Human",
