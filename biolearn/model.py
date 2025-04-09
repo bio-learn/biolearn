@@ -156,6 +156,18 @@ model_definitions = {
             "default_imputation": "none",
         },
     },
+    "DNAmClockCortical": {
+        "year": 2020,
+        "species": "Human",
+        "tissue": "Human Cortex",
+        "source": "https://doi.org/10.1093/brain/awaa334",
+        "output": "Human Cortex Age (Years)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "DNAmClockCortical.csv",
+            "transform": lambda sum: anti_trafo(sum + 0.577682570446177),
+        },
+    },
     "GrimAgeV1": {
         "year": 2019,
         "species": "Human",
@@ -176,6 +188,18 @@ model_definitions = {
         "model": {"type": "GrimageModel", "file": "GrimAgeV2.csv"},
         "usage": {
             "commercial": CLOCK_FOUNDATION_USAGE,
+        },
+    },
+    "VidalBralo": {
+        "year": 2018,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.3389/fgene.2016.00126",
+        "output": "Age (Years)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "VidalBralo.csv",
+            "transform": lambda sum: sum + 84.7,
         },
     },
     "AlcoholMcCartney": {
@@ -243,6 +267,17 @@ model_definitions = {
             "type": "SexEstimationModel",
             "file": "estimateSex.csv",
             "default_imputation": "averaging",
+        },
+    },
+    "EpiTOC1": {
+        "year": 2016,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1186/s13059-016-1064-3",
+        "output": "Stem Cell Division Rate",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "EpiTOC1.csv",
         },
     },
     "LeeRefinedRobust": {
@@ -442,6 +477,17 @@ model_definitions = {
             "type": "LinearMethylationModel",
             "file": "StocP.csv",
             "transform": lambda sum: sum + 92.8310813279039,
+          },
+    "Mayne": {
+        "year": 2016,
+        "species": "Human",
+        "tissue": "Placenta",
+        "source": "https://doi.org/10.2217/epi-2016-0103",
+        "output": "Gestational age",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "Mayne.csv",
+            "transform": lambda sum: sum + 24.99026,
         },
     },
     "HepatoXu": {
