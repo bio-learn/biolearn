@@ -444,18 +444,6 @@ model_definitions = {
             "file": "ProstateCancerKirby.csv",
         },
     },
-    "StocZ": {
-        "year": 2024,
-        "species": "Human",
-        "tissue": "Blood",
-        "source": "https://doi.org/10.1038/s43587-024-00600-8",
-        "output": "Age (Years)",
-        "model": {
-            "type": "LinearMethylationModel",
-            "file": "StocZ.csv",
-            "transform": lambda sum: sum + 64.8077188694894,
-        },
-    },
     "HepatoXu": {
         "year": 2017,
         "species": "Human",
