@@ -502,6 +502,18 @@ model_definitions = {
             "transform": lambda x: 1 / (1 + np.exp(-x)),
         },
     },
+    "StocH": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Multi-tissue",
+        "source": "https://doi.org/10.1038/s43587-024-00600-8",
+        "output": "Age (Years)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "StocH.csv",
+            "transform": lambda sum: sum + 59.8015666314217,
+        },
+    },
     "AD_Bahado-Singh": {
         "year": 2021,
         "species": "Human",
