@@ -576,6 +576,17 @@ model_definitions = {
             "transform": lambda sum: sum + 277.2421,
         },
     },
+    "Bocklandt": {
+        "year": 2011,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1371/journal.pone.0014821",
+        "output": "Age (years)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "Bocklandt.csv",
+        },
+    },
 }
 
 
