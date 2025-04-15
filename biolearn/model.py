@@ -549,6 +549,19 @@ model_definitions = {
             "file": "DepressionBarbu.csv",
         },
     },
+    "PCHorvath1": {
+        "year": 2022,
+        "species": "Human",
+        "tissue": "Multi-tissue",
+        "source": "https://doi.org/10.1038/s43587-022-00248-2",
+        "output": "Age (Years)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "PCHorvath1_model.csv",
+            "transform": "biolearn.utils.age_anti_trafo", 
+            "preprocess": "biolearn.utils.apply_pca_transform('PCHorvath1_pca.pkl')"
+        }
+    },
     "TranscriptomicPredictionModel": {
         "year": 2015,
         "species": "Human",
@@ -619,6 +632,56 @@ def map_ensembl_to_gene(rna_matrix):
     id_to_gene_map = ensembl_to_gene["gene"].to_dict()
     new_rna_matrix = rna_matrix.rename(index=id_to_gene_map)
     return new_rna_matrix
+
+class PCTransformationModel:
+    """
+    Transforms methylation data into principal component (PC) space using
+    provided center and rotation matrices loaded from CSV files.
+
+    Parameters:
+    center_file : str
+        CSV file path for CpG means used for centering (index: CpG names).
+    rotation_file : str
+        CSV file path for PCA loadings (rows: CpGs, columns: PCs).
+    """
+
+    def __init__(self, center_file, rotation_file):
+        self.center = pd.read_csv(get_data_file(center_file), index_col=0).iloc[:, 0]
+        self.rotation = pd.read_csv(get_data_file(rotation_file), index_col=0)
+
+        # Align indices just in case
+        self.rotation = self.rotation.loc[self.center.index.intersection(self.rotation.index)]
+
+    @classmethod
+    def from_definition(cls, clock_definition):
+        model_def = clock_definition["model"]
+        return cls(model_def["center_file"], model_def["rotation_file"])
+
+    def predict(self, geo_data):
+        """
+        Apply PCA transformation to methylation data.
+        """
+        meth = geo_data.dnam.copy()
+
+        if meth.isna().values.any():
+            print("WARNING: methylation data contains missing values. Dropping rows with NAs.")
+            meth = meth.dropna()
+
+        # Intersect with CpGs in reference files
+        intersecting_cpgs = meth.index.intersection(self.center.index)
+        meth = meth.loc[intersecting_cpgs]
+        center = self.center.loc[intersecting_cpgs]
+        rotation = self.rotation.loc[intersecting_cpgs]
+
+        # Center the data and apply PCA transformation
+        X_centered = meth.subtract(center, axis=0)
+        PCs = X_centered.T.dot(rotation)  # (samples × PCs)
+
+        return PCs.T  # (PCs × samples)
+
+    def methylation_sites(self):
+        return list(self.center.index)
+    
 
 
 class DeconvolutionModel:
