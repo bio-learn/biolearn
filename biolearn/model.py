@@ -2,6 +2,9 @@ import os
 import cvxpy as cp
 import numpy as np
 import pandas as pd
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
 from sklearn.linear_model import LinearRegression
 
 from biolearn.data_library import GeoData
@@ -526,6 +529,17 @@ model_definitions = {
             "file": "ProstateCancerKirby.csv",
         },
     },
+    "AltumAge": {
+        "year": 2022,
+        "species": "Human",
+        "tissue": "Multi-tissue",
+        "source": "https://doi.org/10.1038/s41514-022-00085-y",
+        "output": "Age (Years)",
+        "model": {
+            "type": "AltumAgeModel",
+            "file": "AltumAge.csv",
+        },
+    },
     "HepatoXu": {
         "year": 2017,
         "species": "Human",
@@ -712,6 +726,83 @@ def map_ensembl_to_gene(rna_matrix):
     new_rna_matrix = rna_matrix.rename(index=id_to_gene_map)
     return new_rna_matrix
 
+
+class AltumAgeNeuralNetwork(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.linear1 = nn.Linear(20318, 32)
+        self.linear2 = nn.Linear(32, 32)
+        self.linear3 = nn.Linear(32, 32)
+        self.linear4 = nn.Linear(32, 32)
+        self.linear5 = nn.Linear(32, 32)
+        self.linear6 = nn.Linear(32, 1)
+
+        self.bn1 = nn.BatchNorm1d(20318, eps=0.001, momentum=0.99)
+        self.bn2 = nn.BatchNorm1d(32, eps=0.001, momentum=0.99)
+        self.bn3 = nn.BatchNorm1d(32, eps=0.001, momentum=0.99)
+        self.bn4 = nn.BatchNorm1d(32, eps=0.001, momentum=0.99)
+        self.bn5 = nn.BatchNorm1d(32, eps=0.001, momentum=0.99)
+        self.bn6 = nn.BatchNorm1d(32, eps=0.001, momentum=0.99)
+
+    def forward(self, x):
+        x = self.bn1(x)
+        x = self.linear1(x)
+        x = F.selu(x)
+
+        x = self.bn2(x)
+        x = self.linear2(x)
+        x = F.selu(x)
+
+        x = self.bn3(x)
+        x = self.linear3(x)
+        x = F.selu(x)
+
+        x = self.bn4(x)
+        x = self.linear4(x)
+        x = F.selu(x)
+
+        x = self.bn5(x)
+        x = self.linear5(x)
+        x = F.selu(x)
+
+        x = self.bn6(x)
+        x = self.linear6(x)
+        return x
+
+
+class AltumAgeModel:
+    def __init__(self, file_path=None):
+        self.model = AltumAgeNeuralNetwork()
+        self.model.eval()
+
+        if file_path:
+            obj = torch.load(file_path, map_location=torch.device("cpu"))
+
+            # Load model weights
+            self.model.load_state_dict(obj["model"])
+
+            # Load preprocessing: median and std
+            self.median = torch.tensor(obj["preprocess_dependencies"][0], dtype=torch.float32)
+            self.std = torch.tensor(obj["preprocess_dependencies"][1], dtype=torch.float32)
+        else:
+            self.median = None
+            self.std = None
+
+    def predict(self, df):
+        X = torch.tensor(df.values, dtype=torch.float32)
+
+        if self.median is not None and self.std is not None:
+            # Replace NaNs with median
+            nan_mask = torch.isnan(X)
+            X[nan_mask] = self.median[nan_mask]
+
+            # Scale using median and std
+            X = (X - self.median) / self.std
+
+        with torch.no_grad():
+            preds = self.model(X).squeeze().numpy()
+
+        return preds
 
 class DeconvolutionModel:
     def __init__(self, reference_file, platform_input):
