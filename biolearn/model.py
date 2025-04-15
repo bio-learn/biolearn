@@ -373,6 +373,18 @@ model_definitions = {
             "non-commercial": "Free to use",
         },
     },
+    "StocZ": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1038/s43587-024-00600-8",
+        "output": "Mortality Risk",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "StocZ.csv",
+            "transform": lambda sum: sum + 64.8077188694894,
+        },
+    },
     "BMI_McCartney": {
         "year": 2018,
         "species": "Human",
