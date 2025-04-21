@@ -572,6 +572,7 @@ def quantile_normalize(df):
     )
     return df.rank(method="min").stack().astype(int).map(rank_mean).unstack()
 
+
 def preprocess_rna(rna_matrix):
     normalized_data = quantile_normalize(rna_matrix)
 
