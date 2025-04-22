@@ -781,7 +781,6 @@ class AltumAgeModel:
         tf_model = load_model(
             tf_model_path, custom_objects={"mse": MeanSquaredError()}
         )
-        print(tf_model.summary())
         weights = {
             layer.name: layer.get_weights() for layer in tf_model.layers
         }
@@ -856,7 +855,6 @@ class AltumAgeModel:
         # Fill missing CpG sites with center values
         for cpg in missing_cpgs:
             df.loc[cpg] = self.center[self.reference.index(cpg)].item()
-
 
         # Convert input DataFrame to a PyTorch tensor
         X = torch.tensor(
