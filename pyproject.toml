@@ -26,7 +26,8 @@ dependencies = [
   "ecos",
   "matplotlib",
   "scikit-learn",
-  "torch"
+  "torch",
+  "tensorflow"
 ]
 
 keywords = ["biomarker"]

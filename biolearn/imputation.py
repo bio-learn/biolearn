@@ -1,4 +1,5 @@
 import pandas as pd
+import torch
 from biolearn.util import get_data_file
 
 
@@ -104,3 +105,76 @@ def hybrid_impute(dnam, cpg_source, required_cpgs, threshold=0.8):
     df_filled = pd.concat([df_filled, missing_cpgs_df])
 
     return df_filled.sort_index()
+
+
+def impute_with_center(dnam, center, required_cpgs):
+    """
+    Imputes missing CpG sites using the center reference values.
+
+    Args:
+        dnam (DataFrame): The DNA methylation data with CpG sites as rows and samples as columns.
+        center (Tensor or Series): A PyTorch tensor or pandas Series containing the center reference values for CpG sites.
+        required_cpgs (list): A list of CpG sites required for the model.
+
+    Returns:
+        DataFrame: The DNA methylation data with missing CpG sites imputed.
+    """
+    # Convert center to a pandas Series if it's a tensor
+    if isinstance(center, torch.Tensor):
+        center = pd.Series(center.numpy(), index=required_cpgs)
+
+    # Debug: Check the input data
+    print("Input data shape:", dnam.shape)
+    print("Input CpG sites (first 10):", dnam.index[:10])
+
+    # Identify missing CpG sites in the dataset
+    missing_cpgs_from_dataset = [
+        cpg for cpg in required_cpgs if cpg not in dnam.index
+    ]
+
+    # Debug: Check missing CpGs from the dataset
+    print(
+        "Missing CpGs from dataset (first 10):", missing_cpgs_from_dataset[:10]
+    )
+    print(f"Total missing CpGs from dataset: {len(missing_cpgs_from_dataset)}")
+
+    # Ensure all required CpG sites are in the center reference
+    missing_cpgs_from_center = [
+        cpg for cpg in missing_cpgs_from_dataset if cpg not in center.index
+    ]
+
+    if missing_cpgs_from_center:
+        raise ValueError(
+            f"Tried to fill the following CpGs but they were missing from the center reference: {missing_cpgs_from_center}"
+        )
+
+    # Handle the case where all CpGs are missing
+    if len(missing_cpgs_from_dataset) == len(required_cpgs):
+        print(
+            "All required CpGs are missing from the dataset. Imputing all CpGs."
+        )
+        # Create a DataFrame for all required CpGs using the center values
+        dnam_filled = pd.DataFrame(
+            {cpg: [center[cpg]] * len(dnam.columns) for cpg in required_cpgs},
+            index=required_cpgs,
+            columns=dnam.columns,
+        )
+        return dnam_filled
+
+    # Create a DataFrame for missing CpGs with the same columns as dnam
+    missing_cpgs_to_fill = {
+        cpg: [center[cpg]] * len(dnam.columns)
+        for cpg in missing_cpgs_from_dataset
+    }
+    missing_cpgs_df = pd.DataFrame(missing_cpgs_to_fill, index=dnam.columns).T
+
+    # Set the correct index for missing CpGs
+    missing_cpgs_df.index = missing_cpgs_from_dataset
+
+    # Append the missing CpGs to the original dnam DataFrame
+    dnam_filled = pd.concat([dnam, missing_cpgs_df])
+
+    # Reorder rows to match the required CpG order
+    dnam_filled = dnam_filled.loc[required_cpgs]
+
+    return dnam_filled

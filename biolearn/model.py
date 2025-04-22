@@ -6,6 +6,10 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from sklearn.linear_model import LinearRegression
+import tensorflow as tf
+from tensorflow.keras.models import load_model
+from tensorflow.keras.losses import MeanSquaredError
+
 
 from biolearn.data_library import GeoData
 from biolearn.dunedin_pace import dunedin_pace_normalization
@@ -529,17 +533,6 @@ model_definitions = {
             "file": "ProstateCancerKirby.csv",
         },
     },
-    "AltumAge": {
-        "year": 2022,
-        "species": "Human",
-        "tissue": "Multi-tissue",
-        "source": "https://doi.org/10.1038/s41514-022-00085-y",
-        "output": "Age (Years)",
-        "model": {
-            "type": "AltumAgeModel",
-            "file": "AltumAge.csv",
-        },
-    },
     "HepatoXu": {
         "year": 2017,
         "species": "Human",
@@ -693,38 +686,19 @@ model_definitions = {
             "non-commercial": "Free to use",
         },
     },
+    "AltumAge": {
+        "year": 2022,
+        "species": "Human",
+        "tissue": "Multi-tissue",
+        "source": "https://doi.org/10.1038/s41514-022-00085-y",
+        "output": "Age (Years)",
+        "model": {
+            "type": "AltumAgeModel",
+            "file": "AltumAge.csv",
+            "weights": "AltumAge.h5",
+        },
+    },
 }
-
-
-def quantile_normalize(df):
-    rank_mean = (
-        df.stack().groupby(df.rank(method="first").stack().astype(int)).mean()
-    )
-    return df.rank(method="min").stack().astype(int).map(rank_mean).unstack()
-
-
-def preprocess_rna(rna_matrix):
-    normalized_data = quantile_normalize(rna_matrix)
-
-    # Log2 transform the normalized data
-    log2_data = np.log2(normalized_data + 1)  # Adding 1 to avoid log(0) error
-
-    # Center the probe means to zero
-    probe_centered_data = log2_data.sub(log2_data.mean(axis=1), axis="index")
-
-    # Center the sample means to zero
-    sample_centered_data = probe_centered_data.sub(
-        probe_centered_data.mean(axis=0), axis="columns"
-    )
-    return sample_centered_data
-
-
-def map_ensembl_to_gene(rna_matrix):
-    mapping_file = get_data_file("reference/ensembl_to_gene.csv")
-    ensembl_to_gene = pd.read_csv(mapping_file, index_col=0)
-    id_to_gene_map = ensembl_to_gene["gene"].to_dict()
-    new_rna_matrix = rna_matrix.rename(index=id_to_gene_map)
-    return new_rna_matrix
 
 
 class AltumAgeNeuralNetwork(nn.Module):
@@ -771,38 +745,189 @@ class AltumAgeNeuralNetwork(nn.Module):
 
 
 class AltumAgeModel:
-    def __init__(self, file_path=None):
+    def __init__(self, tf_model_path=None, preprocess_file_path=None):
         self.model = AltumAgeNeuralNetwork()
         self.model.eval()
 
-        if file_path:
-            obj = torch.load(file_path, map_location=torch.device("cpu"))
+        if tf_model_path:
+            # Load TensorFlow model and copy weights to PyTorch model
+            self.load_tf_weights(tf_model_path)
 
-            # Load model weights
-            self.model.load_state_dict(obj["model"])
+        if preprocess_file_path:
+            # Resolve the full path to the preprocessing file
+            preprocess_file_path = get_data_file(preprocess_file_path)
+            # Load preprocessing dependencies (center and scale) from the CSV file
+            preprocess_df = pd.read_csv(
+                preprocess_file_path, index_col=0
+            )  # Ensure CpG_site is the index
+            self.center = torch.tensor(
+                preprocess_df["center"].values, dtype=torch.float32
+            )
+            self.scale = torch.tensor(
+                preprocess_df["scale"].values, dtype=torch.float32
+            )
+            self.reference = (
+                preprocess_df.index.tolist()
+            )  # Convert index to a list of CpG site names
 
-            # Load preprocessing: median and std
-            self.median = torch.tensor(obj["preprocess_dependencies"][0], dtype=torch.float32)
-            self.std = torch.tensor(obj["preprocess_dependencies"][1], dtype=torch.float32)
-        else:
-            self.median = None
-            self.std = None
+    def load_tf_weights(self, tf_model_path):
+        """
+        Loads weights from a TensorFlow model and copies them to the PyTorch model.
 
-    def predict(self, df):
-        X = torch.tensor(df.values, dtype=torch.float32)
+        Args:
+            tf_model_path (str): Path to the TensorFlow model file (.h5).
+        """
+        # Load the TensorFlow model with custom_objects
+        tf_model = load_model(
+            tf_model_path, custom_objects={"mse": MeanSquaredError()}
+        )
+        print(tf_model.summary())
+        weights = {
+            layer.name: layer.get_weights() for layer in tf_model.layers
+        }
 
-        if self.median is not None and self.std is not None:
-            # Replace NaNs with median
-            nan_mask = torch.isnan(X)
-            X[nan_mask] = self.median[nan_mask]
+        # Function to copy weights from TensorFlow to PyTorch
+        def copy_weights(torch_layer, tf_weights, bn=False):
+            with torch.no_grad():
+                if bn:
+                    torch_layer.weight.data = torch.tensor(
+                        tf_weights[0]
+                    ).float()
+                    torch_layer.bias.data = torch.tensor(tf_weights[1]).float()
+                    torch_layer.running_mean.data = torch.tensor(
+                        tf_weights[2]
+                    ).float()
+                    torch_layer.running_var.data = torch.tensor(
+                        tf_weights[3]
+                    ).float()
+                else:
+                    torch_layer.weight.data = torch.tensor(
+                        tf_weights[0]
+                    ).T.float()
+                    torch_layer.bias.data = torch.tensor(tf_weights[1]).float()
 
-            # Scale using median and std
-            X = (X - self.median) / self.std
+        # Copy weights to the PyTorch model
+        copy_weights(
+            self.model.bn1, weights["batch_normalization_84"], bn=True
+        )
+        copy_weights(self.model.linear1, weights["dense_84"])
+        copy_weights(
+            self.model.bn2, weights["batch_normalization_85"], bn=True
+        )
+        copy_weights(self.model.linear2, weights["dense_85"])
+        copy_weights(
+            self.model.bn3, weights["batch_normalization_86"], bn=True
+        )
+        copy_weights(self.model.linear3, weights["dense_86"])
+        copy_weights(
+            self.model.bn4, weights["batch_normalization_87"], bn=True
+        )
+        copy_weights(self.model.linear4, weights["dense_87"])
+        copy_weights(
+            self.model.bn5, weights["batch_normalization_88"], bn=True
+        )
+        copy_weights(self.model.linear5, weights["dense_88"])
+        copy_weights(
+            self.model.bn6, weights["batch_normalization_89"], bn=True
+        )
+        copy_weights(self.model.linear6, weights["dense_89"])
 
+    def predict(self, geo_data):
+        """
+        Predicts the output using the AltumAgeModel.
+
+        Args:
+            geo_data (GeoData): A GeoData object containing metadata and dnam attributes.
+
+        Returns:
+            pd.DataFrame: Predictions from the model with a column named "Predicted".
+        """
+        # Access the DNA methylation data from the GeoData object
+        df = geo_data.dnam
+
+        # Ensure the input DataFrame contains all required CpG sites
+        required_cpgs = self.methylation_sites()
+        missing_cpgs = set(required_cpgs) - set(df.index)
+
+        # Align input data with the reference CpG sites
+        df = df.reindex(
+            self.reference
+        )  # Assuming self.reference contains CpG_site from AltumAge.csv
+        # Fill missing CpG sites with center values
+        for cpg in missing_cpgs:
+            df.loc[cpg] = self.center[self.reference.index(cpg)].item()
+
+
+        # Convert input DataFrame to a PyTorch tensor
+        X = torch.tensor(
+            df.values.T, dtype=torch.float32
+        )  # Transpose to match sample orientation
+
+        if self.center is not None and self.scale is not None:
+            # Scale the input using the center and scale values
+            X = (X - self.center) / (self.scale)
+
+        # Pass the preprocessed input through the neural network
         with torch.no_grad():
             preds = self.model(X).squeeze().numpy()
 
-        return preds
+        # Return predictions as a DataFrame
+        return pd.DataFrame(preds, index=df.columns, columns=["Predicted"])
+
+    @classmethod
+    def from_definition(cls, clock_definition):
+        """
+        Creates an instance of AltumAgeModel from a model definition.
+        Args:
+            clock_definition (dict): The model definition containing file paths.
+        Returns:
+            AltumAgeModel: An instance of the AltumAgeModel class.
+        """
+        model_def = clock_definition["model"]
+
+        # Extract the file path for preprocessing
+        preprocess_file = get_data_file(model_def["file"])
+        tf_data_file = get_data_file(model_def["weights"])
+
+        # Create an instance of AltumAgeModel with the preprocessing file
+        return cls(
+            preprocess_file_path=preprocess_file, tf_model_path=tf_data_file
+        )
+
+    def methylation_sites(self):
+        return list(self.reference)
+
+
+def quantile_normalize(df):
+    rank_mean = (
+        df.stack().groupby(df.rank(method="first").stack().astype(int)).mean()
+    )
+    return df.rank(method="min").stack().astype(int).map(rank_mean).unstack()
+
+
+def preprocess_rna(rna_matrix):
+    normalized_data = quantile_normalize(rna_matrix)
+
+    # Log2 transform the normalized data
+    log2_data = np.log2(normalized_data + 1)  # Adding 1 to avoid log(0) error
+
+    # Center the probe means to zero
+    probe_centered_data = log2_data.sub(log2_data.mean(axis=1), axis="index")
+
+    # Center the sample means to zero
+    sample_centered_data = probe_centered_data.sub(
+        probe_centered_data.mean(axis=0), axis="columns"
+    )
+    return sample_centered_data
+
+
+def map_ensembl_to_gene(rna_matrix):
+    mapping_file = get_data_file("reference/ensembl_to_gene.csv")
+    ensembl_to_gene = pd.read_csv(mapping_file, index_col=0)
+    id_to_gene_map = ensembl_to_gene["gene"].to_dict()
+    new_rna_matrix = rna_matrix.rename(index=id_to_gene_map)
+    return new_rna_matrix
+
 
 class DeconvolutionModel:
     def __init__(self, reference_file, platform_input):
