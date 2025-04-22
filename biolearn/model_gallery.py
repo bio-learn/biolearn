@@ -118,8 +118,10 @@ class ModelGallery:
             # AltumAge-specific imputation using the center reference values
             return ImputationDecorator(
                 model_instance,
-                lambda dnam, cpgs: impute_with_center(dnam, model_instance.center, cpgs),
-        )
+                lambda dnam, cpgs: impute_with_center(
+                    dnam, model_instance.center, cpgs
+                ),
+            )
         else:
             raise ValueError(f"Invalid imputation method: {imputation_method}")
 
@@ -141,4 +143,3 @@ class ModelGallery:
             ):
                 matches[name] = model_def
         return matches
-    
