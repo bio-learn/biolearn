@@ -59,7 +59,16 @@ def generate_data_csv_from_yaml(yaml_file, output_file="generated/data_table.csv
         for item in yaml_data["items"]:
             age_present = "Yes" if "age" in item.get("parser", {}).get("metadata", {}) else "No"
             sex_present = "Yes" if "sex" in item.get("parser", {}).get("metadata", {}) else "No"
-            geo_link = f"`{item['id']} <https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc={item['id']}>`_"
+            # Build hyperlink(s) depending on optional datalinks
+            links = item.get("datalinks", [])
+            if not links:
+                geo_link = f"`{item['id']} <https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc={item['id']}>`_"
+            elif len(links) == 1:
+                geo_link = f"`{item['id']} <{links[0]}>`_"
+            else:
+                geo_link = item['id'] + "".join(
+                    f"`({i+1}) <{url}>`_" for i, url in enumerate(links)
+                )
             title = item['title'][:60] + '...' if len(item['title']) > 60 else item['title']
             row = [
                 geo_link,
