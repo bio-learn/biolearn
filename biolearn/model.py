@@ -781,6 +781,7 @@ class AltumAgeModel:
         tf_model = load_model(
             tf_model_path, custom_objects={"mse": MeanSquaredError()}
         )
+
         weights = {
             layer.name: layer.get_weights() for layer in tf_model.layers
         }
@@ -843,15 +844,19 @@ class AltumAgeModel:
         """
         # Access the DNA methylation data from the GeoData object
         df = geo_data.dnam
+        print("Input data shape:", df.shape)
+        print("Reference CpG sites (first 10):", self.reference[:10])
 
         # Ensure the input DataFrame contains all required CpG sites
         required_cpgs = self.methylation_sites()
         missing_cpgs = set(required_cpgs) - set(df.index)
+        print("Missing CpGs:", len(missing_cpgs))
 
         # Align input data with the reference CpG sites
         df = df.reindex(
             self.reference
         )  # Assuming self.reference contains CpG_site from AltumAge.csv
+        print("Aligned input data shape:", df.shape)
         # Fill missing CpG sites with center values
         for cpg in missing_cpgs:
             df.loc[cpg] = self.center[self.reference.index(cpg)].item()
@@ -860,11 +865,18 @@ class AltumAgeModel:
         X = torch.tensor(
             df.values.T, dtype=torch.float32
         )  # Transpose to match sample orientation
-
+        print(
+            "Center tensor contains NaN:",
+            torch.isnan(self.center).any().item(),
+        )
+        print(
+            "Scale tensor contains NaN:", torch.isnan(self.scale).any().item()
+        )
+        print("Scale tensor contains zeros:", (self.scale == 0).any().item())
         if self.center is not None and self.scale is not None:
             # Scale the input using the center and scale values
-            X = (X - self.center) / (self.scale)
-
+            X = (X - self.center) / (self.scale + 1e-8)
+        print("Preprocessed input data (first 5 samples):", X[:5])
         # Pass the preprocessed input through the neural network
         with torch.no_grad():
             preds = self.model(X).squeeze().numpy()
