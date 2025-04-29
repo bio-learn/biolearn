@@ -491,6 +491,7 @@ model_definitions = {
                 map_ensembl_to_gene(rna_data)
             ),
             "transform": lambda sum: sum + 55.808884324,
+        },
     },
     "Garagnani": {
         "year": 2012,
@@ -500,8 +501,9 @@ model_definitions = {
         "output": "Age (Years)",
         "model": {
             "type": "LinearMethylationModel",
-            "file": "Garagnani_CpG.csv",
+            "file": "Garagnani.csv",
             "transform": lambda sum: sum,
+        },
     },
 }
 
