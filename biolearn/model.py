@@ -595,20 +595,23 @@ model_definitions = {
         "output": "Age (Years)",
         "model": {
             "type": "PCLinearTransformationModel",
-            "file": "https://storage.googleapis.com/biolearn/PCClock/PCHorvath1_model.csv",  
-            "rotation": "https://storage.googleapis.com/biolearn/PCClock/PCHorvath1_rotation.csv",  
-            "center": "https://storage.googleapis.com/biolearn/PCClock/PCHorvath1_center.csv", 
+            "file": "https://storage.googleapis.com/biolearn/PCClock/PCHorvath1_model.csv",
+            "rotation": "https://storage.googleapis.com/biolearn/PCClock/PCHorvath1_rotation.csv",
+            "center": "https://storage.googleapis.com/biolearn/PCClock/PCHorvath1_center.csv",
             "transform": lambda sum: anti_trafo(sum + 0.158346),
-
         },
     },
 }
+
+
 class LinearModel:
     def __init__(
         self,
         coefficient_file_or_df,
         transform,
         preprocess=None,
+        center=None,
+        rotation=None,
         **details,
     ) -> None:
         self.transform = transform
@@ -675,7 +678,7 @@ class LinearMethylationModel(LinearModel):
     def methylation_sites(self):
         unique_vars = set(self.coefficients.index) - {"intercept"}
         return list(unique_vars)
-    
+
 
 class PCLinearTransformationModel(LinearModel):
     """
@@ -683,7 +686,15 @@ class PCLinearTransformationModel(LinearModel):
     provided center and rotation files before performing linear regression.
     """
 
-    def __init__(self, coefficient_file_or_df, transform, preprocess=None, center=None, rotation=None, **details):
+    def __init__(
+        self,
+        coefficient_file_or_df,
+        transform,
+        preprocess=None,
+        center=None,
+        rotation=None,
+        **details,
+    ):
         """
         Initialize the PCLinearTransformationModel.
 
@@ -692,7 +703,9 @@ class PCLinearTransformationModel(LinearModel):
             rotation_file (str): Path to the CSV file containing PCA loadings.
             details (dict): Additional details passed to the parent class.
         """
-        super().__init__(coefficient_file_or_df, transform, preprocess, **details)
+        super().__init__(
+            coefficient_file_or_df, transform, preprocess, **details
+        )
         self.center_file = center
         self.rotation_file = rotation
         self.center = None
@@ -703,9 +716,13 @@ class PCLinearTransformationModel(LinearModel):
         Load the center and rotation data from the provided files.
         """
         if self.center is None:
-            self.center = pd.read_csv(get_data_file(self.center_file), index_col=0).iloc[:, 0]
+            self.center = pd.read_csv(
+                get_data_file(self.center_file), index_col=0
+            ).iloc[:, 0]
         if self.rotation is None:
-            self.rotation = pd.read_csv(get_data_file(self.rotation_file), index_col=0)
+            self.rotation = pd.read_csv(
+                get_data_file(self.rotation_file), index_col=0
+            )
 
         # Align indices to ensure consistency
         common_indices = self.center.index.intersection(self.rotation.index)
@@ -738,14 +755,16 @@ class PCLinearTransformationModel(LinearModel):
         PCs = X_centered.T.dot(rotation)  # (samples × PCs)
 
         return PCs.T  # (PCs × samples)
-    
+
     def methylation_sites(self):
         """
         Return the list of required CpG sites.
         """
         # Load the center data if not already loaded
         if self.center is None:
-            self.center = pd.read_csv(get_data_file(self.center_file), index_col=0).iloc[:, 0]
+            self.center = pd.read_csv(
+                get_data_file(self.center_file), index_col=0
+            ).iloc[:, 0]
         return list(self.center.index)
 
 
@@ -778,6 +797,7 @@ def map_ensembl_to_gene(rna_matrix):
     id_to_gene_map = ensembl_to_gene["gene"].to_dict()
     new_rna_matrix = rna_matrix.rename(index=id_to_gene_map)
     return new_rna_matrix
+
 
 class DeconvolutionModel:
     def __init__(self, reference_file, platform_input):
