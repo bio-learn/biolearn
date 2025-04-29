@@ -482,11 +482,11 @@ model_definitions = {
         "year": 2014,
         "species": "Human",
         "tissue": "Blood",
-        "source": "https://pubmed.ncbi.nlm.nih.gov/23061750/",
+        "source": "https://doi.org/10.1186/gb-2014-15-2-r24",
         "output": "Age (Years)",
         "model": {
             "type": "LinearMethylationModel",
-            "file": "Weidner_CpGs.csv",
+            "file": "Weidner.csv",
             "transform": lambda sum: sum + 111.83,
         },
     },
