@@ -843,7 +843,7 @@ class AltumAgeModel:
             pd.DataFrame: Predictions from the model with a column named "Predicted".
         """
         # Access the DNA methylation data from the GeoData object
-        df = geo_data.dnam
+        df = geo_data.dnam.fillna(0)
         # Ensure the input DataFrame contains all required CpG sites
         required_cpgs = self.methylation_sites()
         missing_cpgs = set(required_cpgs) - set(df.index)
