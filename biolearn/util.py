@@ -17,6 +17,9 @@ def get_data_file(relative_path):
     Returns:
         str: The full file path to the specified data file.
     """
+    if is_url(relative_path):
+        # If the input is a URL, download and cache the file
+        return cached_download(relative_path)
     script_dir = os.path.dirname(__file__)
     data_file_path = os.path.join(script_dir, "data", relative_path)
     return data_file_path
