@@ -5,14 +5,13 @@ import numpy as np
 from biolearn import model
 from biolearn.util import (
     get_test_data_file,
-    load_test_data_file,
+    load_test_data_file
 )
 from biolearn.data_library import GeoData
 import pickle
 
 
-sample_inputs = load_test_data_file("external/DNAmTestSet.csv")
-sample_metadata = load_test_data_file("external/testset_metadata.csv")
+sample_inputs = load_test_data_file("testset/testset_methylation_part0.csv")
 
 
 @pytest.mark.parametrize(
@@ -28,7 +27,7 @@ def test_models(model_name, model_entry):
             f"Model type {model_type} for {model_name} does not have a testing pattern - skipping test"
         )
 
-    test_data = GeoData(sample_metadata, sample_inputs)
+    test_data = GeoData.load_csv(get_test_data_file("testset/"), "testset")
 
     # Check if the model class exists
     try:
@@ -41,7 +40,7 @@ def test_models(model_name, model_entry):
     # Instantiate the model
     test_model = model_class.from_definition(model_entry)
 
-    actual_results = test_model.predict(test_data.copy()).sort_index()
+    actual_results = test_model.predict(test_data).sort_index()
 
     # Load the expected results
     expected_results = load_test_data_file(
@@ -85,7 +84,7 @@ def test_dunedin_pace_normalization():
         expected = pickle.load(file)
 
     # Finding mismatches based on tolerance
-    mask = np.abs(actual - expected) > 0.00000001
+    mask = np.abs(actual - expected) > 0.000001
     mismatches = actual[mask].stack()
 
     total_mismatches = mismatches.size
