@@ -467,89 +467,89 @@ model_definitions = {
             "file": "StocP.csv",
             "transform": lambda sum: sum + 92.8310813279039,
         },
-        "Mayne": {
-            "year": 2016,
-            "species": "Human",
-            "tissue": "Placenta",
-            "source": "https://doi.org/10.2217/epi-2016-0103",
-            "output": "Gestational age",
-            "model": {
-                "type": "LinearMethylationModel",
-                "file": "Mayne.csv",
-                "transform": lambda sum: sum + 24.99026,
-            },
+    },
+    "Mayne": {
+        "year": 2016,
+        "species": "Human",
+        "tissue": "Placenta",
+        "source": "https://doi.org/10.2217/epi-2016-0103",
+        "output": "Gestational age",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "Mayne.csv",
+            "transform": lambda sum: sum + 24.99026,
         },
-        "ProstateCancerKirby": {
-            "year": 2017,
-            "species": "Human",
-            "tissue": "Prostate",
-            "source": "https://doi.org/10.1186/s12885-017-3252-2",
-            "output": "Prostate Cancer Status",
-            "model": {
-                "type": "LinearMethylationModel",
-                "file": "ProstateCancerKirby.csv",
-            },
+    },
+    "ProstateCancerKirby": {
+        "year": 2017,
+        "species": "Human",
+        "tissue": "Prostate",
+        "source": "https://doi.org/10.1186/s12885-017-3252-2",
+        "output": "Prostate Cancer Status",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "ProstateCancerKirby.csv",
         },
-        "HepatoXu": {
-            "year": 2017,
-            "species": "Human",
-            "tissue": "Circulating DNA",
-            "source": "https://doi.org/10.1038/nmat4997",
-            "output": "Hepatocellular Carcinoma Status",
-            "model": {
-                "type": "LinearMethylationModel",
-                "file": "HepatoXu.csv",
-            },
+    },
+    "HepatoXu": {
+        "year": 2017,
+        "species": "Human",
+        "tissue": "Circulating DNA",
+        "source": "https://doi.org/10.1038/nmat4997",
+        "output": "Hepatocellular Carcinoma Status",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "HepatoXu.csv",
         },
-        "CVD_Westerman": {
-            "year": 2020,
-            "species": "Human",
-            "tissue": "Blood",
-            "source": "https://doi.org/10.1161/JAHA.119.015299",
-            "output": "Coronary Heart Disease Status",
-            "model": {
-                "type": "LinearMethylationModel",
-                "file": "CVD_Westermann.csv",
-                "transform": lambda x: 1 / (1 + np.exp(-x)),
-            },
+    },
+    "CVD_Westerman": {
+        "year": 2020,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1161/JAHA.119.015299",
+        "output": "Coronary Heart Disease Status",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "CVD_Westermann.csv",
+            "transform": lambda x: 1 / (1 + np.exp(-x)),
         },
-        "AD_Bahado-Singh": {
-            "year": 2021,
-            "species": "Human",
-            "tissue": "Blood",
-            "source": "https://doi.org/10.1371/journal.pone.0248375",
-            "output": "Alzheimer's Disease Status",
-            "model": {
-                "type": "LinearMethylationModel",
-                "file": "AD_Bahado-Singh.csv",
-                "transform": lambda x: 1 / (1 + np.exp(-x - 0.072)),
-            },
+    },
+    "AD_Bahado-Singh": {
+        "year": 2021,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1371/journal.pone.0248375",
+        "output": "Alzheimer's Disease Status",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "AD_Bahado-Singh.csv",
+            "transform": lambda x: 1 / (1 + np.exp(-x - 0.072)),
         },
-        "DepressionBarbu": {
-            "year": 2021,
-            "species": "Human",
-            "tissue": "Blood",
-            "source": "https://doi.org/10.1038/s41380-020-0808-3",
-            "output": "Depression Risk",
-            "model": {
-                "type": "LinearMethylationModel",
-                "file": "DepressionBarbu.csv",
-            },
+    },
+    "DepressionBarbu": {
+        "year": 2021,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1038/s41380-020-0808-3",
+        "output": "Depression Risk",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "DepressionBarbu.csv",
         },
-        "TranscriptomicPredictionModel": {
-            "year": 2015,
-            "species": "Human",
-            "tissue": "Blood",
-            "source": "https://www.nature.com/articles/ncomms9570",
-            "output": "Age (Years)",
-            "model": {
-                "type": "LinearTranscriptomicModel",
-                "file": "TranscriptomicPrediction.csv",
-                "preprocess": lambda rna_data: preprocess_rna(
-                    map_ensembl_to_gene(rna_data)
-                ),
-                "transform": lambda sum: sum + 55.808884324,
-            },
+    },
+    "TranscriptomicPredictionModel": {
+        "year": 2015,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.nature.com/articles/ncomms9570",
+        "output": "Age (Years)",
+        "model": {
+            "type": "LinearTranscriptomicModel",
+            "file": "TranscriptomicPrediction.csv",
+            "preprocess": lambda rna_data: preprocess_rna(
+                map_ensembl_to_gene(rna_data)
+            ),
+            "transform": lambda sum: sum + 55.808884324,
         },
     },
     "Bohlin": {
