@@ -598,7 +598,7 @@ model_definitions = {
             "file": "https://storage.googleapis.com/biolearn/PCClock/PCHorvath1_model.csv",
             "rotation": "https://storage.googleapis.com/biolearn/PCClock/PCHorvath1_rotation.csv",
             "center": "https://storage.googleapis.com/biolearn/PCClock/PCHorvath1_center.csv",
-            "transform": lambda sum: anti_trafo(sum + 0.158346),
+            "transform": lambda sum: anti_trafo(sum + 1.15834584357227),
         },
     },
 }
@@ -610,8 +610,8 @@ class LinearModel:
         coefficient_file_or_df,
         transform,
         preprocess=None,
-        center=None,
-        rotation=None,
+        center_file=None,
+        rotation_file=None,
         **details,
     ) -> None:
         self.transform = transform
@@ -644,8 +644,8 @@ class LinearModel:
             model_def["file"],
             model_def.get("transform", no_transform),
             model_def.get("preprocess", no_transform),
-            center=model_def["center"],
-            rotation=model_def["rotation"],
+            model_def.get("center", no_transform),
+            model_def.get("rotation", no_transform),
             **{k: v for k, v in clock_definition.items() if k != "model"},
         )
 
@@ -658,9 +658,15 @@ class LinearModel:
         model_df = self.coefficients.join(matrix_data, how="inner")
 
         # Vectorized multiplication: multiply CoefficientTraining with all columns of dnam_data
+        coefficient_column = (
+            "CoefficientTraining"
+            if "CoefficientTraining" in model_df.columns
+            else "Weight"
+        )
+
         result = (
             model_df.iloc[:, 1:]
-            .multiply(model_df["CoefficientTraining"], axis=0)
+            .multiply(model_df[coefficient_column], axis=0)
             .sum(axis=0)
         )
 
@@ -691,8 +697,8 @@ class PCLinearTransformationModel(LinearModel):
         coefficient_file_or_df,
         transform,
         preprocess=None,
-        center=None,
-        rotation=None,
+        center_file=None,
+        rotation_file=None,
         **details,
     ):
         """
@@ -703,30 +709,37 @@ class PCLinearTransformationModel(LinearModel):
             rotation_file (str): Path to the CSV file containing PCA loadings.
             details (dict): Additional details passed to the parent class.
         """
+        # Pass center_file and rotation_file as part of **details
+        details["center"] = center_file
+        details["rotation"] = rotation_file
         super().__init__(
             coefficient_file_or_df, transform, preprocess, **details
         )
-        self.center_file = center
-        self.rotation_file = rotation
-        self.center = None
+        self.center_file = center_file or details.get("center")
+        self.rotation_file = rotation_file or details.get("rotation")
+        self.center_ = None
         self.rotation = None
 
     def _load_data(self):
         """
         Load the center and rotation data from the provided files.
         """
-        if self.center is None:
-            self.center = pd.read_csv(
-                get_data_file(self.center_file), index_col=0
-            ).iloc[:, 0]
-        if self.rotation is None:
-            self.rotation = pd.read_csv(
-                get_data_file(self.rotation_file), index_col=0
-            )
+        self.center_ = pd.read_csv(
+            get_data_file(self.center_file), index_col=0
+        ).iloc[:, 0]
+        # Load rotation data if not already loaded
+        self.rotation = pd.read_csv(
+            get_data_file(self.rotation_file), index_col=None
+        )
+        self.rotation.set_index(self.center_.index, inplace=True)
 
         # Align indices to ensure consistency
-        common_indices = self.center.index.intersection(self.rotation.index)
-        self.center = self.center.loc[common_indices]
+        common_indices = self.center_.index.intersection(self.rotation.index)
+        if len(common_indices) == 0:
+            raise ValueError(
+                "No common CpG sites found between center and rotation data."
+            )
+        self.center_ = self.center_.loc[common_indices]
         self.rotation = self.rotation.loc[common_indices]
 
     def _get_data_matrix(self, geo_data):
@@ -745,15 +758,15 @@ class PCLinearTransformationModel(LinearModel):
         meth = geo_data.dnam.copy()
 
         # Intersect with CpGs in reference files
-        intersecting_cpgs = meth.index.intersection(self.center.index)
+        intersecting_cpgs = meth.index.intersection(self.center_.index)
+
         meth = meth.loc[intersecting_cpgs]
-        center = self.center.loc[intersecting_cpgs]
+        center_ = self.center_.loc[intersecting_cpgs]
         rotation = self.rotation.loc[intersecting_cpgs]
 
         # Center the data and apply PCA transformation
-        X_centered = meth.subtract(center, axis=0)
+        X_centered = meth.subtract(center_, axis=0)
         PCs = X_centered.T.dot(rotation)  # (samples × PCs)
-
         return PCs.T  # (PCs × samples)
 
     def methylation_sites(self):
@@ -761,11 +774,13 @@ class PCLinearTransformationModel(LinearModel):
         Return the list of required CpG sites.
         """
         # Load the center data if not already loaded
-        if self.center is None:
-            self.center = pd.read_csv(
+        if self.center_ is None:
+            if not self.center_file:
+                raise ValueError("Center file path is not provided.")
+            self.center_ = pd.read_csv(
                 get_data_file(self.center_file), index_col=0
             ).iloc[:, 0]
-        return list(self.center.index)
+        return list(self.center_.index)
 
 
 def quantile_normalize(df):
