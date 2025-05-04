@@ -850,13 +850,10 @@ class AltumAgeModel:
 
         # Align input data with the reference CpG sites
         df = df.reindex(
-            self.reference
-        )  # Assuming self.reference contains CpG_site from AltumAge.csv
-        # Fill missing CpG sites with center values
-        for cpg in missing_cpgs:
-            df.loc[cpg] = self.center[self.reference.index(cpg)].item()
+            self.reference, fill_value=0
+        )  # Fill missing CpG sites with 0
 
-        # Convert input DataFrame to a PyTorch tensor
+        # # Convert input DataFrame to a PyTorch tensor
         X = torch.tensor(
             df.values.T, dtype=torch.float32
         )  # Transpose to match sample orientation
