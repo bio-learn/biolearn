@@ -468,15 +468,16 @@ model_definitions = {
             "file": "BMI_Reed.csv",
         },
     },
-    "ProstateCancerKirby": {
-        "year": 2017,
+    "StocP": {
+        "year": 2024,
         "species": "Human",
-        "tissue": "Prostate",
-        "source": "https://doi.org/10.1186/s12885-017-3252-2",
-        "output": "Prostate Cancer Status",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1038/s43587-024-00600-8",
+        "output": "Age (Years)",
         "model": {
             "type": "LinearMethylationModel",
-            "file": "ProstateCancerKirby.csv",
+            "file": "StocP.csv",
+            "transform": lambda sum: sum + 92.8310813279039,
         },
     },
     "Mayne": {
@@ -489,6 +490,17 @@ model_definitions = {
             "type": "LinearMethylationModel",
             "file": "Mayne.csv",
             "transform": lambda sum: sum + 24.99026,
+        },
+    },
+    "ProstateCancerKirby": {
+        "year": 2017,
+        "species": "Human",
+        "tissue": "Prostate",
+        "source": "https://doi.org/10.1186/s12885-017-3252-2",
+        "output": "Prostate Cancer Status",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "ProstateCancerKirby.csv",
         },
     },
     "HepatoXu": {
