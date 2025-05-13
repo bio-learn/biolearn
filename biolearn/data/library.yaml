@@ -889,6 +889,9 @@ items:
   parser:
     type: jen-age-custom
     data-type: rna
+  datalinks:
+    - https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE103232
+    - https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE75337
 - id: BoAChallengeData
   title: 2024 Biomarkers of Aging Challenge Sample Data
   summary: We generated DNA methylation profiles of 500 diverse individuals to enable
@@ -924,6 +927,8 @@ items:
       age:
         row: 45
         parse: numeric
+  datalinks:
+    - https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE246337
 - id: GSE167998
   title: 'FlowSorted.BloodExtended.EPIC: An Enhanced DNA Methylation Library for Deconvoluting
     Peripheral Blood'
