@@ -67,7 +67,7 @@ def generate_data_csv_from_yaml(yaml_file, output_file="generated/data_table.csv
                 geo_link = f"`{item['id']} <{links[0]}>`_"
             else:
                 geo_link = item['id'] + "".join(
-                    f"`({i+1}) <{url}>`_" for i, url in enumerate(links)
+                    f" `({i+1}) <{url}>`_" for i, url in enumerate(links)
                 )
             title = item['title'][:60] + '...' if len(item['title']) > 60 else item['title']
             row = [
