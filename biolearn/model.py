@@ -1068,7 +1068,7 @@ class ImputationDecorator:
         dnam_data_imputed = self.imputation_method(geo_data.dnam, needed_cpgs)
 
         return self.clock.predict(
-            GeoData(geo_data.metadata, dnam_data_imputed)
+            GeoData(geo_data.metadata, dnam_data_imputed, geo_data.rna, geo_data.protein)
         )
 
     # Forwarding other methods and attributes to the clock
