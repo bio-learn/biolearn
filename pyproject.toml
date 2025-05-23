@@ -25,7 +25,9 @@ dependencies = [
   "openpyxl",
   "ecos",
   "matplotlib",
-  "scikit-learn"
+  "scikit-learn",
+  "torch",
+  "tensorflow"
 ]
 
 keywords = ["biomarker"]
