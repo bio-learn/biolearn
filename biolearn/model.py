@@ -533,6 +533,18 @@ model_definitions = {
             "file": "ProstateCancerKirby.csv",
         },
     },
+    "AltumAge": {
+        "year": 2022,
+        "species": "Human",
+        "tissue": "Multi-tissue",
+        "source": "https://doi.org/10.1038/s41514-022-00085-y",
+        "output": "Age (Years)",
+        "model": {
+            "type": "AltumAgeModel",
+            "file": "AltumAge.csv",
+            "weights": "AltumAge.h5",
+        },
+    },
     "HepatoXu": {
         "year": 2017,
         "species": "Human",
@@ -684,18 +696,6 @@ model_definitions = {
         "usage": {
             "commercial": "Free to use",
             "non-commercial": "Free to use",
-        },
-    },
-    "AltumAge": {
-        "year": 2022,
-        "species": "Human",
-        "tissue": "Multi-tissue",
-        "source": "https://doi.org/10.1038/s41514-022-00085-y",
-        "output": "Age (Years)",
-        "model": {
-            "type": "AltumAgeModel",
-            "file": "AltumAge.csv",
-            "weights": "AltumAge.h5",
         },
     },
 }
