@@ -30,6 +30,9 @@ Other contributors
 * `Nureldin Mohamed`_/ `Harvard university <https://www.linkedin.com/in/nureldin-m-19738625b/>`_
 * `Yasamin Jodat`_/ `Gingko Bioworks <https://www.linkedin.com/in/yasamin-jodat/>`_
 * `Aneesh Mazumder`_/ `Harvard university <https://www.linkedin.com/in/aneesh-mazumder/>`_
+* `Antonino Libarnes`_/ `Harvard university <https://www.linkedin.com/in/anjolib/>`_
+* `Alexis Musaelyan-Blackmon`_/ `Harvard university <https://www.linkedin.com/in/alexis-musaelyan-blackmon/>`_
+
 
 Partner Organizations
 .....................
