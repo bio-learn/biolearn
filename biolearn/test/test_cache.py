@@ -2,6 +2,7 @@ import os
 import shutil
 import time
 import pytest
+import pickle
 
 from biolearn.cache import LocalFolderCache
 
@@ -89,9 +90,6 @@ def test_remove_key(cache):
     assert cache.get("key3", CATEGORY_EXPR, VERSION_V1) == "value3"
 
 
-# ---------- New tests for versioning ----------
-
-
 def test_version_mismatch_returns_none(cache):
     cache.store("k", "v", CATEGORY_EXPR, VERSION_V1)
     assert cache.get("k", CATEGORY_EXPR, VERSION_V2) is None
@@ -142,3 +140,39 @@ def test_mixed_categories_independent_versions(cache):
 def test_no_default_version_argument(cache):
     with pytest.raises(TypeError):
         cache.get("x", CATEGORY_EXPR)  # missing version arg
+
+
+def test_legacy_files_removed_on_init(tmp_path):
+    """Ensure legacy <key>.pkl files are deleted when the cache is instantiated."""
+    legacy_dir = tmp_path / "cache"
+    legacy_dir.mkdir(parents=True, exist_ok=True)
+
+    # Create a pre-versioning legacy file
+    legacy_file = legacy_dir / "oldkey.pkl"
+    legacy_file.write_bytes(b"obsolete")
+
+    # Confirm it exists before starting
+    assert legacy_file.exists()
+
+    # Instantiate the cache (runs _remove_legacy_files)
+    LocalFolderCache(str(legacy_dir), 0.000000954)  # 1 KB limit
+
+    # Legacy file should have been removed automatically
+    assert not legacy_file.exists()
+
+
+def test_versioned_files_not_removed_on_init(tmp_path):
+    """Correctly versioned files survive the one-time cleanup."""
+    cache_dir = tmp_path / "cache"
+    cache_dir.mkdir()
+
+    # Write a properly versioned file
+    data = "keep me"
+    blob = pickle.dumps(data)
+    versioned = cache_dir / "goodkey__expr__v1.pkl"
+    versioned.write_bytes(blob)
+    assert versioned.exists()
+
+    # Init cache (should *not* delete this file)
+    LocalFolderCache(str(cache_dir), max_size_gb=1e-6)
+    assert versioned.exists()

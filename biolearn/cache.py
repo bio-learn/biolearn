@@ -85,6 +85,9 @@ class LocalFolderCache:
         self.path = path
         self.max_size_bytes = int(max_size_gb * 1024**3)
         os.makedirs(self.path, exist_ok=True)
+        # One‑time clean‑up: remove *legacy* cache files (no category/version).
+        # This was introduced May 2025, should be reasonable removed in a year or two.
+        self._remove_legacy_files()
 
     def get(self, key: str, category: str, version: str) -> Any | None:
         """
@@ -194,3 +197,15 @@ class LocalFolderCache:
             path = os.path.join(self.path, oldest)
             total -= os.path.getsize(path)
             os.remove(path)
+
+    def _remove_legacy_files(self) -> None:
+        """Delete any file that does *not* follow the three‑part naming scheme."""
+        for fname in os.listdir(self.path):
+            if fname.count("__") != 2 or not fname.endswith(".pkl"):
+                continue  # not a cache file
+            # legacy files have <key>.pkl (zero separators) or <key>__misc.pkl (one separator)
+        for fname in list(os.listdir(self.path)):
+            if not fname.endswith(".pkl"):
+                continue
+            if fname.count("__") != 2:
+                os.remove(os.path.join(self.path, fname))
