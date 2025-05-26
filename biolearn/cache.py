@@ -1,6 +1,3 @@
-"""
-Category- and version-aware cache utilities for Biolearn.
-"""
 from __future__ import annotations
 
 import os
@@ -45,7 +42,7 @@ class NoCache:
 
     def store(self, key: str, value: Any, category: str, version: str) -> None:
         """
-        Store a value in the cache.
+        No-op store method.
 
         Args:
             key: Unique key identifying the cache entry.
