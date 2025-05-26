@@ -83,7 +83,7 @@ class LocalFolderCache:
             max_size_gb: Maximum total cache size in gigabytes.
         """
         self.path = path
-        self.max_size_bytes = int(max_size_gb * 1024 ** 3)
+        self.max_size_bytes = int(max_size_gb * 1024**3)
         os.makedirs(self.path, exist_ok=True)
 
     def get(self, key: str, category: str, version: str) -> Any | None:
@@ -98,7 +98,9 @@ class LocalFolderCache:
         Returns:
             The cached object, or None if not found or on load error.
         """
-        filepath = os.path.join(self.path, _compose_filename(key, category, version))
+        filepath = os.path.join(
+            self.path, _compose_filename(key, category, version)
+        )
         if not os.path.exists(filepath):
             return None
         try:
@@ -127,7 +129,9 @@ class LocalFolderCache:
 
         self._remove_stale(category, version)
 
-        filepath = os.path.join(self.path, _compose_filename(key, category, version))
+        filepath = os.path.join(
+            self.path, _compose_filename(key, category, version)
+        )
         with open(filepath, "wb") as f:
             f.write(data)
 

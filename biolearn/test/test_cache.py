@@ -88,7 +88,9 @@ def test_remove_key(cache):
     assert cache.get("key1", CATEGORY_EXPR, VERSION_V1) == "value1"
     assert cache.get("key3", CATEGORY_EXPR, VERSION_V1) == "value3"
 
+
 # ---------- New tests for versioning ----------
+
 
 def test_version_mismatch_returns_none(cache):
     cache.store("k", "v", CATEGORY_EXPR, VERSION_V1)

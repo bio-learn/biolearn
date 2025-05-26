@@ -920,12 +920,16 @@ class DataSource:
         if self.tags and "work_needed" in self.tags:
             self._show_work_needed_warning()
 
-        cached = self.cache.get(self.id, self.CACHE_CATEGORY, self.CACHE_VERSION)
+        cached = self.cache.get(
+            self.id, self.CACHE_CATEGORY, self.CACHE_VERSION
+        )
         if cached is not None:
             return cached
 
         data = self.parser.parse(self.path)
-        self.cache.store(self.id, data, self.CACHE_CATEGORY, self.CACHE_VERSION)
+        self.cache.store(
+            self.id, data, self.CACHE_CATEGORY, self.CACHE_VERSION
+        )
         return data
 
     def __repr__(self):
