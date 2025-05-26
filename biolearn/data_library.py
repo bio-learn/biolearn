@@ -868,6 +868,9 @@ class DataSource:
         "parser": "'parser' key is missing in item",
     }
 
+    CACHE_CATEGORY = "data_source"
+    CACHE_VERSION = "v1"
+
     def __init__(self, source_definition, cache=None):
         """
         Initializes the DataSource instance with configuration data and an optional cache mechanism.
@@ -917,13 +920,13 @@ class DataSource:
         if self.tags and "work_needed" in self.tags:
             self._show_work_needed_warning()
 
-        cached = self.cache.get(self.id)
-        if cached:
+        cached = self.cache.get(self.id, self.CACHE_CATEGORY, self.CACHE_VERSION)
+        if cached is not None:
             return cached
-        else:
-            data = self.parser.parse(self.path)
-            self.cache.store(self.id, data)
-            return data
+
+        data = self.parser.parse(self.path)
+        self.cache.store(self.id, data, self.CACHE_CATEGORY, self.CACHE_VERSION)
+        return data
 
     def __repr__(self):
         """
