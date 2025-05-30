@@ -27,8 +27,8 @@ Command-line example
 Python example
 --------------
 
-```python
-from biolearn.metadata import search_metadata
-df = search_metadata(sex="male", min_age=65)
-print(df.head())
+.. code-block:: python
 
+   from biolearn.metadata import search_metadata
+   df = search_metadata(sex="male", min_age=65)
+   print(df.head())
