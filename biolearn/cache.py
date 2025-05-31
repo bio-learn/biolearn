@@ -209,4 +209,6 @@ class LocalFolderCache:
                 continue
             if fname.count("__") != 2:
                 os.remove(os.path.join(self.path, fname))
+
+
 CACHE_VERSION = "v2"

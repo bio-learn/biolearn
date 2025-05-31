@@ -1,4 +1,5 @@
 """Command-line interface for biolearn."""
+
 import click
 
 from biolearn.metadata import search_metadata
