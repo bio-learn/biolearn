@@ -1,9 +1,7 @@
 """
-Metadata utilities for Biolearn
-===============================
+Metadata utilities for Biolearn.
 
-* Standard encodings for sex / age
-* Lightweight search of library.yaml
+Standard encodings for sex / age and lightweight search of library.yaml.
 """
 
 from __future__ import annotations
@@ -15,12 +13,12 @@ SEX_MAP: dict[str, int] = {"female": 0, "male": 1, "unknown": -1}
 
 
 def sex_to_numeric(label: str) -> int:
-    """'female' → 0, 'male' → 1, 'unknown' → -1"""
+    """'female' → 0, 'male' → 1, 'unknown' → -1."""
     return SEX_MAP[label.lower()]
 
 
 def numeric_to_sex(code: int) -> str:
-    """0 → 'female', 1 → 'male', -1 → 'unknown'"""
+    """0 → 'female', 1 → 'male', -1 → 'unknown'."""
     inv = {v: k for k, v in SEX_MAP.items()}
     return inv[code]
 
@@ -30,12 +28,16 @@ def numeric_to_sex(code: int) -> str:
 # ---------------------------------------------------------------------
 def _iter_library_items():
     """
-    Yield ``(series_id, entry_dict)`` pairs no matter how *library.yaml*
-    is shaped.
+    Yield ``(series_id, entry_dict)`` pairs.
+
+    Handles all known *library.yaml* formats, including mappings,
+    datasets, and flat item arrays.
     """
-    import os, yaml
-    from pathlib import Path
+    import os
     from importlib import resources
+    from pathlib import Path
+
+    import yaml
 
     lib_path = Path(
         os.getenv("BIOLEARN_LIBRARY_PATH")
@@ -69,11 +71,11 @@ def _iter_library_items():
 # ---------------------------------------------------------------------
 def search_metadata(**criteria):
     """
-    Return a *pandas* :class:`~pandas.DataFrame` whose rows satisfy **all**
-    supplied filters, e.g.:
+    Return a filtered DataFrame based on metadata criteria.
 
-    >>> search_metadata(sex="male", min_age=70)
-    >>> search_metadata(sex="female")
+    Examples:
+        >>> search_metadata(sex="male", min_age=70)
+        >>> search_metadata(sex="female")
     """
     import pandas as pd
 
@@ -107,13 +109,18 @@ def search_metadata(**criteria):
 
             # numeric codes used by GEO/dbGaP
             if isinstance(raw, (int, float)):
-                raw = {0: "unknown", 1: "male", 2: "female", -1: "unknown"}.get(
-                    int(raw)
-                )
+                raw = {
+                    0: "unknown",
+                    1: "male",
+                    2: "female",
+                    -1: "unknown",
+                }.get(int(raw))
 
             # strings / single letters
             if isinstance(raw, str):
-                raw = {"f": "female", "m": "male"}.get(raw.strip().lower(), raw.strip().lower())
+                raw = {"f": "female", "m": "male"}.get(
+                    raw.strip().lower(), raw.strip().lower()
+                )
 
             # only skip if we actually know the sex and it mismatches
             if raw is not None and raw != wanted:
@@ -121,9 +128,12 @@ def search_metadata(**criteria):
         # ----------------------------------------------------------------
 
         # -------- age filter -------------------------------------------
-        if "min_age" in criteria and float(meta.get("age", -1)) < criteria["min_age"]:
+        if (
+            "min_age" in criteria
+            and float(meta.get("age", -1)) < criteria["min_age"]
+        ):
             continue
 
         hits.append({"series_id": sid, **meta})
 
-    return pd.DataFrame(hits) 
+    return pd.DataFrame(hits)
