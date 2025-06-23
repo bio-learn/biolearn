@@ -211,4 +211,4 @@ class LocalFolderCache:
                 os.remove(os.path.join(self.path, fname))
 
 
-CACHE_VERSION = "v2"
+CACHE_VERSION = "v1"
