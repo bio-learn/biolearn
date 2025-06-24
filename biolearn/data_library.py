@@ -571,7 +571,6 @@ class GeoData:
                             0: "female",
                             1: "male",
                             2: "female",  # GEO encoding
-                            -1: "unknown",
                         }.get(int(raw), "unknown")
 
                 # Handle string inputs
