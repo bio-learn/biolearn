@@ -26,13 +26,9 @@ def parse_after_colon(s):
 
 
 def sex_parser(s):
-    if isinstance(s, str):
-        s_lower = s.lower().strip()
-        if s_lower in ["female", "f"]:
-            return 1
-        elif s_lower in ["male", "m"]:
-            return 2
-    return 0
+    from biolearn.metadata import standardize_sex
+
+    return standardize_sex(s)
 
 
 def extract_numeric(s):
@@ -41,7 +37,7 @@ def extract_numeric(s):
     return float(match.group(1)) if match else None
 
 
-def extract_informal_age(char) -> int:
+def extract_informal_age(char):
     if "age (yrs)" in char:
         return extract_numeric(char["age (yrs)"])
 
@@ -308,18 +304,18 @@ class GeoData:
             s (Any): The internal sex value (1 for Female, 2 for Male, 0 for unknown).
 
         Returns:
-            Union[int, str]: Returns 0 if the input is 1 (Female), 1 if input is 2 (Male), or "NaN" otherwise.
+            Union[int, float]: Returns 0 if the input is 1 (Female), 1 if input is 2 (Male), or NaN otherwise.
         """
         try:
             s_int = int(s)
         except Exception:
-            return "NaN"
+            return float("nan")
         if s_int == 1:
             return 0
         elif s_int == 2:
             return 1
         else:
-            return "NaN"
+            return float("nan")
 
     @staticmethod
     def convert_standard_to_biolearn_sex(val):
@@ -327,11 +323,15 @@ class GeoData:
         Converts a standard sex value back to the internal representation.
 
         Args:
-            val (Any): The standard sex value (0 for female, 1 for male, "NaN" or other for unknown).
+            val (Any): The standard sex value (0 for female, 1 for male, NaN for unknown).
 
         Returns:
             int: Returns 1 for standard 0 (Female), 2 for standard 1 (Male), or 0 otherwise.
         """
+        import math
+
+        if isinstance(val, (int, float)) and math.isnan(val):
+            return 0
         try:
             num = int(val)
         except Exception:
@@ -474,6 +474,130 @@ class GeoData:
         )
 
         return cls(metadata_df, dnam=dnam_df, rna=rna_df, protein=protein_df)
+
+    @staticmethod
+    def search(**criteria):
+        """
+        Search and preview metadata across all available datasets without loading them.
+
+        This method allows you to explore what datasets are available and their metadata
+        characteristics before deciding which ones to load. It's particularly useful for
+        discovering datasets that match specific criteria like sex, age, or other metadata fields.
+
+        Args:
+            **criteria: Keyword arguments for filtering datasets.
+                       Common filters include:
+                       - sex (str): Filter by sex ("male", "female", "unknown")
+                       - min_age (float): Minimum age threshold
+                       - max_age (float): Maximum age threshold
+
+        Returns:
+            pandas.DataFrame: A DataFrame with columns including 'series_id' and available
+                            metadata fields for each matching dataset.
+        """
+        import pandas as pd
+        import math
+        from importlib import resources
+        from pathlib import Path
+        import os
+        import yaml
+
+        # Load library configuration
+        lib_path = Path(
+            os.getenv("BIOLEARN_LIBRARY_PATH")
+            or resources.files("biolearn.data").joinpath("library.yaml")
+        )
+        lib = yaml.safe_load(lib_path.read_text())
+
+        # Handle different library.yaml layouts
+        def _iter_library_items():
+            # layout A: mapping at top level
+            if isinstance(lib, dict) and "metadata" in next(
+                iter(lib.values())
+            ):
+                yield from lib.items()
+                return
+
+            # layout B: wrapped mapping
+            if isinstance(lib, dict) and "datasets" in lib:
+                yield from lib["datasets"].items()
+                return
+
+            # layout C: array of items
+            if isinstance(lib, dict) and "items" in lib:
+                for entry in lib["items"]:
+                    sid = entry.get("id") or entry.get("series_id")
+                    if sid:
+                        yield sid, entry
+                return
+
+            raise ValueError("Unrecognised library.yaml layout")
+
+        hits = []
+
+        for sid, entry in _iter_library_items():
+            # Resolve metadata dictionary
+            if "metadata" in entry:
+                meta = entry["metadata"]
+            else:
+                meta = {}
+                parser = entry.get("parser", {})
+
+                # Extract from parser block
+                if "sex" in parser and "parse" in parser["sex"]:
+                    meta["sex"] = parser["sex"]["parse"]
+                if "age" in parser and "parse" in parser["age"]:
+                    meta["age"] = float(parser["age"]["parse"])
+
+                # Direct top-level fallbacks
+                if "sex" in entry:
+                    meta.setdefault("sex", entry["sex"])
+                if "age" in entry and isinstance(
+                    entry["age"], (int, float, str)
+                ):
+                    meta.setdefault("age", float(entry["age"]))
+
+            # Apply sex filter with robust normalization
+            if "sex" in criteria:
+                wanted = criteria["sex"].lower()
+                raw = meta.get("sex")
+
+                # Handle numeric codes (GEO/dbGaP formats)
+                if isinstance(raw, (int, float)):
+                    if math.isnan(raw):
+                        raw = "unknown"
+                    else:
+                        raw = {
+                            0: "female",
+                            1: "male",
+                            2: "female",  # GEO encoding
+                            -1: "unknown",
+                        }.get(int(raw), "unknown")
+
+                # Handle string inputs
+                if isinstance(raw, str):
+                    raw = {"f": "female", "m": "male"}.get(
+                        raw.strip().lower(), raw.strip().lower()
+                    )
+
+                # Skip if we know the sex and it doesn't match
+                if raw is not None and raw != wanted:
+                    continue
+
+            # Apply age filters
+            if "min_age" in criteria:
+                age = meta.get("age", -1)
+                if age < criteria["min_age"]:
+                    continue
+
+            if "max_age" in criteria:
+                age = meta.get("age", float("inf"))
+                if age > criteria["max_age"]:
+                    continue
+
+            hits.append({"series_id": sid, **meta})
+
+        return pd.DataFrame(hits)
 
 
 class JenAgeCustomParser:

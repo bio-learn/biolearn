@@ -9,18 +9,71 @@ from __future__ import annotations
 # ---------------------------------------------------------------------
 # 1. Sex / age standard helpers (Issue #122)
 # ---------------------------------------------------------------------
-SEX_MAP: dict[str, int] = {"female": 0, "male": 1, "unknown": -1}
+import math
+from typing import Union
 
 
-def sex_to_numeric(label: str) -> int:
-    """'female' → 0, 'male' → 1, 'unknown' → -1."""
-    return SEX_MAP[label.lower()]
+def standardize_sex(value: Union[str, int, float, None]) -> Union[int, float]:
+    """
+    Standardize sex values to the DNA Methylation Array Data Standard.
+
+    Standard: 0 for female, 1 for male, NaN for unknown/missing values.
+
+    Args:
+        value: Input sex value in various formats
+
+    Returns:
+        0 for female, 1 for male, NaN for unknown/missing
+    """
+    if value is None:
+        return float("nan")
+
+    # Handle numeric inputs
+    if isinstance(value, (int, float)):
+        if math.isnan(value):
+            return float("nan")
+        # Convert common numeric encodings
+        if value == 0:
+            return 0  # female
+        elif value == 1:
+            return 1  # male
+        elif value == 2:
+            return 0  # female (GEO encoding: 1=male, 2=female)
+        else:
+            return float("nan")
+
+    # Handle string inputs
+    if isinstance(value, str):
+        normalized = value.strip().lower()
+        mapping = {
+            "female": 0,
+            "f": 0,
+            "male": 1,
+            "m": 1,
+            "unknown": float("nan"),
+            "nan": float("nan"),
+            "": float("nan"),
+        }
+        return mapping.get(normalized, float("nan"))
+
+    return float("nan")
 
 
-def numeric_to_sex(code: int) -> str:
-    """0 → 'female', 1 → 'male', -1 → 'unknown'."""
-    inv = {v: k for k, v in SEX_MAP.items()}
-    return inv[code]
+def sex_to_numeric(label: str) -> Union[int, float]:
+    """Convert sex label to numeric standard format."""
+    return standardize_sex(label)
+
+
+def numeric_to_sex(code: Union[int, float]) -> str:
+    """Convert numeric sex code to string representation."""
+    if isinstance(code, (int, float)) and math.isnan(code):
+        return "unknown"
+    elif code == 0:
+        return "female"
+    elif code == 1:
+        return "male"
+    else:
+        return "unknown"
 
 
 # ---------------------------------------------------------------------
@@ -67,73 +120,5 @@ def _iter_library_items():
 
 
 # ---------------------------------------------------------------------
-# 3. Public helper: search without downloading big matrices (Issue #44)
+# 3. Library iteration helper (used by GeoData.search method)
 # ---------------------------------------------------------------------
-def search_metadata(**criteria):
-    """
-    Return a filtered DataFrame based on metadata criteria.
-
-    Examples:
-        >>> search_metadata(sex="male", min_age=70)
-        >>> search_metadata(sex="female")
-    """
-    import pandas as pd
-
-    hits: list[dict] = []
-
-    for sid, entry in _iter_library_items():
-        # -------- resolve a flat metadata dict ------------------------
-        if "metadata" in entry:
-            meta = entry["metadata"]
-        else:
-            meta: dict = {}
-            parser = entry.get("parser", {})
-
-            # a) parser-block values
-            if "sex" in parser and "parse" in parser["sex"]:
-                meta["sex"] = parser["sex"]["parse"]
-            if "age" in parser and "parse" in parser["age"]:
-                meta["age"] = float(parser["age"]["parse"])
-
-            # b) direct top-level fallbacks
-            if "sex" in entry:
-                meta.setdefault("sex", entry["sex"])
-            if "age" in entry and isinstance(entry["age"], (int, float, str)):
-                meta.setdefault("age", float(entry["age"]))
-        # ----------------------------------------------------------------
-
-        # -------- sex filter (robust normalisation) --------------------
-        if "sex" in criteria:
-            wanted = criteria["sex"].lower()
-            raw = meta.get("sex")
-
-            # numeric codes used by GEO/dbGaP
-            if isinstance(raw, (int, float)):
-                raw = {
-                    0: "unknown",
-                    1: "male",
-                    2: "female",
-                    -1: "unknown",
-                }.get(int(raw))
-
-            # strings / single letters
-            if isinstance(raw, str):
-                raw = {"f": "female", "m": "male"}.get(
-                    raw.strip().lower(), raw.strip().lower()
-                )
-
-            # only skip if we actually know the sex and it mismatches
-            if raw is not None and raw != wanted:
-                continue
-        # ----------------------------------------------------------------
-
-        # -------- age filter -------------------------------------------
-        if (
-            "min_age" in criteria
-            and float(meta.get("age", -1)) < criteria["min_age"]
-        ):
-            continue
-
-        hits.append({"series_id": sid, **meta})
-
-    return pd.DataFrame(hits)
