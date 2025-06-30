@@ -545,7 +545,10 @@ class GeoData:
 
                 # Extract from parser block
                 if "sex" in parser and "parse" in parser["sex"]:
-                    meta["sex"] = parser["sex"]["parse"]
+                    # For search, we need to infer sex from the fact that it's configured
+                    # but we can't use the parser string directly as that would break validation
+                    # Instead, we'll handle sex filtering differently below
+                    pass
                 if "age" in parser and "parse" in parser["age"]:
                     meta["age"] = float(parser["age"]["parse"])
 
@@ -557,31 +560,43 @@ class GeoData:
                 ):
                     meta.setdefault("age", float(entry["age"]))
 
-            # Apply sex filter with robust normalization
+            # Apply sex filter - for datasets with parser sex config, include them
+            # since we can't determine actual sex values without loading the data
             if "sex" in criteria:
                 wanted = criteria["sex"].lower()
                 raw = meta.get("sex")
 
-                # Handle numeric codes (GEO/dbGaP formats)
-                if isinstance(raw, (int, float)):
-                    if math.isnan(raw):
-                        raw = "unknown"
-                    else:
-                        raw = {
-                            0: "female",
-                            1: "male",
-                            2: "female",  # GEO encoding
-                        }.get(int(raw), "unknown")
+                # If there's direct sex metadata, use it for filtering
+                if raw is not None:
+                    # Handle numeric codes (GEO/dbGaP formats)
+                    if isinstance(raw, (int, float)):
+                        if math.isnan(raw):
+                            raw = "unknown"
+                        else:
+                            raw = {
+                                0: "female",
+                                1: "male",
+                                2: "female",  # GEO encoding
+                            }.get(int(raw), "unknown")
 
-                # Handle string inputs
-                if isinstance(raw, str):
-                    raw = {"f": "female", "m": "male"}.get(
-                        raw.strip().lower(), raw.strip().lower()
-                    )
+                    # Handle string inputs
+                    if isinstance(raw, str):
+                        raw = {"f": "female", "m": "male"}.get(
+                            raw.strip().lower(), raw.strip().lower()
+                        )
 
-                # Skip if we know the sex and it doesn't match
-                if raw is not None and raw != wanted:
-                    continue
+                    # Skip if we know the sex and it doesn't match
+                    if raw != wanted:
+                        continue
+                else:
+                    # No direct sex metadata - check if dataset has sex parser config
+                    parser = entry.get("parser", {})
+                    has_sex_parser = "sex" in parser.get("metadata", {})
+
+                    # If no sex information at all, skip this dataset
+                    if not has_sex_parser:
+                        continue
+                    # If has sex parser, include it (we can't filter without loading data)
 
             # Apply age filters
             if "min_age" in criteria:
