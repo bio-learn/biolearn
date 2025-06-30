@@ -497,134 +497,106 @@ class GeoData:
         """
         import pandas as pd
         import math
-        from importlib import resources
-        from pathlib import Path
-        import os
-        import yaml
-
-        # Load library configuration
-        lib_path = Path(
-            os.getenv("BIOLEARN_LIBRARY_PATH")
-            or resources.files("biolearn.data").joinpath("library.yaml")
-        )
-        lib = yaml.safe_load(lib_path.read_text())
-
-        # Handle different library.yaml layouts
-        def _iter_library_items():
-            # layout A: mapping at top level
-            if isinstance(lib, dict) and "metadata" in next(
-                iter(lib.values())
-            ):
-                yield from lib.items()
-                return
-
-            # layout B: wrapped mapping
-            if isinstance(lib, dict) and "datasets" in lib:
-                yield from lib["datasets"].items()
-                return
-
-            # layout C: array of items
-            if isinstance(lib, dict) and "items" in lib:
-                for entry in lib["items"]:
-                    sid = entry.get("id") or entry.get("series_id")
-                    if sid:
-                        yield sid, entry
-                return
-
-            raise ValueError("Unrecognised library.yaml layout")
+        from biolearn.metadata import _iter_library_items
 
         hits = []
 
-        for sid, entry in _iter_library_items():
-            # Resolve metadata dictionary - always use a copy to avoid modifying original data
-            meta = {}
+        try:
+            for sid, entry in _iter_library_items():
+                # Resolve metadata dictionary - always use a copy to avoid modifying original data
+                meta = {}
 
-            # First check for direct metadata
-            if "metadata" in entry:
-                meta = entry["metadata"].copy()
+                # First check for direct metadata
+                if "metadata" in entry:
+                    meta = entry["metadata"].copy()
 
-            # Then check for direct top-level fields (but don't overwrite existing)
-            if "sex" in entry and "sex" not in meta:
-                meta["sex"] = entry["sex"]
-            if "age" in entry and "age" not in meta:
-                age_val = entry["age"]
-                if isinstance(age_val, (int, float, str)):
-                    try:
-                        meta["age"] = float(age_val)
-                    except (ValueError, TypeError):
-                        pass
+                # Then check for direct top-level fields (but don't overwrite existing)
+                if "sex" in entry and "sex" not in meta:
+                    meta["sex"] = entry["sex"]
+                if "age" in entry and "age" not in meta:
+                    age_val = entry["age"]
+                    if isinstance(age_val, (int, float, str)):
+                        try:
+                            meta["age"] = float(age_val)
+                        except (ValueError, TypeError):
+                            pass
 
-            # Apply sex filter
-            if "sex" in criteria:
-                wanted = criteria["sex"].lower()
-                raw_sex = meta.get("sex")
+                # Apply sex filter
+                if "sex" in criteria:
+                    wanted = criteria["sex"].lower()
+                    raw_sex = meta.get("sex")
 
-                # Check if dataset has sex information available
-                parser = entry.get("parser", {})
-                parser_metadata = parser.get("metadata", {})
-                has_sex_parser = "sex" in parser_metadata
+                    # Check if dataset has sex information available
+                    parser = entry.get("parser", {})
+                    parser_metadata = parser.get("metadata", {})
+                    has_sex_parser = "sex" in parser_metadata
 
-                # If we have direct sex metadata, try to match it
-                if raw_sex is not None:
-                    sex_str = None
+                    # If we have direct sex metadata, try to match it
+                    if raw_sex is not None:
+                        sex_str = None
 
-                    # Convert to standardized string for comparison
-                    if isinstance(raw_sex, str):
-                        sex_lower = raw_sex.strip().lower()
-                        # Map common variations
-                        if sex_lower in ["f", "female"]:
-                            sex_str = "female"
-                        elif sex_lower in ["m", "male"]:
-                            sex_str = "male"
-                        elif sex_lower in ["unknown", "u", ""]:
-                            sex_str = "unknown"
+                        # Convert to standardized string for comparison
+                        if isinstance(raw_sex, str):
+                            sex_lower = raw_sex.strip().lower()
+                            # Map common variations
+                            if sex_lower in ["f", "female"]:
+                                sex_str = "female"
+                            elif sex_lower in ["m", "male"]:
+                                sex_str = "male"
+                            elif sex_lower in ["unknown", "u", ""]:
+                                sex_str = "unknown"
+                            else:
+                                sex_str = sex_lower
+                        elif isinstance(
+                            raw_sex, (int, float)
+                        ) and not math.isnan(raw_sex):
+                            # Handle numeric encoding
+                            sex_map = {
+                                0: "female",  # Standard
+                                1: "male",  # Standard
+                                2: "female",  # GEO encoding (reversed)
+                            }
+                            sex_str = sex_map.get(int(raw_sex), "unknown")
                         else:
-                            sex_str = sex_lower
-                    elif isinstance(raw_sex, (int, float)) and not math.isnan(
-                        raw_sex
-                    ):
-                        # Handle numeric encoding
-                        sex_map = {
-                            0: "female",  # Standard
-                            1: "male",  # Standard
-                            2: "female",  # GEO encoding (reversed)
-                        }
-                        sex_str = sex_map.get(int(raw_sex), "unknown")
-                    else:
-                        sex_str = "unknown"
+                            sex_str = "unknown"
 
-                    # Skip if sex doesn't match
-                    if sex_str != wanted:
+                        # Skip if sex doesn't match
+                        if sex_str != wanted:
+                            continue
+
+                    elif not has_sex_parser:
+                        # No sex information at all - skip this dataset
+                        continue
+                    # If has_sex_parser but no direct metadata, include the dataset
+                    # because we can't determine the actual sex without loading data
+
+                # Apply age filters
+                if "min_age" in criteria:
+                    age = meta.get("age")
+                    if age is None or age < criteria["min_age"]:
                         continue
 
-                elif has_sex_parser:
-                    # Dataset has sex parser but no direct metadata
-                    # Include it since we can't filter without loading actual data
-                    pass
-                else:
-                    # No sex information at all - skip
-                    continue
+                if "max_age" in criteria:
+                    age = meta.get("age")
+                    if age is None or age > criteria["max_age"]:
+                        continue
 
-            # Apply age filters
-            if "min_age" in criteria:
-                age = meta.get("age")
-                if age is None or age < criteria["min_age"]:
-                    continue
+                # Create result entry with series_id
+                result_entry = {"series_id": sid}
 
-            if "max_age" in criteria:
-                age = meta.get("age")
-                if age is None or age > criteria["max_age"]:
-                    continue
+                # Add metadata fields that exist
+                for key, value in meta.items():
+                    if value is not None:
+                        result_entry[key] = value
 
-            # Create result entry with series_id
-            result_entry = {"series_id": sid}
+                hits.append(result_entry)
+        except Exception:
+            # If iteration fails, return empty DataFrame
+            return pd.DataFrame(columns=["series_id"])
 
-            # Add metadata fields that exist
-            for key, value in meta.items():
-                if value is not None:
-                    result_entry[key] = value
-
-            hits.append(result_entry)
+        # Always return a DataFrame, even if empty
+        if not hits:
+            return pd.DataFrame(columns=["series_id"])
 
         return pd.DataFrame(hits)
 
