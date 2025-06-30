@@ -536,9 +536,9 @@ class GeoData:
         hits = []
 
         for sid, entry in _iter_library_items():
-            # Resolve metadata dictionary
+            # Resolve metadata dictionary - always use a copy to avoid modifying original data
             if "metadata" in entry:
-                meta = entry["metadata"]
+                meta = entry["metadata"].copy()
             else:
                 meta = {}
                 parser = entry.get("parser", {})
