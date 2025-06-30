@@ -992,7 +992,7 @@ class DataSource:
     }
 
     CACHE_CATEGORY = "data_source"
-    CACHE_VERSION = "v1"
+    CACHE_VERSION = "v2"
 
     def __init__(self, source_definition, cache=None):
         """
