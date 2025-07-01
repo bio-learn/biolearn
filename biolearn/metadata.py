@@ -117,8 +117,3 @@ def _iter_library_items():
         return
 
     raise ValueError("Unrecognised library.yaml layout")
-
-
-# ---------------------------------------------------------------------
-# 3. Library iteration helper (used by GeoData.search method)
-# ---------------------------------------------------------------------
