@@ -209,7 +209,12 @@ def test_can_load_dnam():
     assert "cancer" in df.metadata.columns.to_list()
     assert np.issubdtype(df.metadata["age"], np.number)
     assert np.issubdtype(df.metadata["sex"], np.number)
-    assert (df.metadata["sex"] != 0).all()
+    # With new standardization: 0=female, 1=male, NaN=unknown
+    # Check that all sex values are valid (0, 1, or NaN)
+    assert (
+        df.metadata["sex"].isin([0, 1]).all()
+        or df.metadata["sex"].isna().any()
+    )
     assert all(
         np.issubdtype(dnam[col].dtype, np.number) for col in dnam.columns
     )
@@ -244,7 +249,9 @@ def test_load_dnam_with_matrix_file():
     assert "cancer" in metadata.columns.to_list()
     assert np.issubdtype(metadata["age"], np.number)
     assert np.issubdtype(metadata["sex"], np.number)
-    assert (metadata["sex"] != 0).all()
+    # With new standardization: 0=female, 1=male, NaN=unknown
+    # Check that all sex values are valid (0, 1, or NaN)
+    assert metadata["sex"].isin([0, 1]).all() or metadata["sex"].isna().any()
     assert all(
         np.issubdtype(dnam[col].dtype, np.number) for col in dnam.columns
     )

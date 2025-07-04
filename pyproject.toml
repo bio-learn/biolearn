@@ -93,11 +93,7 @@ version-file = "biolearn/_version.py"
 
 [tool.black]
 line-length = 79
-extend-include = """
-(
-  examples/.*py
-)
-"""
+include = '''\.pyi?$|examples/.*\.py$'''
 extend-exclude = """
 (
   doc
