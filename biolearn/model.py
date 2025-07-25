@@ -861,7 +861,7 @@ class GrimageModel:
         # Add metadata rows to dnam DataFrame
         df.loc["Age"] = transposed_metadata.loc["age"]
         df.loc["Female"] = transposed_metadata.loc["sex"].apply(
-            lambda x: 1 if x == 1 else 0
+            lambda x: 1 if x == 0 else 0
         )
         df.loc["Intercept"] = 1
 
@@ -883,7 +883,7 @@ class GrimageModel:
 
         all_data["Age"] = geo_data.metadata["age"]
         all_data["Female"] = geo_data.metadata["sex"].apply(
-            lambda x: 1 if x == 1 else 0
+            lambda x: 1 if x == 0 else 0
         )
 
         all_data["COX"] = all_data.mul(cox_coefficients).sum(axis=1)
