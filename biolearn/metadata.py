@@ -6,9 +6,7 @@ Standard encodings for sex / age and lightweight search of library.yaml.
 
 from __future__ import annotations
 
-# ---------------------------------------------------------------------
-# 1. Sex / age standard helpers (Issue #122)
-# ---------------------------------------------------------------------
+
 import math
 from typing import Union
 

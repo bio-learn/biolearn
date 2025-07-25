@@ -209,7 +209,6 @@ def test_can_load_dnam():
     assert "cancer" in df.metadata.columns.to_list()
     assert np.issubdtype(df.metadata["age"], np.number)
     assert np.issubdtype(df.metadata["sex"], np.number)
-    # With new standardization: 0=female, 1=male, NaN=unknown
     # Check that all sex values are valid (0, 1, or NaN)
     assert (
         df.metadata["sex"].isin([0, 1]).all()

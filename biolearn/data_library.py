@@ -6,6 +6,7 @@ import requests
 import gzip
 import shutil
 import os
+import math
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -13,6 +14,7 @@ import seaborn as sns
 from biolearn.util import cached_download, get_data_file
 from biolearn.defaults import default_cache
 from biolearn.cache import NoCache
+from biolearn.metadata import _iter_library_items
 from io import BytesIO
 
 
@@ -295,54 +297,6 @@ class GeoData:
 
         return cls(metadata, dnam)
 
-    @staticmethod
-    def convert_biolearn_to_standard_sex(s):
-        """
-        Converts internal sex representation to the standard format.
-
-        Args:
-            s (Any): The internal sex value (1 for Female, 2 for Male, 0 for unknown).
-
-        Returns:
-            Union[int, float]: Returns 0 if the input is 1 (Female), 1 if input is 2 (Male), or NaN otherwise.
-        """
-        try:
-            s_int = int(s)
-        except Exception:
-            return float("nan")
-        if s_int == 1:
-            return 0
-        elif s_int == 2:
-            return 1
-        else:
-            return float("nan")
-
-    @staticmethod
-    def convert_standard_to_biolearn_sex(val):
-        """
-        Converts a standard sex value back to the internal representation.
-
-        Args:
-            val (Any): The standard sex value (0 for female, 1 for male, NaN for unknown).
-
-        Returns:
-            int: Returns 1 for standard 0 (Female), 2 for standard 1 (Male), or 0 otherwise.
-        """
-        import math
-
-        if isinstance(val, (int, float)) and math.isnan(val):
-            return 0
-        try:
-            num = int(val)
-        except Exception:
-            return 0
-        if num == 0:
-            return 1
-        elif num == 1:
-            return 2
-        else:
-            return 0
-
     def save_csv(self, folder_path, name):
         """
         Saves the GeoData instance to CSV files according to the DNA Methylation Array Data Standard V-2410.
@@ -359,10 +313,6 @@ class GeoData:
         # Save metadata
         if self.metadata is not None:
             metadata_to_save = self.metadata.copy()
-            if "Sex" in metadata_to_save.columns:
-                metadata_to_save["Sex"] = metadata_to_save["Sex"].apply(
-                    GeoData.convert_biolearn_to_standard_sex
-                )
             metadata_file = os.path.join(folder_path, f"{name}_metadata.csv")
             metadata_to_save.to_csv(metadata_file)
 
@@ -413,10 +363,6 @@ class GeoData:
             metadata_df = pd.read_csv(
                 metadata_file, index_col=0, keep_default_na=False
             )
-            if "Sex" in metadata_df.columns:
-                metadata_df["Sex"] = metadata_df["Sex"].apply(
-                    GeoData.convert_standard_to_biolearn_sex
-                )
         else:
             metadata_df = None
 
@@ -1107,9 +1053,6 @@ class DataLibrary:
         - 1 = male
         - NaN = unknown/missing
         """
-        import pandas as pd
-        import math
-        from biolearn.metadata import _iter_library_items
 
         hits = []
 

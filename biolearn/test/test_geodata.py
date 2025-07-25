@@ -10,9 +10,9 @@ def create_dummy_geodata(num_samples=5):
     """
     Create a dummy GeoData instance with:
       - A methylation (dnam) DataFrame with random beta values (rounded to 3 decimals).
-      - A metadata DataFrame with a 'Sex' column using internal numeric coding:
-            1 for Female, 2 for Male.
-        For this test, samples with even index are Female (1) and odd index are Male (2).
+      - A metadata DataFrame with a 'Sex' column using standard numeric coding:
+            0 for Female, 1 for Male.
+        For this test, samples with even index are Female (0) and odd index are Male (1).
       - An 'Age' column and a 'Disease State' column.
       - RNA and protein data are set to None.
     """
@@ -22,9 +22,7 @@ def create_dummy_geodata(num_samples=5):
     data = np.random.rand(len(cpg_ids), num_samples)
     dnam = pd.DataFrame(data, index=cpg_ids, columns=sample_ids).round(3)
 
-    # Create dummy metadata with internal numeric sex representation:
-    # For samples: even-indexed sample gets 1 (Female), odd-indexed gets 2 (Male)
-    sex_values = [2 if i % 2 != 0 else 1 for i in range(1, num_samples + 1)]
+    sex_values = [1 if i % 2 != 0 else 0 for i in range(1, num_samples + 1)]
     metadata = pd.DataFrame(
         {
             "SampleID": sample_ids,
