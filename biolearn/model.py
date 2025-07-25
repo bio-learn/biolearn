@@ -861,7 +861,9 @@ class GrimageModel:
             )
 
         if "age" not in geo_data.metadata:
-            raise ValueError("GrimAge requires 'age' column in metadata (numeric age in years)")
+            raise ValueError(
+                "GrimAge requires 'age' column in metadata (numeric age in years)"
+            )
 
         # Check for NaN sex values
         sex_values = geo_data.metadata["sex"]

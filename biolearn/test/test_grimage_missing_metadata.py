@@ -12,11 +12,11 @@ def test_grimage_missing_sex_column():
     sample_metadata = load_test_data_file("external/testset_metadata.csv")
 
     # Remove sex column
-    metadata_no_sex = sample_metadata.drop(columns=['sex'])
+    metadata_no_sex = sample_metadata.drop(columns=["sex"])
     test_data = GeoData(metadata_no_sex, sample_inputs)
 
     gallery = ModelGallery()
-    grimage_model = gallery.get('GrimAgeV2')
+    grimage_model = gallery.get("GrimAgeV2")
 
     with pytest.raises(ValueError) as exc_info:
         grimage_model.predict(test_data)
@@ -32,11 +32,11 @@ def test_grimage_missing_age_column():
     sample_metadata = load_test_data_file("external/testset_metadata.csv")
 
     # Remove age column
-    metadata_no_age = sample_metadata.drop(columns=['age'])
+    metadata_no_age = sample_metadata.drop(columns=["age"])
     test_data = GeoData(metadata_no_age, sample_inputs)
 
     gallery = ModelGallery()
-    grimage_model = gallery.get('GrimAgeV2')
+    grimage_model = gallery.get("GrimAgeV2")
 
     with pytest.raises(ValueError) as exc_info:
         grimage_model.predict(test_data)
@@ -52,11 +52,11 @@ def test_grimage_nan_sex_values():
 
     # Set some sex values to NaN
     test_metadata = sample_metadata.copy()
-    test_metadata.loc[test_metadata.index[0], 'sex'] = np.nan
+    test_metadata.loc[test_metadata.index[0], "sex"] = np.nan
     test_data = GeoData(test_metadata, sample_inputs)
 
     gallery = ModelGallery()
-    grimage_model = gallery.get('GrimAgeV2')
+    grimage_model = gallery.get("GrimAgeV2")
 
     with pytest.raises(ValueError) as exc_info:
         grimage_model.predict(test_data)
@@ -76,14 +76,17 @@ def test_grimage_sample_mismatch():
     test_data = GeoData(mismatched_metadata, sample_inputs)
 
     gallery = ModelGallery()
-    grimage_model = gallery.get('GrimAgeV2')
+    grimage_model = gallery.get("GrimAgeV2")
 
     with pytest.raises(ValueError) as exc_info:
         grimage_model.predict(test_data)
 
     error_msg = str(exc_info.value)
     assert "Methylation data contains samples without metadata" in error_msg
-    assert "Ensure all samples in methylation matrix have corresponding metadata" in error_msg
+    assert (
+        "Ensure all samples in methylation matrix have corresponding metadata"
+        in error_msg
+    )
 
 
 def test_grimage_reverse_sample_mismatch():
@@ -93,15 +96,18 @@ def test_grimage_reverse_sample_mismatch():
 
     # Add extra sample to metadata to create reverse mismatch
     extra_metadata = sample_metadata.copy()
-    extra_metadata.loc['EXTRA_SAMPLE'] = {'age': 50, 'sex': 1}
+    extra_metadata.loc["EXTRA_SAMPLE"] = {"age": 50, "sex": 1}
     test_data = GeoData(extra_metadata, sample_inputs)
 
     gallery = ModelGallery()
-    grimage_model = gallery.get('GrimAgeV2')
+    grimage_model = gallery.get("GrimAgeV2")
 
     with pytest.raises(ValueError) as exc_info:
         grimage_model.predict(test_data)
 
     error_msg = str(exc_info.value)
     assert "Metadata contains samples without methylation data" in error_msg
-    assert "Ensure all samples in metadata have corresponding methylation" in error_msg
+    assert (
+        "Ensure all samples in metadata have corresponding methylation"
+        in error_msg
+    )
