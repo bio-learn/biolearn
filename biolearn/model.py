@@ -850,8 +850,47 @@ class GrimageModel:
         )
 
     def predict(self, geo_data):
-        if "sex" not in geo_data.metadata or "age" not in geo_data.metadata:
-            raise ValueError("metadata must contain 'sex' and 'age' columns")
+        if "sex" not in geo_data.metadata:
+            raise ValueError(
+                "GrimAge requires 'sex' column in metadata. "
+                "If sex is unknown, you can predict it using the SexEstimation model:\n"
+                "  from biolearn.model_gallery import ModelGallery\n"
+                "  gallery = ModelGallery()\n"
+                "  sex_pred = gallery.get('SexEstimation').predict(your_data)\n"
+                "  # Then add sex to metadata based on predictions"
+            )
+
+        if "age" not in geo_data.metadata:
+            raise ValueError(
+                "GrimAge requires 'age' column in metadata (numeric age in years)"
+            )
+
+        # Check for NaN sex values
+        sex_values = geo_data.metadata["sex"]
+        if sex_values.isna().any():
+            nan_samples = sex_values[sex_values.isna()].index.tolist()
+            raise ValueError(
+                f"GrimAge cannot process samples with unknown sex: {nan_samples[:3]}.\n"
+                f"Either exclude these samples or predict sex using SexEstimation model."
+            )
+
+        # Check for sample mismatch between methylation matrix and metadata
+        dnam_samples = set(geo_data.dnam.columns)
+        metadata_samples = set(geo_data.metadata.index)
+        missing_metadata = dnam_samples - metadata_samples
+        missing_dnam = metadata_samples - dnam_samples
+
+        if missing_metadata:
+            raise ValueError(
+                f"Methylation data contains samples without metadata: {list(missing_metadata)[:3]}.\n"
+                f"Ensure all samples in methylation matrix have corresponding metadata entries."
+            )
+
+        if missing_dnam:
+            raise ValueError(
+                f"Metadata contains samples without methylation data: {list(missing_dnam)[:3]}.\n"
+                f"Ensure all samples in metadata have corresponding methylation data."
+            )
 
         df = geo_data.dnam
 
@@ -920,6 +959,14 @@ class GrimageModel:
             .multiply(coefficients_series, axis=0)
             .sum()
         )
+
+        # Check for NaN results which indicate missing data
+        if result.isna().any():
+            nan_samples = result[result.isna()].index.tolist()
+            raise ValueError(
+                f"Missing methylation data for required CpG sites in samples: {nan_samples[:3]}. "
+                f"Ensure all required methylation sites are present in your data."
+            )
 
         return result
 
