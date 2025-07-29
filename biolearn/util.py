@@ -5,6 +5,97 @@ from urllib.parse import urlparse
 import shutil
 import appdirs
 import pandas as pd
+from importlib.resources import open_text
+
+
+def getOlinkManifest():
+    """
+    Loads the Olink protein manifest from the embedded data directory.
+
+    Returns:
+        pd.DataFrame: A DataFrame containing the Olink protein manifest with UniProt IDs and gene names.
+    """
+    # Import manifest of Olink proteins
+    file = open_text("biolearn.data", "Olink_uniprot_IDs.csv")
+    data = pd.read_csv(file)
+    # Rename genes
+    data["Gene"] = data["Gene"].str.replace("ERVV-1", "ERVV_1")
+    data["Gene"] = data["Gene"].str.replace("HLA-", "HLA_")
+    return data
+
+
+# Cache for mappings
+_mapping_dict = None
+_remap_dict = None
+
+
+def load_mappings():
+    """
+    Loads the UniProt ID to gene name mappings from the embedded CSV file.
+
+    Returns:
+        tuple: A tuple containing two dictionaries:
+            - mapping_dict: Maps UniProt IDs to gene names.
+            - remap_dict: Maps gene names to UniProt IDs.
+    """
+    global _mapping_dict, _remap_dict
+    if _mapping_dict is None or _remap_dict is None:
+        # Read the file
+        file = open_text("biolearn.data", "Olink_uniprot_IDs.csv")
+        uniprot_manifest = pd.read_csv(file)
+
+        # Rename genes
+        uniprot_manifest["Gene"] = uniprot_manifest["Gene"].str.replace(
+            "NT-proBNP", "NTproBNP"
+        )
+        uniprot_manifest["Gene"] = uniprot_manifest["Gene"].str.replace(
+            "ERVV-1", "ERVV_1"
+        )
+        uniprot_manifest["Gene"] = uniprot_manifest["Gene"].str.replace(
+            "HLA-", "HLA_"
+        )
+
+        # Create dictionaries
+        _mapping_dict = dict(
+            zip(uniprot_manifest["UniProt ID"], uniprot_manifest["Gene"])
+        )
+        _remap_dict = dict(
+            zip(uniprot_manifest["Gene"], uniprot_manifest["UniProt ID"])
+        )
+
+    return _mapping_dict, _remap_dict
+
+
+# Map UniProt IDs to gene names
+def uniprot_to_gene(data):
+    """
+    Maps UniProt IDs in the DataFrame to gene names using the preloaded mappings.
+
+    Args:
+        data (pd.DataFrame): DataFrame containing UniProt IDs as columns.
+
+    Returns:
+        pd.DataFrame: DataFrame with UniProt IDs replaced by gene names.
+    """
+    mapping_dict, _ = load_mappings()
+    data.rename(columns=mapping_dict, inplace=True)
+    return data
+
+
+# Map gene names to UniProt IDs
+def gene_to_uniprot(data):
+    """
+    Maps gene names in the DataFrame to UniProt IDs using the preloaded mappings.
+
+    Args:
+        data (pd.DataFrame): DataFrame containing gene names as columns.
+
+    Returns:
+        pd.DataFrame: DataFrame with gene names replaced by UniProt IDs.
+    """
+    _, remap_dict = load_mappings()
+    data.rename(columns=remap_dict, inplace=True)
+    return data
 
 
 def get_data_file(relative_path):

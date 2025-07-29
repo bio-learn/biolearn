@@ -468,15 +468,16 @@ model_definitions = {
             "file": "BMI_Reed.csv",
         },
     },
-    "ProstateCancerKirby": {
-        "year": 2017,
+    "StocP": {
+        "year": 2024,
         "species": "Human",
-        "tissue": "Prostate",
-        "source": "https://doi.org/10.1186/s12885-017-3252-2",
-        "output": "Prostate Cancer Status",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1038/s43587-024-00600-8",
+        "output": "Age (Years)",
         "model": {
             "type": "LinearMethylationModel",
-            "file": "ProstateCancerKirby.csv",
+            "file": "StocP.csv",
+            "transform": lambda sum: sum + 92.8310813279039,
         },
     },
     "Mayne": {
@@ -489,6 +490,17 @@ model_definitions = {
             "type": "LinearMethylationModel",
             "file": "Mayne.csv",
             "transform": lambda sum: sum + 24.99026,
+        },
+    },
+    "ProstateCancerKirby": {
+        "year": 2017,
+        "species": "Human",
+        "tissue": "Prostate",
+        "source": "https://doi.org/10.1186/s12885-017-3252-2",
+        "output": "Prostate Cancer Status",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "ProstateCancerKirby.csv",
         },
     },
     "HepatoXu": {
@@ -860,8 +872,47 @@ class GrimageModel:
         )
 
     def predict(self, geo_data):
-        if "sex" not in geo_data.metadata or "age" not in geo_data.metadata:
-            raise ValueError("metadata must contain 'sex' and 'age' columns")
+        if "sex" not in geo_data.metadata:
+            raise ValueError(
+                "GrimAge requires 'sex' column in metadata. "
+                "If sex is unknown, you can predict it using the SexEstimation model:\n"
+                "  from biolearn.model_gallery import ModelGallery\n"
+                "  gallery = ModelGallery()\n"
+                "  sex_pred = gallery.get('SexEstimation').predict(your_data)\n"
+                "  # Then add sex to metadata based on predictions"
+            )
+
+        if "age" not in geo_data.metadata:
+            raise ValueError(
+                "GrimAge requires 'age' column in metadata (numeric age in years)"
+            )
+
+        # Check for NaN sex values
+        sex_values = geo_data.metadata["sex"]
+        if sex_values.isna().any():
+            nan_samples = sex_values[sex_values.isna()].index.tolist()
+            raise ValueError(
+                f"GrimAge cannot process samples with unknown sex: {nan_samples[:3]}.\n"
+                f"Either exclude these samples or predict sex using SexEstimation model."
+            )
+
+        # Check for sample mismatch between methylation matrix and metadata
+        dnam_samples = set(geo_data.dnam.columns)
+        metadata_samples = set(geo_data.metadata.index)
+        missing_metadata = dnam_samples - metadata_samples
+        missing_dnam = metadata_samples - dnam_samples
+
+        if missing_metadata:
+            raise ValueError(
+                f"Methylation data contains samples without metadata: {list(missing_metadata)[:3]}.\n"
+                f"Ensure all samples in methylation matrix have corresponding metadata entries."
+            )
+
+        if missing_dnam:
+            raise ValueError(
+                f"Metadata contains samples without methylation data: {list(missing_dnam)[:3]}.\n"
+                f"Ensure all samples in metadata have corresponding methylation data."
+            )
 
         df = geo_data.dnam
 
@@ -871,7 +922,7 @@ class GrimageModel:
         # Add metadata rows to dnam DataFrame
         df.loc["Age"] = transposed_metadata.loc["age"]
         df.loc["Female"] = transposed_metadata.loc["sex"].apply(
-            lambda x: 1 if x == 1 else 0
+            lambda x: 1 if x == 0 else 0
         )
         df.loc["Intercept"] = 1
 
@@ -893,7 +944,7 @@ class GrimageModel:
 
         all_data["Age"] = geo_data.metadata["age"]
         all_data["Female"] = geo_data.metadata["sex"].apply(
-            lambda x: 1 if x == 1 else 0
+            lambda x: 1 if x == 0 else 0
         )
 
         all_data["COX"] = all_data.mul(cox_coefficients).sum(axis=1)
@@ -930,6 +981,14 @@ class GrimageModel:
             .multiply(coefficients_series, axis=0)
             .sum()
         )
+
+        # Check for NaN results which indicate missing data
+        if result.isna().any():
+            nan_samples = result[result.isna()].index.tolist()
+            raise ValueError(
+                f"Missing methylation data for required CpG sites in samples: {nan_samples[:3]}. "
+                f"Ensure all required methylation sites are present in your data."
+            )
 
         return result
 

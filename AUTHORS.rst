@@ -30,6 +30,7 @@ Other contributors
 * `Nureldin Mohamed`_/ `Harvard university <https://www.linkedin.com/in/nureldin-m-19738625b/>`_
 * `Yasamin Jodat`_/ `Gingko Bioworks <https://www.linkedin.com/in/yasamin-jodat/>`_
 * `Aneesh Mazumder`_/ `Harvard university <https://www.linkedin.com/in/aneesh-mazumder/>`_
+* `Marc Balestreri`_/ `Software Engineer <https://www.linkedin.com/in/marcbal/>`_
 
 Partner Organizations
 .....................
