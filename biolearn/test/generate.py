@@ -9,7 +9,9 @@ source_url = "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41169/matrix/G
 # Paths for the script, data, and metadata files
 script_dir = os.path.dirname(__file__)
 data_folder_path = os.path.join(script_dir, "data/testset/")
-data_file_path = os.path.join(data_folder_path, "testset_methylation_part0.csv")
+data_file_path = os.path.join(
+    data_folder_path, "testset_methylation_part0.csv"
+)
 metadata_file_path = os.path.join(data_folder_path, "testset_metadata.csv")
 
 

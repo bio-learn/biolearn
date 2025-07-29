@@ -3,10 +3,7 @@ from math import isclose
 import pandas as pd
 import numpy as np
 from biolearn import model
-from biolearn.util import (
-    get_test_data_file,
-    load_test_data_file
-)
+from biolearn.util import get_test_data_file, load_test_data_file
 from biolearn.data_library import GeoData
 import pickle
 

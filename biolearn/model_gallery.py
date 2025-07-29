@@ -7,7 +7,7 @@ from biolearn.model import (
     SexEstimationModel,
     ImputationDecorator,
     DeconvolutionModel,
-    LinearMultipartProteomicModel
+    LinearMultipartProteomicModel,
 )
 from biolearn.imputation import (
     hybrid_impute,

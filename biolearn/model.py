@@ -1003,6 +1003,7 @@ class GrimageModel:
         unique_vars = set(filtered_df["var"]) - {"Intercept", "Age", "Female"}
         return list(unique_vars)
 
+
 class LinearMultipartProteomicModel:
     def __init__(self, coefficient_file_or_df, **details):
         self.details = details
@@ -1018,27 +1019,31 @@ class LinearMultipartProteomicModel:
 
     @classmethod
     def from_definition(cls, clock_definition):
-        file = clock_definition['model']['file']
-        params = {k: v for k, v in clock_definition.items() if k != 'model'}
+        file = clock_definition["model"]["file"]
+        params = {k: v for k, v in clock_definition.items() if k != "model"}
         return cls(file, **params)
 
     def predict(self, geo_data):
         mat = geo_data.protein
         if mat is None or mat.empty:
-            raise ValueError("No proteomic data provided: 'geo_data.protein' is None or empty.")
+            raise ValueError(
+                "No proteomic data provided: 'geo_data.protein' is None or empty."
+            )
 
         results = {}
-        for tissue, grp in self.coefficients.groupby('Tissue'):
+        for tissue, grp in self.coefficients.groupby("Tissue"):
             # intercept
-            intercepts = grp.loc[grp['Protein'].str.lower() == 'intercept', 'Coefficient']
-            intercept = float(intercepts.iloc[0]) if not intercepts.empty else 0.0
+            intercepts = grp.loc[
+                grp["Protein"].str.lower() == "intercept", "Coefficient"
+            ]
+            intercept = (
+                float(intercepts.iloc[0]) if not intercepts.empty else 0.0
+            )
 
             # protein coefficients
-            coef_ser = (
-                grp
-                .loc[grp['Protein'].str.lower() != 'intercept']
-                .set_index('Protein')['Coefficient']
-            )
+            coef_ser = grp.loc[
+                grp["Protein"].str.lower() != "intercept"
+            ].set_index("Protein")["Coefficient"]
 
             # align proteins as columns, fill missing
             aligned = mat.reindex(columns=coef_ser.index).fillna(0)
@@ -1127,7 +1132,12 @@ class ImputationDecorator:
         dnam_data_imputed = self.imputation_method(geo_data.dnam, needed_cpgs)
 
         return self.clock.predict(
-            GeoData(geo_data.metadata, dnam_data_imputed, geo_data.rna, geo_data.protein)
+            GeoData(
+                geo_data.metadata,
+                dnam_data_imputed,
+                geo_data.rna,
+                geo_data.protein,
+            )
         )
 
     # Forwarding other methods and attributes to the clock
