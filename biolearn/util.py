@@ -29,6 +29,7 @@ _mapping_dict = None
 _remap_dict = None
 
 
+
 def load_mappings():
     """
     Loads the UniProt ID to gene name mappings from the embedded CSV file.
