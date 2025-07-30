@@ -5,8 +5,10 @@ from biolearn.model_gallery import ModelGallery
 from biolearn.data_library import GeoData
 from biolearn.util import get_test_data_file
 
+
 def get_test_data():
     return GeoData.load_csv(get_test_data_file("testset/"), "testset")
+
 
 def test_grimage_missing_sex_column():
     """Test that missing sex column gives helpful error message."""
@@ -80,7 +82,6 @@ def test_grimage_reverse_sample_mismatch():
     test_data = get_test_data()
     # Remove one sample from dnam to create mismatch
     test_data.dnam = test_data.dnam.iloc[:, 1:]
-
 
     gallery = ModelGallery()
     grimage_model = gallery.get("GrimAgeV2")
