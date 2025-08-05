@@ -3,6 +3,10 @@ import cvxpy as cp
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LinearRegression
+import requests
+import io
+import warnings
+from typing import Optional, Dict, Any, Union
 
 from biolearn.data_library import GeoData
 from biolearn.dunedin_pace import dunedin_pace_normalization
@@ -621,6 +625,22 @@ model_definitions = {
             "file": "Bocklandt.csv",
         },
     },
+    "HurdleInflammage": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://hurdle.bio/our-science/",
+        "output": "Inflammation Age (Years)",
+        "model": {
+            "type": "HurdleAPIModel",
+            "use_production": False,
+            "default_imputation": "none",
+        },
+        "usage": {
+            "commercial": "Contact Hurdle Bio for licensing",
+            "non-commercial": "Register at https://dashboard.sandbox.hurdle.bio/register/partner",
+        },
+    },
 }
 
 
@@ -1112,6 +1132,166 @@ class SexEstimationModel:
 
     def methylation_sites(self):
         return list(self.coefficients.index)
+
+
+class HurdleAPIModel:
+    """
+    Hurdle Bio Inflammage model via API.
+
+    Requires API credentials from https://dashboard.sandbox.hurdle.bio/register/partner
+    """
+
+    def __init__(self, api_key: Optional[str] = None, use_production: bool = False, **details):
+        self.details = details
+        self.api_key = api_key or os.environ.get('HURDLE_API_KEY')
+
+        if not self.api_key:
+            raise ValueError(
+                "API key required. Either pass api_key parameter or set HURDLE_API_KEY environment variable.\n"
+                "Get your API key at: https://dashboard.sandbox.hurdle.bio/register/partner"
+            )
+
+        base_url = "https://api.hurdle.bio" if use_production else "https://api.sandbox.hurdle.bio"
+        self.api_endpoint = f"{base_url}/predict/v1/"
+        self._consent_given = False
+
+        # Load required CpG sites
+        try:
+            cpg_file = get_data_file("Hurdle_CpGs.csv")
+            self.required_cpgs = pd.read_csv(cpg_file, encoding='ISO-8859-1')['ProbeID'].tolist()
+        except:
+            self.required_cpgs = None
+            warnings.warn("Hurdle CpG sites file not found. Will use all available CpG sites.")
+
+    @classmethod
+    def from_definition(cls, clock_definition):
+        model_def = clock_definition["model"]
+        return cls(
+            use_production=model_def.get("use_production", False),
+            **{k: v for k, v in clock_definition.items() if k != "model"}
+        )
+
+    def _get_consent(self):
+        if not self._consent_given:
+            print("\nWARNING: This will send methylation data to Hurdle Bio's servers.")
+            print("Please ensure you have permission to share this data with third parties.")
+            response = input("Do you consent to send this data? (yes/no): ").lower().strip()
+
+            if response != 'yes':
+                raise ValueError("User consent required to send data to external API")
+
+            self._consent_given = True
+
+    def predict(self, data: Union[pd.DataFrame, GeoData]) -> pd.Series:
+        self._get_consent()
+
+        # Extract methylation data
+        if isinstance(data, GeoData):
+            dnam = data.dnam
+            metadata = data.metadata
+        else:
+            dnam = data
+            metadata = pd.DataFrame(index=dnam.columns)
+
+        # Filter and impute CpG sites
+        if self.required_cpgs:
+            missing_cpgs = set(self.required_cpgs) - set(dnam.index)
+            available_cpgs = [cpg for cpg in self.required_cpgs if cpg in dnam.index]
+
+            if not available_cpgs:
+                raise ValueError("No required CpG sites found in data")
+
+            # Use available sites and impute missing ones with 0.5
+            filtered_dnam = dnam.loc[available_cpgs]
+
+            if missing_cpgs:
+                warnings.warn(f"Missing {len(missing_cpgs)} required CpG sites. Imputing with 0.5")
+                missing_df = pd.DataFrame(
+                    0.5,
+                    index=list(missing_cpgs),
+                    columns=dnam.columns
+                )
+                filtered_dnam = pd.concat([filtered_dnam, missing_df])
+        else:
+            filtered_dnam = dnam
+
+        # Round values
+        filtered_dnam = filtered_dnam.round(3)
+
+        try:
+            # Get presigned URL
+            headers = {'x-api-key': self.api_key}
+            response = requests.post(
+                f"{self.api_endpoint}upload_link",
+                json={'fileType': 'beta_matrix'},
+                headers=headers
+            )
+
+            if response.status_code != 200:
+                raise Exception(f"Failed to get upload URL: {response.status_code} - {response.text}")
+
+            upload_info = response.json()
+
+            # Upload beta matrix
+            csv_buffer = io.StringIO()
+            filtered_dnam.to_csv(csv_buffer)
+            csv_buffer.seek(0)
+
+            upload_response = requests.put(
+                upload_info['uploadUrl'],
+                data=csv_buffer.getvalue().encode('utf-8')
+            )
+
+            if upload_response.status_code != 200:
+                raise Exception(f"Failed to upload data: {upload_response.status_code}")
+
+            # Prepare metadata
+            meta_list = []
+            for sample_id in filtered_dnam.columns:
+                sample_meta = {
+                    "barcode": sample_id,
+                    "tissue": "whole_blood"
+                }
+
+                if sample_id in metadata.index:
+                    row = metadata.loc[sample_id]
+                    if 'age' in row:
+                        sample_meta['chronologicalAge'] = float(row['age'])
+                    if 'sex' in row:
+                        sex_value = row['sex']
+                        sample_meta['sex'] = 'f' if sex_value in [1, 'f', 'F', 'female'] else 'm'
+
+                meta_list.append(sample_meta)
+
+            # Get predictions
+            prediction_request = {
+                'requestId': upload_info['requestId'],
+                'biomarker': 'inflammage',
+                'arrayType': 'hurdle',
+                'metadata': meta_list
+            }
+
+            pred_response = requests.post(
+                self.api_endpoint,
+                json=prediction_request,
+                headers=headers
+            )
+
+            if pred_response.status_code != 200:
+                raise Exception(f"Prediction failed: {pred_response.status_code} - {pred_response.text}")
+
+            # Extract predictions
+            results = pred_response.json()
+            predictions = {}
+            for item in results.get('data', []):
+                predictions[item['barcode']] = float(item['prediction'])
+
+            return pd.Series(predictions, name='inflammage')
+
+        except requests.exceptions.RequestException as e:
+            raise Exception(f"Network error: {str(e)}")
+        except Exception as e:
+            raise Exception(f"API error: {str(e)}")
 
 
 class ImputationDecorator:
