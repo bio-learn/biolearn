@@ -40,3 +40,10 @@ notebooks/
 biolearn/test/data/external/
 
 .env
+
+# API credentials and sensitive files
+*_api_key*
+*_credentials*
+HurdleTesting.ipynb
+**/hurdle_credentials.json
+**/.biolearn/
