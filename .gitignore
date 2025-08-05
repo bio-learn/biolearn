@@ -43,3 +43,10 @@ biolearn/test/data/testset/testset_methylation_part0.csv
 biolearn/test/data/testset/testset_metadata.csv
 
 .env
+
+# API credentials and sensitive files
+*_api_key*
+*_credentials*
+HurdleTesting.ipynb
+**/hurdle_credentials.json
+**/.biolearn/
