@@ -19,6 +19,20 @@ def anti_trafo(x, adult_age=20):
 CLOCK_FOUNDATION_USAGE = "For cosmetics or life insurance applications, contact UCLA TDG regarding licensing status. For all other commercial usage `contact the Clock Foundation <https://clockfoundation.org/contact-us/>`_."
 
 model_definitions = {
+    "Pasta": {
+        "year": 2025,
+        "species": "Human",
+        "tissue": "Multi-tissue",
+        "source": "https://www.biorxiv.org/content/10.1101/2025.06.04.657785v1.full",
+        "output": "Age score",
+        "model": {
+            "type": "LinearTranscriptomicModel",
+            "file": "Pasta.csv",
+            "preprocess"
+            "transform": lambda sum: anti_trafo(sum + 0.696),
+            rankdata(x, method="average")
+        },
+    },
     "Horvathv1": {
         "year": 2013,
         "species": "Human",
@@ -600,6 +614,11 @@ model_definitions = {
         },
     },
 }
+
+
+def preprocess_pasta(rna_matrix):
+    return df.rank(axis=0, method="average", na_option="keep")
+
 
 
 def quantile_normalize(df):
