@@ -38,7 +38,7 @@ class TestHurdleAPIModel:
         assert "sandbox" not in model.api_endpoint
         assert "api.hurdle.bio" in model.api_endpoint
 
-    @patch('builtins.input', return_value='no')
+    @patch("builtins.input", return_value="no")
     def test_consent_denied(self, mock_input):
         """Test that prediction fails when consent is denied."""
         model = HurdleAPIModel(api_key="test_key")
@@ -74,13 +74,22 @@ class TestHurdleAPIModel:
 
         # Create test data with proper CpG indices
         # Use some CpG sites from the example file
-        cpg_sites = ["cg00000029", "cg00000321", "cg00000714", "cg00001793",
-                     "cg00002028", "cg00002426", "cg00002719", "cg00003091",
-                     "cg00003287", "cg00003994"] + [f"cg{i:08d}" for i in range(10, 100)]
+        cpg_sites = [
+            "cg00000029",
+            "cg00000321",
+            "cg00000714",
+            "cg00001793",
+            "cg00002028",
+            "cg00002426",
+            "cg00002719",
+            "cg00003091",
+            "cg00003287",
+            "cg00003994",
+        ] + [f"cg{i:08d}" for i in range(10, 100)]
         data = pd.DataFrame(
             np.random.rand(100, 2),
             index=cpg_sites,
-            columns=["sample_0", "sample_1"]
+            columns=["sample_0", "sample_1"],
         )
 
         # Make predictions
@@ -102,13 +111,22 @@ class TestHurdleAPIModel:
         mock_post.return_value.text = "Unauthorized"
 
         # Create test data with proper CpG indices
-        cpg_sites = ["cg00000029", "cg00000321", "cg00000714", "cg00001793",
-                     "cg00002028", "cg00002426", "cg00002719", "cg00003091",
-                     "cg00003287", "cg00003994"] + [f"cg{i:08d}" for i in range(10, 100)]
+        cpg_sites = [
+            "cg00000029",
+            "cg00000321",
+            "cg00000714",
+            "cg00001793",
+            "cg00002028",
+            "cg00002426",
+            "cg00002719",
+            "cg00003091",
+            "cg00003287",
+            "cg00003994",
+        ] + [f"cg{i:08d}" for i in range(10, 100)]
         data = pd.DataFrame(
             np.random.rand(100, 2),
             index=cpg_sites,
-            columns=["sample_0", "sample_1"]
+            columns=["sample_0", "sample_1"],
         )
 
         with pytest.raises(Exception, match="Failed to get upload URL: 401"):
@@ -144,13 +162,20 @@ class TestHurdleAPIModel:
             mock_put.return_value.status_code = 200
 
             # Create test data with proper CpG indices
-            cpg_sites = ["cg00000029", "cg00000321", "cg00000714", "cg00001793",
-                         "cg00002028", "cg00002426", "cg00002719", "cg00003091",
-                         "cg00003287", "cg00003994"] + [f"cg{i:08d}" for i in range(10, 100)]
+            cpg_sites = [
+                "cg00000029",
+                "cg00000321",
+                "cg00000714",
+                "cg00001793",
+                "cg00002028",
+                "cg00002426",
+                "cg00002719",
+                "cg00003091",
+                "cg00003287",
+                "cg00003994",
+            ] + [f"cg{i:08d}" for i in range(10, 100)]
             data = pd.DataFrame(
-                np.random.rand(100, 1),
-                index=cpg_sites,
-                columns=["sample"]
+                np.random.rand(100, 1), index=cpg_sites, columns=["sample"]
             )
 
             # First prediction
