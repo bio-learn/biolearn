@@ -15,24 +15,39 @@ def anti_trafo(x, adult_age=20):
     )
     return y
 
+def select_and_fill_with_median(df):
+  
+    # getting the gene used by Pasta
+    pasta_coef = pd.read_csv("biolearn/data/Pasta.csv", index_col=0)
+    v_genes_pasta = pasta_coef.index
+
+    # reorder/select rows; add missing rows as NaN (like match + subset in R)
+    out = df.reindex(v_genes_pasta)
+
+    # compute median of all values, ignoring NaNs
+    median_value = np.nanmedian(out.to_numpy())
+
+    # fill all NaNs with the median
+    out = out.fillna(median_value)
+
+    return out
+
+
+def preprocess_pasta(df):
+
+    # select genes and fill missing genes by the median value
+    df1 = select_and_fill_with_median(df)
+
+    # do rank normalization
+    df2 = df1.rank(axis=0, method="average", na_option="keep", ascending=True)
+
+    return df2
+
+
 
 CLOCK_FOUNDATION_USAGE = "For cosmetics or life insurance applications, contact UCLA TDG regarding licensing status. For all other commercial usage `contact the Clock Foundation <https://clockfoundation.org/contact-us/>`_."
 
 model_definitions = {
-    "Pasta": {
-        "year": 2025,
-        "species": "Human",
-        "tissue": "Multi-tissue",
-        "source": "https://www.biorxiv.org/content/10.1101/2025.06.04.657785v1.full",
-        "output": "Age score",
-        "model": {
-            "type": "LinearTranscriptomicModel",
-            "file": "Pasta.csv",
-            "preprocess"
-            "transform": lambda sum: anti_trafo(sum + 0.696),
-            rankdata(x, method="average")
-        },
-    },
     "Horvathv1": {
         "year": 2013,
         "species": "Human",
@@ -613,12 +628,41 @@ model_definitions = {
             "file": "Bocklandt.csv",
         },
     },
+    "Pasta": {
+        "year": 2025,
+        "species": "Human",
+        "tissue": "Multi-tissue",
+        "source": "https://www.biorxiv.org/content/10.1101/2025.06.04.657785v1.full",
+        "output": "Age score",
+        "model": {
+            "type": "LinearTranscriptomicModel",
+            "file": "Pasta.csv",
+            "preprocess": preprocess_pasta,
+            "transform": lambda sum: sum * -4.76348 - 0.05028934,
+        },
+        "usage": {
+            "commercial": "Free to use",
+            "non-commercial": "Free to use",
+        },
+    },
+    "REG": {
+        "year": 2025,
+        "species": "Human",
+        "tissue": "Multi-tissue",
+        "source": "https://www.biorxiv.org/content/10.1101/2025.06.04.657785v1.full",
+        "output": "Age (years)",
+        "model": {
+            "type": "LinearTranscriptomicModel",
+            "file": "REG.csv",
+            "preprocess": preprocess_pasta,
+            "transform": lambda sum: sum + 140.2726,
+        },
+        "usage": {
+            "commercial": "Free to use",
+            "non-commercial": "Free to use",
+        },
+    },
 }
-
-
-def preprocess_pasta(rna_matrix):
-    return df.rank(axis=0, method="average", na_option="keep")
-
 
 
 def quantile_normalize(df):

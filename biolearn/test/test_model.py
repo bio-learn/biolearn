@@ -11,8 +11,8 @@ from biolearn.data_library import GeoData
 import pickle
 
 
-sample_inputs = load_test_data_file("external/DNAmTestSet.csv")
-sample_metadata = load_test_data_file("external/testset_metadata.csv")
+# sample_inputs = load_test_data_file("external/DNAmTestSet.csv")
+# sample_metadata = load_test_data_file("external/testset_metadata.csv")
 
 
 @pytest.mark.parametrize(
@@ -23,12 +23,20 @@ def test_models(model_name, model_entry):
     # TODO: Add testing for LinearTranscriptomicModel
     # Skip models that don't have tests
     model_type = model_entry["model"]["type"]
-    if model_type in ["NotImplemented", "LinearTranscriptomicModel"]:
+    if model_type in ["NotImplemented"]:
         pytest.skip(
             f"Model type {model_type} for {model_name} does not have a testing pattern - skipping test"
         )
 
-    test_data = GeoData(sample_metadata, sample_inputs)
+    if model_type in ["LinearTranscriptomicModel"]:
+        sample_inputs = load_test_data_file("external/RNA_TestSet.csv")
+        sample_metadata = load_test_data_file("external/RNA_TestSet_metadata.csv")
+        test_data = GeoData(sample_metadata, None, sample_inputs)
+    else:
+        sample_inputs = load_test_data_file("external/DNAmTestSet.csv")
+        sample_metadata = load_test_data_file("external/DNAmTestSet_metadata.csv")
+        test_data = GeoData(sample_metadata, sample_inputs, None)
+
 
     # Check if the model class exists
     try:
