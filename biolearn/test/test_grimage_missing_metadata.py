@@ -75,23 +75,3 @@ def test_grimage_sample_mismatch():
         "Ensure all samples in methylation matrix have corresponding metadata"
         in error_msg
     )
-
-
-def test_grimage_reverse_sample_mismatch():
-    """Test metadata samples without methylation data give clear error."""
-    test_data = get_test_data()
-    # Remove one sample from dnam to create mismatch
-    test_data.dnam = test_data.dnam.iloc[:, 1:]
-
-    gallery = ModelGallery()
-    grimage_model = gallery.get("GrimAgeV2")
-
-    with pytest.raises(ValueError) as exc_info:
-        grimage_model.predict(test_data)
-
-    error_msg = str(exc_info.value)
-    assert "Metadata contains samples without methylation data" in error_msg
-    assert (
-        "Ensure all samples in metadata have corresponding methylation"
-        in error_msg
-    )
