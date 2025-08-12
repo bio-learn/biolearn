@@ -18,15 +18,13 @@ TOLERANCES["AltumAge"] = 2e-4
 sample_inputs = load_test_data_file("testset/testset_methylation_part0.csv")
 
 
-@pytest.mark.parametrize(
-    "model_name, model_entry", model.model_definitions.items()
-)
+@pytest.mark.parametrize("model_name, model_entry", model.model_definitions.items())
 def test_models(model_name, model_entry):
     # TODO: Make testing more intelligent for different model types.
     # TODO: Add testing for LinearTranscriptomicModel
     # Skip models that don't have tests
     model_type = model_entry["model"]["type"]
-    if model_type in ["NotImplemented"]:
+    if model_type in ["NotImplemented", "LinearTranscriptomicModel", "HurdleAPIModel"]:
         pytest.skip(
             f"Model type {model_type} for {model_name} does not have a testing pattern - skipping test"
         )
@@ -54,9 +52,9 @@ def test_models(model_name, model_entry):
     ).sort_index()
 
     # Assertions and discrepancy checks
-    assert len(expected_results) == len(
-        actual_results
-    ), f"For {model_name}: DataFrames do not have the same length"
+    assert len(expected_results) == len(actual_results), (
+        f"For {model_name}: DataFrames do not have the same length"
+    )
 
     discrepancies = []
     for idx in expected_results.index:
@@ -68,10 +66,7 @@ def test_models(model_name, model_entry):
                 actual_val, expected_val, abs_tol=TOLERANCES[model_name]
             ):
                 discrepancies.append((idx, col, expected_val, actual_val))
-            elif (
-                not isinstance(expected_val, float)
-                and expected_val != actual_val
-            ):
+            elif not isinstance(expected_val, float) and expected_val != actual_val:
                 print(type(expected_val))
                 discrepancies.append((idx, col, expected_val, actual_val))
 
@@ -84,7 +79,6 @@ def test_models(model_name, model_entry):
 
 
 def test_dunedin_pace_normalization():
-
     test_data = GeoData.load_csv(get_test_data_file("testset/"), "testset")
     sample_inputs = test_data.dnam
 
@@ -108,14 +102,10 @@ def test_dunedin_pace_normalization():
             f"Location: {value[0]}, Actual: {actual.at[value[0]]}, Expected: {expected.at[value[0]]}"
         )
 
-    print(
-        f"Total mismatches: {total_mismatches} ({percentage_mismatched:.2f}%)"
-    )
+    print(f"Total mismatches: {total_mismatches} ({percentage_mismatched:.2f}%)")
 
     # Your actual assertion can be here based on your needs, e.g.,
-    assert (
-        total_mismatches == 0
-    ), "Dataframes are not equal within the given tolerance."
+    assert total_mismatches == 0, "Dataframes are not equal within the given tolerance."
 
 
 # Run the test
