@@ -576,6 +576,28 @@ model_definitions = {
             "transform": lambda sum: sum + 55.808884324,
         },
     },
+    "OrganAgeChronological": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.medrxiv.org/content/10.1101/2024.04.08.24305469v1",
+        "output": "Mortality Risk by Organ",
+        "model": {
+            "type": "LinearMultipartProteomicModel",
+            "file": "OrganAgeChronological.csv",
+        },
+    },
+    "OrganAgeMortality": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.medrxiv.org/content/10.1101/2024.04.08.24305469v1",
+        "output": "Age (Years) by Organ",
+        "model": {
+            "type": "LinearMultipartProteomicModel",
+            "file": "OrganAgeMortality.csv",
+        },
+    },
     "Bohlin": {
         "year": 2017,
         "species": "Human",
@@ -982,6 +1004,60 @@ class GrimageModel:
         return list(unique_vars)
 
 
+class LinearMultipartProteomicModel:
+    def __init__(self, coefficient_file_or_df, **details):
+        self.details = details
+        if isinstance(coefficient_file_or_df, pd.DataFrame):
+            self.coefficients = coefficient_file_or_df
+        else:
+            file_path = (
+                coefficient_file_or_df
+                if os.path.isabs(coefficient_file_or_df)
+                else get_data_file(coefficient_file_or_df)
+            )
+            self.coefficients = pd.read_csv(file_path)
+
+    @classmethod
+    def from_definition(cls, clock_definition):
+        file = clock_definition["model"]["file"]
+        params = {k: v for k, v in clock_definition.items() if k != "model"}
+        return cls(file, **params)
+
+    def predict(self, geo_data):
+        mat = geo_data.protein
+        if mat is None or mat.empty:
+            raise ValueError(
+                "No proteomic data provided: 'geo_data.protein' is None or empty."
+            )
+
+        results = {}
+        for tissue, grp in self.coefficients.groupby("Tissue"):
+            # intercept
+            intercepts = grp.loc[
+                grp["Protein"].str.lower() == "intercept", "Coefficient"
+            ]
+            intercept = (
+                float(intercepts.iloc[0]) if not intercepts.empty else 0.0
+            )
+
+            # protein coefficients
+            coef_ser = grp.loc[
+                grp["Protein"].str.lower() != "intercept"
+            ].set_index("Protein")["Coefficient"]
+
+            # align proteins as columns, fill missing
+            aligned = mat.reindex(columns=coef_ser.index).fillna(0)
+
+            # compute prediction per sample
+            pred = aligned.dot(coef_ser) + intercept
+            results[tissue] = pred
+
+        return pd.DataFrame(results)
+
+    def methylation_sites(self):
+        return []
+
+
 class SexEstimationModel:
     def __init__(self, coeffecient_file, **details):
         self.coefficients = pd.read_csv(
@@ -1056,7 +1132,12 @@ class ImputationDecorator:
         dnam_data_imputed = self.imputation_method(geo_data.dnam, needed_cpgs)
 
         return self.clock.predict(
-            GeoData(geo_data.metadata, dnam_data_imputed)
+            GeoData(
+                geo_data.metadata,
+                dnam_data_imputed,
+                geo_data.rna,
+                geo_data.protein,
+            )
         )
 
     # Forwarding other methods and attributes to the clock
