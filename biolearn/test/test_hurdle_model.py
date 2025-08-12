@@ -39,7 +39,7 @@ class TestHurdleAPIModel:
         assert "api.hurdle.bio" in model.api_endpoint
 
     @patch('builtins.input', return_value='no')
-    def test_consent_denied(self):
+    def test_consent_denied(self, mock_input):
         """Test that prediction fails when consent is denied."""
         model = HurdleAPIModel(api_key="test_key")
         data = pd.DataFrame(np.random.rand(100, 5))
@@ -47,9 +47,9 @@ class TestHurdleAPIModel:
         with pytest.raises(ValueError, match="User consent required"):
             model.predict(data)
 
-    @patch('builtins.input', return_value='yes')
-    @patch('requests.post')
-    @patch('requests.put')
+    @patch("builtins.input", return_value="yes")
+    @patch("requests.post")
+    @patch("requests.put")
     def test_predict_success(self, mock_put, mock_post, mock_input):
         """Test successful prediction workflow."""
         # Setup model
@@ -59,23 +59,28 @@ class TestHurdleAPIModel:
         mock_post.return_value.status_code = 200
         mock_post.return_value.json.side_effect = [
             {
-                'uploadUrl': 'https://example.com/upload',
-                'requestId': 'test-request-123'
+                "uploadUrl": "https://example.com/upload",
+                "requestId": "test-request-123",
             },
             {
-                'data': [
-                    {'barcode': 'sample_0', 'prediction': '35.5'},
-                    {'barcode': 'sample_1', 'prediction': '42.3'},
+                "data": [
+                    {"barcode": "sample_0", "prediction": "35.5"},
+                    {"barcode": "sample_1", "prediction": "42.3"},
                 ]
-            }
+            },
         ]
 
         mock_put.return_value.status_code = 200
 
-        # Create test data
+        # Create test data with proper CpG indices
+        # Use some CpG sites from the example file
+        cpg_sites = ["cg00000029", "cg00000321", "cg00000714", "cg00001793",
+                     "cg00002028", "cg00002426", "cg00002719", "cg00003091",
+                     "cg00003287", "cg00003994"] + [f"cg{i:08d}" for i in range(10, 100)]
         data = pd.DataFrame(
             np.random.rand(100, 2),
-            columns=['sample_0', 'sample_1']
+            index=cpg_sites,
+            columns=["sample_0", "sample_1"]
         )
 
         # Make predictions
@@ -83,11 +88,11 @@ class TestHurdleAPIModel:
 
         assert isinstance(predictions, pd.Series)
         assert len(predictions) == 2
-        assert predictions['sample_0'] == 35.5
-        assert predictions['sample_1'] == 42.3
+        assert predictions["sample_0"] == 35.5
+        assert predictions["sample_1"] == 42.3
 
-    @patch('builtins.input', return_value='yes')
-    @patch('requests.post')
+    @patch("builtins.input", return_value="yes")
+    @patch("requests.post")
     def test_api_error_handling(self, mock_post, mock_input):
         """Test API error handling."""
         model = HurdleAPIModel(api_key="test_key")
@@ -96,7 +101,15 @@ class TestHurdleAPIModel:
         mock_post.return_value.status_code = 401
         mock_post.return_value.text = "Unauthorized"
 
-        data = pd.DataFrame(np.random.rand(100, 2))
+        # Create test data with proper CpG indices
+        cpg_sites = ["cg00000029", "cg00000321", "cg00000714", "cg00001793",
+                     "cg00002028", "cg00002426", "cg00002719", "cg00003091",
+                     "cg00003287", "cg00003994"] + [f"cg{i:08d}" for i in range(10, 100)]
+        data = pd.DataFrame(
+            np.random.rand(100, 2),
+            index=cpg_sites,
+            columns=["sample_0", "sample_1"]
+        )
 
         with pytest.raises(Exception, match="Failed to get upload URL: 401"):
             model.predict(data)
@@ -113,21 +126,32 @@ class TestHurdleAPIModel:
             model = gallery.get("HurdleInflammage")
             assert isinstance(model, HurdleAPIModel)
 
-    @patch('builtins.input', return_value='yes')
+    @patch("builtins.input", return_value="yes")
     def test_consent_only_asked_once(self, mock_input):
         """Test that consent is only requested once."""
         model = HurdleAPIModel(api_key="test_key")
 
         # Mock successful API calls
-        with patch('requests.post') as mock_post, patch('requests.put') as mock_put:
+        with (
+            patch("requests.post") as mock_post,
+            patch("requests.put") as mock_put,
+        ):
             mock_post.return_value.status_code = 200
             mock_post.return_value.json.side_effect = [
-                {'uploadUrl': 'url', 'requestId': 'id'},
-                {'data': [{'barcode': 'sample', 'prediction': '40'}]}
+                {"uploadUrl": "url", "requestId": "id"},
+                {"data": [{"barcode": "sample", "prediction": "40"}]},
             ] * 2  # For two calls
             mock_put.return_value.status_code = 200
 
-            data = pd.DataFrame(np.random.rand(100, 1), columns=['sample'])
+            # Create test data with proper CpG indices
+            cpg_sites = ["cg00000029", "cg00000321", "cg00000714", "cg00001793",
+                         "cg00002028", "cg00002426", "cg00002719", "cg00003091",
+                         "cg00003287", "cg00003994"] + [f"cg{i:08d}" for i in range(10, 100)]
+            data = pd.DataFrame(
+                np.random.rand(100, 1),
+                index=cpg_sites,
+                columns=["sample"]
+            )
 
             # First prediction
             model.predict(data)
