@@ -15,34 +15,14 @@ def anti_trafo(x, adult_age=20):
     )
     return y
 
-def select_and_fill_with_median(df):
-  
-    # getting the gene used by Pasta
-    pasta_coef = pd.read_csv("biolearn/data/Pasta.csv", index_col=0)
-    v_genes_pasta = pasta_coef.index
-
-    # reorder/select rows; add missing rows as NaN (like match + subset in R)
-    out = df.reindex(v_genes_pasta)
-
-    # compute median of all values, ignoring NaNs
-    median_value = np.nanmedian(out.to_numpy())
-
-    # fill all NaNs with the median
-    out = out.fillna(median_value)
-
-    return out
-
-
 def preprocess_pasta(df):
-
-    # select genes and fill missing genes by the median value
-    df1 = select_and_fill_with_median(df)
-
-    # do rank normalization
-    df2 = df1.rank(axis=0, method="average", na_option="keep", ascending=True)
-
-    return df2
-
+    df = df.loc[~df.index.duplicated(keep="first")] # keep first duplicate
+    genes = pd.read_csv("biolearn/data/Pasta.csv", index_col=0).index
+    out = df.reindex(genes)                         # select and order genes
+    med = np.nanmedian(out.to_numpy())              
+    out = out.fillna(med)                           # fill NA by overall median
+    out = out.rank(axis=0, method="average", na_option="keep", ascending=True) # rank normalization
+    return out
 
 
 CLOCK_FOUNDATION_USAGE = "For cosmetics or life insurance applications, contact UCLA TDG regarding licensing status. For all other commercial usage `contact the Clock Foundation <https://clockfoundation.org/contact-us/>`_."
@@ -638,7 +618,7 @@ model_definitions = {
             "type": "LinearTranscriptomicModel",
             "file": "Pasta.csv",
             "preprocess": preprocess_pasta,
-            "transform": lambda sum: sum * -4.76348 - 0.05028934,
+            "transform": lambda sum: sum * -4.76348378687217 - 0.0502893445253186 * -4.76348378687217,
         },
         "usage": {
             "commercial": "Free to use",
@@ -655,7 +635,7 @@ model_definitions = {
             "type": "LinearTranscriptomicModel",
             "file": "REG.csv",
             "preprocess": preprocess_pasta,
-            "transform": lambda sum: sum + 140.2726,
+            "transform": lambda sum: sum + 140.272578432562,
         },
         "usage": {
             "commercial": "Free to use",
