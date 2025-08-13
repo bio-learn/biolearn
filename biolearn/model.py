@@ -15,13 +15,16 @@ def anti_trafo(x, adult_age=20):
     )
     return y
 
+
 def preprocess_pasta(df):
-    df = df.loc[~df.index.duplicated(keep="first")] # keep first duplicate
+    df = df.loc[~df.index.duplicated(keep="first")]  # keep first duplicate
     genes = pd.read_csv("biolearn/data/Pasta.csv", index_col=0).index
-    out = df.reindex(genes)                         # select and order genes
-    med = np.nanmedian(out.to_numpy())              
-    out = out.fillna(med)                           # fill NA by overall median
-    out = out.rank(axis=0, method="average", na_option="keep", ascending=True) # rank normalization
+    out = df.reindex(genes)  # select and order genes
+    med = np.nanmedian(out.to_numpy())
+    out = out.fillna(med)  # fill NA by overall median
+    out = out.rank(
+        axis=0, method="average", na_option="keep", ascending=True
+    )  # rank normalization
     return out
 
 
@@ -618,7 +621,8 @@ model_definitions = {
             "type": "LinearTranscriptomicModel",
             "file": "Pasta.csv",
             "preprocess": preprocess_pasta,
-            "transform": lambda sum: sum * -4.76348378687217 - 0.0502893445253186 * -4.76348378687217,
+            "transform": lambda sum: sum * -4.76348378687217
+            - 0.0502893445253186 * -4.76348378687217,
         },
         "usage": {
             "commercial": "Free to use",

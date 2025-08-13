@@ -17,8 +17,8 @@ import pandas as pd
 
 
 def test_quality_report():
-    sample_inputs = load_test_data_file("external/DNAmTestSet.csv")
-    sample_metadata = load_test_data_file("external/testset_metadata.csv")
+    sample_inputs = load_test_data_file("external/DNAm_TestSet_data.csv")
+    sample_metadata = load_test_data_file("external/DNAm_TestSet_metadata.csv")
     geo_data_instance = GeoData(sample_metadata, sample_inputs)
     actual_report = geo_data_instance.quality_report()
 

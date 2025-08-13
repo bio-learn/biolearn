@@ -8,8 +8,8 @@ from biolearn.util import load_test_data_file
 
 def test_grimage_missing_sex_column():
     """Test that missing sex column gives helpful error message."""
-    sample_inputs = load_test_data_file("external/DNAmTestSet.csv")
-    sample_metadata = load_test_data_file("external/testset_metadata.csv")
+    sample_inputs = load_test_data_file("external/DNAm_TestSet_data.csv")
+    sample_metadata = load_test_data_file("external/DNAm_TestSet_metadata.csv")
 
     # Remove sex column
     metadata_no_sex = sample_metadata.drop(columns=["sex"])
@@ -28,8 +28,8 @@ def test_grimage_missing_sex_column():
 
 def test_grimage_missing_age_column():
     """Test that missing age column gives clear error message."""
-    sample_inputs = load_test_data_file("external/DNAmTestSet.csv")
-    sample_metadata = load_test_data_file("external/testset_metadata.csv")
+    sample_inputs = load_test_data_file("external/DNAm_TestSet_data.csv")
+    sample_metadata = load_test_data_file("external/DNAm_TestSet_metadata.csv")
 
     # Remove age column
     metadata_no_age = sample_metadata.drop(columns=["age"])
@@ -47,8 +47,8 @@ def test_grimage_missing_age_column():
 
 def test_grimage_nan_sex_values():
     """Test that NaN sex values give helpful error message."""
-    sample_inputs = load_test_data_file("external/DNAmTestSet.csv")
-    sample_metadata = load_test_data_file("external/testset_metadata.csv")
+    sample_inputs = load_test_data_file("external/DNAm_TestSet_data.csv")
+    sample_metadata = load_test_data_file("external/DNAm_TestSet_metadata.csv")
 
     # Set some sex values to NaN
     test_metadata = sample_metadata.copy()
@@ -68,8 +68,8 @@ def test_grimage_nan_sex_values():
 
 def test_grimage_sample_mismatch():
     """Test that mismatched samples between methylation and metadata give clear error."""
-    sample_inputs = load_test_data_file("external/DNAmTestSet.csv")
-    sample_metadata = load_test_data_file("external/testset_metadata.csv")
+    sample_inputs = load_test_data_file("external/DNAm_TestSet_data.csv")
+    sample_metadata = load_test_data_file("external/DNAm_TestSet_metadata.csv")
 
     # Remove one sample from metadata to create mismatch
     mismatched_metadata = sample_metadata.drop(sample_metadata.index[0])
@@ -91,8 +91,8 @@ def test_grimage_sample_mismatch():
 
 def test_grimage_reverse_sample_mismatch():
     """Test metadata samples without methylation data give clear error."""
-    sample_inputs = load_test_data_file("external/DNAmTestSet.csv")
-    sample_metadata = load_test_data_file("external/testset_metadata.csv")
+    sample_inputs = load_test_data_file("external/DNAm_TestSet_data.csv")
+    sample_metadata = load_test_data_file("external/DNAm_TestSet_metadata.csv")
 
     # Add extra sample to metadata to create reverse mismatch
     extra_metadata = sample_metadata.copy()

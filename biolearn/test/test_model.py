@@ -29,14 +29,15 @@ def test_models(model_name, model_entry):
         )
 
     if model_type in ["LinearTranscriptomicModel"]:
-        sample_inputs = load_test_data_file("external/RNA_TestSet.csv")
-        sample_metadata = load_test_data_file("external/RNA_TestSet_metadata.csv")
+        sample_inputs = load_test_data_file("RNA_TestSet_data.csv")
+        sample_metadata = load_test_data_file("RNA_TestSet_metadata.csv")
         test_data = GeoData(sample_metadata, None, sample_inputs)
     else:
-        sample_inputs = load_test_data_file("external/DNAmTestSet.csv")
-        sample_metadata = load_test_data_file("external/DNAmTestSet_metadata.csv")
+        sample_inputs = load_test_data_file("external/DNAm_TestSet_data.csv")
+        sample_metadata = load_test_data_file(
+            "external/DNAm_TestSet_metadata.csv"
+        )
         test_data = GeoData(sample_metadata, sample_inputs, None)
-
 
     # Check if the model class exists
     try:
@@ -87,6 +88,9 @@ def test_models(model_name, model_entry):
 
 
 def test_dunedin_pace_normalization():
+
+    sample_inputs = load_test_data_file("external/DNAm_TestSet_data.csv")
+
     actual = model.dunedin_pace_normalization(sample_inputs)
     data_file_path = get_test_data_file("pace_normalized.pkl")
     with open(data_file_path, "rb") as file:
