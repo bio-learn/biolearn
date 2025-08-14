@@ -900,18 +900,11 @@ class GrimageModel:
         dnam_samples = set(geo_data.dnam.columns)
         metadata_samples = set(geo_data.metadata.index)
         missing_metadata = dnam_samples - metadata_samples
-        missing_dnam = metadata_samples - dnam_samples
 
         if missing_metadata:
             raise ValueError(
                 f"Methylation data contains samples without metadata: {list(missing_metadata)[:3]}.\n"
                 f"Ensure all samples in methylation matrix have corresponding metadata entries."
-            )
-
-        if missing_dnam:
-            raise ValueError(
-                f"Metadata contains samples without methylation data: {list(missing_dnam)[:3]}.\n"
-                f"Ensure all samples in metadata have corresponding methylation data."
             )
 
         df = geo_data.dnam
