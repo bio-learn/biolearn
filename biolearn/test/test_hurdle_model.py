@@ -15,6 +15,14 @@ from biolearn.model_gallery import ModelGallery
 class TestHurdleAPIModel:
     """Test the HurdleAPIModel class."""
 
+    # Test CpG sites for mock data
+    TEST_CPG_SITES = (
+        ["cg00000029", "cg00000321", "cg00000714", "cg00001793",
+         "cg00002028", "cg00002426", "cg00002719", "cg00003091",
+         "cg00003287", "cg00003994"] +
+        [f"cg{i:08d}" for i in range(10, 100)]
+    )
+
     def test_init_without_api_key(self):
         """Test that initialization fails without API key."""
         with pytest.raises(ValueError, match="API key required"):
@@ -73,22 +81,9 @@ class TestHurdleAPIModel:
         mock_put.return_value.status_code = 200
 
         # Create test data with proper CpG indices
-        # Use some CpG sites from the example file
-        cpg_sites = [
-            "cg00000029",
-            "cg00000321",
-            "cg00000714",
-            "cg00001793",
-            "cg00002028",
-            "cg00002426",
-            "cg00002719",
-            "cg00003091",
-            "cg00003287",
-            "cg00003994",
-        ] + [f"cg{i:08d}" for i in range(10, 100)]
         data = pd.DataFrame(
             np.random.rand(100, 2),
-            index=cpg_sites,
+            index=self.TEST_CPG_SITES,
             columns=["sample_0", "sample_1"],
         )
 
@@ -111,21 +106,9 @@ class TestHurdleAPIModel:
         mock_post.return_value.text = "Unauthorized"
 
         # Create test data with proper CpG indices
-        cpg_sites = [
-            "cg00000029",
-            "cg00000321",
-            "cg00000714",
-            "cg00001793",
-            "cg00002028",
-            "cg00002426",
-            "cg00002719",
-            "cg00003091",
-            "cg00003287",
-            "cg00003994",
-        ] + [f"cg{i:08d}" for i in range(10, 100)]
         data = pd.DataFrame(
             np.random.rand(100, 2),
-            index=cpg_sites,
+            index=self.TEST_CPG_SITES,
             columns=["sample_0", "sample_1"],
         )
 
@@ -162,20 +145,8 @@ class TestHurdleAPIModel:
             mock_put.return_value.status_code = 200
 
             # Create test data with proper CpG indices
-            cpg_sites = [
-                "cg00000029",
-                "cg00000321",
-                "cg00000714",
-                "cg00001793",
-                "cg00002028",
-                "cg00002426",
-                "cg00002719",
-                "cg00003091",
-                "cg00003287",
-                "cg00003994",
-            ] + [f"cg{i:08d}" for i in range(10, 100)]
             data = pd.DataFrame(
-                np.random.rand(100, 1), index=cpg_sites, columns=["sample"]
+                np.random.rand(100, 1), index=self.TEST_CPG_SITES, columns=["sample"]
             )
 
             # First prediction

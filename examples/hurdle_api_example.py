@@ -10,21 +10,16 @@ import pandas as pd
 from biolearn.model_gallery import ModelGallery
 from biolearn.data_library import DataLibrary
 
-# Step 1: Set up your API key
 # Get your API key from: https://dashboard.sandbox.hurdle.bio/register/partner
-# Then either:
-# - Set environment variable: export HURDLE_API_KEY="your_key_here"
-# - Or pass directly to the model (shown below)
+# Set environment variable: export HURDLE_API_KEY="your_key_here"
+# Or pass directly to the model (shown below)
 
-# Step 2: Load some methylation data
 print("Loading sample data...")
 data = DataLibrary().get("BoAChallengeData").load()
 
-# Use a small subset for this example
 sample_data = data.dnam.iloc[:, :5]  # First 5 samples
 print(f"Using {sample_data.shape[1]} samples")
 
-# Step 3: Initialize the model
 gallery = ModelGallery()
 
 # If you have your API key in environment variable:
@@ -35,8 +30,6 @@ api_key = input("Enter your Hurdle API key: ").strip()
 model = gallery.get("HurdleInflammage")
 model.api_key = api_key
 
-# Step 4: Make predictions
-# Note: You will be asked for consent before data is sent
 print("\nMaking predictions...")
 try:
     predictions = model.predict(sample_data)
