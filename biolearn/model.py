@@ -1166,7 +1166,11 @@ class HurdleAPIModel:
                 "Get your API key at: https://dashboard.sandbox.hurdle.bio/register/partner"
             )
 
-        base_url = self.PRODUCTION_BASE_URL if use_production else self.SANDBOX_BASE_URL
+        base_url = (
+            self.PRODUCTION_BASE_URL
+            if use_production
+            else self.SANDBOX_BASE_URL
+        )
         self.api_endpoint = f"{base_url}{self.API_ENDPOINT_PATH}"
 
         # Load required CpG sites
@@ -1182,7 +1186,9 @@ class HurdleAPIModel:
             )
 
     @classmethod
-    def from_definition(cls, clock_definition: Dict[str, Any]) -> "HurdleAPIModel":
+    def from_definition(
+        cls, clock_definition: Dict[str, Any]
+    ) -> "HurdleAPIModel":
         model_def = clock_definition["model"]
         return cls(
             use_production=model_def.get("use_production", False),
@@ -1208,7 +1214,11 @@ class HurdleAPIModel:
                     "User consent required to send data to external API"
                 )
 
-    def predict(self, data: Union[pd.DataFrame, "GeoData"], require_consent: bool = True) -> pd.Series:
+    def predict(
+        self,
+        data: Union[pd.DataFrame, "GeoData"],
+        require_consent: bool = True,
+    ) -> pd.Series:
         self._get_consent(require_consent)
 
         # Extract methylation data
@@ -1265,9 +1275,16 @@ class HurdleAPIModel:
 
             # Validate response structure
             if not isinstance(upload_info, dict):
-                raise ValueError(f"Invalid API response format: expected dict, got {type(upload_info)}")
-            if 'uploadUrl' not in upload_info or 'requestId' not in upload_info:
-                raise ValueError(f"Missing required fields in API response: {upload_info.keys()}")
+                raise ValueError(
+                    f"Invalid API response format: expected dict, got {type(upload_info)}"
+                )
+            if (
+                "uploadUrl" not in upload_info
+                or "requestId" not in upload_info
+            ):
+                raise ValueError(
+                    f"Missing required fields in API response: {upload_info.keys()}"
+                )
 
             # Upload beta matrix
             csv_buffer = io.StringIO()
@@ -1326,15 +1343,25 @@ class HurdleAPIModel:
 
             # Validate response structure
             if not isinstance(results, dict):
-                raise ValueError(f"Invalid API response format: expected dict, got {type(results)}")
-            if 'data' not in results:
-                raise ValueError(f"Missing 'data' field in API response: {results.keys()}")
-            if not isinstance(results['data'], list):
-                raise ValueError(f"Invalid 'data' field: expected list, got {type(results['data'])}")
+                raise ValueError(
+                    f"Invalid API response format: expected dict, got {type(results)}"
+                )
+            if "data" not in results:
+                raise ValueError(
+                    f"Missing 'data' field in API response: {results.keys()}"
+                )
+            if not isinstance(results["data"], list):
+                raise ValueError(
+                    f"Invalid 'data' field: expected list, got {type(results['data'])}"
+                )
 
             predictions = {}
             for item in results.get("data", []):
-                if not isinstance(item, dict) or 'barcode' not in item or 'prediction' not in item:
+                if (
+                    not isinstance(item, dict)
+                    or "barcode" not in item
+                    or "prediction" not in item
+                ):
                     raise ValueError(f"Invalid prediction item format: {item}")
                 predictions[item["barcode"]] = float(item["prediction"])
 

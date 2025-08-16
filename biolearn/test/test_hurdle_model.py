@@ -16,12 +16,18 @@ class TestHurdleAPIModel:
     """Test the HurdleAPIModel class."""
 
     # Test CpG sites for mock data
-    TEST_CPG_SITES = (
-        ["cg00000029", "cg00000321", "cg00000714", "cg00001793",
-         "cg00002028", "cg00002426", "cg00002719", "cg00003091",
-         "cg00003287", "cg00003994"] +
-        [f"cg{i:08d}" for i in range(10, 100)]
-    )
+    TEST_CPG_SITES = [
+        "cg00000029",
+        "cg00000321",
+        "cg00000714",
+        "cg00001793",
+        "cg00002028",
+        "cg00002426",
+        "cg00002719",
+        "cg00003091",
+        "cg00003287",
+        "cg00003994",
+    ] + [f"cg{i:08d}" for i in range(10, 100)]
 
     def test_init_without_api_key(self):
         """Test that initialization fails without API key."""
@@ -146,7 +152,9 @@ class TestHurdleAPIModel:
 
             # Create test data with proper CpG indices
             data = pd.DataFrame(
-                np.random.rand(100, 1), index=self.TEST_CPG_SITES, columns=["sample"]
+                np.random.rand(100, 1),
+                index=self.TEST_CPG_SITES,
+                columns=["sample"],
             )
 
             # First prediction
