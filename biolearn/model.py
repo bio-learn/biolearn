@@ -1167,7 +1167,11 @@ class HurdleAPIModel:
                 "Get your API key at: https://dashboard.sandbox.hurdle.bio/register/partner"
             )
 
-        base_url = self.PRODUCTION_BASE_URL if use_production else self.SANDBOX_BASE_URL
+        base_url = (
+            self.PRODUCTION_BASE_URL
+            if use_production
+            else self.SANDBOX_BASE_URL
+        )
         self.api_endpoint = f"{base_url}{self.API_ENDPOINT_PATH}"
 
         # Load required CpG sites
