@@ -1159,6 +1159,7 @@ class HurdleAPIModel:
         self.details = details
         self.api_key = api_key or os.environ.get("HURDLE_API_KEY")
         self.timeout = timeout or self.DEFAULT_TIMEOUT
+        self._consent_given = False
 
         if not self.api_key:
             raise ValueError(
@@ -1166,11 +1167,7 @@ class HurdleAPIModel:
                 "Get your API key at: https://dashboard.sandbox.hurdle.bio/register/partner"
             )
 
-        base_url = (
-            self.PRODUCTION_BASE_URL
-            if use_production
-            else self.SANDBOX_BASE_URL
-        )
+        base_url = self.PRODUCTION_BASE_URL if use_production else self.SANDBOX_BASE_URL
         self.api_endpoint = f"{base_url}{self.API_ENDPOINT_PATH}"
 
         # Load required CpG sites
@@ -1196,7 +1193,7 @@ class HurdleAPIModel:
         )
 
     def _get_consent(self, require_consent: bool) -> None:
-        if require_consent:
+        if require_consent and not self._consent_given:
             print(
                 "\nWARNING: This will send methylation data to Hurdle Bio's servers."
             )
@@ -1213,6 +1210,7 @@ class HurdleAPIModel:
                 raise ValueError(
                     "User consent required to send data to external API"
                 )
+            self._consent_given = True
 
     def predict(
         self,
