@@ -3,6 +3,10 @@ import cvxpy as cp
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LinearRegression
+import requests
+import io
+import warnings
+from typing import Optional, Dict, Any, Union
 
 from biolearn.data_library import GeoData
 from biolearn.dunedin_pace import dunedin_pace_normalization
@@ -621,6 +625,22 @@ model_definitions = {
             "file": "Bocklandt.csv",
         },
     },
+    "HurdleInflammage": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://hurdle.bio/our-science/",
+        "output": "Inflammation Age (Years)",
+        "model": {
+            "type": "HurdleAPIModel",
+            "use_production": False,
+            "default_imputation": "none",
+        },
+        "usage": {
+            "commercial": "Contact Hurdle Bio for licensing",
+            "non-commercial": "Register at https://dashboard.sandbox.hurdle.bio/register/partner",
+        },
+    },
 }
 
 
@@ -1112,6 +1132,247 @@ class SexEstimationModel:
 
     def methylation_sites(self):
         return list(self.coefficients.index)
+
+
+class HurdleAPIModel:
+    """
+    Hurdle Bio Inflammage model via API.
+
+    Requires API credentials from https://dashboard.sandbox.hurdle.bio/register/partner
+    """
+
+    # API Configuration
+    SANDBOX_BASE_URL = "https://api.sandbox.hurdle.bio"
+    PRODUCTION_BASE_URL = "https://api.hurdle.bio"
+    API_ENDPOINT_PATH = "/predict/v1/"
+    DEFAULT_TIMEOUT = 30  # seconds
+    MAX_RETRIES = 3
+    RETRY_DELAY = 1  # seconds
+
+    def __init__(
+        self,
+        api_key: Optional[str] = None,
+        use_production: bool = False,
+        timeout: Optional[int] = None,
+        **details: Any,
+    ) -> None:
+        self.details = details
+        self.api_key = api_key or os.environ.get("HURDLE_API_KEY")
+        self.timeout = timeout or self.DEFAULT_TIMEOUT
+        self._consent_given = False
+
+        if not self.api_key:
+            raise ValueError(
+                "API key required. Either pass api_key parameter or set HURDLE_API_KEY environment variable.\n"
+                "Get your API key at: https://dashboard.sandbox.hurdle.bio/register/partner"
+            )
+
+        base_url = (
+            self.PRODUCTION_BASE_URL
+            if use_production
+            else self.SANDBOX_BASE_URL
+        )
+        self.api_endpoint = f"{base_url}{self.API_ENDPOINT_PATH}"
+
+        # Load required CpG sites
+        try:
+            cpg_file = get_data_file("Hurdle_CpGs.csv.example")
+            self.required_cpgs = pd.read_csv(cpg_file, encoding="ISO-8859-1")[
+                "ProbeID"
+            ].tolist()
+        except (FileNotFoundError, KeyError, pd.errors.EmptyDataError) as e:
+            self.required_cpgs = None
+            warnings.warn(
+                f"Could not load Hurdle CpG sites: {e}. Will use all available CpG sites."
+            )
+
+    @classmethod
+    def from_definition(
+        cls, clock_definition: Dict[str, Any]
+    ) -> "HurdleAPIModel":
+        model_def = clock_definition["model"]
+        return cls(
+            use_production=model_def.get("use_production", False),
+            **{k: v for k, v in clock_definition.items() if k != "model"},
+        )
+
+    def _get_consent(self, require_consent: bool) -> None:
+        if require_consent and not self._consent_given:
+            print(
+                "\nWARNING: This will send methylation data to Hurdle Bio's servers."
+            )
+            print(
+                "Please ensure you have permission to share this data with third parties."
+            )
+            response = (
+                input("Do you consent to send this data? (yes/no): ")
+                .lower()
+                .strip()
+            )
+
+            if response != "yes":
+                raise ValueError(
+                    "User consent required to send data to external API"
+                )
+            self._consent_given = True
+
+    def predict(
+        self,
+        data: Union[pd.DataFrame, "GeoData"],
+        require_consent: bool = True,
+    ) -> pd.Series:
+        self._get_consent(require_consent)
+
+        # Extract methylation data
+        if isinstance(data, GeoData):
+            dnam = data.dnam
+            metadata = data.metadata
+        else:
+            dnam = data
+            metadata = pd.DataFrame(index=dnam.columns)
+
+        # Filter and impute CpG sites
+        if self.required_cpgs:
+            missing_cpgs = set(self.required_cpgs) - set(dnam.index)
+            available_cpgs = [
+                cpg for cpg in self.required_cpgs if cpg in dnam.index
+            ]
+
+            if not available_cpgs:
+                raise ValueError("No required CpG sites found in data")
+
+            # Use available sites and impute missing ones with 0.5
+            filtered_dnam = dnam.loc[available_cpgs]
+
+            if missing_cpgs:
+                warnings.warn(
+                    f"Missing {len(missing_cpgs)} required CpG sites. Imputing with 0.5"
+                )
+                missing_df = pd.DataFrame(
+                    0.5, index=list(missing_cpgs), columns=dnam.columns
+                )
+                filtered_dnam = pd.concat([filtered_dnam, missing_df])
+        else:
+            filtered_dnam = dnam
+
+        # Round values
+        filtered_dnam = filtered_dnam.round(3)
+
+        try:
+            # Get presigned URL
+            headers = {"x-api-key": self.api_key}
+            response = requests.post(
+                f"{self.api_endpoint}upload_link",
+                json={"fileType": "beta_matrix"},
+                headers=headers,
+                timeout=self.timeout,
+            )
+
+            if response.status_code != 200:
+                raise Exception(
+                    f"Failed to get upload URL: {response.status_code} - {response.text}"
+                )
+
+            upload_info = response.json()
+
+            # Validate response structure
+            if not isinstance(upload_info, dict):
+                raise ValueError(
+                    f"Invalid API response format: expected dict, got {type(upload_info)}"
+                )
+            if (
+                "uploadUrl" not in upload_info
+                or "requestId" not in upload_info
+            ):
+                raise ValueError(
+                    f"Missing required fields in API response: {upload_info.keys()}"
+                )
+
+            # Upload beta matrix
+            csv_buffer = io.StringIO()
+            filtered_dnam.to_csv(csv_buffer)
+            csv_buffer.seek(0)
+
+            upload_response = requests.put(
+                upload_info["uploadUrl"],
+                data=csv_buffer.getvalue().encode("utf-8"),
+                timeout=self.timeout,
+            )
+
+            if upload_response.status_code != 200:
+                raise Exception(
+                    f"Failed to upload data: {upload_response.status_code}"
+                )
+
+            # Prepare metadata
+            meta_list = []
+            for sample_id in filtered_dnam.columns:
+                sample_meta = {"barcode": sample_id, "tissue": "whole_blood"}
+
+                if sample_id in metadata.index:
+                    row = metadata.loc[sample_id]
+                    if "age" in row:
+                        sample_meta["chronologicalAge"] = float(row["age"])
+                    if "sex" in row:
+                        sex_value = row["sex"]
+                        sample_meta["sex"] = (
+                            "f"
+                            if sex_value in [1, "f", "F", "female"]
+                            else "m"
+                        )
+
+                meta_list.append(sample_meta)
+
+            # Get predictions
+            prediction_request = {
+                "requestId": upload_info["requestId"],
+                "biomarker": "inflammage",
+                "arrayType": "hurdle",
+                "metadata": meta_list,
+            }
+
+            pred_response = requests.post(
+                self.api_endpoint, json=prediction_request, headers=headers
+            )
+
+            if pred_response.status_code != 200:
+                raise Exception(
+                    f"Prediction failed: {pred_response.status_code} - {pred_response.text}"
+                )
+
+            # Extract predictions
+            results = pred_response.json()
+
+            # Validate response structure
+            if not isinstance(results, dict):
+                raise ValueError(
+                    f"Invalid API response format: expected dict, got {type(results)}"
+                )
+            if "data" not in results:
+                raise ValueError(
+                    f"Missing 'data' field in API response: {results.keys()}"
+                )
+            if not isinstance(results["data"], list):
+                raise ValueError(
+                    f"Invalid 'data' field: expected list, got {type(results['data'])}"
+                )
+
+            predictions = {}
+            for item in results.get("data", []):
+                if (
+                    not isinstance(item, dict)
+                    or "barcode" not in item
+                    or "prediction" not in item
+                ):
+                    raise ValueError(f"Invalid prediction item format: {item}")
+                predictions[item["barcode"]] = float(item["prediction"])
+
+            return pd.Series(predictions, name="inflammage")
+
+        except requests.exceptions.RequestException as e:
+            raise Exception(f"Network error: {str(e)}")
+        except Exception as e:
+            raise Exception(f"API error: {str(e)}")
 
 
 class ImputationDecorator:
