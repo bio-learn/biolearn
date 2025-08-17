@@ -7,7 +7,9 @@ from biolearn.util import get_test_data_file
 
 
 def get_test_data():
-    return GeoData.load_csv(get_test_data_file("testset/"), "testset")
+    return GeoData.load_csv(
+        get_test_data_file("testset/"), "testset", validate=False
+    )
 
 
 def test_grimage_missing_sex_column():
