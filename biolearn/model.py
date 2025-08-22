@@ -1125,6 +1125,45 @@ class SexEstimationModel:
         return list(self.coefficients.index)
 
 
+class EpiTOC2Model:
+    def __init__(self, reference_file):
+        self.reference = pd.read_csv(
+            get_data_file(reference_file), index_col=0
+        )
+        self.delta = self.reference["delta"].to_numpy().reshape(-1, 1)
+        self.beta0 = self.reference["beta0"].to_numpy().reshape(-1, 1)
+        self.CpG_names = self.reference.index.to_numpy()
+
+    @classmethod
+    def from_definition(cls, clock_definition):
+        model_def = clock_definition["model"]
+        return cls(model_def["file"])
+
+    def predict(self, geo_data):
+        dnam = geo_data.dnam
+
+        map_idx = dnam.index.get_indexer(self.CpG_names)
+        rep_mask = map_idx != -1
+
+        rows = map_idx[rep_mask]
+        beta = dnam.values[rows, :].astype(float)
+        delta = self.delta[rep_mask, :]
+        beta0 = self.beta0[rep_mask, :]
+        k = float(rows.size)
+
+        beta = np.where(np.isnan(beta), 0.0, beta)
+
+        with np.errstate(divide="ignore", invalid="ignore"):
+            contrib = (beta - beta0) / (delta * (1.0 - beta0))
+
+        vals = 2.0 * (np.sum(contrib, axis=0) / k)
+
+        return pd.DataFrame(vals, index=dnam.columns, columns=["Predicted"])
+
+    def methylation_sites(self):
+        return list(self.CpG_names)
+
+
 class ImputationDecorator:
     def __init__(self, clock, imputation_method):
         self.clock = clock
