@@ -8,6 +8,7 @@ from biolearn.model import (
     ImputationDecorator,
     DeconvolutionModel,
     LinearMultipartProteomicModel,
+    EpiTOC2Model,
 )
 from biolearn.imputation import (
     hybrid_impute,
@@ -29,6 +30,7 @@ class ModelGallery:
         "SexEstimationModel": SexEstimationModel.from_definition,
         "DeconvolutionModel": DeconvolutionModel.from_definition,
         "LinearMultipartProteomicModel": LinearMultipartProteomicModel.from_definition,
+        "EpiTOC2Model": EpiTOC2Model.from_definition,
     }
 
     def __init__(self, models=model_definitions):
