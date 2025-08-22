@@ -280,6 +280,17 @@ model_definitions = {
             "file": "EpiTOC1.csv",
         },
     },
+    "EpiTOC2": {
+        "year": 2020,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1186/s13073-020-00752-3",
+        "output": "Stem Cell Division Rate",
+        "model": {
+            "type": "EpiTOC2Model",
+            "file": "EpiTOC2.csv",
+        },
+    },
     "LeeRefinedRobust": {
         "year": 2019,
         "species": "Human",
