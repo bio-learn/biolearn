@@ -169,13 +169,13 @@ def test_optional_field_content(temp_dir):
     """
     geodata = create_dummy_geodata(num_samples=5)
     geodata.rna = geodata.dnam.copy()
-    geodata.protein_alamar = (
-        geodata.dnam.copy() * 10
-    )
+    geodata.protein_alamar = geodata.dnam.copy() * 10
     geodata.save_csv(temp_dir, "optional")
     loaded_geodata = GeoData.load_csv(temp_dir, "optional", series_part="all")
     pd.testing.assert_frame_equal(geodata.rna, loaded_geodata.rna)
-    pd.testing.assert_frame_equal(geodata.protein_alamar, loaded_geodata.protein_alamar)
+    pd.testing.assert_frame_equal(
+        geodata.protein_alamar, loaded_geodata.protein_alamar
+    )
 
 
 def test_missing_metadata_file(temp_dir):

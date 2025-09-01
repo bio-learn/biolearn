@@ -176,7 +176,14 @@ class GeoData:
                           and rows represent different methylation sites.
     """
 
-    def __init__(self, metadata, dnam=None, rna=None, protein_alamar=None, protein_olink=None):
+    def __init__(
+        self,
+        metadata,
+        dnam=None,
+        rna=None,
+        protein_alamar=None,
+        protein_olink=None,
+    ):
         """
         Initializes the GeoData instance.
 
@@ -346,10 +353,14 @@ class GeoData:
             rna_file = os.path.join(folder_path, f"{name}_rna.csv")
             self.rna.to_csv(rna_file)
         if self.protein_alamar is not None:
-            protein_file = os.path.join(folder_path, f"{name}_protein_alamar.csv")
+            protein_file = os.path.join(
+                folder_path, f"{name}_protein_alamar.csv"
+            )
             self.protein_alamar.to_csv(protein_file)
         if self.protein_olink is not None:
-            protein_file = os.path.join(folder_path, f"{name}_protein_olink.csv")
+            protein_file = os.path.join(
+                folder_path, f"{name}_protein_olink.csv"
+            )
             self.protein_olink.to_csv(protein_file)
 
     @classmethod
@@ -421,21 +432,33 @@ class GeoData:
             else None
         )
 
-        protein_alamar_file = os.path.join(folder_path, f"{name}_protein_alamar.csv")
+        protein_alamar_file = os.path.join(
+            folder_path, f"{name}_protein_alamar.csv"
+        )
         protein_alamar_df = (
-            pd.read_csv(protein_alamar_file, index_col=0, skipinitialspace=True)
+            pd.read_csv(
+                protein_alamar_file, index_col=0, skipinitialspace=True
+            )
             if os.path.exists(protein_alamar_file)
             else None
         )
 
-        protein_olink_file = os.path.join(folder_path, f"{name}_protein_olink.csv")
+        protein_olink_file = os.path.join(
+            folder_path, f"{name}_protein_olink.csv"
+        )
         protein_olink_df = (
             pd.read_csv(protein_olink_file, index_col=0, skipinitialspace=True)
             if os.path.exists(protein_olink_file)
             else None
         )
 
-        return cls(metadata_df, dnam=dnam_df, rna=rna_df, protein_alamar=protein_alamar_df, protein_olink=protein_olink_df)
+        return cls(
+            metadata_df,
+            dnam=dnam_df,
+            rna=rna_df,
+            protein_alamar=protein_alamar_df,
+            protein_olink=protein_olink_df,
+        )
 
 
 class JenAgeCustomParser:
