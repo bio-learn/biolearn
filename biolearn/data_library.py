@@ -176,7 +176,7 @@ class GeoData:
                           and rows represent different methylation sites.
     """
 
-    def __init__(self, metadata, dnam=None, rna=None, protein=None):
+    def __init__(self, metadata, dnam=None, rna=None, protein_alamar=None, protein_olink=None):
         """
         Initializes the GeoData instance.
 
@@ -187,7 +187,8 @@ class GeoData:
         self.metadata = metadata
         self.dnam = dnam
         self.rna = rna
-        self.protein = protein
+        self.protein_alamar = protein_alamar
+        self.protein_olink = protein_olink
 
     def copy(self):
         """
@@ -200,9 +201,14 @@ class GeoData:
             metadata=self.metadata.copy(deep=True),
             dnam=self.dnam.copy(deep=True) if self.dnam is not None else None,
             rna=self.rna.copy(deep=True) if self.rna is not None else None,
-            protein=(
-                self.protein.copy(deep=True)
-                if self.protein is not None
+            protein_alamar=(
+                self.protein_alamar.copy(deep=True)
+                if self.protein_alamar is not None
+                else None
+            ),
+            protein_olink=(
+                self.protein_olink.copy(deep=True)
+                if self.protein_olink is not None
                 else None
             ),
         )
@@ -339,9 +345,12 @@ class GeoData:
         if self.rna is not None:
             rna_file = os.path.join(folder_path, f"{name}_rna.csv")
             self.rna.to_csv(rna_file)
-        if self.protein is not None:
-            protein_file = os.path.join(folder_path, f"{name}_protein.csv")
-            self.protein.to_csv(protein_file)
+        if self.protein_alamar is not None:
+            protein_file = os.path.join(folder_path, f"{name}_protein_alamar.csv")
+            self.protein_alamar.to_csv(protein_file)
+        if self.protein_olink is not None:
+            protein_file = os.path.join(folder_path, f"{name}_protein_olink.csv")
+            self.protein_olink.to_csv(protein_file)
 
     @classmethod
     def load_csv(cls, folder_path, name, series_part="all"):
@@ -412,14 +421,21 @@ class GeoData:
             else None
         )
 
-        protein_file = os.path.join(folder_path, f"{name}_protein.csv")
-        protein_df = (
-            pd.read_csv(protein_file, index_col=0, skipinitialspace=True)
-            if os.path.exists(protein_file)
+        protein_alamar_file = os.path.join(folder_path, f"{name}_protein_alamar.csv")
+        protein_alamar_df = (
+            pd.read_csv(protein_alamar_file, index_col=0, skipinitialspace=True)
+            if os.path.exists(protein_alamar_file)
             else None
         )
 
-        return cls(metadata_df, dnam=dnam_df, rna=rna_df, protein=protein_df)
+        protein_olink_file = os.path.join(folder_path, f"{name}_protein_olink.csv")
+        protein_olink_df = (
+            pd.read_csv(protein_olink_file, index_col=0, skipinitialspace=True)
+            if os.path.exists(protein_olink_file)
+            else None
+        )
+
+        return cls(metadata_df, dnam=dnam_df, rna=rna_df, protein_alamar=protein_alamar_df, protein_olink=protein_olink_df)
 
 
 class JenAgeCustomParser:
@@ -516,7 +532,7 @@ class ChallengeDataParser:
         proteomic_metadata.rename(index=plasma_to_geo_mapping, inplace=True)
 
         # Add the proteomic metadata and merge the metadata
-        geodata.protein = protein_matrix
+        geodata.protein_alamar = protein_matrix.T
         merged_metadata = metadata.combine_first(proteomic_metadata)
         geodata.metadata = merged_metadata
 

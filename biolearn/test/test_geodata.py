@@ -88,7 +88,7 @@ def test_save_load_roundtrip(temp_dir):
     )
     pd.testing.assert_frame_equal(geodata.dnam, loaded_geodata.dnam)
     assert loaded_geodata.rna is None
-    assert loaded_geodata.protein is None
+    assert loaded_geodata.protein_alamar is None
 
 
 def test_sex_conversion(temp_dir):
@@ -169,13 +169,13 @@ def test_optional_field_content(temp_dir):
     """
     geodata = create_dummy_geodata(num_samples=5)
     geodata.rna = geodata.dnam.copy()
-    geodata.protein = (
+    geodata.protein_alamar = (
         geodata.dnam.copy() * 10
-    )  # Example transformation for protein data
+    )
     geodata.save_csv(temp_dir, "optional")
     loaded_geodata = GeoData.load_csv(temp_dir, "optional", series_part="all")
     pd.testing.assert_frame_equal(geodata.rna, loaded_geodata.rna)
-    pd.testing.assert_frame_equal(geodata.protein, loaded_geodata.protein)
+    pd.testing.assert_frame_equal(geodata.protein_alamar, loaded_geodata.protein_alamar)
 
 
 def test_missing_metadata_file(temp_dir):
