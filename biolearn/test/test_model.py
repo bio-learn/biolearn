@@ -19,7 +19,7 @@ def test_models(model_name, model_entry):
     # TODO: Add testing for LinearTranscriptomicModel
     # Skip models that don't have tests
     model_type = model_entry["model"]["type"]
-    if model_type in ["NotImplemented", "LinearTranscriptomicModel"]:
+    if model_type in ["NotImplemented"]:
         pytest.skip(
             f"Model type {model_type} for {model_name} does not have a testing pattern - skipping test"
         )
@@ -75,6 +75,10 @@ def test_models(model_name, model_entry):
 
 
 def test_dunedin_pace_normalization():
+
+    test_data = GeoData.load_csv(get_test_data_file("testset/"), "testset")
+    sample_inputs = test_data.dnam
+
     actual = model.dunedin_pace_normalization(sample_inputs)
     data_file_path = get_test_data_file("pace_normalized.pkl")
     with open(data_file_path, "rb") as file:
