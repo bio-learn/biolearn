@@ -292,6 +292,17 @@ model_definitions = {
             "file": "EpiTOC1.csv",
         },
     },
+    "EpiTOC2": {
+        "year": 2020,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1186/s13073-020-00752-3",
+        "output": "Stem Cell Division Rate",
+        "model": {
+            "type": "EpiTOC2Model",
+            "file": "EpiTOC2.csv",
+        },
+    },
     "LeeRefinedRobust": {
         "year": 2019,
         "species": "Human",
@@ -586,6 +597,28 @@ model_definitions = {
                 map_ensembl_to_gene(rna_data)
             ),
             "transform": lambda sum: sum + 55.808884324,
+        },
+    },
+    "OrganAgeChronological": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.medrxiv.org/content/10.1101/2024.04.08.24305469v1",
+        "output": "Mortality Risk by Organ",
+        "model": {
+            "type": "LinearMultipartProteomicModel",
+            "file": "OrganAgeChronological.csv",
+        },
+    },
+    "OrganAgeMortality": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.medrxiv.org/content/10.1101/2024.04.08.24305469v1",
+        "output": "Age (Years) by Organ",
+        "model": {
+            "type": "LinearMultipartProteomicModel",
+            "file": "OrganAgeMortality.csv",
         },
     },
     "Bohlin": {
@@ -925,18 +958,11 @@ class GrimageModel:
         dnam_samples = set(geo_data.dnam.columns)
         metadata_samples = set(geo_data.metadata.index)
         missing_metadata = dnam_samples - metadata_samples
-        missing_dnam = metadata_samples - dnam_samples
 
         if missing_metadata:
             raise ValueError(
                 f"Methylation data contains samples without metadata: {list(missing_metadata)[:3]}.\n"
                 f"Ensure all samples in methylation matrix have corresponding metadata entries."
-            )
-
-        if missing_dnam:
-            raise ValueError(
-                f"Metadata contains samples without methylation data: {list(missing_dnam)[:3]}.\n"
-                f"Ensure all samples in metadata have corresponding methylation data."
             )
 
         df = geo_data.dnam
@@ -1029,6 +1055,60 @@ class GrimageModel:
         return list(unique_vars)
 
 
+class LinearMultipartProteomicModel:
+    def __init__(self, coefficient_file_or_df, **details):
+        self.details = details
+        if isinstance(coefficient_file_or_df, pd.DataFrame):
+            self.coefficients = coefficient_file_or_df
+        else:
+            file_path = (
+                coefficient_file_or_df
+                if os.path.isabs(coefficient_file_or_df)
+                else get_data_file(coefficient_file_or_df)
+            )
+            self.coefficients = pd.read_csv(file_path)
+
+    @classmethod
+    def from_definition(cls, clock_definition):
+        file = clock_definition["model"]["file"]
+        params = {k: v for k, v in clock_definition.items() if k != "model"}
+        return cls(file, **params)
+
+    def predict(self, geo_data):
+        mat = geo_data.protein
+        if mat is None or mat.empty:
+            raise ValueError(
+                "No proteomic data provided: 'geo_data.protein' is None or empty."
+            )
+
+        results = {}
+        for tissue, grp in self.coefficients.groupby("Tissue"):
+            # intercept
+            intercepts = grp.loc[
+                grp["Protein"].str.lower() == "intercept", "Coefficient"
+            ]
+            intercept = (
+                float(intercepts.iloc[0]) if not intercepts.empty else 0.0
+            )
+
+            # protein coefficients
+            coef_ser = grp.loc[
+                grp["Protein"].str.lower() != "intercept"
+            ].set_index("Protein")["Coefficient"]
+
+            # align proteins as columns, fill missing
+            aligned = mat.reindex(columns=coef_ser.index).fillna(0)
+
+            # compute prediction per sample
+            pred = aligned.dot(coef_ser) + intercept
+            results[tissue] = pred
+
+        return pd.DataFrame(results)
+
+    def methylation_sites(self):
+        return []
+
+
 class SexEstimationModel:
     def __init__(self, coeffecient_file, **details):
         self.coefficients = pd.read_csv(
@@ -1092,6 +1172,45 @@ class SexEstimationModel:
         return list(self.coefficients.index)
 
 
+class EpiTOC2Model:
+    def __init__(self, reference_file):
+        self.reference = pd.read_csv(
+            get_data_file(reference_file), index_col=0
+        )
+        self.delta = self.reference["delta"].to_numpy().reshape(-1, 1)
+        self.beta0 = self.reference["beta0"].to_numpy().reshape(-1, 1)
+        self.CpG_names = self.reference.index.to_numpy()
+
+    @classmethod
+    def from_definition(cls, clock_definition):
+        model_def = clock_definition["model"]
+        return cls(model_def["file"])
+
+    def predict(self, geo_data):
+        dnam = geo_data.dnam
+
+        map_idx = dnam.index.get_indexer(self.CpG_names)
+        rep_mask = map_idx != -1
+
+        rows = map_idx[rep_mask]
+        beta = dnam.values[rows, :].astype(float)
+        delta = self.delta[rep_mask, :]
+        beta0 = self.beta0[rep_mask, :]
+        k = float(rows.size)
+
+        beta = np.where(np.isnan(beta), 0.0, beta)
+
+        with np.errstate(divide="ignore", invalid="ignore"):
+            contrib = (beta - beta0) / (delta * (1.0 - beta0))
+
+        vals = 2.0 * (np.sum(contrib, axis=0) / k)
+
+        return pd.DataFrame(vals, index=dnam.columns, columns=["Predicted"])
+
+    def methylation_sites(self):
+        return list(self.CpG_names)
+
+
 class ImputationDecorator:
     def __init__(self, clock, imputation_method):
         self.clock = clock
@@ -1103,7 +1222,12 @@ class ImputationDecorator:
         dnam_data_imputed = self.imputation_method(geo_data.dnam, needed_cpgs)
 
         return self.clock.predict(
-            GeoData(geo_data.metadata, dnam_data_imputed)
+            GeoData(
+                geo_data.metadata,
+                dnam_data_imputed,
+                geo_data.rna,
+                geo_data.protein,
+            )
         )
 
     # Forwarding other methods and attributes to the clock
