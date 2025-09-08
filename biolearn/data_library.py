@@ -432,6 +432,14 @@ class GeoData:
             else None
         )
 
+        # In case someone saved with legacy code
+        unspecified_proteomic_file = os.path.join(
+            folder_path, f"{name}_protein.csv"
+        )
+        if os.path.exists(unspecified_proteomic_file):
+            raise Exception(
+                "Unspecified source proteomic file found. Please rename to specified source (e.g. protein_alamar or protein_olink) before saving."
+            )
         protein_alamar_file = os.path.join(
             folder_path, f"{name}_protein_alamar.csv"
         )
