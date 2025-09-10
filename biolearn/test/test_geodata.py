@@ -88,7 +88,7 @@ def test_save_load_roundtrip(temp_dir):
     )
     pd.testing.assert_frame_equal(geodata.dnam, loaded_geodata.dnam)
     assert loaded_geodata.rna is None
-    assert loaded_geodata.protein is None
+    assert loaded_geodata.protein_alamar is None
 
 
 def test_sex_conversion(temp_dir):
@@ -163,19 +163,45 @@ def test_missing_files(temp_dir):
     ), "Expected RNA attribute to be None when RNA file is missing"
 
 
+def test_unspecified_proteomic_file(temp_dir):
+    """
+    Test that if an unspecified proteomic file is present, the function raises
+    an exception with the phrase "unspecified source proteomic file found".
+    """
+    geodata = create_dummy_geodata(num_samples=5)
+    geodata.save_csv(temp_dir, "test_data")
+
+    # Create a proteomic file in the directory
+    proteomic_file = os.path.join(temp_dir, "test_data_protein.csv")
+    with open(proteomic_file, "w") as f:
+        f.write("dummy,proteomic,data\n")
+        f.write("value1,value2,value3\n")
+
+    # Assert that loading raises an exception with the expected phrase
+    with pytest.raises(Exception) as exc_info:
+        loaded_geodata = GeoData.load_csv(
+            temp_dir, "test_data", series_part="all"
+        )
+
+    assert (
+        "unspecified source proteomic file found"
+        in str(exc_info.value).lower()
+    ), f"Expected exception message to contain 'unspecified source proteomic file found', but got: {exc_info.value}"
+
+
 def test_optional_field_content(temp_dir):
     """
     Test that when RNA and protein data are provided, they are correctly saved and loaded.
     """
     geodata = create_dummy_geodata(num_samples=5)
     geodata.rna = geodata.dnam.copy()
-    geodata.protein = (
-        geodata.dnam.copy() * 10
-    )  # Example transformation for protein data
+    geodata.protein_alamar = geodata.dnam.copy() * 10
     geodata.save_csv(temp_dir, "optional")
     loaded_geodata = GeoData.load_csv(temp_dir, "optional", series_part="all")
     pd.testing.assert_frame_equal(geodata.rna, loaded_geodata.rna)
-    pd.testing.assert_frame_equal(geodata.protein, loaded_geodata.protein)
+    pd.testing.assert_frame_equal(
+        geodata.protein_alamar, loaded_geodata.protein_alamar
+    )
 
 
 def test_missing_metadata_file(temp_dir):

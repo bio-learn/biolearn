@@ -1028,10 +1028,10 @@ class LinearMultipartProteomicModel:
         return cls(file, **params)
 
     def predict(self, geo_data):
-        mat = geo_data.protein
+        mat = geo_data.protein_olink
         if mat is None or mat.empty:
             raise ValueError(
-                "No proteomic data provided: 'geo_data.protein' is None or empty."
+                "No olink proteomic data provided: 'geo_data.protein_olink' is None or empty."
             )
 
         results = {}
@@ -1179,7 +1179,7 @@ class ImputationDecorator:
                 geo_data.metadata,
                 dnam_data_imputed,
                 geo_data.rna,
-                geo_data.protein,
+                geo_data.protein_alamar,
             )
         )
 
