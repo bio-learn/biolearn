@@ -16,6 +16,18 @@ def anti_trafo(x, adult_age=20):
     return y
 
 
+def preprocess_pasta(df):
+    df = df.loc[~df.index.duplicated(keep="first")]  # keep first duplicate
+    genes = pd.read_csv("biolearn/data/Pasta.csv", index_col=0).index
+    out = df.reindex(genes)  # select and order genes
+    med = np.nanmedian(out.to_numpy())
+    out = out.fillna(med)  # fill NA by overall median
+    out = out.rank(
+        axis=0, method="average", na_option="keep", ascending=True
+    )  # rank normalization
+    return out
+
+
 CLOCK_FOUNDATION_USAGE = "For cosmetics or life insurance applications, contact UCLA TDG regarding licensing status. For all other commercial usage `contact the Clock Foundation <https://clockfoundation.org/contact-us/>`_."
 
 model_definitions = {
@@ -278,6 +290,17 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "EpiTOC1.csv",
+        },
+    },
+    "EpiTOC2": {
+        "year": 2020,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1186/s13073-020-00752-3",
+        "output": "Stem Cell Division Rate",
+        "model": {
+            "type": "EpiTOC2Model",
+            "file": "EpiTOC2.csv",
         },
     },
     "LeeRefinedRobust": {
@@ -641,6 +664,41 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "Bocklandt.csv",
+        },
+    },
+    "Pasta": {
+        "year": 2025,
+        "species": "Human",
+        "tissue": "Multi-tissue",
+        "source": "https://www.biorxiv.org/content/10.1101/2025.06.04.657785v1.full",
+        "output": "Age score",
+        "model": {
+            "type": "LinearTranscriptomicModel",
+            "file": "Pasta.csv",
+            "preprocess": preprocess_pasta,
+            "transform": lambda sum: sum * -4.76348378687217
+            - 0.0502893445253186 * -4.76348378687217,
+        },
+        "usage": {
+            "commercial": "Free to use",
+            "non-commercial": "Free to use",
+        },
+    },
+    "REG": {
+        "year": 2025,
+        "species": "Human",
+        "tissue": "Multi-tissue",
+        "source": "https://www.biorxiv.org/content/10.1101/2025.06.04.657785v1.full",
+        "output": "Age (years)",
+        "model": {
+            "type": "LinearTranscriptomicModel",
+            "file": "REG.csv",
+            "preprocess": preprocess_pasta,
+            "transform": lambda sum: sum + 140.272578432562,
+        },
+        "usage": {
+            "commercial": "Free to use",
+            "non-commercial": "Free to use",
         },
     },
 }
@@ -1134,6 +1192,45 @@ class SexEstimationModel:
 
     def methylation_sites(self):
         return list(self.coefficients.index)
+
+
+class EpiTOC2Model:
+    def __init__(self, reference_file):
+        self.reference = pd.read_csv(
+            get_data_file(reference_file), index_col=0
+        )
+        self.delta = self.reference["delta"].to_numpy().reshape(-1, 1)
+        self.beta0 = self.reference["beta0"].to_numpy().reshape(-1, 1)
+        self.CpG_names = self.reference.index.to_numpy()
+
+    @classmethod
+    def from_definition(cls, clock_definition):
+        model_def = clock_definition["model"]
+        return cls(model_def["file"])
+
+    def predict(self, geo_data):
+        dnam = geo_data.dnam
+
+        map_idx = dnam.index.get_indexer(self.CpG_names)
+        rep_mask = map_idx != -1
+
+        rows = map_idx[rep_mask]
+        beta = dnam.values[rows, :].astype(float)
+        delta = self.delta[rep_mask, :]
+        beta0 = self.beta0[rep_mask, :]
+        k = float(rows.size)
+
+        beta = np.where(np.isnan(beta), 0.0, beta)
+
+        with np.errstate(divide="ignore", invalid="ignore"):
+            contrib = (beta - beta0) / (delta * (1.0 - beta0))
+
+        vals = 2.0 * (np.sum(contrib, axis=0) / k)
+
+        return pd.DataFrame(vals, index=dnam.columns, columns=["Predicted"])
+
+    def methylation_sites(self):
+        return list(self.CpG_names)
 
 
 class ImputationDecorator:
