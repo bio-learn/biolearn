@@ -24,3 +24,12 @@ items:
       age-row: 41
       age-parse: after-colon
       matrix-start: 75
+  - id: Covid19_Filbin_Plasma
+    title: Plasma proteomics in severe COVID-19 (Filbin et al. 2021)
+    summary: Tissue-specific cell death and mediators in severe COVID-19
+    organism: human
+    parser:
+      type: mendeley-proteomics
+      data-url: https://data.mendeley.com/public-files/datasets/nf853r8xsj/files/430eabd8-9b62-4e5f-b7c4-75ac26567c2f/file_downloaded
+      protein-sheet: 0  # First sheet for proteins
+      metadata-sheet: 1  # Second sheet for clinical data

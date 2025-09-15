@@ -598,6 +598,28 @@ model_definitions = {
             "file": "OrganAgeMortality.csv",
         },
     },
+    "OrganAge1500Chronological": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.medrxiv.org/content/10.1101/2024.04.08.24305469v1",
+        "output": "Mortality Risk by Organ",
+        "model": {
+            "type": "LinearMultipartProteomicModel",
+            "file": "OrganAge1500Chronological.csv",
+        },
+    },
+    "OrganAge1500Mortality": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.medrxiv.org/content/10.1101/2024.04.08.24305469v1",
+        "output": "Age (Years) by Organ",
+        "model": {
+            "type": "LinearMultipartProteomicModel",
+            "file": "OrganAge1500Mortality.csv",
+        },
+    },
     "Bohlin": {
         "year": 2017,
         "species": "Human",
@@ -1130,6 +1152,7 @@ class ImputationDecorator:
                 dnam_data_imputed,
                 geo_data.rna,
                 geo_data.protein_alamar,
+                geo_data.protein_olink
             )
         )
 
