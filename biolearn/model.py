@@ -16,6 +16,18 @@ def anti_trafo(x, adult_age=20):
     return y
 
 
+def preprocess_pasta(df):
+    df = df.loc[~df.index.duplicated(keep="first")]  # keep first duplicate
+    genes = pd.read_csv("biolearn/data/Pasta.csv", index_col=0).index
+    out = df.reindex(genes)  # select and order genes
+    med = np.nanmedian(out.to_numpy())
+    out = out.fillna(med)  # fill NA by overall median
+    out = out.rank(
+        axis=0, method="average", na_option="keep", ascending=True
+    )  # rank normalization
+    return out
+
+
 CLOCK_FOUNDATION_USAGE = "For cosmetics or life insurance applications, contact UCLA TDG regarding licensing status. For all other commercial usage `contact the Clock Foundation <https://clockfoundation.org/contact-us/>`_."
 
 model_definitions = {
@@ -630,6 +642,41 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "Bocklandt.csv",
+        },
+    },
+    "Pasta": {
+        "year": 2025,
+        "species": "Human",
+        "tissue": "Multi-tissue",
+        "source": "https://www.biorxiv.org/content/10.1101/2025.06.04.657785v1.full",
+        "output": "Age score",
+        "model": {
+            "type": "LinearTranscriptomicModel",
+            "file": "Pasta.csv",
+            "preprocess": preprocess_pasta,
+            "transform": lambda sum: sum * -4.76348378687217
+            - 0.0502893445253186 * -4.76348378687217,
+        },
+        "usage": {
+            "commercial": "Free to use",
+            "non-commercial": "Free to use",
+        },
+    },
+    "REG": {
+        "year": 2025,
+        "species": "Human",
+        "tissue": "Multi-tissue",
+        "source": "https://www.biorxiv.org/content/10.1101/2025.06.04.657785v1.full",
+        "output": "Age (years)",
+        "model": {
+            "type": "LinearTranscriptomicModel",
+            "file": "REG.csv",
+            "preprocess": preprocess_pasta,
+            "transform": lambda sum: sum + 140.272578432562,
+        },
+        "usage": {
+            "commercial": "Free to use",
+            "non-commercial": "Free to use",
         },
     },
 }
