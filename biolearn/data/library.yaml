@@ -2074,3 +2074,29 @@ items:
       tissue:
         row: 47
         parse: string
+- id: Covid19_Gisby_Serum
+  title: Longitudinal Olink Serum Proteomics COVID-19
+  summary: Longitudinal proteomic profiling of dialysis patients with COVID-19
+  organism: human
+  samples: 159
+  path: https://github.com/jackgisby/longitudinal_olink_proteomics
+  parser:
+    type: olink-proteomics
+    protein-matrix-url: https://raw.githubusercontent.com/jackgisby/longitudinal_olink_proteomics/main/data/serum_npx_level.csv
+    metadata-url: https://raw.githubusercontent.com/jackgisby/longitudinal_olink_proteomics/main/data/serum_sample_level.csv
+    id-row: SampleID
+  datalinks:
+    - https://github.com/jackgisby/longitudinal_olink_proteomics
+- id: Covid19_Plasma_Serum
+  title: Longitudinal Olink Plasma Proteomics COVID-19
+  summary: Longitudinal proteomic profiling of dialysis patients with COVID-19
+  organism: human
+  samples: 256
+  path: https://github.com/jackgisby/longitudinal_olink_proteomics
+  parser:
+    type: olink-proteomics
+    protein-matrix-url: https://raw.githubusercontent.com/jackgisby/longitudinal_olink_proteomics/main/data/plasma_npx_level.csv
+    metadata-url: https://raw.githubusercontent.com/jackgisby/longitudinal_olink_proteomics/main/data/plasma_sample_level.csv
+    id-row: SampleID
+  datalinks:
+    - https://github.com/jackgisby/longitudinal_olink_proteomics

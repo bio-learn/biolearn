@@ -569,6 +569,74 @@ class ChallengeDataParser:
 
         return geodata
 
+class OlinkDataParser:
+    def __init__(self, data):
+        if not data.get("protein-matrix-url"):
+            raise ValueError("Parser not valid: missing protein-matrix-url")
+        if not data.get("metadata-url"):
+            raise ValueError("Parser not valid: missing metadata-url")
+            
+        self.protein_matrix_url = data.get("protein-matrix-url")
+        self.metadata_url = data.get("metadata-url")
+        self.id_row = data.get("id-row", "SampleID")
+        
+    def parse(self, file_path=None):
+        protein_long = pd.read_csv(self.protein_matrix_url)
+        metadata = pd.read_csv(self.metadata_url, index_col=self.id_row)
+        
+        # Handle duplicate genes across panels
+        gene_panel_counts = protein_long.groupby('GeneID')['Panel'].nunique()
+        duplicated_genes = gene_panel_counts[gene_panel_counts > 1].index.tolist()
+        
+        if duplicated_genes:
+            protein_long['Gene_Unique'] = protein_long['GeneID']
+            mask = protein_long['GeneID'].isin(duplicated_genes)
+            protein_long.loc[mask, 'Gene_Unique'] = (
+                protein_long.loc[mask, 'GeneID'] + '_' + 
+                protein_long.loc[mask, 'Panel']
+            )
+            gene_column = 'Gene_Unique'
+        else:
+            gene_column = 'GeneID'
+        
+        # Create protein matrix
+        protein_matrix = protein_long.pivot_table(
+            index='SampleID',
+            columns=gene_column,
+            values='NPX',
+            aggfunc='first'
+        )
+        
+        # Process metadata
+        if 'Sex' in metadata.columns:
+            metadata['sex'] = metadata['Sex'].apply(sex_parser)
+            metadata.drop('Sex', axis=1, inplace=True)
+        
+        if 'Age' in metadata.columns:
+            metadata['age_range'] = metadata['Age'].str.strip('()[]').str.replace(',', '-')
+            metadata.drop('Age', axis=1, inplace=True)
+        
+        for col in ['Ever_Admitted', 'Fatal_Disease']:
+            if col in metadata.columns:
+                metadata[col] = metadata[col].astype('bool')
+        
+        # Align samples
+        common_samples = protein_matrix.index.intersection(metadata.index)
+        protein_matrix = protein_matrix.loc[common_samples]
+        metadata = metadata.loc[common_samples]
+        
+        # Create GeoData
+        dummy_methylation = pd.DataFrame(
+            index=['dummy_cpg'],
+            columns=protein_matrix.index,
+            data=0.5
+        )
+        
+        geodata = GeoData.from_methylation_matrix(dummy_methylation)
+        geodata.protein_olink = protein_matrix
+        geodata.metadata = metadata
+        
+        return geodata
 
 class GeoMatrixParser:
     seperators = {"space": " ", "comma": ",", "tab": "\t"}
@@ -946,6 +1014,8 @@ class DataSource:
             return AutoScanGeoMatrixParser(parser_data)
         if parser_type == "biomarkers-challenge-2024":
             return ChallengeDataParser(parser_data)
+        if parser_type == "olink-proteomics":
+            return OlinkDataParser(parser_data)
         raise ValueError(f"Unknown parser type: {parser_type}")
 
     def _show_work_needed_warning(self):
