@@ -646,7 +646,7 @@ model_definitions = {
         "output": "Mortality Risk by Organ",
         "model": {
             "type": "LinearMultipartProteomicModel",
-            # "preprocess": olink_standardization_preprocess("reference/olink3000_deviations.csv"),
+            "preprocess": olink_standardization_preprocess("reference/olink3000_deviations.csv"),
             "file": "OrganAgeChronological.csv",
         },
     },
@@ -658,7 +658,7 @@ model_definitions = {
         "output": "Age (Years) by Organ",
         "model": {
             "type": "LinearMultipartProteomicModel",
-            # "preprocess": olink_standardization_preprocess("reference/olink3000_deviations.csv"),
+            "preprocess": olink_standardization_preprocess("reference/olink3000_deviations.csv"),
             "file": "OrganAgeMortality.csv",
         },
     },
@@ -670,7 +670,7 @@ model_definitions = {
         "output": "Mortality Risk by Organ",
         "model": {
             "type": "LinearMultipartProteomicModel",
-            # "preprocess": olink_standardization_preprocess("reference/olink1500_deviations.csv"),
+            "preprocess": olink_standardization_preprocess("reference/olink1500_deviations.csv"),
             "file": "OrganAge1500Chronological.csv",
         },
     },
@@ -682,7 +682,7 @@ model_definitions = {
         "output": "Age (Years) by Organ",
         "model": {
             "type": "LinearMultipartProteomicModel",
-            # "preprocess": olink_standardization_preprocess("reference/olink1500_deviations.csv"),
+            "preprocess": olink_standardization_preprocess("reference/olink1500_deviations.csv"),
             "file": "OrganAge1500Mortality.csv",
         },
     },
