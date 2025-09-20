@@ -2087,7 +2087,7 @@ items:
     id-row: SampleID
   datalinks:
     - https://github.com/jackgisby/longitudinal_olink_proteomics
-- id: Covid19_Plasma_Serum
+- id: Covid19_Gisby_Plasma
   title: Longitudinal Olink Plasma Proteomics COVID-19
   summary: Longitudinal proteomic profiling of dialysis patients with COVID-19
   organism: human
@@ -2100,3 +2100,16 @@ items:
     id-row: SampleID
   datalinks:
     - https://github.com/jackgisby/longitudinal_olink_proteomics
+- id: Covid19_Filbin_Plasma
+  title: Filbin Lab Olink Plasma Proteomics
+  summary: Olink proteomic profiling with age categorization
+  organism: human
+  samples: 386
+  path: https://data.mendeley.com/datasets/nf853r8xsj/2
+  parser:
+    type: filbin-olink
+    metadata-path: /home/seth/longevity/clocks/organAging/sample_data_filbin/metadata.xlsx
+    proteomics-path: /home/seth/longevity/clocks/organAging/sample_data_filbin/proteomics.xlsx
+    mappings-path: /home/seth/longevity/clocks/organAging/sample_data_filbin/olink_reference.xlsx
+  datalinks:
+    - https://data.mendeley.com/datasets/nf853r8xsj/2

@@ -638,6 +638,171 @@ class OlinkDataParser:
         
         return geodata
 
+class FilbinOlinkParser:
+    def __init__(self, data):
+        """
+        Initialize the FilbinOlinkParser with paths to three Excel files.
+        
+        Args:
+            data (dict): Dictionary containing:
+                - metadata-path: Path to metadata Excel file
+                - proteomics-path: Path to proteomics Excel file  
+                - mappings-path: Path to olink mappings Excel file
+        """
+        if not data.get("metadata-path"):
+            raise ValueError("Parser not valid: missing metadata-path")
+        if not data.get("proteomics-path"):
+            raise ValueError("Parser not valid: missing proteomics-path")
+        if not data.get("mappings-path"):
+            raise ValueError("Parser not valid: missing mappings-path")
+            
+        self.metadata_path = data.get("metadata-path")
+        self.proteomics_path = data.get("proteomics-path")
+        self.mappings_path = data.get("mappings-path")
+        
+        # Age category mapping
+        self.age_mapping = {
+            1: "20-34",
+            2: "36-49", 
+            3: "50-64",
+            4: "65-79",
+            5: "80+"
+        }
+        
+    def parse(self, file_path=None):
+        """
+        Parse the three Excel files and create a GeoData object.
+        
+        Returns:
+            GeoData: Processed data in GeoData format
+        """
+        # 1. Load metadata - first sheet, Public ID and Age cat columns
+        metadata_df = pd.read_excel(
+            self.metadata_path, 
+            sheet_name=0,
+            usecols=['Public ID', 'Age cat']
+        )
+        metadata_df = metadata_df.rename(columns={'Public ID': 'PublicID', 'Age cat': 'AgeCat'})
+        metadata_df = metadata_df.set_index('PublicID')
+        
+        # 2. Load proteomics data - all columns except Day
+        proteomics_df = pd.read_excel(self.proteomics_path)
+        
+        # Remove Day column if it exists
+        if 'Day' in proteomics_df.columns:
+            proteomics_df = proteomics_df.drop('Day', axis=1)
+        
+        # Set Public ID as index
+        if 'Public ID' in proteomics_df.columns:
+            proteomics_df = proteomics_df.rename(columns={'Public ID': 'SampleID'})
+            proteomics_df = proteomics_df.set_index('SampleID')
+        else:
+            # Assume first column is the ID column
+            proteomics_df = proteomics_df.set_index(proteomics_df.columns[0])
+        
+        # 3. Load olink mappings - OlinkID and Assay columns from "2A-Olink-Assay" sheet
+        # Skip first row as data starts on second row
+        mappings_df = pd.read_excel(
+            self.mappings_path,
+            sheet_name='2A-Olink-Assay',
+            usecols=['OlinkID', 'Assay'],
+            skiprows=1
+        )
+        
+        # Create mapping dictionary from OlinkID to Assay (gene name)
+        olink_to_gene = dict(zip(mappings_df['OlinkID'], mappings_df['Assay']))
+        
+        # 4. Rename proteomics columns using mapping
+        new_columns = {}
+        for col in proteomics_df.columns:
+            if col in olink_to_gene:
+                new_columns[col] = olink_to_gene[col]
+            else:
+                # Keep original name if not in mapping
+                new_columns[col] = col
+        
+        proteomics_df = proteomics_df.rename(columns=new_columns)
+        
+        # Check for duplicate column names after mapping
+        duplicate_cols = proteomics_df.columns[proteomics_df.columns.duplicated()].unique()
+        if len(duplicate_cols) > 0:
+            print(f"Warning: Found duplicate columns after gene name mapping: {list(duplicate_cols)}")
+            print("Keeping only the first occurrence of each duplicate column.")
+            
+            # Keep only the first occurrence of duplicate columns
+            proteomics_df = proteomics_df.loc[:, ~proteomics_df.columns.duplicated(keep='first')]
+        
+        # 5. Handle sample-to-metadata mapping
+        # Sample names like 1_D0, 1_D3, 2_D0, etc.
+        # Extract metadata ID from sample names
+        expanded_metadata_rows = []
+        
+        for sample_id in proteomics_df.index:
+            # Parse sample ID to extract metadata ID
+            sample_str = str(sample_id)
+            
+            # Try to extract the numeric ID before the underscore
+            if '_' in sample_str:
+                metadata_id = int(sample_str.split('_')[0])
+            else:
+                # If no underscore, try to use the sample ID directly
+                try:
+                    metadata_id = int(sample_str)
+                except:
+                    # If can't parse, skip this sample
+                    continue
+            
+            # Find corresponding metadata row
+            if metadata_id in metadata_df.index:
+                # Create a copy of the metadata row for this sample
+                meta_row = metadata_df.loc[metadata_id].copy()
+                meta_row.name = sample_id  # Use the sample ID as the index
+                expanded_metadata_rows.append(meta_row)
+        
+        # Create new metadata dataframe with duplicated rows
+        if expanded_metadata_rows:
+            expanded_metadata = pd.DataFrame(expanded_metadata_rows)
+        else:
+            # Fallback: try direct matching
+            expanded_metadata = metadata_df.copy()
+        
+        # 6. Map Age cat to age_range
+        if 'AgeCat' in expanded_metadata.columns:
+            expanded_metadata['age_range'] = expanded_metadata['AgeCat'].map(self.age_mapping)
+            expanded_metadata = expanded_metadata.drop('AgeCat', axis=1)
+        
+        # 7. Align samples between proteomics and metadata
+        common_samples = proteomics_df.index.intersection(expanded_metadata.index)
+        
+        if len(common_samples) == 0:
+            # Try alternative alignment if sample IDs don't match exactly
+            print("Warning: No common samples found. Attempting alternative alignment...")
+            # This might need adjustment based on actual data format
+            common_samples = proteomics_df.index
+        
+        proteomics_aligned = proteomics_df.loc[common_samples]
+        metadata_aligned = expanded_metadata.loc[common_samples]
+        
+        # 8. Create GeoData object
+        # Create dummy methylation matrix as placeholder
+        dummy_methylation = pd.DataFrame(
+            index=['dummy_cpg'],
+            columns=proteomics_aligned.index,
+            data=0.5
+        )
+        
+        # Create GeoData object
+        geodata = GeoData.from_methylation_matrix(dummy_methylation)
+        
+        # Add proteomics data
+        geodata.protein_olink = proteomics_aligned
+        
+        # Add metadata
+        geodata.metadata = metadata_aligned
+        
+        return geodata
+
+
 class GeoMatrixParser:
     seperators = {"space": " ", "comma": ",", "tab": "\t"}
 
@@ -1016,6 +1181,8 @@ class DataSource:
             return ChallengeDataParser(parser_data)
         if parser_type == "olink-proteomics":
             return OlinkDataParser(parser_data)
+        if parser_type == "filbin-olink":
+            return FilbinOlinkParser(parser_data)
         raise ValueError(f"Unknown parser type: {parser_type}")
 
     def _show_work_needed_warning(self):
