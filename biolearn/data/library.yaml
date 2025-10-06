@@ -2108,8 +2108,8 @@ items:
   path: https://data.mendeley.com/datasets/nf853r8xsj/2
   parser:
     type: filbin-olink
-    metadata-path: /home/seth/longevity/clocks/organAging/sample_data_filbin/metadata.xlsx
-    proteomics-path: /home/seth/longevity/clocks/organAging/sample_data_filbin/proteomics.xlsx
-    mappings-path: /home/seth/longevity/clocks/organAging/sample_data_filbin/olink_reference.xlsx
+    metadata-path: https://storage.googleapis.com/biolearn/datasets/filbin-olink/metadata.xlsx
+    proteomics-path: https://storage.googleapis.com/biolearn/datasets/filbin-olink/proteomics.xlsx
+    mappings-path: https://storage.googleapis.com/biolearn/datasets/filbin-olink/olink_reference.xlsx
   datalinks:
     - https://data.mendeley.com/datasets/nf853r8xsj/2
