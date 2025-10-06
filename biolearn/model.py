@@ -30,43 +30,46 @@ def preprocess_pasta(df):
     )  # rank normalization
     return out
 
+
 def olink_standardization_preprocess(reference_sd_file):
     """
     Create a preprocessing function that standardizes Olink protein data
     to match reference standard deviations.
-    
+
     Parameters:
     -----------
     reference_sd_file : str
         Path to CSV file containing reference standard deviations.
         File should have 'protein' and 'sd' columns.
-    
+
     Returns:
     --------
     preprocess : function
         A preprocessing function that takes a DataFrame and returns
         a standardized DataFrame.
     """
-    
+
     def preprocess(df):
         reference_path = get_data_file(reference_sd_file)
         reference_df = pd.read_csv(reference_path)
-        reference_sds = reference_df.set_index('protein')['sd']
+        reference_sds = reference_df.set_index("protein")["sd"]
 
         # Make a copy to avoid modifying the original
         df_standardized = df.copy()
-        
+
         for col in df.columns:
             if col in reference_sds.index:
                 current_sd = df[col].std(ddof=1, skipna=True)
-                
+
                 if current_sd > 0:  # Avoid division by zero
-                    df_standardized[col] = (df[col] / current_sd) * reference_sds[col]
+                    df_standardized[col] = (
+                        df[col] / current_sd
+                    ) * reference_sds[col]
             else:
                 df_standardized[col] = np.nan
-        
+
         return df_standardized
-    
+
     return preprocess
 
 
@@ -661,7 +664,9 @@ model_definitions = {
         "output": "Mortality Risk by Organ",
         "model": {
             "type": "LinearMultipartProteomicModel",
-            "preprocess": olink_standardization_preprocess("reference/olink3000_deviations.csv"),
+            "preprocess": olink_standardization_preprocess(
+                "reference/olink3000_deviations.csv"
+            ),
             "file": "OrganAgeChronological.csv",
             "default_imputation": "none",
         },
@@ -674,7 +679,9 @@ model_definitions = {
         "output": "Age (Years) by Organ",
         "model": {
             "type": "LinearMultipartProteomicModel",
-            "preprocess": olink_standardization_preprocess("reference/olink3000_deviations.csv"),
+            "preprocess": olink_standardization_preprocess(
+                "reference/olink3000_deviations.csv"
+            ),
             "file": "OrganAgeMortality.csv",
             "default_imputation": "none",
         },
@@ -687,7 +694,9 @@ model_definitions = {
         "output": "Mortality Risk by Organ",
         "model": {
             "type": "LinearMultipartProteomicModel",
-            "preprocess": olink_standardization_preprocess("reference/olink1500_deviations.csv"),
+            "preprocess": olink_standardization_preprocess(
+                "reference/olink1500_deviations.csv"
+            ),
             "file": "OrganAge1500Chronological.csv",
             "default_imputation": "none",
         },
@@ -700,7 +709,9 @@ model_definitions = {
         "output": "Age (Years) by Organ",
         "model": {
             "type": "LinearMultipartProteomicModel",
-            "preprocess": olink_standardization_preprocess("reference/olink1500_deviations.csv"),
+            "preprocess": olink_standardization_preprocess(
+                "reference/olink1500_deviations.csv"
+            ),
             "file": "OrganAge1500Mortality.csv",
             "default_imputation": "none",
         },
@@ -1306,7 +1317,9 @@ class GrimageModel:
 
 
 class LinearMultipartProteomicModel:
-    def __init__(self, coefficient_file_or_df, transform, preprocess, **details):
+    def __init__(
+        self, coefficient_file_or_df, transform, preprocess, **details
+    ):
         self.details = details
         self.transform = transform
         self.preprocess = preprocess
@@ -1369,6 +1382,7 @@ class LinearMultipartProteomicModel:
 
     def methylation_sites(self):
         return []
+
 
 class SexEstimationModel:
     def __init__(self, coeffecient_file, **details):
@@ -1483,9 +1497,7 @@ class ImputationDecorator:
 
         geo_copy = geo_data.copy()
         geo_copy.dnam = dnam_data_imputed
-        return self.clock.predict(
-            geo_copy
-        )
+        return self.clock.predict(geo_copy)
 
     # Forwarding other methods and attributes to the clock
     def __getattr__(self, name):
