@@ -663,6 +663,7 @@ model_definitions = {
             "type": "LinearMultipartProteomicModel",
             "preprocess": olink_standardization_preprocess("reference/olink3000_deviations.csv"),
             "file": "OrganAgeChronological.csv",
+            "default_imputation": "none",
         },
     },
     "OrganAgeMortality": {
@@ -675,6 +676,7 @@ model_definitions = {
             "type": "LinearMultipartProteomicModel",
             "preprocess": olink_standardization_preprocess("reference/olink3000_deviations.csv"),
             "file": "OrganAgeMortality.csv",
+            "default_imputation": "none",
         },
     },
     "OrganAge1500Chronological": {
@@ -687,6 +689,7 @@ model_definitions = {
             "type": "LinearMultipartProteomicModel",
             "preprocess": olink_standardization_preprocess("reference/olink1500_deviations.csv"),
             "file": "OrganAge1500Chronological.csv",
+            "default_imputation": "none",
         },
     },
     "OrganAge1500Mortality": {
@@ -699,6 +702,7 @@ model_definitions = {
             "type": "LinearMultipartProteomicModel",
             "preprocess": olink_standardization_preprocess("reference/olink1500_deviations.csv"),
             "file": "OrganAge1500Mortality.csv",
+            "default_imputation": "none",
         },
     },
     "Bohlin": {
@@ -1474,7 +1478,6 @@ class ImputationDecorator:
         self.imputation_method = imputation_method
 
     def predict(self, geo_data):
-        # Impute missing values before prediction
         needed_cpgs = self.clock.methylation_sites()
         dnam_data_imputed = self.imputation_method(geo_data.dnam, needed_cpgs)
 

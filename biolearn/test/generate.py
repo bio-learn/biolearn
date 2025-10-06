@@ -65,6 +65,7 @@ if not is_file_valid(data_file_path, expected_hash):
         "parser": {
             "type": "geo-matrix",
             "id-row": 33,
+            "format": "",
             "metadata": {
                 "age": {"row": 47, "parse": "numeric"},
                 "sex": {"row": 41, "parse": "sex"},
