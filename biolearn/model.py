@@ -1300,14 +1300,10 @@ class ImputationDecorator:
         needed_cpgs = self.clock.methylation_sites()
         dnam_data_imputed = self.imputation_method(geo_data.dnam, needed_cpgs)
 
+        geo_copy = geo_data.copy()
+        geo_copy.dnam = dnam_data_imputed
         return self.clock.predict(
-            GeoData(
-                geo_data.metadata,
-                dnam_data_imputed,
-                geo_data.rna,
-                geo_data.protein_alamar,
-                geo_data.protein_olink
-            )
+            geo_copy
         )
 
     # Forwarding other methods and attributes to the clock
