@@ -24,7 +24,7 @@ challenge_data.dnam
 # The challenge data also has proteomic data
 # ---------------------------------------
 
-challenge_data.protein
+challenge_data.protein_alamar
 
 #############################################################################
 # You can learn more about what the protein identifies in our reference
