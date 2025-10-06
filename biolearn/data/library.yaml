@@ -2081,7 +2081,7 @@ items:
   samples: 159
   path: https://github.com/jackgisby/longitudinal_olink_proteomics
   parser:
-    type: olink-proteomics
+    type: gisby-olink
     protein-matrix-url: https://raw.githubusercontent.com/jackgisby/longitudinal_olink_proteomics/main/data/serum_npx_level.csv
     metadata-url: https://raw.githubusercontent.com/jackgisby/longitudinal_olink_proteomics/main/data/serum_sample_level.csv
     id-row: SampleID
@@ -2094,7 +2094,7 @@ items:
   samples: 256
   path: https://github.com/jackgisby/longitudinal_olink_proteomics
   parser:
-    type: olink-proteomics
+    type: gisby-olink
     protein-matrix-url: https://raw.githubusercontent.com/jackgisby/longitudinal_olink_proteomics/main/data/plasma_npx_level.csv
     metadata-url: https://raw.githubusercontent.com/jackgisby/longitudinal_olink_proteomics/main/data/plasma_sample_level.csv
     id-row: SampleID

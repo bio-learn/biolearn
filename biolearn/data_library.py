@@ -569,7 +569,7 @@ class ChallengeDataParser:
 
         return geodata
 
-class OlinkDataParser:
+class GisbyOlinkParser:
     def __init__(self, data):
         if not data.get("protein-matrix-url"):
             raise ValueError("Parser not valid: missing protein-matrix-url")
@@ -625,18 +625,8 @@ class OlinkDataParser:
         protein_matrix = protein_matrix.loc[common_samples]
         metadata = metadata.loc[common_samples]
         
-        # Create GeoData
-        dummy_methylation = pd.DataFrame(
-            index=['dummy_cpg'],
-            columns=protein_matrix.index,
-            data=0.5
-        )
-        
-        geodata = GeoData.from_methylation_matrix(dummy_methylation)
-        geodata.protein_olink = protein_matrix
-        geodata.metadata = metadata
-        
-        return geodata
+        return GeoData(metadata, protein_olink=protein_matrix)
+
 
 class FilbinOlinkParser:
     def __init__(self, data):
@@ -673,22 +663,18 @@ class FilbinOlinkParser:
         Returns:
             GeoData: Processed data in GeoData format
         """
-        # Load metadata
         metadata_df = pd.read_excel(
             self.metadata_path, 
             sheet_name=0,
             usecols=['Public ID', 'Age cat']
         ).rename(columns={'Public ID': 'PublicID', 'Age cat': 'AgeCat'}).set_index('PublicID')
         
-        # Load proteomics data
         proteomics_df = pd.read_excel(self.proteomics_path)
         proteomics_df = proteomics_df.drop(columns=['Day'], errors='ignore')
         
-        # Set index to Public ID or first column
         id_col = 'Public ID' if 'Public ID' in proteomics_df.columns else proteomics_df.columns[0]
         proteomics_df = proteomics_df.rename(columns={id_col: 'SampleID'}).set_index('SampleID')
         
-        # Load olink mappings
         mappings_df = pd.read_excel(
             self.mappings_path,
             sheet_name='2A-Olink-Assay',
@@ -1122,8 +1108,8 @@ class DataSource:
             return AutoScanGeoMatrixParser(parser_data)
         if parser_type == "biomarkers-challenge-2024":
             return ChallengeDataParser(parser_data)
-        if parser_type == "olink-proteomics":
-            return OlinkDataParser(parser_data)
+        if parser_type == "gisby-olink":
+            return GisbyOlinkParser(parser_data)
         if parser_type == "filbin-olink":
             return FilbinOlinkParser(parser_data)
         raise ValueError(f"Unknown parser type: {parser_type}")
