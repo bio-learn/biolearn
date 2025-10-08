@@ -28,6 +28,48 @@ def preprocess_pasta(df):
     return out
 
 
+def olink_standardization_preprocess(reference_sd_file):
+    """
+    Create a preprocessing function that standardizes Olink protein data
+    to match reference standard deviations.
+
+    Parameters:
+    -----------
+    reference_sd_file : str
+        Path to CSV file containing reference standard deviations.
+        File should have 'protein' and 'sd' columns.
+
+    Returns:
+    --------
+    preprocess : function
+        A preprocessing function that takes a DataFrame and returns
+        a standardized DataFrame.
+    """
+
+    def preprocess(df):
+        reference_path = get_data_file(reference_sd_file)
+        reference_df = pd.read_csv(reference_path)
+        reference_sds = reference_df.set_index("protein")["sd"]
+
+        # Make a copy to avoid modifying the original
+        df_standardized = df.copy()
+
+        for col in df.columns:
+            if col in reference_sds.index:
+                current_sd = df[col].std(ddof=1, skipna=True)
+
+                if current_sd > 0:  # Avoid division by zero
+                    df_standardized[col] = (
+                        df[col] / current_sd
+                    ) * reference_sds[col]
+            else:
+                df_standardized[col] = np.nan
+
+        return df_standardized
+
+    return preprocess
+
+
 CLOCK_FOUNDATION_USAGE = "For cosmetics or life insurance applications, contact UCLA TDG regarding licensing status. For all other commercial usage `contact the Clock Foundation <https://clockfoundation.org/contact-us/>`_."
 
 model_definitions = {
@@ -607,7 +649,11 @@ model_definitions = {
         "output": "Mortality Risk by Organ",
         "model": {
             "type": "LinearMultipartProteomicModel",
+            "preprocess": olink_standardization_preprocess(
+                "reference/olink3000_deviations.csv"
+            ),
             "file": "OrganAgeChronological.csv",
+            "default_imputation": "none",
         },
     },
     "OrganAgeMortality": {
@@ -618,7 +664,41 @@ model_definitions = {
         "output": "Age (Years) by Organ",
         "model": {
             "type": "LinearMultipartProteomicModel",
+            "preprocess": olink_standardization_preprocess(
+                "reference/olink3000_deviations.csv"
+            ),
             "file": "OrganAgeMortality.csv",
+            "default_imputation": "none",
+        },
+    },
+    "OrganAge1500Chronological": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.medrxiv.org/content/10.1101/2024.04.08.24305469v1",
+        "output": "Mortality Risk by Organ",
+        "model": {
+            "type": "LinearMultipartProteomicModel",
+            "preprocess": olink_standardization_preprocess(
+                "reference/olink1500_deviations.csv"
+            ),
+            "file": "OrganAge1500Chronological.csv",
+            "default_imputation": "none",
+        },
+    },
+    "OrganAge1500Mortality": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.medrxiv.org/content/10.1101/2024.04.08.24305469v1",
+        "output": "Age (Years) by Organ",
+        "model": {
+            "type": "LinearMultipartProteomicModel",
+            "preprocess": olink_standardization_preprocess(
+                "reference/olink1500_deviations.csv"
+            ),
+            "file": "OrganAge1500Mortality.csv",
+            "default_imputation": "none",
         },
     },
     "Bohlin": {
@@ -1056,8 +1136,12 @@ class GrimageModel:
 
 
 class LinearMultipartProteomicModel:
-    def __init__(self, coefficient_file_or_df, **details):
+    def __init__(
+        self, coefficient_file_or_df, transform, preprocess, **details
+    ):
         self.details = details
+        self.transform = transform
+        self.preprocess = preprocess
         if isinstance(coefficient_file_or_df, pd.DataFrame):
             self.coefficients = coefficient_file_or_df
         else:
@@ -1070,9 +1154,16 @@ class LinearMultipartProteomicModel:
 
     @classmethod
     def from_definition(cls, clock_definition):
-        file = clock_definition["model"]["file"]
-        params = {k: v for k, v in clock_definition.items() if k != "model"}
-        return cls(file, **params)
+        def no_transform(_):
+            return _
+
+        model_def = clock_definition["model"]
+        return cls(
+            model_def["file"],
+            model_def.get("transform", no_transform),
+            model_def.get("preprocess", no_transform),
+            **{k: v for k, v in clock_definition.items() if k != "model"},
+        )
 
     def predict(self, geo_data):
         mat = geo_data.protein_olink
@@ -1081,6 +1172,8 @@ class LinearMultipartProteomicModel:
                 "No olink proteomic data provided: 'geo_data.protein_olink' is None or empty."
             )
 
+        # Apply preprocessing
+        mat = self.preprocess(mat)
         results = {}
         for tissue, grp in self.coefficients.groupby("Tissue"):
             # intercept
@@ -1103,7 +1196,8 @@ class LinearMultipartProteomicModel:
             pred = aligned.dot(coef_ser) + intercept
             results[tissue] = pred
 
-        return pd.DataFrame(results)
+        # Apply transformation to results
+        return self.transform(pd.DataFrame(results))
 
     def methylation_sites(self):
         return []
@@ -1217,18 +1311,12 @@ class ImputationDecorator:
         self.imputation_method = imputation_method
 
     def predict(self, geo_data):
-        # Impute missing values before prediction
         needed_cpgs = self.clock.methylation_sites()
         dnam_data_imputed = self.imputation_method(geo_data.dnam, needed_cpgs)
 
-        return self.clock.predict(
-            GeoData(
-                geo_data.metadata,
-                dnam_data_imputed,
-                geo_data.rna,
-                geo_data.protein_alamar,
-            )
-        )
+        geo_copy = geo_data.copy()
+        geo_copy.dnam = dnam_data_imputed
+        return self.clock.predict(geo_copy)
 
     # Forwarding other methods and attributes to the clock
     def __getattr__(self, name):
