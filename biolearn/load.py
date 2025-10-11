@@ -2,6 +2,56 @@ import pandas as pd
 from biolearn.util import cached_download
 from pathlib import Path
 import gzip
+import warnings
+
+
+def verify_metadata_alignment(omics_dict, metadata):
+    """
+    Verify that metadata matches omics sample IDs.
+    - Adds missing metadata entries.
+    - Warns if metadata contains unmatched IDs.
+    
+    Parameters
+    ----------
+    omics_dict : dict[str, pd.DataFrame]
+        Dictionary of omics matrices keyed by modality (e.g. "rna", "methylation").
+        Each DataFrame should have sample IDs as index.
+    metadata : pd.DataFrame
+        Metadata with sample IDs as index.
+    
+    Returns
+    -------
+    metadata : pd.DataFrame
+        Updated metadata aligned with all omics matrices.
+    """
+
+    # Collect all sample IDs from omics
+    all_sample_ids = set()
+    for _, df in omics_dict.items():
+        all_sample_ids.update(df.index)
+
+    # Track missing metadata
+    missing_ids = all_sample_ids - set(metadata.index)
+    if missing_ids:
+        # Convert set to list (or sorted list) to avoid Pandas error
+        new_rows = pd.DataFrame(index=list(missing_ids), columns=metadata.columns)
+        metadata = pd.concat([metadata, new_rows])
+        warnings.warn(
+            f"{len(missing_ids)} metadata entries were missing. "
+            f"Blank rows added for: {list(missing_ids)[:5]}{'...' if len(missing_ids) > 5 else ''}"
+        )
+
+    # Track extra metadata
+    extra_ids = set(metadata.index) - all_sample_ids
+    if extra_ids:
+        warnings.warn(
+            f"{len(extra_ids)} metadata entries exist without matching omics samples. "
+            f"Examples: {list(extra_ids)[:5]}{'...' if len(extra_ids) > 5 else ''}"
+        )
+
+    return metadata
+
+
 
 MG_PER_DL_TO_MMOL_PER_L = 0.05551
 
@@ -181,6 +231,14 @@ def load_nhanes(year):
     else:
         df = pd.concat([dem, gluc, cbc, bioc, hdl, dead], axis=1).dropna()
     df.index.name = "id"
+    # Wrap omics tables into dictionary for verification
+    omics = {"dem": dem, "gluc": gluc, "cbc": cbc, "bioc": bioc, "hdl": hdl}
+    if year == 2010:
+        omics["crp"] = crp
+
+    # Verify metadata alignment
+    df = verify_metadata_alignment(omics, df)
+    # rename columns
     df = df.rename(
         {
             "RIDAGEYR": "age",
