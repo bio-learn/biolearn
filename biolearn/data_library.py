@@ -71,7 +71,9 @@ def build_column_mapping(matrix_file_path, from_key_line, to_key_line):
 
 def map_and_prune_columns(data, column_mapping):
     data = data.rename(columns=column_mapping)
-    data = data[[col for col in data.columns if col in column_mapping.values()]]
+    data = data[
+        [col for col in data.columns if col in column_mapping.values()]
+    ]
     return data
 
 
@@ -125,13 +127,19 @@ class QualityReport:
         )
 
         high_deviation_count = self.summary["samples_with_high_deviation"]
-        high_deviation_percentage = (high_deviation_count / total_samples) * 100
+        high_deviation_percentage = (
+            high_deviation_count / total_samples
+        ) * 100
         print(
             f"Samples With High Deviation: {high_deviation_count} ({high_deviation_percentage:.2f}%)"
         )
 
-        sites_with_missing_data = self.summary["sites_with_over_20_percent_missing"]
-        missing_data_sites_percentage = (sites_with_missing_data / total_sites) * 100
+        sites_with_missing_data = self.summary[
+            "sites_with_over_20_percent_missing"
+        ]
+        missing_data_sites_percentage = (
+            sites_with_missing_data / total_sites
+        ) * 100
         print(
             f"Methylation Sites With Over 20% of Reads Missing: {sites_with_missing_data} ({missing_data_sites_percentage:.2f}%)"
         )
@@ -300,7 +308,9 @@ class GeoData:
 
         # Summary calculations
         total_nan = methylation_data.isna().sum().sum()
-        sites_with_20_percent_nan = (methylation_data.isna().mean(axis=1) >= 0.2).sum()
+        sites_with_20_percent_nan = (
+            methylation_data.isna().mean(axis=1) >= 0.2
+        ).sum()
 
         summary = {
             "missing_data_points": total_nan,
@@ -326,9 +336,9 @@ class GeoData:
         """
         if isinstance(matrix, str):
             # If the input is a string, assume it's a file path and read the CSV
-            dnam = pd.read_csv(matrix, index_col=0, na_values=["NaN", "", " "]).apply(
-                pd.to_numeric, errors="coerce"
-            )
+            dnam = pd.read_csv(
+                matrix, index_col=0, na_values=["NaN", "", " "]
+            ).apply(pd.to_numeric, errors="coerce")
         elif isinstance(matrix, pd.DataFrame):
             # If the input is already a DataFrame, use it directly
             dnam = matrix.copy()
@@ -381,7 +391,9 @@ class GeoData:
                     )
                     part_df.to_csv(file_name)
             else:
-                file_name = os.path.join(folder_path, f"{name}_methylation_part1.csv")
+                file_name = os.path.join(
+                    folder_path, f"{name}_methylation_part1.csv"
+                )
                 self.dnam.to_csv(file_name)
 
         # Save RNA and protein data (if present)
@@ -389,10 +401,14 @@ class GeoData:
             rna_file = os.path.join(folder_path, f"{name}_rna.csv")
             self.rna.to_csv(rna_file)
         if self.protein_alamar is not None:
-            protein_file = os.path.join(folder_path, f"{name}_protein_alamar.csv")
+            protein_file = os.path.join(
+                folder_path, f"{name}_protein_alamar.csv"
+            )
             self.protein_alamar.to_csv(protein_file)
         if self.protein_olink is not None:
-            protein_file = os.path.join(folder_path, f"{name}_protein_olink.csv")
+            protein_file = os.path.join(
+                folder_path, f"{name}_protein_olink.csv"
+            )
             self.protein_olink.to_csv(protein_file)
 
     @classmethod
@@ -413,7 +429,9 @@ class GeoData:
         # Load metadata
         metadata_file = os.path.join(folder_path, f"{name}_metadata.csv")
         if os.path.exists(metadata_file):
-            metadata_df = pd.read_csv(metadata_file, index_col=0, keep_default_na=False)
+            metadata_df = pd.read_csv(
+                metadata_file, index_col=0, keep_default_na=False
+            )
         else:
             metadata_df = None
 
@@ -428,7 +446,9 @@ class GeoData:
             ]
             files_sorted = sorted(
                 files,
-                key=lambda f: int(f.split("methylation_part")[-1].split(".")[0]),
+                key=lambda f: int(
+                    f.split("methylation_part")[-1].split(".")[0]
+                ),
             )
             for fname in files_sorted:
                 part_df = pd.read_csv(
@@ -442,7 +462,9 @@ class GeoData:
             try:
                 part_number = int(series_part)
             except Exception:
-                raise ValueError("series_part must be 'all' or an integer value")
+                raise ValueError(
+                    "series_part must be 'all' or an integer value"
+                )
             fname = f"{name}_methylation_part{part_number}.csv"
             file_path = os.path.join(folder_path, fname)
             dnam_df = (
@@ -460,19 +482,27 @@ class GeoData:
         )
 
         # In case someone saved with legacy code
-        unspecified_proteomic_file = os.path.join(folder_path, f"{name}_protein.csv")
+        unspecified_proteomic_file = os.path.join(
+            folder_path, f"{name}_protein.csv"
+        )
         if os.path.exists(unspecified_proteomic_file):
             raise Exception(
                 "Unspecified source proteomic file found. Please rename to specified source (e.g. protein_alamar or protein_olink) before saving."
             )
-        protein_alamar_file = os.path.join(folder_path, f"{name}_protein_alamar.csv")
+        protein_alamar_file = os.path.join(
+            folder_path, f"{name}_protein_alamar.csv"
+        )
         protein_alamar_df = (
-            pd.read_csv(protein_alamar_file, index_col=0, skipinitialspace=True)
+            pd.read_csv(
+                protein_alamar_file, index_col=0, skipinitialspace=True
+            )
             if os.path.exists(protein_alamar_file)
             else None
         )
 
-        protein_olink_file = os.path.join(folder_path, f"{name}_protein_olink.csv")
+        protein_olink_file = os.path.join(
+            folder_path, f"{name}_protein_olink.csv"
+        )
         protein_olink_df = (
             pd.read_csv(protein_olink_file, index_col=0, skipinitialspace=True)
             if os.path.exists(protein_olink_file)
@@ -504,9 +534,13 @@ class JenAgeCustomParser:
         jen1_url = "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE103nnn/GSE103232/suppl/GSE103232%5Fhs%5Fblood%5Fbatch2%5Fcounts%5Frpkm.xls.gz"
         response1 = requests.get(jen1_url)
         with gzip.open(BytesIO(response1.content)) as f:
-            jen1 = pd.read_excel(f, index_col=0, engine="xlrd")  # Specify engine
+            jen1 = pd.read_excel(
+                f, index_col=0, engine="xlrd"
+            )  # Specify engine
 
-        jen1 = jen1.drop(["external_gene_id", "description", "gene_biotype"], axis=1)
+        jen1 = jen1.drop(
+            ["external_gene_id", "description", "gene_biotype"], axis=1
+        )
         jen1 = jen1[jen1.sum(1) > 0].T
 
         # Age is in a 5 year range so we add 2 to the low number to get closer to the average
@@ -522,16 +556,22 @@ class JenAgeCustomParser:
         jen2_url = "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE75nnn/GSE75337/suppl/GSE75337%5Fcounts%5FRPKMs.xls.gz"
         response2 = requests.get(jen2_url)
         with gzip.open(BytesIO(response2.content)) as f:
-            jen2 = pd.read_excel(f, index_col=0, engine="xlrd")  # Specify engine
+            jen2 = pd.read_excel(
+                f, index_col=0, engine="xlrd"
+            )  # Specify engine
 
         jen2.columns = jen2.columns.str.strip(" ")
-        jen2 = jen2.drop(["external_gene_id", "description", "gene_biotype"], axis=1)
+        jen2 = jen2.drop(
+            ["external_gene_id", "description", "gene_biotype"], axis=1
+        )
         jen2 = jen2[[c for c in jen2.columns if "blood" in c]]
         jen2 = jen2[jen2.sum(1) > 0].T
 
         # Age is in a 5 year range so we add 2 to the low number to get closer to the average
         age2 = jen2_meta.iloc[8].str[5:7].astype(int) + 2
-        jen2 = jen2.merge(age2.rename("age"), left_index=True, right_index=True)
+        jen2 = jen2.merge(
+            age2.rename("age"), left_index=True, right_index=True
+        )
 
         # Build GeoData
         jen = pd.concat([jen1, jen2], ignore_index=True, join="inner").copy()
@@ -601,13 +641,17 @@ class GisbyOlinkParser:
 
         # Handle duplicate genes across panels
         gene_panel_counts = protein_long.groupby("GeneID")["Panel"].nunique()
-        duplicated_genes = gene_panel_counts[gene_panel_counts > 1].index.tolist()
+        duplicated_genes = gene_panel_counts[
+            gene_panel_counts > 1
+        ].index.tolist()
 
         if duplicated_genes:
             protein_long["Gene_Unique"] = protein_long["GeneID"]
             mask = protein_long["GeneID"].isin(duplicated_genes)
             protein_long.loc[mask, "Gene_Unique"] = (
-                protein_long.loc[mask, "GeneID"] + "_" + protein_long.loc[mask, "Panel"]
+                protein_long.loc[mask, "GeneID"]
+                + "_"
+                + protein_long.loc[mask, "Panel"]
             )
             gene_column = "Gene_Unique"
         else:
@@ -697,9 +741,9 @@ class FilbinOlinkParser:
             if "Public ID" in proteomics_df.columns
             else proteomics_df.columns[0]
         )
-        proteomics_df = proteomics_df.rename(columns={id_col: "SampleID"}).set_index(
-            "SampleID"
-        )
+        proteomics_df = proteomics_df.rename(
+            columns={id_col: "SampleID"}
+        ).set_index("SampleID")
 
         mappings_df = pd.read_excel(
             self.mappings_path,
@@ -711,7 +755,9 @@ class FilbinOlinkParser:
         # Create mapping and track gene-to-OlinkIDs for duplicates
         olink_to_gene = dict(zip(mappings_df["OlinkID"], mappings_df["Assay"]))
         gene_to_olinks = {}
-        for olink_id, gene in zip(mappings_df["OlinkID"], mappings_df["Assay"]):
+        for olink_id, gene in zip(
+            mappings_df["OlinkID"], mappings_df["Assay"]
+        ):
             gene_to_olinks.setdefault(gene, []).append(olink_id)
 
         # Rename columns and track which OlinkIDs are in the data
@@ -764,9 +810,13 @@ class FilbinOlinkParser:
             expanded_metadata = expanded_metadata.drop(columns=["AgeCat"])
 
         # Align samples
-        common_samples = proteomics_df.index.intersection(expanded_metadata.index)
+        common_samples = proteomics_df.index.intersection(
+            expanded_metadata.index
+        )
         if len(common_samples) == 0:
-            print("Warning: No common samples found. Using all proteomics samples.")
+            print(
+                "Warning: No common samples found. Using all proteomics samples."
+            )
             common_samples = proteomics_df.index
 
         proteomics_aligned = proteomics_df.loc[common_samples]
@@ -798,7 +848,9 @@ class GeoMatrixParser:
             matrix_data = pd.read_table(
                 file_path, index_col=0, skiprows=self.matrix_start - 1
             )
-            matrix_data = matrix_data.drop(["!series_matrix_table_end"], axis=0)
+            matrix_data = matrix_data.drop(
+                ["!series_matrix_table_end"], axis=0
+            )
             matrix_data.index.name = "id"
         elif self.matrix_file:
             matrix_file_path = cached_download(self.matrix_file)
@@ -817,11 +869,15 @@ class GeoMatrixParser:
                 pval_df = pval_df.map(lambda x: np.nan if x > 0.05 else 0)
                 # NaN values in pval_df will cause corresponding values in methylation_df to be NaN
                 matrix_data = reading_df + pval_df.values
-                matrix_data = self._remap_and_prune_columns(matrix_data, file_path)
+                matrix_data = self._remap_and_prune_columns(
+                    matrix_data, file_path
+                )
 
             elif self.matrix_file_format == "standard":
                 matrix_data = df
-                matrix_data = self._remap_and_prune_columns(matrix_data, file_path)
+                matrix_data = self._remap_and_prune_columns(
+                    matrix_data, file_path
+                )
 
             else:
                 raise ValueError(
@@ -860,12 +916,15 @@ class GeoMatrixParser:
                 column_mapping = {v: k for k, v in column_mapping.items()}
 
         data = data.rename(columns=column_mapping)
-        data = data[[col for col in data.columns if col in column_mapping.values()]]
+        data = data[
+            [col for col in data.columns if col in column_mapping.values()]
+        ]
         return data
 
     def _metadata_load_list(self):
         load_list = [
-            (key, self.metadata[key]["row"] - 1) for key in self.metadata.keys()
+            (key, self.metadata[key]["row"] - 1)
+            for key in self.metadata.keys()
         ]
         load_list.sort(key=lambda x: x[1])
         return load_list
@@ -911,10 +970,13 @@ class AutoScanGeoMatrixParser:
             else:
                 return item["value"].split(":")[1]
 
-        characteristics = sample["entity"]["sample"]["channels"][0]["characteristics"]
+        characteristics = sample["entity"]["sample"]["channels"][0][
+            "characteristics"
+        ]
 
         return {
-            extract_key(char).lower(): extract_value(char) for char in characteristics
+            extract_key(char).lower(): extract_value(char)
+            for char in characteristics
         }
 
     def _convert_characteristics_to_df_cols_data(self, metadata_keys, item):
@@ -933,7 +995,9 @@ class AutoScanGeoMatrixParser:
                     else:
                         cols_data.append(extract_informal_age(characteristics))
                 else:
-                    cols_data.append(extract_numeric(characteristics.get(key, "")))
+                    cols_data.append(
+                        extract_numeric(characteristics.get(key, ""))
+                    )
             else:
                 cols_data.append(characteristics.get(key))
 
@@ -977,7 +1041,9 @@ class AutoScanGeoMatrixParser:
 
         row_num = self._get_matrix_table_row_num(matrix_file_path)
 
-        matrix_data = pd.read_table(matrix_file_path, index_col=0, skiprows=row_num)
+        matrix_data = pd.read_table(
+            matrix_file_path, index_col=0, skiprows=row_num
+        )
         matrix_data = matrix_data.drop(["!series_matrix_table_end"], axis=0)
         matrix_data.index.name = "id"
 
@@ -1015,7 +1081,9 @@ class AutoScanGeoMatrixParser:
         metadata = self._create_metadata(self.metadata_query_url)
         matrix = self._create_matrix(self.matrix_file)
         if matrix is None or matrix.empty:
-            raise NoMatrixDataError(f"Series {metadata['id']} has no matrix data")
+            raise NoMatrixDataError(
+                f"Series {metadata['id']} has no matrix data"
+            )
 
         return GeoData(metadata, matrix)
 
@@ -1095,12 +1163,16 @@ class DataSource:
         if self.tags and "work_needed" in self.tags:
             self._show_work_needed_warning()
 
-        cached = self.cache.get(self.id, self.CACHE_CATEGORY, self.CACHE_VERSION)
+        cached = self.cache.get(
+            self.id, self.CACHE_CATEGORY, self.CACHE_VERSION
+        )
         if cached is not None:
             return cached
 
         data = self.parser.parse(self.path)
-        self.cache.store(self.id, data, self.CACHE_CATEGORY, self.CACHE_VERSION)
+        self.cache.store(
+            self.id, data, self.CACHE_CATEGORY, self.CACHE_VERSION
+        )
         return data
 
     def __repr__(self):
@@ -1149,7 +1221,8 @@ def parse_library_file(library_file, cache=None):
         raise ValueError("File must be YAML format with 'items' at root")
     if "items" in data:
         data_sources = [
-            DataSource(item, cache if cache else NoCache()) for item in data["items"]
+            DataSource(item, cache if cache else NoCache())
+            for item in data["items"]
         ]
         return data_sources
     else:
@@ -1333,9 +1406,9 @@ class DataLibrary:
                                 sex_str = "unknown"
                             else:
                                 sex_str = sex_lower
-                        elif isinstance(raw_sex, (int, float)) and not math.isnan(
-                            raw_sex
-                        ):
+                        elif isinstance(
+                            raw_sex, (int, float)
+                        ) and not math.isnan(raw_sex):
                             # Handle numeric encoding
                             sex_map = {
                                 0: "female",  # Standard
