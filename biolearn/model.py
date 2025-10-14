@@ -1679,7 +1679,7 @@ class HurdleAPIModel:
 
     Requires API credentials from https://dashboard.hurdle.bio/register
     Navigate to Developer > API keys after registration.
-    
+    """
 
     # API Configuration
     SANDBOX_BASE_URL = "https://api.sandbox.hurdle.bio"
@@ -1913,9 +1913,6 @@ class HurdleAPIModel:
             raise Exception(f"Network error: {str(e)}")
         except Exception as e:
             raise Exception(f"API error: {str(e)}")
-
-
-class ImputationDecorator:
 
 
 class ImputationDecorator:
