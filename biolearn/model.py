@@ -6,10 +6,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from sklearn.linear_model import LinearRegression
-import tensorflow as tf
-from tensorflow.keras.models import load_model
-from tensorflow.keras.losses import MeanSquaredError
-
 
 from biolearn.data_library import GeoData
 from biolearn.dunedin_pace import dunedin_pace_normalization
@@ -542,7 +538,7 @@ model_definitions = {
         "model": {
             "type": "AltumAgeModel",
             "file": "AltumAge.csv",
-            "weights": "AltumAge.h5",
+            "weights": "AltumAge.pt",
         },
     },
     "HepatoXu": {
@@ -745,18 +741,17 @@ class AltumAgeNeuralNetwork(nn.Module):
 
 
 class AltumAgeModel:
-    def __init__(self, tf_model_path=None, preprocess_file_path=None):
+    def __init__(self, weights_path=None, preprocess_file_path=None):
         self.model = AltumAgeNeuralNetwork()
         self.model.eval()
-
-        if tf_model_path:
-            # Load TensorFlow model and copy weights to PyTorch model
-            self.load_tf_weights(tf_model_path)
+        self._weights_loaded = False
+        self.center = None
+        self.scale = None
+        self.reference = None
 
         if preprocess_file_path:
-            # Resolve the full path to the preprocessing file
-            preprocess_file_path = get_data_file(preprocess_file_path)
-            # Load preprocessing dependencies (center and scale) from the CSV file
+            if not os.path.isabs(preprocess_file_path):
+                preprocess_file_path = get_data_file(preprocess_file_path)
             preprocess_df = pd.read_csv(
                 preprocess_file_path, index_col=0
             )  # Ensure CpG_site is the index
@@ -770,67 +765,30 @@ class AltumAgeModel:
                 preprocess_df.index.tolist()
             )  # Convert index to a list of CpG site names
 
-    def load_tf_weights(self, tf_model_path):
-        """
-        Loads weights from a TensorFlow model and copies them to the PyTorch model.
+        if weights_path:
+            self.load_pytorch_weights(weights_path)
 
-        Args:
-            tf_model_path (str): Path to the TensorFlow model file (.h5).
-        """
-        # Load the TensorFlow model with custom_objects
-        tf_model = load_model(
-            tf_model_path, custom_objects={"mse": MeanSquaredError()}
-        )
-
-        weights = {
-            layer.name: layer.get_weights() for layer in tf_model.layers
-        }
-
-        # Function to copy weights from TensorFlow to PyTorch
-        def copy_weights(torch_layer, tf_weights, bn=False):
-            with torch.no_grad():
-                if bn:
-                    torch_layer.weight.data = torch.tensor(
-                        tf_weights[0]
-                    ).float()
-                    torch_layer.bias.data = torch.tensor(tf_weights[1]).float()
-                    torch_layer.running_mean.data = torch.tensor(
-                        tf_weights[2]
-                    ).float()
-                    torch_layer.running_var.data = torch.tensor(
-                        tf_weights[3]
-                    ).float()
-                else:
-                    torch_layer.weight.data = torch.tensor(
-                        tf_weights[0]
-                    ).T.float()
-                    torch_layer.bias.data = torch.tensor(tf_weights[1]).float()
-
-        # Copy weights to the PyTorch model
-        copy_weights(
-            self.model.bn1, weights["batch_normalization_84"], bn=True
-        )
-        copy_weights(self.model.linear1, weights["dense_84"])
-        copy_weights(
-            self.model.bn2, weights["batch_normalization_85"], bn=True
-        )
-        copy_weights(self.model.linear2, weights["dense_85"])
-        copy_weights(
-            self.model.bn3, weights["batch_normalization_86"], bn=True
-        )
-        copy_weights(self.model.linear3, weights["dense_86"])
-        copy_weights(
-            self.model.bn4, weights["batch_normalization_87"], bn=True
-        )
-        copy_weights(self.model.linear4, weights["dense_87"])
-        copy_weights(
-            self.model.bn5, weights["batch_normalization_88"], bn=True
-        )
-        copy_weights(self.model.linear5, weights["dense_88"])
-        copy_weights(
-            self.model.bn6, weights["batch_normalization_89"], bn=True
-        )
-        copy_weights(self.model.linear6, weights["dense_89"])
+    def load_pytorch_weights(self, weights_path: str):
+        p = weights_path
+        if not os.path.isabs(p):
+            p = get_data_file(p)
+        if not os.path.exists(p):
+            print(
+                f"Warning: Weights file {p} does not exist. Model will be initialized with random weights."
+            )
+            self._weights_loaded = False
+            return
+        sd = torch.load(p, map_location="cpu", weights_only=False)
+        if isinstance(sd, dict) and "state_dict" in sd:
+            sd = sd["state_dict"]
+        elif (
+            isinstance(sd, dict)
+            and "model" in sd
+            and isinstance(sd["model"], dict)
+        ):
+            sd = sd["model"]
+        self.model.load_state_dict(sd, strict=True)
+        self._weights_loaded = True
 
     def predict(self, geo_data):
         """
@@ -842,11 +800,21 @@ class AltumAgeModel:
         Returns:
             pd.DataFrame: Predictions from the model with a column named "Predicted".
         """
+        if self.reference is None or self.center is None or self.scale is None:
+            raise RuntimeError("AltumAge preprocessing parameters missing.")
+        if not self._weights_loaded:
+            raise RuntimeError(
+                "AltumAge used without loaded weights. Please provide AltumAge.pt file."
+            )
         # Access the DNA methylation data from the GeoData object
         df = geo_data.dnam.fillna(0)
         # Ensure the input DataFrame contains all required CpG sites
         required_cpgs = self.methylation_sites()
         missing_cpgs = set(required_cpgs) - set(df.index)
+        if missing_cpgs:
+            print(
+                f"{len(missing_cpgs)} CpGs missing in input; filling with 0."
+            )
 
         # Align input data with the reference CpG sites
         df = df.reindex(
@@ -881,11 +849,14 @@ class AltumAgeModel:
 
         # Extract the file path for preprocessing
         preprocess_file = get_data_file(model_def["file"])
-        tf_data_file = get_data_file(model_def["weights"])
+        weights_path = None
 
-        # Create an instance of AltumAgeModel with the preprocessing file
+        try:
+            weights_path = get_data_file(model_def["weights"])
+        except Exception:
+            weights_path = None
         return cls(
-            preprocess_file_path=preprocess_file, tf_model_path=tf_data_file
+            weights_path=weights_path, preprocess_file_path=preprocess_file
         )
 
     def methylation_sites(self):
