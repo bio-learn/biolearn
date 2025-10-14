@@ -126,11 +126,11 @@ class TestHurdleAPIModel:
         gallery = ModelGallery()
 
         # Check that model is in definitions
-        assert "HurdleInflammage" in gallery.model_definitions
+        assert "HurdleInflammAge" in gallery.model_definitions
 
         # Test loading with API key
         with patch.dict(os.environ, {"HURDLE_API_KEY": "test_key"}):
-            model = gallery.get("HurdleInflammage")
+            model = gallery.get("HurdleInflammAge")
             assert isinstance(model, HurdleAPIModel)
 
     @patch("builtins.input", return_value="yes")

@@ -1,9 +1,19 @@
-# Using Hurdle's Inflammage Model in Biolearn
+# Using Hurdle's InflammAge Model in Biolearn
+
+## Non-Commercial Use Only
+
+**Important Notice:**
+This inflammaging calculation is provided for personal and educational purposes only.
+
+Any commercial use, distribution, or resale of this information is strictly prohibited without prior written agreement from Chronomics Limited. See https://hurdle.bio/ for further commercial information.
+
+---
 
 ## Quick Start
 
 1. **Get API Credentials**
-   - Register at: https://dashboard.sandbox.hurdle.bio/register/partner
+   - Register at: https://dashboard.hurdle.bio/register
+   - Navigate to Developer > API keys
    - Save your API key securely
 
 2. **Set Up Your API Key**
@@ -16,13 +26,13 @@
    from biolearn.model_gallery import ModelGallery
    
    gallery = ModelGallery()
-   model = gallery.get("HurdleInflammage")
+   model = gallery.get("HurdleInflammAge")
    
    # Make predictions
    predictions = model.predict(methylation_data)
    ```
 
-## Important Privacy Notice
+## Privacy Notice
 
 ⚠️ **Data Privacy Warning**: Using this model will send your methylation data to Hurdle Bio's servers. You will be asked for explicit consent before any data is transmitted. Ensure you have permission to share genomic data with third parties.
 
@@ -30,9 +40,9 @@
 
 ### Getting Your API Key
 
-1. Visit https://dashboard.sandbox.hurdle.bio/register/partner
+1. Visit https://dashboard.hurdle.bio/register
 2. Create an account
-3. Navigate to API Keys section
+3. Navigate to Developer > API keys
 4. Generate a new API key
 5. Store it securely (never commit to version control)
 
@@ -62,7 +72,7 @@ data = DataLibrary().get("YourDataset").load()
 
 # Get model
 gallery = ModelGallery()
-model = gallery.get("HurdleInflammage")
+model = gallery.get("HurdleInflammAge")
 
 # Make predictions (you'll be asked for consent)
 predictions = model.predict(data.dnam)
@@ -70,10 +80,22 @@ predictions = model.predict(data.dnam)
 
 ### With Metadata
 ```python
-# If your data includes age and sex information
-# The model will use this for more accurate predictions
+# If your data includes age and sex information,
+# the model will use this for more accurate predictions
 predictions = model.predict(data)  # Uses both dnam and metadata
 ```
+
+## Data Requirements
+
+- **Input**: DNA methylation beta values (0-1 range)
+- **Format**: Pandas DataFrame with CpG sites as rows, samples as columns
+- **Tissue**: Blood samples recommended
+- **CpG Sites**: Requires specific CpG sites; missing sites are automatically imputed with 0.5
+- **Optional**: Age and sex metadata improve accuracy
+
+### Missing Value Handling
+
+The model requires approximately 62,000 specific CpG sites. If your data is missing some of these sites, they will be automatically imputed with a default value of 0.5 (the midpoint of the methylation range). You'll receive a warning indicating how many sites were imputed.
 
 ## Troubleshooting
 
@@ -85,48 +107,42 @@ predictions = model.predict(data)  # Uses both dnam and metadata
 
 **"Failed to get upload URL: 401"**
 - Your API key may be invalid or expired
-- Check you're using the correct environment (sandbox vs production)
+- Verify you're using a production API key from https://dashboard.hurdle.bio
 
 **"No required CpG sites found in data"**
-- Your methylation data doesn't contain the CpG sites Hurdle requires
-- Contact Hurdle Bio for their required CpG sites list
+- Your methylation data doesn't contain any of the required CpG sites
+- Ensure your data uses Illumina array probe IDs (e.g., "cg00000029")
+
+**"User consent required to send data to external API"**
+- You must type "yes" when prompted to consent to sending data
+- This ensures you're aware that data will be transmitted to external servers
 
 **Network Errors**
 - Check your internet connection
 - Verify firewall settings allow HTTPS connections to hurdle.bio
 
-## Data Requirements
-
-- **Input**: DNA methylation beta values (0-1 range)
-- **Format**: Pandas DataFrame with CpG sites as rows, samples as columns
-- **Tissue**: Blood samples recommended
-- **Optional**: Age and sex metadata improve accuracy
-
-## Sandbox vs Production
-
-By default, the model uses Hurdle's sandbox environment for testing:
-
-```python
-# Sandbox (default)
-model = gallery.get("HurdleInflammage")
-
-# Production (requires production API key)
-model = HurdleAPIModel(api_key="prod_key", use_production=True)
-```
-
 ## Best Practices
 
-1. **Test First**: Use sandbox environment before production
-2. **Batch Processing**: For large datasets, process in smaller batches
+1. **Test First**: Verify your API credentials work with a small subset of samples
+2. **Batch Processing**: For large datasets, consider processing in smaller batches
 3. **Error Handling**: Always wrap API calls in try-except blocks
-4. **Data Security**: Ensure you have consent to share genomic data
+4. **Data Security**: Ensure you have consent to share genomic data before using this model
+5. **Save Results**: Cache predictions locally to avoid redundant API calls
 
 ## Support
 
-- **Biolearn Issues**: Open an issue on the biolearn GitHub repository
-- **API Access**: Contact Hurdle Bio support
-- **Commercial Use**: Contact Hurdle Bio for licensing
+- **Biolearn Issues**: Open an issue on the [biolearn GitHub repository](https://github.com/bio-learn/biolearn)
+- **API Access**: Contact Hurdle Bio support via https://hurdle.bio
+- **Commercial Use**: Contact Chronomics Limited for licensing inquiries
 
 ## Example Script
 
 See `examples/hurdle_api_example.py` for a complete working example.
+
+## Technical Details
+
+- **Model Type**: Third-party API integration
+- **Output**: InflammAge score (inflammation-based biological age)
+- **API Endpoint**: https://api.hurdle.bio/predict/v1/
+- **Timeout**: 30 seconds default
+- **Consent**: Required once per session
