@@ -5,7 +5,6 @@ from collections import defaultdict
 import numpy as np
 from biolearn import model
 from biolearn.util import (
-    get_data_file,
     get_test_data_file,
     load_test_data_file,
 )
@@ -31,15 +30,6 @@ def test_models(model_name, model_entry):
         pytest.skip(
             f"Model type {model_type} for {model_name} does not have a testing pattern - skipping test"
         )
-
-    if model_type == "AltumAgeModel":
-        weights_key = model_entry["model"].get("weights")
-        if not weights_key:
-            pytest.skip("AltumAge weights path not specified; skipping.")
-        try:
-            _ = get_data_file(weights_key)
-        except Exception:
-            pytest.skip("AltumAge weights not available; skipping.")
 
     test_data = GeoData.load_csv(get_test_data_file("testset/"), "testset")
 
