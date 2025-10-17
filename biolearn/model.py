@@ -2,6 +2,9 @@ import os
 import cvxpy as cp
 import numpy as np
 import pandas as pd
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
 from sklearn.linear_model import LinearRegression
 
 from biolearn.data_library import GeoData
@@ -568,6 +571,18 @@ model_definitions = {
             "file": "ProstateCancerKirby.csv",
         },
     },
+    "AltumAge": {
+        "year": 2022,
+        "species": "Human",
+        "tissue": "Multi-tissue",
+        "source": "https://doi.org/10.1038/s41514-022-00085-y",
+        "output": "Age (Years)",
+        "model": {
+            "type": "AltumAgeModel",
+            "file": "AltumAge.csv",
+            "weights": "AltumAge.pt",
+        },
+    },
     "HepatoXu": {
         "year": 2017,
         "species": "Human",
@@ -760,6 +775,172 @@ model_definitions = {
         },
     },
 }
+
+
+class AltumAgeNeuralNetwork(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.linear1 = nn.Linear(20318, 32)
+        self.linear2 = nn.Linear(32, 32)
+        self.linear3 = nn.Linear(32, 32)
+        self.linear4 = nn.Linear(32, 32)
+        self.linear5 = nn.Linear(32, 32)
+        self.linear6 = nn.Linear(32, 1)
+
+        self.bn1 = nn.BatchNorm1d(20318, eps=0.001, momentum=0.99)
+        self.bn2 = nn.BatchNorm1d(32, eps=0.001, momentum=0.99)
+        self.bn3 = nn.BatchNorm1d(32, eps=0.001, momentum=0.99)
+        self.bn4 = nn.BatchNorm1d(32, eps=0.001, momentum=0.99)
+        self.bn5 = nn.BatchNorm1d(32, eps=0.001, momentum=0.99)
+        self.bn6 = nn.BatchNorm1d(32, eps=0.001, momentum=0.99)
+
+    def forward(self, x):
+        x = self.bn1(x)
+        x = self.linear1(x)
+        x = F.selu(x)
+
+        x = self.bn2(x)
+        x = self.linear2(x)
+        x = F.selu(x)
+
+        x = self.bn3(x)
+        x = self.linear3(x)
+        x = F.selu(x)
+
+        x = self.bn4(x)
+        x = self.linear4(x)
+        x = F.selu(x)
+
+        x = self.bn5(x)
+        x = self.linear5(x)
+        x = F.selu(x)
+
+        x = self.bn6(x)
+        x = self.linear6(x)
+        return x
+
+
+class AltumAgeModel:
+    def __init__(self, weights_path=None, preprocess_file_path=None):
+        self.model = AltumAgeNeuralNetwork()
+        self.model.eval()
+        self._weights_loaded = False
+        self.center = None
+        self.scale = None
+        self.reference = None
+
+        if preprocess_file_path:
+            if not os.path.isabs(preprocess_file_path):
+                preprocess_file_path = get_data_file(preprocess_file_path)
+            preprocess_df = pd.read_csv(
+                preprocess_file_path, index_col=0
+            )  # Ensure CpG_site is the index
+            self.center = torch.tensor(
+                preprocess_df["center"].values, dtype=torch.float32
+            )
+            self.scale = torch.tensor(
+                preprocess_df["scale"].values, dtype=torch.float32
+            )
+            self.reference = (
+                preprocess_df.index.tolist()
+            )  # Convert index to a list of CpG site names
+
+        if weights_path:
+            self.load_pytorch_weights(weights_path)
+
+    def load_pytorch_weights(self, weights_path: str):
+        p = weights_path
+        if not os.path.isabs(p):
+            p = get_data_file(p)
+        if not os.path.exists(p):
+            print(
+                f"Warning: Weights file {p} does not exist. Model will be initialized with random weights."
+            )
+            self._weights_loaded = False
+            return
+        sd = torch.load(p, map_location="cpu", weights_only=False)
+        if isinstance(sd, dict) and "state_dict" in sd:
+            sd = sd["state_dict"]
+        elif (
+            isinstance(sd, dict)
+            and "model" in sd
+            and isinstance(sd["model"], dict)
+        ):
+            sd = sd["model"]
+        self.model.load_state_dict(sd, strict=True)
+        self._weights_loaded = True
+
+    def predict(self, geo_data):
+        """
+        Predicts the output using the AltumAgeModel.
+
+        Args:
+            geo_data (GeoData): A GeoData object containing metadata and dnam attributes.
+
+        Returns:
+            pd.DataFrame: Predictions from the model with a column named "Predicted".
+        """
+        if self.reference is None or self.center is None or self.scale is None:
+            raise RuntimeError("AltumAge preprocessing parameters missing.")
+        if not self._weights_loaded:
+            raise RuntimeError(
+                "AltumAge used without loaded weights. Please provide AltumAge.pt file."
+            )
+        # Access the DNA methylation data from the GeoData object
+        df = geo_data.dnam.fillna(0)
+        # Ensure the input DataFrame contains all required CpG sites
+        required_cpgs = self.methylation_sites()
+        missing_cpgs = set(required_cpgs) - set(df.index)
+        if missing_cpgs:
+            print(
+                f"{len(missing_cpgs)} CpGs missing in input; filling with 0."
+            )
+
+        # Align input data with the reference CpG sites
+        df = df.reindex(
+            self.reference, fill_value=0
+        )  # Fill missing CpG sites with 0
+
+        # # Convert input DataFrame to a PyTorch tensor
+        X = torch.tensor(
+            df.values.T, dtype=torch.float32
+        )  # Transpose to match sample orientation
+
+        if self.center is not None and self.scale is not None:
+            # Scale the input using the center and scale values
+            X = (X - self.center) / (self.scale + 1e-8)
+        # Pass the preprocessed input through the neural network
+        with torch.no_grad():
+            preds = self.model(X).squeeze().numpy()
+
+        # Return predictions as a DataFrame
+        return pd.DataFrame(preds, index=df.columns, columns=["Predicted"])
+
+    @classmethod
+    def from_definition(cls, clock_definition):
+        """
+        Creates an instance of AltumAgeModel from a model definition.
+        Args:
+            clock_definition (dict): The model definition containing file paths.
+        Returns:
+            AltumAgeModel: An instance of the AltumAgeModel class.
+        """
+        model_def = clock_definition["model"]
+
+        # Extract the file path for preprocessing
+        preprocess_file = get_data_file(model_def["file"])
+        weights_path = None
+
+        try:
+            weights_path = get_data_file(model_def["weights"])
+        except Exception:
+            weights_path = None
+        return cls(
+            weights_path=weights_path, preprocess_file_path=preprocess_file
+        )
+
+    def methylation_sites(self):
+        return list(self.reference)
 
 
 def quantile_normalize(df):

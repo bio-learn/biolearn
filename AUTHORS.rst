@@ -31,6 +31,9 @@ Other contributors
 * `Yasamin Jodat`_/ `Gingko Bioworks <https://www.linkedin.com/in/yasamin-jodat/>`_
 * `Aneesh Mazumder`_/ `Harvard university <https://www.linkedin.com/in/aneesh-mazumder/>`_
 * `Marc Balestreri`_/ `Software Engineer <https://www.linkedin.com/in/marcbal/>`_
+* `Antonino Libarnes`_/ `Harvard university <https://www.linkedin.com/in/anjolib/>`_
+* `Alexis Musaelyan-Blackmon`_/ `Harvard university <https://www.linkedin.com/in/alexis-musaelyan-blackmon/>`_
+
 
 Partner Organizations
 .....................

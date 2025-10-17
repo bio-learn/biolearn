@@ -1,12 +1,19 @@
 import pytest
 from math import isclose
 import pandas as pd
+from collections import defaultdict
 import numpy as np
 from biolearn import model
-from biolearn.util import get_test_data_file, load_test_data_file
+from biolearn.util import (
+    get_test_data_file,
+    load_test_data_file,
+)
 from biolearn.data_library import GeoData
 import pickle
 
+TOLERANCES = defaultdict(lambda: 1e-5)
+# AltumAge: TF→Torch port can differ ~1e-4 across platforms/versions.
+TOLERANCES["AltumAge"] = 2e-4
 
 sample_inputs = load_test_data_file("testset/testset_methylation_part0.csv")
 
@@ -56,7 +63,7 @@ def test_models(model_name, model_entry):
             actual_val = actual_results.loc[idx, col]
 
             if isinstance(expected_val, float) and not isclose(
-                actual_val, expected_val, abs_tol=1e-5
+                actual_val, expected_val, abs_tol=TOLERANCES[model_name]
             ):
                 discrepancies.append((idx, col, expected_val, actual_val))
             elif (
