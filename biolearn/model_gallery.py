@@ -9,6 +9,7 @@ from biolearn.model import (
     DeconvolutionModel,
     LinearMultipartProteomicModel,
     EpiTOC2Model,
+    HurdleAPIModel,
 )
 from biolearn.imputation import (
     hybrid_impute,
@@ -31,6 +32,7 @@ class ModelGallery:
         "DeconvolutionModel": DeconvolutionModel.from_definition,
         "LinearMultipartProteomicModel": LinearMultipartProteomicModel.from_definition,
         "EpiTOC2Model": EpiTOC2Model.from_definition,
+        "HurdleAPIModel": HurdleAPIModel.from_definition,
     }
 
     def __init__(self, models=model_definitions):
