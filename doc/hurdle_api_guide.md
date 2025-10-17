@@ -90,12 +90,21 @@ predictions = model.predict(data)  # Uses both dnam and metadata
 - **Input**: DNA methylation beta values (0-1 range)
 - **Format**: Pandas DataFrame with CpG sites as rows, samples as columns
 - **Tissue**: Blood samples recommended
-- **CpG Sites**: Requires specific CpG sites; missing sites are automatically imputed with 0.5
+- **CpG Sites**: Requires all 62,000+ specific CpG sites (no missing values allowed)
 - **Optional**: Age and sex metadata improve accuracy
 
 ### Missing Value Handling
 
-The model requires approximately 62,000 specific CpG sites. If your data is missing some of these sites, they will be automatically imputed with a default value of 0.5 (the midpoint of the methylation range). You'll receive a warning indicating how many sites were imputed.
+The model requires approximately 62,000 specific CpG sites. If your data is missing any of these sites, you'll get an error listing the missing CpGs. You must impute missing values before calling the model. Use biolearn's built-in imputation:
+
+```python
+# Option 1: Use ModelGallery's imputation
+model = gallery.get("HurdleInflammAge", imputation_method="averaging")
+
+# Option 2: Impute your data beforehand
+from biolearn.imputation import hybrid_impute
+imputed_data = hybrid_impute(your_data, reference_values, required_cpgs)
+```
 
 ## Troubleshooting
 
@@ -109,8 +118,13 @@ The model requires approximately 62,000 specific CpG sites. If your data is miss
 - Your API key may be invalid or expired
 - Verify you're using a production API key from https://dashboard.hurdle.bio
 
+**"Missing X/Y required CpG sites"**
+- Your data is missing some required CpG sites
+- The error will show examples of missing sites
+- Use one of biolearn's imputation methods before calling predict()
+
 **"No required CpG sites found in data"**
-- Your methylation data doesn't contain any of the required CpG sites
+- Your methylation data doesn't contain any of the required CpG sites  
 - Ensure your data uses Illumina array probe IDs (e.g., "cg00000029")
 
 **"User consent required to send data to external API"**

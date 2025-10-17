@@ -61,6 +61,27 @@ class TestHurdleAPIModel:
         with pytest.raises(ValueError, match="User consent required"):
             model.predict(data)
 
+    def test_missing_cpgs_error(self):
+        """Test that missing CpG sites raise an informative error."""
+        model = HurdleAPIModel(api_key="test_key")
+
+        # Create data missing some required CpGs (only use half of test CpGs)
+        incomplete_cpgs = self.TEST_CPG_SITES[:50]
+        data = pd.DataFrame(
+            np.random.rand(50, 2),
+            index=incomplete_cpgs,
+            columns=["sample_0", "sample_1"],
+        )
+
+        # Mock loading required CpGs
+        model.required_cpgs = self.TEST_CPG_SITES
+
+        with pytest.raises(
+            ValueError,
+            match=r"Missing \d+/\d+ required CpG sites.*Please impute missing values",
+        ):
+            model.predict(data, require_consent=False)
+
     @patch("builtins.input", return_value="yes")
     @patch("requests.post")
     @patch("requests.put")
@@ -68,6 +89,7 @@ class TestHurdleAPIModel:
         """Test successful prediction workflow."""
         # Setup model
         model = HurdleAPIModel(api_key="test_key")
+        model.required_cpgs = self.TEST_CPG_SITES
 
         # Mock API responses
         mock_post.return_value.status_code = 200
@@ -106,6 +128,7 @@ class TestHurdleAPIModel:
     def test_api_error_handling(self, mock_post, mock_input):
         """Test API error handling."""
         model = HurdleAPIModel(api_key="test_key")
+        model.required_cpgs = self.TEST_CPG_SITES
 
         # Mock failed API response
         mock_post.return_value.status_code = 401
@@ -137,6 +160,7 @@ class TestHurdleAPIModel:
     def test_consent_only_asked_once(self, mock_input):
         """Test that consent is only requested once."""
         model = HurdleAPIModel(api_key="test_key")
+        model.required_cpgs = self.TEST_CPG_SITES
 
         # Mock successful API calls
         with (

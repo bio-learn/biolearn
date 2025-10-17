@@ -1781,17 +1781,20 @@ class HurdleAPIModel:
             if not available_cpgs:
                 raise ValueError("No required CpG sites found in data")
 
-            # Use available sites and impute missing ones with 0.5
-            filtered_dnam = dnam.loc[available_cpgs]
-
+            # Check for missing CpGs and raise error if any are missing
             if missing_cpgs:
-                warnings.warn(
-                    f"Missing {len(missing_cpgs)} required CpG sites. Imputing with 0.5"
+                n_missing = len(missing_cpgs)
+                n_required = len(self.required_cpgs)
+                sample_missing = list(missing_cpgs)[:5]
+
+                raise ValueError(
+                    f"Missing {n_missing}/{n_required} required CpG sites. "
+                    f"Examples: {sample_missing}. "
+                    f"Please impute missing values before calling predict() or use "
+                    f"ModelGallery.get('HurdleInflammAge', imputation_method='averaging')"
                 )
-                missing_df = pd.DataFrame(
-                    0.5, index=list(missing_cpgs), columns=dnam.columns
-                )
-                filtered_dnam = pd.concat([filtered_dnam, missing_df])
+
+            filtered_dnam = dnam.loc[available_cpgs]
         else:
             filtered_dnam = dnam
 
