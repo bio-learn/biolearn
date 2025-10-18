@@ -31,7 +31,9 @@ def test_models(model_name, model_entry):
             f"Model type {model_type} for {model_name} does not have a testing pattern - skipping test"
         )
 
-    test_data = GeoData.load_csv(get_test_data_file("testset/"), "testset")
+    test_data = GeoData.load_csv(
+        get_test_data_file("testset/"), "testset", validate=False
+    )
 
     # Check if the model class exists
     try:

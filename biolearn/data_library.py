@@ -197,6 +197,54 @@ class GeoData:
         self.protein_alamar = protein_alamar
         self.protein_olink = protein_olink
 
+    def _validate_metadata_omics_consistency(self):
+        """Validate that metadata exists for all omics samples and vice versa."""
+        import warnings
+
+        omics_samples = set()
+        omics_types = []
+
+        if self.dnam is not None:
+            omics_samples.update(self.dnam.columns)
+            omics_types.append("methylation")
+        if self.rna is not None:
+            omics_samples.update(self.rna.columns)
+            omics_types.append("RNA")
+        if self.protein_alamar is not None:
+            omics_samples.update(self.protein_alamar.columns)
+            omics_types.append("protein_alamar")
+        if self.protein_olink is not None:
+            omics_samples.update(self.protein_olink.columns)
+            omics_types.append("protein_olink")
+
+        if not omics_samples:
+            return
+
+        metadata_samples = set(self.metadata.index)
+
+        # Find samples in omics but not in metadata
+        missing_in_metadata = omics_samples - metadata_samples
+        if missing_in_metadata:
+            missing_count = len(missing_in_metadata)
+            warnings.warn(
+                f"Found {missing_count} samples in {', '.join(omics_types)} data without metadata entries. "
+                f"Adding empty metadata rows for: {', '.join(sorted(list(missing_in_metadata))[:5])}"
+                f"{' and others' if missing_count > 5 else ''}"
+            )
+            # Create empty rows for missing samples
+            empty_rows = pd.DataFrame(index=list(missing_in_metadata))
+            self.metadata = pd.concat([self.metadata, empty_rows])
+
+        # Find samples in metadata but not in any omics
+        orphaned_metadata = metadata_samples - omics_samples
+        if orphaned_metadata:
+            orphan_count = len(orphaned_metadata)
+            warnings.warn(
+                f"Found {orphan_count} metadata entries with no corresponding omics data: "
+                f"{', '.join(sorted(list(orphaned_metadata))[:5])}"
+                f"{' and others' if orphan_count > 5 else ''}"
+            )
+
     def copy(self):
         """
         Creates a deep copy of the GeoData instance.
@@ -339,7 +387,7 @@ class GeoData:
                     end = min((i + 1) * 1000, num_samples)
                     part_df = self.dnam.iloc[:, start:end]
                     file_name = os.path.join(
-                        folder_path, f"{name}_methylation_part{i+1}.csv"
+                        folder_path, f"{name}_methylation_part{i + 1}.csv"
                     )
                     part_df.to_csv(file_name)
             else:
@@ -364,7 +412,7 @@ class GeoData:
             self.protein_olink.to_csv(protein_file)
 
     @classmethod
-    def load_csv(cls, folder_path, name, series_part="all"):
+    def load_csv(cls, folder_path, name, series_part="all", validate=True):
         """
         Loads a GeoData instance from CSV files according to the DNA Methylation Array Data Standard V-2410.
 
@@ -373,6 +421,7 @@ class GeoData:
             name (str): The base name for the files.
             series_part (str or int): "all" to load all methylation parts and concatenate;
                                     otherwise, an integer specifying the part number to load.
+            validate (bool): Whether to validate metadata-omics consistency. Default is True.
 
         Returns:
             GeoData: A GeoData instance with metadata, methylation data, RNA, and protein data loaded.
@@ -460,13 +509,18 @@ class GeoData:
             else None
         )
 
-        return cls(
+        geodata = cls(
             metadata_df,
             dnam=dnam_df,
             rna=rna_df,
             protein_alamar=protein_alamar_df,
             protein_olink=protein_olink_df,
         )
+
+        if validate and metadata_df is not None:
+            geodata._validate_metadata_omics_consistency()
+
+        return geodata
 
 
 class JenAgeCustomParser:
@@ -904,7 +958,6 @@ class AutoScanGeoMatrixParser:
         return self._convert_to_metadata_df(self.metadata_keys, smaples)
 
     def _map_characteristics_to_dict(self, sample):
-
         def extract_key(item):
             if "tag" in item:
                 return item["tag"]
@@ -936,7 +989,6 @@ class AutoScanGeoMatrixParser:
             if parse_type == "sex":
                 cols_data.append(sex_parser(characteristics.get(key)))
             elif parse_type == "numeric":
-
                 if key == "age":
                     if key in characteristics:
                         cols_data.append(extract_numeric(characteristics[key]))
@@ -952,7 +1004,6 @@ class AutoScanGeoMatrixParser:
         return cols_data
 
     def _convert_to_metadata_df(self, metadata_keys, samples):
-
         data = {
             sample["acc"]: self._convert_characteristics_to_df_cols_data(
                 metadata_keys, sample
@@ -1011,7 +1062,6 @@ class AutoScanGeoMatrixParser:
         return -1
 
     def _get_matrix_table_row_num(self, matrix_file):
-
         output_file = f"{matrix_file}.txt"
         try:
             self._ungzip_file(matrix_file, output_file)
@@ -1039,7 +1089,6 @@ class AutoScanGeoMatrixParser:
 
 
 class NoMatrixDataError(Exception):
-
     def __init__(self, message):
         super().__init__(message)
 

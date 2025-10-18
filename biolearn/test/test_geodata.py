@@ -352,3 +352,107 @@ def test_dnam_columns_numeric_and_single_nan():
     # Ensure there is exactly one NaN value in the dnam DataFrame
     nan_count = data.dnam.isna().sum().sum()
     assert nan_count == 1, f"Expected 1 NaN value, but found {nan_count}."
+
+
+def test_metadata_validation_missing_samples(temp_dir):
+    """
+    Test that missing metadata entries are automatically added with warnings.
+    """
+    geodata = create_dummy_geodata(num_samples=5)
+
+    # Remove some metadata entries
+    geodata.metadata = geodata.metadata.iloc[:3]
+
+    geodata.save_csv(temp_dir, "missing_meta_test")
+
+    # Load with validation (default)
+    with pytest.warns(
+        UserWarning, match="samples in methylation data without metadata"
+    ):
+        loaded_data = GeoData.load_csv(temp_dir, "missing_meta_test")
+
+    # Check that missing entries were added
+    assert len(loaded_data.metadata) == 5
+    assert "S4" in loaded_data.metadata.index
+    assert "S5" in loaded_data.metadata.index
+
+
+def test_metadata_validation_orphaned_entries(temp_dir):
+    """
+    Test that orphaned metadata entries trigger a warning.
+    """
+    geodata = create_dummy_geodata(num_samples=3)
+
+    # Add extra metadata entries with no corresponding omics data
+    extra_metadata = pd.DataFrame(
+        {"Sex": [1, 0], "Age": [30, 31], "Disease State": ["None", "None"]},
+        index=["S10", "S11"],
+    )
+    geodata.metadata = pd.concat([geodata.metadata, extra_metadata])
+
+    geodata.save_csv(temp_dir, "orphan_test")
+
+    # Load with validation
+    with pytest.warns(
+        UserWarning, match="metadata entries with no corresponding omics data"
+    ):
+        loaded_data = GeoData.load_csv(temp_dir, "orphan_test")
+
+    # Metadata should still be present
+    assert "S10" in loaded_data.metadata.index
+    assert "S11" in loaded_data.metadata.index
+
+
+def test_metadata_validation_disabled(temp_dir):
+    """
+    Test that validation can be disabled.
+    """
+    geodata = create_dummy_geodata(num_samples=5)
+
+    # Remove some metadata entries
+    geodata.metadata = geodata.metadata.iloc[:3]
+
+    geodata.save_csv(temp_dir, "no_validate_test")
+
+    # Load without validation - should not warn or add missing entries
+    loaded_data = GeoData.load_csv(
+        temp_dir, "no_validate_test", validate=False
+    )
+
+    # Missing entries should NOT be added
+    assert len(loaded_data.metadata) == 3
+    assert "S4" not in loaded_data.metadata.index
+    assert "S5" not in loaded_data.metadata.index
+
+
+def test_metadata_validation_multiple_omics(temp_dir):
+    """
+    Test validation with multiple omics types.
+    """
+    geodata = create_dummy_geodata(num_samples=5)
+
+    # Add RNA data with different sample set
+    rna_samples = ["S1", "S2", "S3", "S6", "S7"]  # S6 and S7 not in metadata
+    rna_data = pd.DataFrame(
+        np.random.rand(10, 5),
+        index=[f"gene{i}" for i in range(10)],
+        columns=rna_samples,
+    )
+    geodata.rna = rna_data
+
+    # Remove some metadata to create missing entries
+    geodata.metadata = geodata.metadata.iloc[:3]
+
+    geodata.save_csv(temp_dir, "multi_omics_test")
+
+    # Load with validation
+    with pytest.warns(
+        UserWarning, match="samples in methylation, RNA data without metadata"
+    ):
+        loaded_data = GeoData.load_csv(temp_dir, "multi_omics_test")
+
+    # Check all samples have metadata now
+    assert "S4" in loaded_data.metadata.index
+    assert "S5" in loaded_data.metadata.index
+    assert "S6" in loaded_data.metadata.index
+    assert "S7" in loaded_data.metadata.index
