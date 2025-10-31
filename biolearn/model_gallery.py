@@ -10,6 +10,7 @@ from biolearn.model import (
     LinearMultipartProteomicModel,
     EpiTOC2Model,
     AltumAgeModel,
+    PCLinearTransformationModel,
 )
 from biolearn.imputation import (
     hybrid_impute,
@@ -34,6 +35,7 @@ class ModelGallery:
         "LinearMultipartProteomicModel": LinearMultipartProteomicModel.from_definition,
         "EpiTOC2Model": EpiTOC2Model.from_definition,
         "AltumAgeModel": AltumAgeModel.from_definition,
+        "PCLinearTransformationModel": PCLinearTransformationModel.from_definition,
     }
 
     def __init__(self, models=model_definitions):
