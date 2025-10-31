@@ -739,6 +739,21 @@ model_definitions = {
             "file": "Bocklandt.csv",
         },
     },
+    "PCHorvath1": {
+        "year": 2022,
+        "species": "Human",
+        "tissue": "Multi-tissue",
+        "source": "https://doi.org/10.1038/s43587-022-00248-2",
+        "output": "Age (Years)",
+        "model": {
+            "type": "PCLinearTransformationModel",
+            "file": "https://storage.googleapis.com/biolearn/PCClock/PCHorvath1_model.csv",
+            "rotation": "https://storage.googleapis.com/biolearn/PCClock/PCHorvath1_rotation.csv",
+            "center": "https://storage.googleapis.com/biolearn/PCClock/PCHorvath1_center.csv",
+            "transform": lambda sum: anti_trafo(sum + 1.15834584357227),
+            "default_imputation": "sesame_450k",
+        },
+    },
     "Pasta": {
         "year": 2025,
         "species": "Human",
@@ -976,7 +991,6 @@ def map_ensembl_to_gene(rna_matrix):
 
 class DeconvolutionModel:
     def __init__(self, reference_file, platform_input):
-
         # sets reference data
         self.reference = pd.read_csv(
             get_data_file(reference_file), index_col=0
@@ -987,14 +1001,12 @@ class DeconvolutionModel:
 
     @classmethod
     def from_definition(cls, clock_definition):
-
         model_def = clock_definition["model"]
 
         # calls constructor: "__init__()"
         return cls(model_def["file"], model_def["platform"])
 
     def predict(self, geo_data):
-
         # This function computes estimate of cell proportions using quadratic programming
         # inputs:
         # meth_vector: ndarray vector of bulk methylation (length must equal number of rows in deconv_reference)
@@ -1002,7 +1014,6 @@ class DeconvolutionModel:
         # outputs:
         # cell_prop_estimate.value: ndarray vector of estimated cell type proportions
         def solve_qp(meth_vector, deconv_reference):
-
             # define cell proportion variable being solved for
             cell_prop_estimate = cp.Variable(deconv_reference.shape[1])
 
@@ -1136,6 +1147,8 @@ class LinearModel:
             model_def["file"],
             model_def.get("transform", no_transform),
             model_def.get("preprocess", no_transform),
+            center_file=model_def.get("center"),
+            rotation_file=model_def.get("rotation"),
             **{k: v for k, v in clock_definition.items() if k != "model"},
         )
 
@@ -1148,9 +1161,15 @@ class LinearModel:
         model_df = self.coefficients.join(matrix_data, how="inner")
 
         # Vectorized multiplication: multiply CoefficientTraining with all columns of dnam_data
+        coefficient_column = (
+            "CoefficientTraining"
+            if "CoefficientTraining" in model_df.columns
+            else "Weight"
+        )
+
         result = (
             model_df.iloc[:, 1:]
-            .multiply(model_df["CoefficientTraining"], axis=0)
+            .multiply(model_df[coefficient_column], axis=0)
             .sum(axis=0)
         )
 
@@ -1168,6 +1187,109 @@ class LinearMethylationModel(LinearModel):
     def methylation_sites(self):
         unique_vars = set(self.coefficients.index) - {"intercept"}
         return list(unique_vars)
+
+
+class PCLinearTransformationModel(LinearModel):
+    """
+    Transforms methylation data into principal component (PC) space using
+    provided center and rotation files before performing linear regression.
+    """
+
+    def __init__(
+        self,
+        coefficient_file_or_df,
+        transform,
+        preprocess=None,
+        center_file=None,
+        rotation_file=None,
+        **details,
+    ):
+        """
+        Initialize the PCLinearTransformationModel.
+
+        Args:
+            coefficient_file_or_df: Path to coefficient file or DataFrame
+            transform: Transformation function to apply to predictions
+            preprocess: Optional preprocessing function
+            center_file (str): Path to the CSV file containing CpG means for centering.
+            rotation_file (str): Path to the CSV file containing PCA loadings.
+            **details: Additional details passed to the parent class.
+        """
+        # Pass center_file and rotation_file as part of **details
+        details["center"] = center_file
+        details["rotation"] = rotation_file
+        super().__init__(
+            coefficient_file_or_df, transform, preprocess, **details
+        )
+        self.center_file = center_file or details.get("center")
+        self.rotation_file = rotation_file or details.get("rotation")
+        self.center_ = None
+        self.rotation = None
+
+    def _load_data(self):
+        """
+        Load the center and rotation data from the provided files.
+        """
+        self.center_ = pd.read_csv(
+            get_data_file(self.center_file), index_col=0
+        ).iloc[:, 0]
+        # Load rotation data if not already loaded
+        self.rotation = pd.read_csv(
+            get_data_file(self.rotation_file), index_col=None
+        )
+        self.rotation.set_index(self.center_.index, inplace=True)
+
+        # Align indices to ensure consistency
+        common_indices = self.center_.index.intersection(self.rotation.index)
+        if len(common_indices) == 0:
+            raise ValueError(
+                "No common CpG sites found between center and rotation data."
+            )
+        self.center_ = self.center_.loc[common_indices]
+        self.rotation = self.rotation.loc[common_indices]
+
+    def _get_data_matrix(self, geo_data):
+        """
+        Apply PCA transformation to the DNA methylation data.
+
+        Args:
+            geo_data (GeoData): The input GeoData object containing methylation data.
+
+        Returns:
+            pd.DataFrame: The PC-transformed data matrix.
+        """
+        # Load the center and rotation data
+        self._load_data()
+
+        meth = geo_data.dnam.copy()
+
+        # Intersect with CpGs in reference files
+        intersecting_cpgs = meth.index.intersection(self.center_.index)
+
+        meth = meth.loc[intersecting_cpgs]
+        center_ = self.center_.loc[intersecting_cpgs]
+        rotation = self.rotation.loc[intersecting_cpgs]
+
+        # Fill NaN values with center values (so they become 0 after centering)
+        meth = meth.T.fillna(center_).T
+
+        # Center the data and apply PCA transformation
+        X_centered = meth.subtract(center_, axis=0)
+        PCs = X_centered.T.dot(rotation)  # (samples × PCs)
+        return PCs.T  # (PCs × samples)
+
+    def methylation_sites(self):
+        """
+        Return the list of required CpG sites.
+        """
+        # Load the center data if not already loaded
+        if self.center_ is None:
+            if not self.center_file:
+                raise ValueError("Center file path is not provided.")
+            self.center_ = pd.read_csv(
+                get_data_file(self.center_file), index_col=0
+            ).iloc[:, 0]
+        return list(self.center_.index)
 
 
 class LinearTranscriptomicModel(LinearModel):
