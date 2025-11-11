@@ -126,3 +126,4 @@ Featured examples
 
    authors.rst
    GitHub Repository <https://github.com/bio-learn/biolearn>
+   metadata_standard

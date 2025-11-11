@@ -7,10 +7,15 @@ from biolearn.model import (
     SexEstimationModel,
     ImputationDecorator,
     DeconvolutionModel,
+    LinearMultipartProteomicModel,
+    EpiTOC2Model,
+    AltumAgeModel,
+    PCLinearTransformationModel,
 )
 from biolearn.imputation import (
     hybrid_impute,
     impute_from_average,
+    impute_with_center,
 )
 from biolearn.util import get_data_file
 
@@ -27,6 +32,10 @@ class ModelGallery:
         "GrimageModel": GrimageModel.from_definition,
         "SexEstimationModel": SexEstimationModel.from_definition,
         "DeconvolutionModel": DeconvolutionModel.from_definition,
+        "LinearMultipartProteomicModel": LinearMultipartProteomicModel.from_definition,
+        "EpiTOC2Model": EpiTOC2Model.from_definition,
+        "AltumAgeModel": AltumAgeModel.from_definition,
+        "PCLinearTransformationModel": PCLinearTransformationModel.from_definition,
     }
 
     def __init__(self, models=model_definitions):
@@ -110,6 +119,14 @@ class ModelGallery:
             return ImputationDecorator(
                 model_instance,
                 lambda dnam, cpgs: hybrid_impute(dnam, gold_medians, cpgs),
+            )
+        elif imputation_method == "altumage_center":
+            # AltumAge-specific imputation using the center reference values
+            return ImputationDecorator(
+                model_instance,
+                lambda dnam, cpgs: impute_with_center(
+                    dnam, model_instance.center, cpgs
+                ),
             )
         else:
             raise ValueError(f"Invalid imputation method: {imputation_method}")

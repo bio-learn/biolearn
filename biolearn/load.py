@@ -1,5 +1,7 @@
 import pandas as pd
 from biolearn.util import cached_download
+from pathlib import Path
+import gzip
 
 MG_PER_DL_TO_MMOL_PER_L = 0.05551
 
@@ -48,6 +50,41 @@ def load_fhs():
     return df
 
 
+# ---------------------------------------------------------------------------
+# SAS‑XPT helper that can read plain or gzipped files
+# ---------------------------------------------------------------------------
+
+
+def _load_sas(path, columns, name, idx="SEQN") -> pd.DataFrame:
+    """Read an XPORT file (optionally gzipped) into a DataFrame and verify schema."""
+
+    def _read(src):
+        # When *src* is a file‑like object pandas needs the explicit format
+        return pd.read_sas(src, format="xport", index=idx)
+
+    path = Path(path)
+
+    # Detect gzip via first two bytes 0x1f 0x8b
+    with path.open("rb") as fh:
+        magic = fh.read(2)
+
+    if magic == b"\x1f\x8b":
+        with gzip.open(path, "rb") as gz:
+            df = _read(gz)
+    else:
+        df = _read(str(path))
+
+    df.index = df.index.astype(int)
+
+    if columns is not None:
+        missing = [c for c in columns if c not in df.columns]
+        if missing:
+            raise RuntimeError(f"[{name}] missing expected cols: {missing}")
+        df = df[columns]
+
+    return df
+
+
 def load_nhanes(year):
     """Loads data from the National Health and Nutrition Examination Survey
 
@@ -80,43 +117,55 @@ def load_nhanes(year):
             f"Unknown year {year}. Can only load for known available years {known_nhanes_year_suffix.keys}"
         )
     suffix = known_nhanes_year_suffix[year]
-    dem_file = cached_download(
-        f"https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/{year-1}/DataFiles/DEMO_{suffix}.xpt"
+    cycle = year - 1
+    dem = _load_sas(
+        cached_download(
+            f"https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/{cycle}/DataFiles/DEMO_{suffix}.xpt"
+        ),
+        ["RIAGENDR", "RIDAGEYR"],
+        name="DEMO",
     )
-    gluc_file = cached_download(
-        f"https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/{year-1}/DataFiles/GLU_{suffix}.xpt"
+    gluc = _load_sas(
+        cached_download(
+            f"https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/{cycle}/DataFiles/GLU_{suffix}.xpt"
+        ),
+        ["LBDGLUSI"],
+        name="GLU",
     )
-    cbc_file = cached_download(
-        f"https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/{year-1}/DataFiles/CBC_{suffix}.xpt"
+    cbc = _load_sas(
+        cached_download(
+            f"https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/{cycle}/DataFiles/CBC_{suffix}.xpt"
+        ),
+        cbc_sub,
+        name="CBC",
     )
-    bioc_file = cached_download(
-        f"https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/{year-1}/DataFiles/BIOPRO_{suffix}.xpt"
+    hdl = _load_sas(
+        cached_download(
+            f"https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/{cycle}/DataFiles/HDL_{suffix}.xpt"
+        ),
+        ["LBDHDDSI"],
+        name="HDL",
     )
-    mortality_file = cached_download(
-        f"https://ftp.cdc.gov/pub/Health_Statistics/NCHS/datalinkage/linked_mortality/NHANES_{year-1}_{year}_MORT_2019_PUBLIC.dat"
+    bioc = _load_sas(
+        cached_download(
+            f"https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/{cycle}/DataFiles/BIOPRO_{suffix}.xpt"
+        ),
+        ["LBDSALSI", "LBDSCRSI", "LBXSAPSI"],
+        name="BIOPRO",
     )
-    hdl_file = cached_download(
-        f"https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/{year-1}/DataFiles/HDL_{suffix}.xpt"
-    )
-    dem = pd.read_sas(dem_file, index="SEQN")[["RIAGENDR", "RIDAGEYR"]]
-    dem.index = dem.index.astype(int)
-    gluc = pd.read_sas(gluc_file, index="SEQN")["LBDGLUSI"]
-    gluc.index = gluc.index.astype(int)
-    cbc = pd.read_sas(cbc_file, index="SEQN")[cbc_sub]
-    cbc.index = cbc.index.astype(int)
-    hdl = pd.read_sas(hdl_file, index="SEQN")["LBDHDDSI"]
-    hdl.index = hdl.index.astype(int)
-    # clumsy hack since 2012 doesn't have the CRP data. Will remove pending refactor of loading code
-    if year == 2010:
-        crp_file = cached_download(
-            f"https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/{year-1}/DataFiles/CRP_{suffix}.xpt"
+
+    if year == 2010:  # only 2010 cycle exposes CRP here
+        crp = _load_sas(
+            cached_download(
+                f"https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/{cycle}/DataFiles/CRP_{suffix}.xpt"
+            ),
+            ["LBXCRP"],
+            name="CRP",
         )
-        crp = pd.read_sas(crp_file, index="SEQN")["LBXCRP"]
-        crp.index = crp.index.astype(int)
-    bioc = pd.read_sas(bioc_file, index="SEQN")[
-        ["LBDSALSI", "LBDSCRSI", "LBXSAPSI"]
-    ]
-    bioc.index = bioc.index.astype(int)
+
+    mortality_file = cached_download(
+        f"https://ftp.cdc.gov/pub/Health_Statistics/NCHS/datalinkage/linked_mortality/NHANES_{cycle}_{year}_MORT_2019_PUBLIC.dat",
+    )
     mort = pd.read_fwf(
         mortality_file,
         index_col=0,

@@ -31,6 +31,7 @@ doc/sg_execution_times.rst
 
 #vevn
 .venv
+biolearn-venv
 
 #jupyter notebooks
 .ipynb_checkpoints
@@ -38,5 +39,7 @@ notebooks/
 
 #large test files
 biolearn/test/data/external/
+biolearn/test/data/testset/testset_methylation_part0.csv
+biolearn/test/data/testset/testset_metadata.csv
 
 .env

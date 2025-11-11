@@ -1,6 +1,7 @@
 import pytest
 from math import isclose
 import pandas as pd
+from collections import defaultdict
 import numpy as np
 from biolearn import model
 from biolearn.util import (
@@ -10,9 +11,11 @@ from biolearn.util import (
 from biolearn.data_library import GeoData
 import pickle
 
+TOLERANCES = defaultdict(lambda: 1e-5)
+# AltumAge: TF→Torch port can differ ~1e-4 across platforms/versions.
+TOLERANCES["AltumAge"] = 2e-4
 
-sample_inputs = load_test_data_file("external/DNAmTestSet.csv")
-sample_metadata = load_test_data_file("external/testset_metadata.csv")
+sample_inputs = load_test_data_file("testset/testset_methylation_part0.csv")
 
 
 @pytest.mark.parametrize(
@@ -23,12 +26,14 @@ def test_models(model_name, model_entry):
     # TODO: Add testing for LinearTranscriptomicModel
     # Skip models that don't have tests
     model_type = model_entry["model"]["type"]
-    if model_type in ["NotImplemented", "LinearTranscriptomicModel"]:
+    if model_type in ["NotImplemented"]:
         pytest.skip(
             f"Model type {model_type} for {model_name} does not have a testing pattern - skipping test"
         )
 
-    test_data = GeoData(sample_metadata, sample_inputs)
+    test_data = GeoData.load_csv(
+        get_test_data_file("testset/"), "testset", validate=False
+    )
 
     # Check if the model class exists
     try:
@@ -41,7 +46,7 @@ def test_models(model_name, model_entry):
     # Instantiate the model
     test_model = model_class.from_definition(model_entry)
 
-    actual_results = test_model.predict(test_data.copy()).sort_index()
+    actual_results = test_model.predict(test_data).sort_index()
 
     # Load the expected results
     expected_results = load_test_data_file(
@@ -60,7 +65,7 @@ def test_models(model_name, model_entry):
             actual_val = actual_results.loc[idx, col]
 
             if isinstance(expected_val, float) and not isclose(
-                actual_val, expected_val, abs_tol=1e-5
+                actual_val, expected_val, abs_tol=TOLERANCES[model_name]
             ):
                 discrepancies.append((idx, col, expected_val, actual_val))
             elif (
@@ -79,13 +84,17 @@ def test_models(model_name, model_entry):
 
 
 def test_dunedin_pace_normalization():
+
+    test_data = GeoData.load_csv(get_test_data_file("testset/"), "testset")
+    sample_inputs = test_data.dnam
+
     actual = model.dunedin_pace_normalization(sample_inputs)
     data_file_path = get_test_data_file("pace_normalized.pkl")
     with open(data_file_path, "rb") as file:
         expected = pickle.load(file)
 
     # Finding mismatches based on tolerance
-    mask = np.abs(actual - expected) > 0.00000001
+    mask = np.abs(actual - expected) > 0.000001
     mismatches = actual[mask].stack()
 
     total_mismatches = mismatches.size

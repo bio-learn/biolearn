@@ -6,6 +6,7 @@ import requests
 import gzip
 import shutil
 import os
+import math
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -13,6 +14,7 @@ import seaborn as sns
 from biolearn.util import cached_download, get_data_file
 from biolearn.defaults import default_cache
 from biolearn.cache import NoCache
+from biolearn.metadata import _iter_library_items
 from io import BytesIO
 
 
@@ -26,13 +28,9 @@ def parse_after_colon(s):
 
 
 def sex_parser(s):
-    if isinstance(s, str):
-        s_lower = s.lower().strip()
-        if s_lower in ["female", "f"]:
-            return 1
-        elif s_lower in ["male", "m"]:
-            return 2
-    return 0
+    from biolearn.metadata import standardize_sex
+
+    return standardize_sex(s)
 
 
 def extract_numeric(s):
@@ -41,7 +39,7 @@ def extract_numeric(s):
     return float(match.group(1)) if match else None
 
 
-def extract_informal_age(char) -> int:
+def extract_informal_age(char):
     if "age (yrs)" in char:
         return extract_numeric(char["age (yrs)"])
 
@@ -178,7 +176,14 @@ class GeoData:
                           and rows represent different methylation sites.
     """
 
-    def __init__(self, metadata, dnam=None, rna=None, protein=None):
+    def __init__(
+        self,
+        metadata,
+        dnam=None,
+        rna=None,
+        protein_alamar=None,
+        protein_olink=None,
+    ):
         """
         Initializes the GeoData instance.
 
@@ -189,7 +194,56 @@ class GeoData:
         self.metadata = metadata
         self.dnam = dnam
         self.rna = rna
-        self.protein = protein
+        self.protein_alamar = protein_alamar
+        self.protein_olink = protein_olink
+
+    def _validate_metadata_omics_consistency(self):
+        """Validate that metadata exists for all omics samples and vice versa."""
+        import warnings
+
+        omics_samples = set()
+        omics_types = []
+
+        if self.dnam is not None:
+            omics_samples.update(self.dnam.columns)
+            omics_types.append("methylation")
+        if self.rna is not None:
+            omics_samples.update(self.rna.columns)
+            omics_types.append("RNA")
+        if self.protein_alamar is not None:
+            omics_samples.update(self.protein_alamar.columns)
+            omics_types.append("protein_alamar")
+        if self.protein_olink is not None:
+            omics_samples.update(self.protein_olink.columns)
+            omics_types.append("protein_olink")
+
+        if not omics_samples:
+            return
+
+        metadata_samples = set(self.metadata.index)
+
+        # Find samples in omics but not in metadata
+        missing_in_metadata = omics_samples - metadata_samples
+        if missing_in_metadata:
+            missing_count = len(missing_in_metadata)
+            warnings.warn(
+                f"Found {missing_count} samples in {', '.join(omics_types)} data without metadata entries. "
+                f"Adding empty metadata rows for: {', '.join(sorted(list(missing_in_metadata))[:5])}"
+                f"{' and others' if missing_count > 5 else ''}"
+            )
+            # Create empty rows for missing samples
+            empty_rows = pd.DataFrame(index=list(missing_in_metadata))
+            self.metadata = pd.concat([self.metadata, empty_rows])
+
+        # Find samples in metadata but not in any omics
+        orphaned_metadata = metadata_samples - omics_samples
+        if orphaned_metadata:
+            orphan_count = len(orphaned_metadata)
+            warnings.warn(
+                f"Found {orphan_count} metadata entries with no corresponding omics data: "
+                f"{', '.join(sorted(list(orphaned_metadata))[:5])}"
+                f"{' and others' if orphan_count > 5 else ''}"
+            )
 
     def copy(self):
         """
@@ -202,9 +256,14 @@ class GeoData:
             metadata=self.metadata.copy(deep=True),
             dnam=self.dnam.copy(deep=True) if self.dnam is not None else None,
             rna=self.rna.copy(deep=True) if self.rna is not None else None,
-            protein=(
-                self.protein.copy(deep=True)
-                if self.protein is not None
+            protein_alamar=(
+                self.protein_alamar.copy(deep=True)
+                if self.protein_alamar is not None
+                else None
+            ),
+            protein_olink=(
+                self.protein_olink.copy(deep=True)
+                if self.protein_olink is not None
                 else None
             ),
         )
@@ -298,6 +357,170 @@ class GeoData:
         metadata = pd.DataFrame(index=dnam.columns)
 
         return cls(metadata, dnam)
+
+    def save_csv(self, folder_path, name):
+        """
+        Saves the GeoData instance to CSV files according to the DNA Methylation Array Data Standard V-2410.
+
+        Args:
+            folder_path (str): The directory where the files will be saved.
+            name (str): The base name for the saved files.
+
+        Returns:
+            None
+        """
+        os.makedirs(folder_path, exist_ok=True)
+
+        # Save metadata
+        if self.metadata is not None:
+            metadata_to_save = self.metadata.copy()
+            metadata_file = os.path.join(folder_path, f"{name}_metadata.csv")
+            metadata_to_save.to_csv(metadata_file)
+
+        # Save methylation data (dnam)
+        if self.dnam is not None:
+            num_samples = self.dnam.shape[1]
+            if num_samples > 1000:
+                parts = (num_samples - 1) // 1000 + 1
+                for i in range(parts):
+                    start = i * 1000
+                    end = min((i + 1) * 1000, num_samples)
+                    part_df = self.dnam.iloc[:, start:end]
+                    file_name = os.path.join(
+                        folder_path, f"{name}_methylation_part{i + 1}.csv"
+                    )
+                    part_df.to_csv(file_name)
+            else:
+                file_name = os.path.join(
+                    folder_path, f"{name}_methylation_part1.csv"
+                )
+                self.dnam.to_csv(file_name)
+
+        # Save RNA and protein data (if present)
+        if self.rna is not None:
+            rna_file = os.path.join(folder_path, f"{name}_rna.csv")
+            self.rna.to_csv(rna_file)
+        if self.protein_alamar is not None:
+            protein_file = os.path.join(
+                folder_path, f"{name}_protein_alamar.csv"
+            )
+            self.protein_alamar.to_csv(protein_file)
+        if self.protein_olink is not None:
+            protein_file = os.path.join(
+                folder_path, f"{name}_protein_olink.csv"
+            )
+            self.protein_olink.to_csv(protein_file)
+
+    @classmethod
+    def load_csv(cls, folder_path, name, series_part="all", validate=True):
+        """
+        Loads a GeoData instance from CSV files according to the DNA Methylation Array Data Standard V-2410.
+
+        Args:
+            folder_path (str): The directory where the files are located.
+            name (str): The base name for the files.
+            series_part (str or int): "all" to load all methylation parts and concatenate;
+                                    otherwise, an integer specifying the part number to load.
+            validate (bool): Whether to validate metadata-omics consistency. Default is True.
+
+        Returns:
+            GeoData: A GeoData instance with metadata, methylation data, RNA, and protein data loaded.
+        """
+        # Load metadata
+        metadata_file = os.path.join(folder_path, f"{name}_metadata.csv")
+        if os.path.exists(metadata_file):
+            metadata_df = pd.read_csv(
+                metadata_file, index_col=0, keep_default_na=False
+            )
+        else:
+            metadata_df = None
+
+        # Load methylation data
+        dnam_dfs = []
+        if series_part == "all":
+            files = [
+                fname
+                for fname in os.listdir(folder_path)
+                if fname.startswith(f"{name}_methylation_part")
+                and fname.endswith(".csv")
+            ]
+            files_sorted = sorted(
+                files,
+                key=lambda f: int(
+                    f.split("methylation_part")[-1].split(".")[0]
+                ),
+            )
+            for fname in files_sorted:
+                part_df = pd.read_csv(
+                    os.path.join(folder_path, fname),
+                    index_col=0,
+                    skipinitialspace=True,
+                )
+                dnam_dfs.append(part_df)
+            dnam_df = pd.concat(dnam_dfs, axis=1) if dnam_dfs else None
+        else:
+            try:
+                part_number = int(series_part)
+            except Exception:
+                raise ValueError(
+                    "series_part must be 'all' or an integer value"
+                )
+            fname = f"{name}_methylation_part{part_number}.csv"
+            file_path = os.path.join(folder_path, fname)
+            dnam_df = (
+                pd.read_csv(file_path, index_col=0, skipinitialspace=True)
+                if os.path.exists(file_path)
+                else None
+            )
+
+        # Load RNA and protein data (if available)
+        rna_file = os.path.join(folder_path, f"{name}_rna.csv")
+        rna_df = (
+            pd.read_csv(rna_file, index_col=0, skipinitialspace=True)
+            if os.path.exists(rna_file)
+            else None
+        )
+
+        # In case someone saved with legacy code
+        unspecified_proteomic_file = os.path.join(
+            folder_path, f"{name}_protein.csv"
+        )
+        if os.path.exists(unspecified_proteomic_file):
+            raise Exception(
+                "Unspecified source proteomic file found. Please rename to specified source (e.g. protein_alamar or protein_olink) before saving."
+            )
+        protein_alamar_file = os.path.join(
+            folder_path, f"{name}_protein_alamar.csv"
+        )
+        protein_alamar_df = (
+            pd.read_csv(
+                protein_alamar_file, index_col=0, skipinitialspace=True
+            )
+            if os.path.exists(protein_alamar_file)
+            else None
+        )
+
+        protein_olink_file = os.path.join(
+            folder_path, f"{name}_protein_olink.csv"
+        )
+        protein_olink_df = (
+            pd.read_csv(protein_olink_file, index_col=0, skipinitialspace=True)
+            if os.path.exists(protein_olink_file)
+            else None
+        )
+
+        geodata = cls(
+            metadata_df,
+            dnam=dnam_df,
+            rna=rna_df,
+            protein_alamar=protein_alamar_df,
+            protein_olink=protein_olink_df,
+        )
+
+        if validate and metadata_df is not None:
+            geodata._validate_metadata_omics_consistency()
+
+        return geodata
 
 
 class JenAgeCustomParser:
@@ -394,11 +617,212 @@ class ChallengeDataParser:
         proteomic_metadata.rename(index=plasma_to_geo_mapping, inplace=True)
 
         # Add the proteomic metadata and merge the metadata
-        geodata.protein = protein_matrix
+        geodata.protein_alamar = protein_matrix.T
         merged_metadata = metadata.combine_first(proteomic_metadata)
         geodata.metadata = merged_metadata
 
         return geodata
+
+
+class GisbyOlinkParser:
+    def __init__(self, data):
+        if not data.get("protein-matrix-url"):
+            raise ValueError("Parser not valid: missing protein-matrix-url")
+        if not data.get("metadata-url"):
+            raise ValueError("Parser not valid: missing metadata-url")
+
+        self.protein_matrix_url = data.get("protein-matrix-url")
+        self.metadata_url = data.get("metadata-url")
+        self.id_row = data.get("id-row", "SampleID")
+
+    def parse(self, file_path=None):
+        protein_long = pd.read_csv(self.protein_matrix_url)
+        metadata = pd.read_csv(self.metadata_url, index_col=self.id_row)
+
+        # Handle duplicate genes across panels
+        gene_panel_counts = protein_long.groupby("GeneID")["Panel"].nunique()
+        duplicated_genes = gene_panel_counts[
+            gene_panel_counts > 1
+        ].index.tolist()
+
+        if duplicated_genes:
+            protein_long["Gene_Unique"] = protein_long["GeneID"]
+            mask = protein_long["GeneID"].isin(duplicated_genes)
+            protein_long.loc[mask, "Gene_Unique"] = (
+                protein_long.loc[mask, "GeneID"]
+                + "_"
+                + protein_long.loc[mask, "Panel"]
+            )
+            gene_column = "Gene_Unique"
+        else:
+            gene_column = "GeneID"
+
+        # Create protein matrix
+        protein_matrix = protein_long.pivot_table(
+            index="SampleID",
+            columns=gene_column,
+            values="NPX",
+            aggfunc="first",
+        )
+
+        # Process metadata
+        if "Sex" in metadata.columns:
+            metadata["sex"] = metadata["Sex"].apply(sex_parser)
+            metadata.drop("Sex", axis=1, inplace=True)
+
+        if "Age" in metadata.columns:
+            metadata["age_range"] = (
+                metadata["Age"].str.strip("()[]").str.replace(",", "-")
+            )
+            metadata.drop("Age", axis=1, inplace=True)
+
+        for col in ["Ever_Admitted", "Fatal_Disease"]:
+            if col in metadata.columns:
+                metadata[col] = metadata[col].astype("bool")
+
+        # Align samples
+        common_samples = protein_matrix.index.intersection(metadata.index)
+        protein_matrix = protein_matrix.loc[common_samples]
+        metadata = metadata.loc[common_samples]
+
+        return GeoData(metadata, protein_olink=protein_matrix)
+
+
+class FilbinOlinkParser:
+    def __init__(self, data):
+        """
+        Initialize the FilbinOlinkParser with paths to three Excel files.
+
+        Args:
+            data (dict): Dictionary containing:
+                - metadata-path: Path to metadata Excel file
+                - proteomics-path: Path to proteomics Excel file
+                - mappings-path: Path to olink mappings Excel file
+        """
+        required_paths = ["metadata-path", "proteomics-path", "mappings-path"]
+        for path_key in required_paths:
+            if not data.get(path_key):
+                raise ValueError(f"Parser not valid: missing {path_key}")
+
+        self.metadata_path = data["metadata-path"]
+        self.proteomics_path = data["proteomics-path"]
+        self.mappings_path = data["mappings-path"]
+
+        self.age_mapping = {
+            1: "20-34",
+            2: "36-49",
+            3: "50-64",
+            4: "65-79",
+            5: "80+",
+        }
+
+    def parse(self, file_path=None):
+        """
+        Parse the three Excel files and create a GeoData object.
+
+        Returns:
+            GeoData: Processed data in GeoData format
+        """
+        metadata_df = (
+            pd.read_excel(
+                self.metadata_path,
+                sheet_name=0,
+                usecols=["Public ID", "Age cat"],
+            )
+            .rename(columns={"Public ID": "PublicID", "Age cat": "AgeCat"})
+            .set_index("PublicID")
+        )
+
+        proteomics_df = pd.read_excel(self.proteomics_path)
+        proteomics_df = proteomics_df.drop(columns=["Day"], errors="ignore")
+
+        id_col = (
+            "Public ID"
+            if "Public ID" in proteomics_df.columns
+            else proteomics_df.columns[0]
+        )
+        proteomics_df = proteomics_df.rename(
+            columns={id_col: "SampleID"}
+        ).set_index("SampleID")
+
+        mappings_df = pd.read_excel(
+            self.mappings_path,
+            sheet_name="2A-Olink-Assay",
+            usecols=["OlinkID", "Assay"],
+            skiprows=1,
+        )
+
+        # Create mapping and track gene-to-OlinkIDs for duplicates
+        olink_to_gene = dict(zip(mappings_df["OlinkID"], mappings_df["Assay"]))
+        gene_to_olinks = {}
+        for olink_id, gene in zip(
+            mappings_df["OlinkID"], mappings_df["Assay"]
+        ):
+            gene_to_olinks.setdefault(gene, []).append(olink_id)
+
+        # Rename columns and track which OlinkIDs are in the data
+        column_mapping = {
+            col: olink_to_gene.get(col, col) for col in proteomics_df.columns
+        }
+        proteomics_df = proteomics_df.rename(columns=column_mapping)
+
+        # Handle duplicate columns after mapping
+        duplicate_cols = proteomics_df.columns[
+            proteomics_df.columns.duplicated()
+        ].unique()
+        if len(duplicate_cols) > 0:
+            # TODO: Figure out why olink provides duplicate IDs for the same protein
+            proteomics_df = proteomics_df.loc[
+                :, ~proteomics_df.columns.duplicated(keep="first")
+            ]
+
+        # Expand metadata for each sample
+        expanded_metadata_rows = []
+        for sample_id in proteomics_df.index:
+            sample_str = str(sample_id)
+
+            # Extract metadata ID (numeric part before underscore)
+            try:
+                metadata_id = (
+                    int(sample_str.split("_")[0])
+                    if "_" in sample_str
+                    else int(sample_str)
+                )
+            except (ValueError, IndexError):
+                continue
+
+            if metadata_id in metadata_df.index:
+                meta_row = metadata_df.loc[metadata_id].copy()
+                meta_row.name = sample_id
+                expanded_metadata_rows.append(meta_row)
+
+        expanded_metadata = (
+            pd.DataFrame(expanded_metadata_rows)
+            if expanded_metadata_rows
+            else metadata_df.copy()
+        )
+
+        # Map age categories to age ranges
+        if "AgeCat" in expanded_metadata.columns:
+            expanded_metadata["age_range"] = expanded_metadata["AgeCat"].map(
+                self.age_mapping
+            )
+            expanded_metadata = expanded_metadata.drop(columns=["AgeCat"])
+
+        # Align samples
+        common_samples = proteomics_df.index.intersection(
+            expanded_metadata.index
+        )
+        if len(common_samples) == 0:
+            print(
+                "Warning: No common samples found. Using all proteomics samples."
+            )
+            common_samples = proteomics_df.index
+
+        proteomics_aligned = proteomics_df.loc[common_samples]
+        metadata_aligned = expanded_metadata.loc[common_samples]
+
+        return GeoData(metadata_aligned, protein_olink=proteomics_aligned)
 
 
 class GeoMatrixParser:
@@ -534,7 +958,6 @@ class AutoScanGeoMatrixParser:
         return self._convert_to_metadata_df(self.metadata_keys, smaples)
 
     def _map_characteristics_to_dict(self, sample):
-
         def extract_key(item):
             if "tag" in item:
                 return item["tag"]
@@ -566,7 +989,6 @@ class AutoScanGeoMatrixParser:
             if parse_type == "sex":
                 cols_data.append(sex_parser(characteristics.get(key)))
             elif parse_type == "numeric":
-
                 if key == "age":
                     if key in characteristics:
                         cols_data.append(extract_numeric(characteristics[key]))
@@ -582,7 +1004,6 @@ class AutoScanGeoMatrixParser:
         return cols_data
 
     def _convert_to_metadata_df(self, metadata_keys, samples):
-
         data = {
             sample["acc"]: self._convert_characteristics_to_df_cols_data(
                 metadata_keys, sample
@@ -641,7 +1062,6 @@ class AutoScanGeoMatrixParser:
         return -1
 
     def _get_matrix_table_row_num(self, matrix_file):
-
         output_file = f"{matrix_file}.txt"
         try:
             self._ungzip_file(matrix_file, output_file)
@@ -669,7 +1089,6 @@ class AutoScanGeoMatrixParser:
 
 
 class NoMatrixDataError(Exception):
-
     def __init__(self, message):
         super().__init__(message)
 
@@ -691,6 +1110,9 @@ class DataSource:
         "path": "'path' key is missing in item",
         "parser": "'parser' key is missing in item",
     }
+
+    CACHE_CATEGORY = "data_source"
+    CACHE_VERSION = "v2"
 
     def __init__(self, source_definition, cache=None):
         """
@@ -741,13 +1163,17 @@ class DataSource:
         if self.tags and "work_needed" in self.tags:
             self._show_work_needed_warning()
 
-        cached = self.cache.get(self.id)
-        if cached:
+        cached = self.cache.get(
+            self.id, self.CACHE_CATEGORY, self.CACHE_VERSION
+        )
+        if cached is not None:
             return cached
-        else:
-            data = self.parser.parse(self.path)
-            self.cache.store(self.id, data)
-            return data
+
+        data = self.parser.parse(self.path)
+        self.cache.store(
+            self.id, data, self.CACHE_CATEGORY, self.CACHE_VERSION
+        )
+        return data
 
     def __repr__(self):
         """
@@ -770,6 +1196,10 @@ class DataSource:
             return AutoScanGeoMatrixParser(parser_data)
         if parser_type == "biomarkers-challenge-2024":
             return ChallengeDataParser(parser_data)
+        if parser_type == "gisby-olink":
+            return GisbyOlinkParser(parser_data)
+        if parser_type == "filbin-olink":
+            return FilbinOlinkParser(parser_data)
         raise ValueError(f"Unknown parser type: {parser_type}")
 
     def _show_work_needed_warning(self):
@@ -876,3 +1306,155 @@ class DataLibrary:
 
     def _parse_library_file(self, library_file):
         return parse_library_file(library_file, self.cache)
+
+    def search(self, **criteria):
+        """
+        Search and preview metadata across all available datasets without loading them.
+
+        This method allows you to explore what datasets are available and their metadata
+        characteristics before deciding which ones to load. It's particularly useful for
+        discovering datasets that match specific criteria like sex, age, or other metadata fields.
+
+        Parameters
+        ----------
+        criteria : keyword arguments
+            Keyword arguments for filtering datasets.
+            Common filters include:
+
+            - sex (str): Filter by sex ("male", "female", "unknown")
+            - min_age (float): Minimum age threshold
+            - max_age (float): Maximum age threshold
+
+        Returns
+        -------
+        pandas.DataFrame
+            A DataFrame with columns including 'series_id' and available
+            metadata fields for each matching dataset.
+
+        Examples
+        --------
+        >>> # Find all datasets with female subjects
+        >>> library = DataLibrary()
+        >>> female_datasets = library.search(sex="female")
+
+        >>> # Find datasets with elderly subjects (70+ years)
+        >>> elderly_datasets = library.search(min_age=70)
+
+        >>> # Find male datasets with subjects over 50
+        >>> male_elderly = library.search(sex="male", min_age=50)
+
+        >>> # View available metadata fields
+        >>> all_datasets = library.search()
+        >>> print(all_datasets.columns.tolist())
+
+        Notes
+        -----
+        Sex encoding follows the DNA Methylation Array Data Standard:
+        - 0 = female
+        - 1 = male
+        - NaN = unknown/missing
+        """
+
+        hits = []
+
+        try:
+            for sid, entry in _iter_library_items():
+                # Resolve metadata dictionary - always use a copy to avoid modifying original data
+                meta = {}
+
+                # First check for direct metadata
+                if "metadata" in entry:
+                    meta = entry["metadata"].copy()
+
+                # Then check for direct top-level fields (but don't overwrite existing)
+                if "sex" in entry and "sex" not in meta:
+                    meta["sex"] = entry["sex"]
+                if "age" in entry and "age" not in meta:
+                    age_val = entry["age"]
+                    if isinstance(age_val, (int, float, str)):
+                        try:
+                            meta["age"] = float(age_val)
+                        except (ValueError, TypeError):
+                            pass
+
+                # Apply sex filter
+                if "sex" in criteria:
+                    wanted = criteria["sex"].lower()
+                    raw_sex = meta.get("sex")
+
+                    # Check if dataset has sex information available
+                    parser = entry.get("parser", {})
+                    # Handle both 'metadata' and 'metadata_keys_parse' structures
+                    parser_metadata = parser.get("metadata", {})
+                    if not parser_metadata and "metadata_keys_parse" in parser:
+                        parser_metadata = parser.get("metadata_keys_parse", {})
+                    has_sex_parser = "sex" in parser_metadata
+
+                    # If we have direct sex metadata, try to match it
+                    if raw_sex is not None:
+                        sex_str = None
+
+                        # Convert to standardized string for comparison
+                        if isinstance(raw_sex, str):
+                            sex_lower = raw_sex.strip().lower()
+                            # Map common variations
+                            if sex_lower in ["f", "female"]:
+                                sex_str = "female"
+                            elif sex_lower in ["m", "male"]:
+                                sex_str = "male"
+                            elif sex_lower in ["unknown", "u", ""]:
+                                sex_str = "unknown"
+                            else:
+                                sex_str = sex_lower
+                        elif isinstance(
+                            raw_sex, (int, float)
+                        ) and not math.isnan(raw_sex):
+                            # Handle numeric encoding
+                            sex_map = {
+                                0: "female",  # Standard
+                                1: "male",  # Standard
+                                2: "female",  # GEO encoding (reversed)
+                            }
+                            sex_str = sex_map.get(int(raw_sex), "unknown")
+                        else:
+                            sex_str = "unknown"
+
+                        # Skip if sex doesn't match
+                        if sex_str != wanted:
+                            continue
+
+                    elif not has_sex_parser:
+                        # No sex information at all - skip this dataset
+                        continue
+                    # If has_sex_parser but no direct metadata, include the dataset
+                    # because we can't determine the actual sex without loading data
+
+                # Apply age filters
+                if "min_age" in criteria:
+                    age = meta.get("age")
+                    if age is None or age < criteria["min_age"]:
+                        continue
+
+                if "max_age" in criteria:
+                    age = meta.get("age")
+                    if age is None or age > criteria["max_age"]:
+                        continue
+
+                # Create result entry with series_id
+                result_entry = {"series_id": sid}
+
+                # Add metadata fields that exist
+                for key, value in meta.items():
+                    if value is not None:
+                        result_entry[key] = value
+
+                hits.append(result_entry)
+        except Exception:
+            # If iteration fails, return empty DataFrame
+            return pd.DataFrame(columns=["series_id"])
+
+        # Always return a DataFrame, even if empty
+        if not hits:
+            return pd.DataFrame(columns=["series_id"])
+
+        return pd.DataFrame(hits)

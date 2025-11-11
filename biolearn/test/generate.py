@@ -8,8 +8,11 @@ source_url = "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41169/matrix/G
 
 # Paths for the script, data, and metadata files
 script_dir = os.path.dirname(__file__)
-data_folder_path = os.path.join(script_dir, "data/external/")
-data_file_path = os.path.join(data_folder_path, "DNAmTestSet.csv")
+
+data_folder_path = os.path.join(script_dir, "data/testset/")
+data_file_path = os.path.join(
+    data_folder_path, "testset_methylation_part0.csv"
+)
 metadata_file_path = os.path.join(data_folder_path, "testset_metadata.csv")
 
 
@@ -62,6 +65,7 @@ if not is_file_valid(data_file_path, expected_hash):
         "parser": {
             "type": "geo-matrix",
             "id-row": 33,
+            "format": "",
             "metadata": {
                 "age": {"row": 47, "parse": "numeric"},
                 "sex": {"row": 41, "parse": "sex"},

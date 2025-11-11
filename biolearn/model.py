@@ -2,6 +2,9 @@ import os
 import cvxpy as cp
 import numpy as np
 import pandas as pd
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
 from sklearn.linear_model import LinearRegression
 
 from biolearn.data_library import GeoData
@@ -14,6 +17,60 @@ def anti_trafo(x, adult_age=20):
         x < 0, (1 + adult_age) * np.exp(x) - 1, (1 + adult_age) * x + adult_age
     )
     return y
+
+
+def preprocess_pasta(df):
+    df = df.loc[~df.index.duplicated(keep="first")]  # keep first duplicate
+    genes = pd.read_csv("biolearn/data/Pasta.csv", index_col=0).index
+    out = df.reindex(genes)  # select and order genes
+    med = np.nanmedian(out.to_numpy())
+    out = out.fillna(med)  # fill NA by overall median
+    out = out.rank(
+        axis=0, method="average", na_option="keep", ascending=True
+    )  # rank normalization
+    return out
+
+
+def olink_standardization_preprocess(reference_sd_file):
+    """
+    Create a preprocessing function that standardizes Olink protein data
+    to match reference standard deviations.
+
+    Parameters:
+    -----------
+    reference_sd_file : str
+        Path to CSV file containing reference standard deviations.
+        File should have 'protein' and 'sd' columns.
+
+    Returns:
+    --------
+    preprocess : function
+        A preprocessing function that takes a DataFrame and returns
+        a standardized DataFrame.
+    """
+
+    def preprocess(df):
+        reference_path = get_data_file(reference_sd_file)
+        reference_df = pd.read_csv(reference_path)
+        reference_sds = reference_df.set_index("protein")["sd"]
+
+        # Make a copy to avoid modifying the original
+        df_standardized = df.copy()
+
+        for col in df.columns:
+            if col in reference_sds.index:
+                current_sd = df[col].std(ddof=1, skipna=True)
+
+                if current_sd > 0:  # Avoid division by zero
+                    df_standardized[col] = (
+                        df[col] / current_sd
+                    ) * reference_sds[col]
+            else:
+                df_standardized[col] = np.nan
+
+        return df_standardized
+
+    return preprocess
 
 
 CLOCK_FOUNDATION_USAGE = "For cosmetics or life insurance applications, contact UCLA TDG regarding licensing status. For all other commercial usage `contact the Clock Foundation <https://clockfoundation.org/contact-us/>`_."
@@ -156,6 +213,18 @@ model_definitions = {
             "default_imputation": "none",
         },
     },
+    "DNAmClockCortical": {
+        "year": 2020,
+        "species": "Human",
+        "tissue": "Human Cortex",
+        "source": "https://doi.org/10.1093/brain/awaa334",
+        "output": "Human Cortex Age (Years)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "DNAmClockCortical.csv",
+            "transform": lambda sum: anti_trafo(sum + 0.577682570446177),
+        },
+    },
     "GrimAgeV1": {
         "year": 2019,
         "species": "Human",
@@ -176,6 +245,18 @@ model_definitions = {
         "model": {"type": "GrimageModel", "file": "GrimAgeV2.csv"},
         "usage": {
             "commercial": CLOCK_FOUNDATION_USAGE,
+        },
+    },
+    "VidalBralo": {
+        "year": 2018,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.3389/fgene.2016.00126",
+        "output": "Age (Years)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "VidalBralo.csv",
+            "transform": lambda sum: sum + 84.7,
         },
     },
     "AlcoholMcCartney": {
@@ -243,6 +324,28 @@ model_definitions = {
             "type": "SexEstimationModel",
             "file": "estimateSex.csv",
             "default_imputation": "averaging",
+        },
+    },
+    "EpiTOC1": {
+        "year": 2016,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1186/s13059-016-1064-3",
+        "output": "Stem Cell Division Rate",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "EpiTOC1.csv",
+        },
+    },
+    "EpiTOC2": {
+        "year": 2020,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1186/s13073-020-00752-3",
+        "output": "Stem Cell Division Rate",
+        "model": {
+            "type": "EpiTOC2Model",
+            "file": "EpiTOC2.csv",
         },
     },
     "LeeRefinedRobust": {
@@ -338,6 +441,18 @@ model_definitions = {
             "non-commercial": "Free to use",
         },
     },
+    "StocZ": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1038/s43587-024-00600-8",
+        "output": "Mortality Risk",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "StocZ.csv",
+            "transform": lambda sum: sum + 64.8077188694894,
+        },
+    },
     "BMI_McCartney": {
         "year": 2018,
         "species": "Human",
@@ -421,6 +536,30 @@ model_definitions = {
             "file": "BMI_Reed.csv",
         },
     },
+    "StocP": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1038/s43587-024-00600-8",
+        "output": "Age (Years)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "StocP.csv",
+            "transform": lambda sum: sum + 92.8310813279039,
+        },
+    },
+    "Mayne": {
+        "year": 2016,
+        "species": "Human",
+        "tissue": "Placenta",
+        "source": "https://doi.org/10.2217/epi-2016-0103",
+        "output": "Gestational age",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "Mayne.csv",
+            "transform": lambda sum: sum + 24.99026,
+        },
+    },
     "ProstateCancerKirby": {
         "year": 2017,
         "species": "Human",
@@ -430,6 +569,18 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "ProstateCancerKirby.csv",
+        },
+    },
+    "AltumAge": {
+        "year": 2022,
+        "species": "Human",
+        "tissue": "Multi-tissue",
+        "source": "https://doi.org/10.1038/s41514-022-00085-y",
+        "output": "Age (Years)",
+        "model": {
+            "type": "AltumAgeModel",
+            "file": "AltumAge.csv",
+            "weights": "AltumAge.pt",
         },
     },
     "HepatoXu": {
@@ -453,6 +604,18 @@ model_definitions = {
             "type": "LinearMethylationModel",
             "file": "CVD_Westermann.csv",
             "transform": lambda x: 1 / (1 + np.exp(-x)),
+        },
+    },
+    "StocH": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Multi-tissue",
+        "source": "https://doi.org/10.1038/s43587-024-00600-8",
+        "output": "Age (Years)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "StocH.csv",
+            "transform": lambda sum: sum + 59.8015666314217,
         },
     },
     "AD_Bahado-Singh": {
@@ -505,7 +668,306 @@ model_definitions = {
             "transform": lambda sum: sum,
         },
     },
+    "OrganAgeChronological": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.medrxiv.org/content/10.1101/2024.04.08.24305469v1",
+        "output": "Mortality Risk by Organ",
+        "model": {
+            "type": "LinearMultipartProteomicModel",
+            "preprocess": olink_standardization_preprocess(
+                "reference/olink3000_deviations.csv"
+            ),
+            "file": "OrganAgeChronological.csv",
+            "default_imputation": "none",
+        },
+    },
+    "OrganAgeMortality": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.medrxiv.org/content/10.1101/2024.04.08.24305469v1",
+        "output": "Age (Years) by Organ",
+        "model": {
+            "type": "LinearMultipartProteomicModel",
+            "preprocess": olink_standardization_preprocess(
+                "reference/olink3000_deviations.csv"
+            ),
+            "file": "OrganAgeMortality.csv",
+            "default_imputation": "none",
+        },
+    },
+    "OrganAge1500Chronological": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.medrxiv.org/content/10.1101/2024.04.08.24305469v1",
+        "output": "Mortality Risk by Organ",
+        "model": {
+            "type": "LinearMultipartProteomicModel",
+            "preprocess": olink_standardization_preprocess(
+                "reference/olink1500_deviations.csv"
+            ),
+            "file": "OrganAge1500Chronological.csv",
+            "default_imputation": "none",
+        },
+    },
+    "OrganAge1500Mortality": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.medrxiv.org/content/10.1101/2024.04.08.24305469v1",
+        "output": "Age (Years) by Organ",
+        "model": {
+            "type": "LinearMultipartProteomicModel",
+            "preprocess": olink_standardization_preprocess(
+                "reference/olink1500_deviations.csv"
+            ),
+            "file": "OrganAge1500Mortality.csv",
+            "default_imputation": "none",
+        },
+    },
+    "Bohlin": {
+        "year": 2017,
+        "species": "Human",
+        "tissue": "Cord Blood",
+        "source": "https://doi.org/10.1186/s13059-016-1063-4",
+        "output": "Age (days)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "Bohlin.csv",
+            "transform": lambda sum: sum + 277.2421,
+        },
+    },
+    "Bocklandt": {
+        "year": 2011,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1371/journal.pone.0014821",
+        "output": "Age (years)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "Bocklandt.csv",
+        },
+    },
+    "PCHorvath1": {
+        "year": 2022,
+        "species": "Human",
+        "tissue": "Multi-tissue",
+        "source": "https://doi.org/10.1038/s43587-022-00248-2",
+        "output": "Age (Years)",
+        "model": {
+            "type": "PCLinearTransformationModel",
+            "file": "https://storage.googleapis.com/biolearn/PCClock/PCHorvath1_model.csv",
+            "rotation": "https://storage.googleapis.com/biolearn/PCClock/PCHorvath1_rotation.csv",
+            "center": "https://storage.googleapis.com/biolearn/PCClock/PCHorvath1_center.csv",
+            "transform": lambda sum: anti_trafo(sum + 1.15834584357227),
+            "default_imputation": "sesame_450k",
+        },
+    },
+    "Pasta": {
+        "year": 2025,
+        "species": "Human",
+        "tissue": "Multi-tissue",
+        "source": "https://www.biorxiv.org/content/10.1101/2025.06.04.657785v1.full",
+        "output": "Age score",
+        "model": {
+            "type": "LinearTranscriptomicModel",
+            "file": "Pasta.csv",
+            "preprocess": preprocess_pasta,
+            "transform": lambda sum: sum * -4.76348378687217
+            - 0.0502893445253186 * -4.76348378687217,
+        },
+        "usage": {
+            "commercial": "Free to use",
+            "non-commercial": "Free to use",
+        },
+    },
+    "REG": {
+        "year": 2025,
+        "species": "Human",
+        "tissue": "Multi-tissue",
+        "source": "https://www.biorxiv.org/content/10.1101/2025.06.04.657785v1.full",
+        "output": "Age (years)",
+        "model": {
+            "type": "LinearTranscriptomicModel",
+            "file": "REG.csv",
+            "preprocess": preprocess_pasta,
+            "transform": lambda sum: sum + 140.272578432562,
+        },
+        "usage": {
+            "commercial": "Free to use",
+            "non-commercial": "Free to use",
+        },
+    },
 }
+
+
+class AltumAgeNeuralNetwork(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.linear1 = nn.Linear(20318, 32)
+        self.linear2 = nn.Linear(32, 32)
+        self.linear3 = nn.Linear(32, 32)
+        self.linear4 = nn.Linear(32, 32)
+        self.linear5 = nn.Linear(32, 32)
+        self.linear6 = nn.Linear(32, 1)
+
+        self.bn1 = nn.BatchNorm1d(20318, eps=0.001, momentum=0.99)
+        self.bn2 = nn.BatchNorm1d(32, eps=0.001, momentum=0.99)
+        self.bn3 = nn.BatchNorm1d(32, eps=0.001, momentum=0.99)
+        self.bn4 = nn.BatchNorm1d(32, eps=0.001, momentum=0.99)
+        self.bn5 = nn.BatchNorm1d(32, eps=0.001, momentum=0.99)
+        self.bn6 = nn.BatchNorm1d(32, eps=0.001, momentum=0.99)
+
+    def forward(self, x):
+        x = self.bn1(x)
+        x = self.linear1(x)
+        x = F.selu(x)
+
+        x = self.bn2(x)
+        x = self.linear2(x)
+        x = F.selu(x)
+
+        x = self.bn3(x)
+        x = self.linear3(x)
+        x = F.selu(x)
+
+        x = self.bn4(x)
+        x = self.linear4(x)
+        x = F.selu(x)
+
+        x = self.bn5(x)
+        x = self.linear5(x)
+        x = F.selu(x)
+
+        x = self.bn6(x)
+        x = self.linear6(x)
+        return x
+
+
+class AltumAgeModel:
+    def __init__(self, weights_path=None, preprocess_file_path=None):
+        self.model = AltumAgeNeuralNetwork()
+        self.model.eval()
+        self._weights_loaded = False
+        self.center = None
+        self.scale = None
+        self.reference = None
+
+        if preprocess_file_path:
+            if not os.path.isabs(preprocess_file_path):
+                preprocess_file_path = get_data_file(preprocess_file_path)
+            preprocess_df = pd.read_csv(
+                preprocess_file_path, index_col=0
+            )  # Ensure CpG_site is the index
+            self.center = torch.tensor(
+                preprocess_df["center"].values, dtype=torch.float32
+            )
+            self.scale = torch.tensor(
+                preprocess_df["scale"].values, dtype=torch.float32
+            )
+            self.reference = (
+                preprocess_df.index.tolist()
+            )  # Convert index to a list of CpG site names
+
+        if weights_path:
+            self.load_pytorch_weights(weights_path)
+
+    def load_pytorch_weights(self, weights_path: str):
+        p = weights_path
+        if not os.path.isabs(p):
+            p = get_data_file(p)
+        if not os.path.exists(p):
+            print(
+                f"Warning: Weights file {p} does not exist. Model will be initialized with random weights."
+            )
+            self._weights_loaded = False
+            return
+        sd = torch.load(p, map_location="cpu", weights_only=False)
+        if isinstance(sd, dict) and "state_dict" in sd:
+            sd = sd["state_dict"]
+        elif (
+            isinstance(sd, dict)
+            and "model" in sd
+            and isinstance(sd["model"], dict)
+        ):
+            sd = sd["model"]
+        self.model.load_state_dict(sd, strict=True)
+        self._weights_loaded = True
+
+    def predict(self, geo_data):
+        """
+        Predicts the output using the AltumAgeModel.
+
+        Args:
+            geo_data (GeoData): A GeoData object containing metadata and dnam attributes.
+
+        Returns:
+            pd.DataFrame: Predictions from the model with a column named "Predicted".
+        """
+        if self.reference is None or self.center is None or self.scale is None:
+            raise RuntimeError("AltumAge preprocessing parameters missing.")
+        if not self._weights_loaded:
+            raise RuntimeError(
+                "AltumAge used without loaded weights. Please provide AltumAge.pt file."
+            )
+        # Access the DNA methylation data from the GeoData object
+        df = geo_data.dnam.fillna(0)
+        # Ensure the input DataFrame contains all required CpG sites
+        required_cpgs = self.methylation_sites()
+        missing_cpgs = set(required_cpgs) - set(df.index)
+        if missing_cpgs:
+            print(
+                f"{len(missing_cpgs)} CpGs missing in input; filling with 0."
+            )
+
+        # Align input data with the reference CpG sites
+        df = df.reindex(
+            self.reference, fill_value=0
+        )  # Fill missing CpG sites with 0
+
+        # # Convert input DataFrame to a PyTorch tensor
+        X = torch.tensor(
+            df.values.T, dtype=torch.float32
+        )  # Transpose to match sample orientation
+
+        if self.center is not None and self.scale is not None:
+            # Scale the input using the center and scale values
+            X = (X - self.center) / (self.scale + 1e-8)
+        # Pass the preprocessed input through the neural network
+        with torch.no_grad():
+            preds = self.model(X).squeeze().numpy()
+
+        # Return predictions as a DataFrame
+        return pd.DataFrame(preds, index=df.columns, columns=["Predicted"])
+
+    @classmethod
+    def from_definition(cls, clock_definition):
+        """
+        Creates an instance of AltumAgeModel from a model definition.
+        Args:
+            clock_definition (dict): The model definition containing file paths.
+        Returns:
+            AltumAgeModel: An instance of the AltumAgeModel class.
+        """
+        model_def = clock_definition["model"]
+
+        # Extract the file path for preprocessing
+        preprocess_file = get_data_file(model_def["file"])
+        weights_path = None
+
+        try:
+            weights_path = get_data_file(model_def["weights"])
+        except Exception:
+            weights_path = None
+        return cls(
+            weights_path=weights_path, preprocess_file_path=preprocess_file
+        )
+
+    def methylation_sites(self):
+        return list(self.reference)
 
 
 def quantile_normalize(df):
@@ -541,7 +1003,6 @@ def map_ensembl_to_gene(rna_matrix):
 
 class DeconvolutionModel:
     def __init__(self, reference_file, platform_input):
-
         # sets reference data
         self.reference = pd.read_csv(
             get_data_file(reference_file), index_col=0
@@ -552,14 +1013,12 @@ class DeconvolutionModel:
 
     @classmethod
     def from_definition(cls, clock_definition):
-
         model_def = clock_definition["model"]
 
         # calls constructor: "__init__()"
         return cls(model_def["file"], model_def["platform"])
 
     def predict(self, geo_data):
-
         # This function computes estimate of cell proportions using quadratic programming
         # inputs:
         # meth_vector: ndarray vector of bulk methylation (length must equal number of rows in deconv_reference)
@@ -567,7 +1026,6 @@ class DeconvolutionModel:
         # outputs:
         # cell_prop_estimate.value: ndarray vector of estimated cell type proportions
         def solve_qp(meth_vector, deconv_reference):
-
             # define cell proportion variable being solved for
             cell_prop_estimate = cp.Variable(deconv_reference.shape[1])
 
@@ -701,6 +1159,8 @@ class LinearModel:
             model_def["file"],
             model_def.get("transform", no_transform),
             model_def.get("preprocess", no_transform),
+            center_file=model_def.get("center"),
+            rotation_file=model_def.get("rotation"),
             **{k: v for k, v in clock_definition.items() if k != "model"},
         )
 
@@ -713,9 +1173,15 @@ class LinearModel:
         model_df = self.coefficients.join(matrix_data, how="inner")
 
         # Vectorized multiplication: multiply CoefficientTraining with all columns of dnam_data
+        coefficient_column = (
+            "CoefficientTraining"
+            if "CoefficientTraining" in model_df.columns
+            else "Weight"
+        )
+
         result = (
             model_df.iloc[:, 1:]
-            .multiply(model_df["CoefficientTraining"], axis=0)
+            .multiply(model_df[coefficient_column], axis=0)
             .sum(axis=0)
         )
 
@@ -733,6 +1199,109 @@ class LinearMethylationModel(LinearModel):
     def methylation_sites(self):
         unique_vars = set(self.coefficients.index) - {"intercept"}
         return list(unique_vars)
+
+
+class PCLinearTransformationModel(LinearModel):
+    """
+    Transforms methylation data into principal component (PC) space using
+    provided center and rotation files before performing linear regression.
+    """
+
+    def __init__(
+        self,
+        coefficient_file_or_df,
+        transform,
+        preprocess=None,
+        center_file=None,
+        rotation_file=None,
+        **details,
+    ):
+        """
+        Initialize the PCLinearTransformationModel.
+
+        Args:
+            coefficient_file_or_df: Path to coefficient file or DataFrame
+            transform: Transformation function to apply to predictions
+            preprocess: Optional preprocessing function
+            center_file (str): Path to the CSV file containing CpG means for centering.
+            rotation_file (str): Path to the CSV file containing PCA loadings.
+            **details: Additional details passed to the parent class.
+        """
+        # Pass center_file and rotation_file as part of **details
+        details["center"] = center_file
+        details["rotation"] = rotation_file
+        super().__init__(
+            coefficient_file_or_df, transform, preprocess, **details
+        )
+        self.center_file = center_file or details.get("center")
+        self.rotation_file = rotation_file or details.get("rotation")
+        self.center_ = None
+        self.rotation = None
+
+    def _load_data(self):
+        """
+        Load the center and rotation data from the provided files.
+        """
+        self.center_ = pd.read_csv(
+            get_data_file(self.center_file), index_col=0
+        ).iloc[:, 0]
+        # Load rotation data if not already loaded
+        self.rotation = pd.read_csv(
+            get_data_file(self.rotation_file), index_col=None
+        )
+        self.rotation.set_index(self.center_.index, inplace=True)
+
+        # Align indices to ensure consistency
+        common_indices = self.center_.index.intersection(self.rotation.index)
+        if len(common_indices) == 0:
+            raise ValueError(
+                "No common CpG sites found between center and rotation data."
+            )
+        self.center_ = self.center_.loc[common_indices]
+        self.rotation = self.rotation.loc[common_indices]
+
+    def _get_data_matrix(self, geo_data):
+        """
+        Apply PCA transformation to the DNA methylation data.
+
+        Args:
+            geo_data (GeoData): The input GeoData object containing methylation data.
+
+        Returns:
+            pd.DataFrame: The PC-transformed data matrix.
+        """
+        # Load the center and rotation data
+        self._load_data()
+
+        meth = geo_data.dnam.copy()
+
+        # Intersect with CpGs in reference files
+        intersecting_cpgs = meth.index.intersection(self.center_.index)
+
+        meth = meth.loc[intersecting_cpgs]
+        center_ = self.center_.loc[intersecting_cpgs]
+        rotation = self.rotation.loc[intersecting_cpgs]
+
+        # Fill NaN values with center values (so they become 0 after centering)
+        meth = meth.T.fillna(center_).T
+
+        # Center the data and apply PCA transformation
+        X_centered = meth.subtract(center_, axis=0)
+        PCs = X_centered.T.dot(rotation)  # (samples × PCs)
+        return PCs.T  # (PCs × samples)
+
+    def methylation_sites(self):
+        """
+        Return the list of required CpG sites.
+        """
+        # Load the center data if not already loaded
+        if self.center_ is None:
+            if not self.center_file:
+                raise ValueError("Center file path is not provided.")
+            self.center_ = pd.read_csv(
+                get_data_file(self.center_file), index_col=0
+            ).iloc[:, 0]
+        return list(self.center_.index)
 
 
 class LinearTranscriptomicModel(LinearModel):
@@ -756,8 +1325,40 @@ class GrimageModel:
         )
 
     def predict(self, geo_data):
-        if "sex" not in geo_data.metadata or "age" not in geo_data.metadata:
-            raise ValueError("metadata must contain 'sex' and 'age' columns")
+        if "sex" not in geo_data.metadata:
+            raise ValueError(
+                "GrimAge requires 'sex' column in metadata. "
+                "If sex is unknown, you can predict it using the SexEstimation model:\n"
+                "  from biolearn.model_gallery import ModelGallery\n"
+                "  gallery = ModelGallery()\n"
+                "  sex_pred = gallery.get('SexEstimation').predict(your_data)\n"
+                "  # Then add sex to metadata based on predictions"
+            )
+
+        if "age" not in geo_data.metadata:
+            raise ValueError(
+                "GrimAge requires 'age' column in metadata (numeric age in years)"
+            )
+
+        # Check for NaN sex values
+        sex_values = geo_data.metadata["sex"]
+        if sex_values.isna().any():
+            nan_samples = sex_values[sex_values.isna()].index.tolist()
+            raise ValueError(
+                f"GrimAge cannot process samples with unknown sex: {nan_samples[:3]}.\n"
+                f"Either exclude these samples or predict sex using SexEstimation model."
+            )
+
+        # Check for sample mismatch between methylation matrix and metadata
+        dnam_samples = set(geo_data.dnam.columns)
+        metadata_samples = set(geo_data.metadata.index)
+        missing_metadata = dnam_samples - metadata_samples
+
+        if missing_metadata:
+            raise ValueError(
+                f"Methylation data contains samples without metadata: {list(missing_metadata)[:3]}.\n"
+                f"Ensure all samples in methylation matrix have corresponding metadata entries."
+            )
 
         df = geo_data.dnam
 
@@ -767,7 +1368,7 @@ class GrimageModel:
         # Add metadata rows to dnam DataFrame
         df.loc["Age"] = transposed_metadata.loc["age"]
         df.loc["Female"] = transposed_metadata.loc["sex"].apply(
-            lambda x: 1 if x == 1 else 0
+            lambda x: 1 if x == 0 else 0
         )
         df.loc["Intercept"] = 1
 
@@ -789,7 +1390,7 @@ class GrimageModel:
 
         all_data["Age"] = geo_data.metadata["age"]
         all_data["Female"] = geo_data.metadata["sex"].apply(
-            lambda x: 1 if x == 1 else 0
+            lambda x: 1 if x == 0 else 0
         )
 
         all_data["COX"] = all_data.mul(cox_coefficients).sum(axis=1)
@@ -827,6 +1428,14 @@ class GrimageModel:
             .sum()
         )
 
+        # Check for NaN results which indicate missing data
+        if result.isna().any():
+            nan_samples = result[result.isna()].index.tolist()
+            raise ValueError(
+                f"Missing methylation data for required CpG sites in samples: {nan_samples[:3]}. "
+                f"Ensure all required methylation sites are present in your data."
+            )
+
         return result
 
     def rename_columns(self, data, old_names, new_names):
@@ -839,6 +1448,74 @@ class GrimageModel:
         ]
         unique_vars = set(filtered_df["var"]) - {"Intercept", "Age", "Female"}
         return list(unique_vars)
+
+
+class LinearMultipartProteomicModel:
+    def __init__(
+        self, coefficient_file_or_df, transform, preprocess, **details
+    ):
+        self.details = details
+        self.transform = transform
+        self.preprocess = preprocess
+        if isinstance(coefficient_file_or_df, pd.DataFrame):
+            self.coefficients = coefficient_file_or_df
+        else:
+            file_path = (
+                coefficient_file_or_df
+                if os.path.isabs(coefficient_file_or_df)
+                else get_data_file(coefficient_file_or_df)
+            )
+            self.coefficients = pd.read_csv(file_path)
+
+    @classmethod
+    def from_definition(cls, clock_definition):
+        def no_transform(_):
+            return _
+
+        model_def = clock_definition["model"]
+        return cls(
+            model_def["file"],
+            model_def.get("transform", no_transform),
+            model_def.get("preprocess", no_transform),
+            **{k: v for k, v in clock_definition.items() if k != "model"},
+        )
+
+    def predict(self, geo_data):
+        mat = geo_data.protein_olink
+        if mat is None or mat.empty:
+            raise ValueError(
+                "No olink proteomic data provided: 'geo_data.protein_olink' is None or empty."
+            )
+
+        # Apply preprocessing
+        mat = self.preprocess(mat)
+        results = {}
+        for tissue, grp in self.coefficients.groupby("Tissue"):
+            # intercept
+            intercepts = grp.loc[
+                grp["Protein"].str.lower() == "intercept", "Coefficient"
+            ]
+            intercept = (
+                float(intercepts.iloc[0]) if not intercepts.empty else 0.0
+            )
+
+            # protein coefficients
+            coef_ser = grp.loc[
+                grp["Protein"].str.lower() != "intercept"
+            ].set_index("Protein")["Coefficient"]
+
+            # align proteins as columns, fill missing
+            aligned = mat.reindex(columns=coef_ser.index).fillna(0)
+
+            # compute prediction per sample
+            pred = aligned.dot(coef_ser) + intercept
+            results[tissue] = pred
+
+        # Apply transformation to results
+        return self.transform(pd.DataFrame(results))
+
+    def methylation_sites(self):
+        return []
 
 
 class SexEstimationModel:
@@ -904,19 +1581,57 @@ class SexEstimationModel:
         return list(self.coefficients.index)
 
 
+class EpiTOC2Model:
+    def __init__(self, reference_file):
+        self.reference = pd.read_csv(
+            get_data_file(reference_file), index_col=0
+        )
+        self.delta = self.reference["delta"].to_numpy().reshape(-1, 1)
+        self.beta0 = self.reference["beta0"].to_numpy().reshape(-1, 1)
+        self.CpG_names = self.reference.index.to_numpy()
+
+    @classmethod
+    def from_definition(cls, clock_definition):
+        model_def = clock_definition["model"]
+        return cls(model_def["file"])
+
+    def predict(self, geo_data):
+        dnam = geo_data.dnam
+
+        map_idx = dnam.index.get_indexer(self.CpG_names)
+        rep_mask = map_idx != -1
+
+        rows = map_idx[rep_mask]
+        beta = dnam.values[rows, :].astype(float)
+        delta = self.delta[rep_mask, :]
+        beta0 = self.beta0[rep_mask, :]
+        k = float(rows.size)
+
+        beta = np.where(np.isnan(beta), 0.0, beta)
+
+        with np.errstate(divide="ignore", invalid="ignore"):
+            contrib = (beta - beta0) / (delta * (1.0 - beta0))
+
+        vals = 2.0 * (np.sum(contrib, axis=0) / k)
+
+        return pd.DataFrame(vals, index=dnam.columns, columns=["Predicted"])
+
+    def methylation_sites(self):
+        return list(self.CpG_names)
+
+
 class ImputationDecorator:
     def __init__(self, clock, imputation_method):
         self.clock = clock
         self.imputation_method = imputation_method
 
     def predict(self, geo_data):
-        # Impute missing values before prediction
         needed_cpgs = self.clock.methylation_sites()
         dnam_data_imputed = self.imputation_method(geo_data.dnam, needed_cpgs)
 
-        return self.clock.predict(
-            GeoData(geo_data.metadata, dnam_data_imputed)
-        )
+        geo_copy = geo_data.copy()
+        geo_copy.dnam = dnam_data_imputed
+        return self.clock.predict(geo_copy)
 
     # Forwarding other methods and attributes to the clock
     def __getattr__(self, name):

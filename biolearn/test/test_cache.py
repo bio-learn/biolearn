@@ -1,99 +1,178 @@
 import os
 import shutil
-import pytest
 import time
+import pytest
+import pickle
+
 from biolearn.cache import LocalFolderCache
+
+CATEGORY_EXPR = "expr"
+CATEGORY_META = "meta"
+VERSION_V1 = "v1"
+VERSION_V2 = "v2"
 
 
 @pytest.fixture
-def cache():
-    cache_path = "test_cache"
-    max_size_gb = 0.000000954  # 1 KB for testing purposes
-    cache = LocalFolderCache(cache_path, max_size_gb)
-    yield cache
-    # Clean up the cache directory after each test
-    shutil.rmtree(cache_path, ignore_errors=True)
+def cache(tmp_path):
+    """Create an isolated LocalFolderCache per test."""
+    cache_path = tmp_path / "cache"
+    max_size_gb = 0.000000954  # 1 KB
+    c = LocalFolderCache(str(cache_path), max_size_gb)
+    yield c
+    # Cleanup handled by tmp_path fixture
 
 
 def test_store_and_get(cache):
-    cache.store("key1", "value1")
-    assert cache.get("key1") == "value1"
+    cache.store("key1", "value1", CATEGORY_EXPR, VERSION_V1)
+    assert cache.get("key1", CATEGORY_EXPR, VERSION_V1) == "value1"
 
 
 def test_get_nonexistent_key(cache):
-    assert cache.get("nonexistent_key") is None
+    assert cache.get("missing", CATEGORY_EXPR, VERSION_V1) is None
 
 
 def test_store_and_get_multiple_keys(cache):
-    cache.store("key1", "value1")
-    cache.store("key2", "value2")
-    assert cache.get("key1") == "value1"
-    assert cache.get("key2") == "value2"
+    cache.store("key1", "value1", CATEGORY_EXPR, VERSION_V1)
+    cache.store("key2", "value2", CATEGORY_EXPR, VERSION_V1)
+    assert cache.get("key1", CATEGORY_EXPR, VERSION_V1) == "value1"
+    assert cache.get("key2", CATEGORY_EXPR, VERSION_V1) == "value2"
 
 
 def test_cache_size_limit(cache):
-    # Store items exceeding the cache size limit
-    cache.store("key1", "a" * 500)  # 500 bytes
-    time.sleep(0.1)  # Ensure file timestamps are different
-    cache.store("key2", "b" * 800)  # 800 bytes
-    time.sleep(0.1)
-    cache.store("key3", "c" * 150)  # 150 bytes
-
-    # Check that the least recently used item (key1) is evicted
-    assert cache.get("key1") is None
-    assert cache.get("key2") == "b" * 800
-    assert cache.get("key3") == "c" * 150
+    cache.store("key1", "a" * 500, CATEGORY_EXPR, VERSION_V1)  # 500 B
+    time.sleep(0.01)
+    cache.store("key2", "b" * 800, CATEGORY_EXPR, VERSION_V1)  # 800 B
+    time.sleep(0.01)
+    cache.store("key3", "c" * 150, CATEGORY_EXPR, VERSION_V1)  # 150 B
+    # key1 should be evicted (LRU)
+    assert cache.get("key1", CATEGORY_EXPR, VERSION_V1) is None
+    assert cache.get("key2", CATEGORY_EXPR, VERSION_V1) == "b" * 800
+    assert cache.get("key3", CATEGORY_EXPR, VERSION_V1) == "c" * 150
 
 
 def test_lru_respects_get_calls(cache):
-    # Store items exceeding the cache size limit
-    cache.store("key1", "a" * 500)
-    time.sleep(0.1)  # Ensure file timestamps are different
-    cache.store("key2", "b" * 400)
-    time.sleep(0.1)
-    cache.get("key1")  # Ensure Key1 most recently used
-    time.sleep(0.1)
-    cache.store("key3", "c" * 150)
+    cache.store("key1", "a" * 500, CATEGORY_EXPR, VERSION_V1)
+    time.sleep(0.01)
+    cache.store("key2", "b" * 400, CATEGORY_EXPR, VERSION_V1)
+    time.sleep(0.01)
+    cache.get("key1", CATEGORY_EXPR, VERSION_V1)  # refresh key1
+    time.sleep(0.01)
+    cache.store("key3", "c" * 150, CATEGORY_EXPR, VERSION_V1)
 
-    # Check that the least recently used item (key1) is evicted
-    assert cache.get("key1") == "a" * 500
-    assert cache.get("key2") is None
-    assert cache.get("key3") == "c" * 150
+    assert cache.get("key1", CATEGORY_EXPR, VERSION_V1) == "a" * 500
+    assert cache.get("key2", CATEGORY_EXPR, VERSION_V1) is None
+    assert cache.get("key3", CATEGORY_EXPR, VERSION_V1) == "c" * 150
 
 
 def test_clear(cache):
-    cache.store("key1", "value1")
-    cache.store("key2", "value2")
+    cache.store("key1", "value1", CATEGORY_EXPR, VERSION_V1)
+    cache.store("key2", "value2", CATEGORY_EXPR, VERSION_V1)
     cache.clear()
-    assert cache.get("key1") is None
-    assert cache.get("key2") is None
+    assert cache.get("key1", CATEGORY_EXPR, VERSION_V1) is None
+    assert cache.get("key2", CATEGORY_EXPR, VERSION_V1) is None
 
 
 def test_store_item_larger_than_cache_size(cache):
-    # Store a small item in the cache
-    small_item = "small"
-    cache.store("small_key", small_item)
-    time.sleep(0.1)  # Ensure file timestamps are different
-
-    large_item = "x" * 2000  # 2000 bytes
-    cache.store("large_key", large_item)
-
-    assert cache.get("large_key") is None
-    assert cache.get("small_key") == small_item
+    cache.store("small_key", "small", CATEGORY_EXPR, VERSION_V1)
+    large_item = "x" * 2000  # 2000 B
+    cache.store("large_key", large_item, CATEGORY_EXPR, VERSION_V1)
+    assert cache.get("large_key", CATEGORY_EXPR, VERSION_V1) is None
+    assert cache.get("small_key", CATEGORY_EXPR, VERSION_V1) == "small"
 
 
 def test_remove_key(cache):
-    # Store multiple keys in the cache
-    cache.store("key1", "value1")
-    cache.store("key2", "value2")
-    cache.store("key3", "value3")
-
-    # Remove one key
+    cache.store("key1", "value1", CATEGORY_EXPR, VERSION_V1)
+    cache.store("key2", "value2", CATEGORY_EXPR, VERSION_V1)
+    cache.store("key3", "value3", CATEGORY_EXPR, VERSION_V1)
     cache.remove("key2")
+    assert cache.get("key2", CATEGORY_EXPR, VERSION_V1) is None
+    assert cache.get("key1", CATEGORY_EXPR, VERSION_V1) == "value1"
+    assert cache.get("key3", CATEGORY_EXPR, VERSION_V1) == "value3"
 
-    # Verify that the removed key is no longer in the cache
-    assert cache.get("key2") is None
 
-    # Verify that the other keys are still in the cache
-    assert cache.get("key1") == "value1"
-    assert cache.get("key3") == "value3"
+def test_version_mismatch_returns_none(cache):
+    cache.store("k", "v", CATEGORY_EXPR, VERSION_V1)
+    assert cache.get("k", CATEGORY_EXPR, VERSION_V2) is None
+
+
+def test_category_mismatch_returns_none(cache):
+    cache.store("k", "v", CATEGORY_EXPR, VERSION_V1)
+    assert cache.get("k", CATEGORY_META, VERSION_V1) is None
+
+
+def test_filename_composition(cache):
+    cache.store("k", "v", CATEGORY_EXPR, VERSION_V1)
+    files = os.listdir(cache.path)
+    assert any(f.startswith("k__expr__v1") for f in files)
+
+
+def test_cleanup_removes_stale_files(cache):
+    # Manually create a stale file
+    stale_path = os.path.join(cache.path, "k__expr__v0.pkl")
+    with open(stale_path, "wb") as f:
+        f.write(b"old")
+    # Trigger cleanup via normal store
+    cache.store("fresh", "v", CATEGORY_EXPR, VERSION_V1)
+    assert "k__expr__v0.pkl" not in os.listdir(cache.path)
+
+
+def test_lru_still_works_with_versions(cache):
+    cache.store("k1", "a" * 500, CATEGORY_EXPR, VERSION_V1)
+    time.sleep(0.01)
+    cache.store("k2", "b" * 400, CATEGORY_EXPR, VERSION_V1)
+    time.sleep(0.01)
+    cache.get("k1", CATEGORY_EXPR, VERSION_V1)
+    time.sleep(0.01)
+    cache.store("k3", "c" * 150, CATEGORY_EXPR, VERSION_V1)
+    assert cache.get("k1", CATEGORY_EXPR, VERSION_V1) == "a" * 500
+    assert cache.get("k2", CATEGORY_EXPR, VERSION_V1) is None
+    assert cache.get("k3", CATEGORY_EXPR, VERSION_V1) == "c" * 150
+
+
+def test_mixed_categories_independent_versions(cache):
+    cache.store("k1", "expr_v1", CATEGORY_EXPR, VERSION_V1)
+    cache.store("k1", "meta_v1", CATEGORY_META, VERSION_V1)
+    # now bump expr version to v2
+    assert cache.get("k1", CATEGORY_EXPR, VERSION_V2) is None
+    assert cache.get("k1", CATEGORY_META, VERSION_V1) == "meta_v1"
+
+
+def test_no_default_version_argument(cache):
+    with pytest.raises(TypeError):
+        cache.get("x", CATEGORY_EXPR)  # missing version arg
+
+
+def test_legacy_files_removed_on_init(tmp_path):
+    """Ensure legacy <key>.pkl files are deleted when the cache is instantiated."""
+    legacy_dir = tmp_path / "cache"
+    legacy_dir.mkdir(parents=True, exist_ok=True)
+
+    # Create a pre-versioning legacy file
+    legacy_file = legacy_dir / "oldkey.pkl"
+    legacy_file.write_bytes(b"obsolete")
+
+    # Confirm it exists before starting
+    assert legacy_file.exists()
+
+    # Instantiate the cache (runs _remove_legacy_files)
+    LocalFolderCache(str(legacy_dir), 0.000000954)  # 1 KB limit
+
+    # Legacy file should have been removed automatically
+    assert not legacy_file.exists()
+
+
+def test_versioned_files_not_removed_on_init(tmp_path):
+    """Correctly versioned files survive the one-time cleanup."""
+    cache_dir = tmp_path / "cache"
+    cache_dir.mkdir()
+
+    # Write a properly versioned file
+    data = "keep me"
+    blob = pickle.dumps(data)
+    versioned = cache_dir / "goodkey__expr__v1.pkl"
+    versioned.write_bytes(blob)
+    assert versioned.exists()
+
+    # Init cache (should *not* delete this file)
+    LocalFolderCache(str(cache_dir), max_size_gb=1e-6)
+    assert versioned.exists()

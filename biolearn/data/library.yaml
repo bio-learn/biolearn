@@ -889,6 +889,9 @@ items:
   parser:
     type: jen-age-custom
     data-type: rna
+  datalinks:
+    - https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE103232
+    - https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE75337
 - id: BoAChallengeData
   title: 2024 Biomarkers of Aging Challenge Sample Data
   summary: We generated DNA methylation profiles of 500 diverse individuals to enable
@@ -924,6 +927,8 @@ items:
       age:
         row: 45
         parse: numeric
+  datalinks:
+    - https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE246337
 - id: GSE167998
   title: 'FlowSorted.BloodExtended.EPIC: An Enhanced DNA Methylation Library for Deconvoluting
     Peripheral Blood'
@@ -2069,3 +2074,45 @@ items:
       tissue:
         row: 47
         parse: string
+- id: Covid19_Gisby_Serum
+  title: Longitudinal Olink Serum Proteomics COVID-19
+  summary: Longitudinal proteomic profiling of dialysis patients with COVID-19
+  organism: human
+  samples: 159
+  format: Olink1500
+  path: https://github.com/jackgisby/longitudinal_olink_proteomics
+  parser:
+    type: gisby-olink
+    protein-matrix-url: https://raw.githubusercontent.com/jackgisby/longitudinal_olink_proteomics/main/data/serum_npx_level.csv
+    metadata-url: https://raw.githubusercontent.com/jackgisby/longitudinal_olink_proteomics/main/data/serum_sample_level.csv
+    id-row: SampleID
+  datalinks:
+    - https://github.com/jackgisby/longitudinal_olink_proteomics
+- id: Covid19_Gisby_Plasma
+  title: Longitudinal Olink Plasma Proteomics COVID-19
+  summary: Longitudinal proteomic profiling of dialysis patients with COVID-19
+  organism: human
+  samples: 256
+  format: Olink1500
+  path: https://github.com/jackgisby/longitudinal_olink_proteomics
+  parser:
+    type: gisby-olink
+    protein-matrix-url: https://raw.githubusercontent.com/jackgisby/longitudinal_olink_proteomics/main/data/plasma_npx_level.csv
+    metadata-url: https://raw.githubusercontent.com/jackgisby/longitudinal_olink_proteomics/main/data/plasma_sample_level.csv
+    id-row: SampleID
+  datalinks:
+    - https://github.com/jackgisby/longitudinal_olink_proteomics
+- id: Covid19_Filbin_Plasma
+  title: Filbin Lab Olink Plasma Proteomics
+  summary: Olink proteomic profiling with age categorization
+  organism: human
+  samples: 386
+  format: Olink1500
+  path: https://data.mendeley.com/datasets/nf853r8xsj/2
+  parser:
+    type: filbin-olink
+    metadata-path: https://storage.googleapis.com/biolearn/datasets/filbin-olink/metadata.xlsx
+    proteomics-path: https://storage.googleapis.com/biolearn/datasets/filbin-olink/proteomics.xlsx
+    mappings-path: https://storage.googleapis.com/biolearn/datasets/filbin-olink/olink_reference.xlsx
+  datalinks:
+    - https://data.mendeley.com/datasets/nf853r8xsj/2
