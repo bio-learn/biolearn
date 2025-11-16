@@ -747,7 +747,7 @@ model_definitions = {
         "output": "Mitotic Age (Cell Divisions)",
         "model": {
             "type": "MiAgeModel",
-            "file": "MiAge_parameters.csv",
+            "file": "MiAge.csv",
         },
     },
     "OrganAgeChronological": {
