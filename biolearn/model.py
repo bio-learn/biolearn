@@ -641,7 +641,7 @@ model_definitions = {
             "file": "DepressionBarbu.csv",
         },
     },
-        "Weidner": {
+    "Weidner": {
         "year": 2014,
         "species": "Human",
         "tissue": "Blood",
