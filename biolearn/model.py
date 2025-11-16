@@ -739,6 +739,89 @@ model_definitions = {
             "file": "Bocklandt.csv",
         },
     },
+    "MiAge": {
+        "year": 2018,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://doi.org/10.1080/15592294.2017.1389361",
+        "output": "Mitotic Age (Cell Divisions)",
+        "model": {
+            "type": "MiAgeModel",
+            "file": "MiAge_parameters.csv",
+        },
+    },
+    "OrganAgeChronological": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.medrxiv.org/content/10.1101/2024.04.08.24305469v1",
+        "output": "Mortality Risk by Organ",
+        "model": {
+            "type": "LinearMultipartProteomicModel",
+            "preprocess": olink_standardization_preprocess(
+                "reference/olink3000_deviations.csv"
+            ),
+            "file": "OrganAgeChronological.csv",
+            "default_imputation": "none",
+        },
+    },
+    "OrganAgeMortality": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.medrxiv.org/content/10.1101/2024.04.08.24305469v1",
+        "output": "Age (Years) by Organ",
+        "model": {
+            "type": "LinearMultipartProteomicModel",
+            "preprocess": olink_standardization_preprocess(
+                "reference/olink3000_deviations.csv"
+            ),
+            "file": "OrganAgeMortality.csv",
+            "default_imputation": "none",
+        },
+    },
+    "OrganAge1500Chronological": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.medrxiv.org/content/10.1101/2024.04.08.24305469v1",
+        "output": "Mortality Risk by Organ",
+        "model": {
+            "type": "LinearMultipartProteomicModel",
+            "preprocess": olink_standardization_preprocess(
+                "reference/olink1500_deviations.csv"
+            ),
+            "file": "OrganAge1500Chronological.csv",
+            "default_imputation": "none",
+        },
+    },
+    "OrganAge1500Mortality": {
+        "year": 2024,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.medrxiv.org/content/10.1101/2024.04.08.24305469v1",
+        "output": "Age (Years) by Organ",
+        "model": {
+            "type": "LinearMultipartProteomicModel",
+            "preprocess": olink_standardization_preprocess(
+                "reference/olink1500_deviations.csv"
+            ),
+            "file": "OrganAge1500Mortality.csv",
+            "default_imputation": "none",
+        },
+    },
+    "Bohlin": {
+        "year": 2017,
+        "species": "Human",
+        "tissue": "Cord Blood",
+        "source": "https://doi.org/10.1186/s13059-016-1063-4",
+        "output": "Age (days)",
+        "model": {
+            "type": "LinearMethylationModel",
+            "file": "Bohlin.csv",
+            "transform": lambda sum: sum + 277.2421,
+        },
+    },
     "PCHorvath1": {
         "year": 2022,
         "species": "Human",
@@ -1624,6 +1707,142 @@ class ImputationDecorator:
     # Forwarding other methods and attributes to the clock
     def __getattr__(self, name):
         return getattr(self.clock, name)
+
+
+class MiAgeModel:
+    """
+    MiAge (Mitotic Age) clock implementation.
+
+    Based on Youn & Wang (2018): "The MiAge Calculator: a DNA methylation-based
+    mitotic age calculator of human tissue types."
+
+    MiAge estimates the number of cell divisions (mitotic age) using an optimization
+    approach with site-specific parameters (b, c, d) for 268 CpG sites.
+
+    Formula: For each sample, find n (mitotic age) that minimizes:
+        sum((c + b^(n-1) * d - beta)^2)
+    where beta is the observed methylation value for each CpG site.
+    """
+
+    def __init__(self, parameter_file):
+        """
+        Initialize MiAge model with site-specific parameters.
+
+        Parameters
+        ----------
+        parameter_file : str
+            Path to CSV file containing CpG, b, c, d columns
+        """
+        params = pd.read_csv(get_data_file(parameter_file))
+        self.params = params.set_index("CpG")
+        self.b_params = self.params["b"]
+        self.c_params = self.params["c"]
+        self.d_params = self.params["d"]
+        self.cpg_sites = self.params.index.tolist()
+
+    @classmethod
+    def from_definition(cls, clock_definition):
+        """Create MiAge model from clock definition"""
+        model_def = clock_definition["model"]
+        return cls(model_def["file"])
+
+    def _optimize_sample(self, beta_values):
+        """
+        Optimize mitotic age for a single sample using scipy.optimize.
+
+        Parameters
+        ----------
+        beta_values : numpy.ndarray
+            Methylation beta values for CpG sites
+
+        Returns
+        -------
+        float
+            Estimated mitotic age (number of cell divisions)
+        """
+        from scipy.optimize import minimize_scalar
+
+        # Filter to valid (non-NaN) values
+        valid_mask = ~np.isnan(beta_values)
+        beta_valid = beta_values[valid_mask]
+        b_valid = self.b_params.values[valid_mask]
+        c_valid = self.c_params.values[valid_mask]
+        d_valid = self.d_params.values[valid_mask]
+
+        def objective(n):
+            """MiAge objective function: sum((c + b^(n-1) * d - beta)^2)"""
+            return np.sum(
+                (c_valid + b_valid ** (n - 1) * d_valid - beta_valid) ** 2
+            )
+
+        # Use multiple starting points for robustness
+        best_result = None
+        best_fun = np.inf
+
+        for start in [100, 500, 1000, 2000]:
+            result = minimize_scalar(
+                objective,
+                bounds=(10, 10000),
+                method="bounded",
+                options={"xatol": 1e-8},
+            )
+            if result.fun < best_fun:
+                best_fun = result.fun
+                best_result = result
+
+        return best_result.x
+
+    def predict(self, geo_data):
+        """
+        Predict mitotic age for methylation samples.
+
+        Parameters
+        ----------
+        geo_data : GeoData
+            Object containing methylation data
+
+        Returns
+        -------
+        pd.DataFrame
+            Predicted mitotic ages for each sample
+        """
+        methylation_data = geo_data.dnam
+
+        # Get shared CpG sites
+        shared_sites = methylation_data.index.intersection(self.cpg_sites)
+
+        if len(shared_sites) == 0:
+            raise ValueError("No overlapping CpG sites found for MiAge clock")
+
+        if len(shared_sites) < len(self.cpg_sites) * 0.5:
+            print(
+                f"WARNING: Only {len(shared_sites)}/{len(self.cpg_sites)} "
+                f"CpG sites available ({100*len(shared_sites)/len(self.cpg_sites):.1f}%)"
+            )
+
+        # Align data with model CpGs (keeping only shared sites)
+        # Need to reindex params to match shared sites order
+        shared_params = self.params.loc[shared_sites]
+        self.b_params = shared_params["b"]
+        self.c_params = shared_params["c"]
+        self.d_params = shared_params["d"]
+
+        X = methylation_data.loc[shared_sites].values
+
+        # Calculate MiAge for each sample
+        predictions = []
+        for i in range(X.shape[1]):
+            beta_sample = X[:, i]
+            miage = self._optimize_sample(beta_sample)
+            predictions.append(miage)
+
+        return pd.DataFrame(
+            predictions, index=methylation_data.columns, columns=["Predicted"]
+        )
+
+    def methylation_sites(self):
+        """Return list of required CpG sites"""
+        return self.cpg_sites
 
 
 def single_sample_clock(clock_function, data):
