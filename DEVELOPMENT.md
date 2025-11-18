@@ -25,9 +25,33 @@ Biolearn enables easy and versatile analyses of biomarkers of aging data. It pro
 ### Prerequisites
 
 1. Python 3.10+
+2. pip (Python package installer)
+3. venv (Python virtual environment module)
+
+**Note:** On fresh system installations, you may need to install pip and venv separately:
+
+**Ubuntu/Debian:**
+```bash
+sudo apt-get update
+sudo apt-get install python3-pip python3-venv
+```
+
+**Fedora/RHEL/CentOS:**
+```bash
+sudo dnf install python3-pip python3-virtualenv
+```
+
+**macOS:**
+If using Homebrew, pip and venv are included with Python:
+```bash
+brew install python@3.10
+```
+
+**Windows:**
+Download Python from [python.org](https://www.python.org/downloads/). The installer includes pip and venv by default.
 
 ### Setup
-Setup your vitual environment at the expected location. Ensure you are using a version of python that is 3.10 or higher as lower versions are not supported.
+Setup your virtual environment at the expected location. Ensure you are using a version of python that is 3.10 or higher as lower versions are not supported.
 
   ```
   python3 -m venv .venv
