@@ -650,7 +650,7 @@ model_definitions = {
         "model": {
             "type": "LinearMethylationModel",
             "file": "Weidner.csv",
-            "transform": lambda sum: sum + 111.83,
+            "transform": lambda sum: sum + 38.0,
         },
     },
     "TranscriptomicPredictionModel": {
