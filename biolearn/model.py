@@ -5,6 +5,7 @@ import pandas as pd
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from scipy.optimize import minimize_scalar
 from sklearn.linear_model import LinearRegression
 
 from biolearn.data_library import GeoData
@@ -748,66 +749,6 @@ model_definitions = {
         "model": {
             "type": "MiAgeModel",
             "file": "MiAge.csv",
-        },
-    },
-    "OrganAgeChronological": {
-        "year": 2024,
-        "species": "Human",
-        "tissue": "Blood",
-        "source": "https://www.medrxiv.org/content/10.1101/2024.04.08.24305469v1",
-        "output": "Mortality Risk by Organ",
-        "model": {
-            "type": "LinearMultipartProteomicModel",
-            "preprocess": olink_standardization_preprocess(
-                "reference/olink3000_deviations.csv"
-            ),
-            "file": "OrganAgeChronological.csv",
-            "default_imputation": "none",
-        },
-    },
-    "OrganAgeMortality": {
-        "year": 2024,
-        "species": "Human",
-        "tissue": "Blood",
-        "source": "https://www.medrxiv.org/content/10.1101/2024.04.08.24305469v1",
-        "output": "Age (Years) by Organ",
-        "model": {
-            "type": "LinearMultipartProteomicModel",
-            "preprocess": olink_standardization_preprocess(
-                "reference/olink3000_deviations.csv"
-            ),
-            "file": "OrganAgeMortality.csv",
-            "default_imputation": "none",
-        },
-    },
-    "OrganAge1500Chronological": {
-        "year": 2024,
-        "species": "Human",
-        "tissue": "Blood",
-        "source": "https://www.medrxiv.org/content/10.1101/2024.04.08.24305469v1",
-        "output": "Mortality Risk by Organ",
-        "model": {
-            "type": "LinearMultipartProteomicModel",
-            "preprocess": olink_standardization_preprocess(
-                "reference/olink1500_deviations.csv"
-            ),
-            "file": "OrganAge1500Chronological.csv",
-            "default_imputation": "none",
-        },
-    },
-    "OrganAge1500Mortality": {
-        "year": 2024,
-        "species": "Human",
-        "tissue": "Blood",
-        "source": "https://www.medrxiv.org/content/10.1101/2024.04.08.24305469v1",
-        "output": "Age (Years) by Organ",
-        "model": {
-            "type": "LinearMultipartProteomicModel",
-            "preprocess": olink_standardization_preprocess(
-                "reference/olink1500_deviations.csv"
-            ),
-            "file": "OrganAge1500Mortality.csv",
-            "default_imputation": "none",
         },
     },
     "Bohlin": {
@@ -1760,8 +1701,6 @@ class MiAgeModel:
         float
             Estimated mitotic age (number of cell divisions)
         """
-        from scipy.optimize import minimize_scalar
-
         # Filter to valid (non-NaN) values
         valid_mask = ~np.isnan(beta_values)
         beta_valid = beta_values[valid_mask]
