@@ -47,9 +47,6 @@ generate_dynamic_content:
 	python generate.py
 
 html:	sym_links generate_dynamic_content
-	# These two lines make the build a bit more lengthy, and the
-	# the embedding of images more robust
-	rm -rf $(BUILDDIR)/html/_images
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	touch $(BUILDDIR)/html/.nojekyll
 	@echo
@@ -57,5 +54,5 @@ html:	sym_links generate_dynamic_content
 
 deploy: html
 	# Assuming the docs repo is cloned in the same repo as biolearn is this will update the site
-	rsync -av --delete --exclude .git/ _build/html/ $(GH_PAGES_REPO)
-	cd $(GH_PAGES_REPO) && git add . && git commit -m "Automation Updated documentation" && git push
+	rsync -av --delete --exclude .git/ _build/html/ "$(GH_PAGES_REPO)"
+	cd "$(GH_PAGES_REPO)" && git add . && git commit -m "Automation Updated documentation" && git push
