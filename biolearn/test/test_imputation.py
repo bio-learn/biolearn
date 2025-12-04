@@ -38,6 +38,15 @@ def test_impute_from_standard():
     assert df_filled.loc["cpg2", "Sample1"] == 2.5
 
 
+def test_impute_from_standard_adds_missing_cpgs():
+    cpgs_with_missing = ["cpg1", "cpg5"]
+    df_filled = impute_from_standard(
+        df_test, cpg_averages_test, cpgs_to_impute=cpgs_with_missing
+    )
+    assert "cpg5" in df_filled.index
+    assert df_filled.loc["cpg5", "Sample1"] == 5.5
+
+
 def test_impute_from_standard_specific_cpgs():
     specific_cpgs = ["cpg1", "cpg3"]
     df_filled = impute_from_standard(

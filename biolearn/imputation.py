@@ -16,6 +16,7 @@ def impute_from_standard(dnam, cpg_source, cpgs_to_impute=None):
         pd.DataFrame: DataFrame with missing values filled.
     """
     if cpgs_to_impute:
+        dnam = dnam.reindex(dnam.index.union(cpgs_to_impute))
         impute_rows = dnam.loc[cpgs_to_impute]
         impute_rows = impute_rows.apply(lambda col: col.fillna(cpg_source))
         df_filled = dnam.combine_first(impute_rows)
