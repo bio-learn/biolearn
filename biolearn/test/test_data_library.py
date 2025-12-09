@@ -372,3 +372,26 @@ def test_load_datasource_with_curated_tag(capsys):
     df = source.load()
     captured = capsys.readouterr()
     assert captured.out == ""
+
+
+def test_datasource_with_unknown_corrections():
+    """Test that unknown corrections raise an error"""
+    source_def = {
+        "id": "TestData",
+        "path": get_test_data_file("geo_dnam_test_file"),
+        "parser": {
+            "type": "geo-matrix",
+            "id-row": 33,
+            "metadata": {
+                "age": {"row": 47, "parse": "numeric"},
+                "sex": {"row": 41, "parse": "sex"},
+                "cancer": {"row": 50, "parse": "string"},
+            },
+            "matrix-start": 74,
+        },
+        "corrections": "nonexistent_correction",
+    }
+    source = DataSource(source_def)
+    with pytest.raises(ValueError) as e:
+        source.load()
+    assert "Unknown correction" in str(e.value)

@@ -1150,6 +1150,7 @@ class DataSource:
         self.tags = source_definition.get(
             "tags", []
         )  # Default empty list if tags are not provided
+        self.corrections = source_definition.get("corrections")
 
         self.parser = self._create_parser(source_definition["parser"])
 
@@ -1170,6 +1171,10 @@ class DataSource:
             return cached
 
         data = self.parser.parse(self.path)
+        if self.corrections:
+            from biolearn.corrections import apply_correction
+
+            data = apply_correction(self.corrections, data, self.path)
         self.cache.store(
             self.id, data, self.CACHE_CATEGORY, self.CACHE_VERSION
         )

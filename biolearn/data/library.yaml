@@ -79,6 +79,7 @@ items:
   title: 'FlowSorted.Blood.EPIC: An optimized library for reference-based deconvolution
     of whole-blood biospecimens assayed using the Illumina HumanMethylationEPIC BeadArray
     (II)'
+  corrections: fix_gse110554
   summary: DNA methylation assessments of peripheral blood DNA can be used to accurately
     estimate the relative proportions of underlying leukocyte subtypes. Such cell
     deconvolution analysis relies on libraries of discriminating differentially methylated
