@@ -1191,6 +1191,7 @@ class LinearModel:
     def predict(self, geo_data):
         matrix_data = self._get_data_matrix(geo_data)
         matrix_data = self.preprocess(matrix_data)
+        self._validate_required_features(matrix_data)
         matrix_data.loc["intercept"] = 1
 
         # Join the coefficients and dnam_data on the index
@@ -1212,13 +1213,41 @@ class LinearModel:
         # Return as a DataFrame
         return result.apply(self.transform).to_frame(name="Predicted")
 
+    def _validate_required_features(self, matrix_data):
+        return
+
     def _get_data_matrix(self, geo_data):
         raise NotImplementedError()
 
 
 class LinearMethylationModel(LinearModel):
+    _MISSING_CPG_PREVIEW_LIMIT = 5
+
     def _get_data_matrix(self, geo_data):
         return geo_data.dnam
+
+    def _validate_required_features(self, matrix_data):
+        required_cpgs = self.methylation_sites()
+        missing_cpgs = sorted(set(required_cpgs) - set(matrix_data.index))
+        if not missing_cpgs:
+            return
+
+        model_name = self.details.get("name")
+        model_label = f" for model '{model_name}'" if model_name else ""
+        preview_limit = self._MISSING_CPG_PREVIEW_LIMIT
+        preview = ", ".join(missing_cpgs[:preview_limit])
+        remaining = len(missing_cpgs) - preview_limit
+        if remaining > 0:
+            preview = (
+                f"showing first {preview_limit}: {preview} (+{remaining} more)"
+            )
+
+        raise ValueError(
+            "Missing required CpG sites"
+            f"{model_label} ({len(missing_cpgs)}/{len(required_cpgs)}): "
+            f"{preview}. "
+            "Provide methylation data with these CpGs or use an imputation method that includes them."
+        )
 
     def methylation_sites(self):
         unique_vars = set(self.coefficients.index) - {"intercept"}

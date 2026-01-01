@@ -46,6 +46,20 @@ def test_models(model_name, model_entry):
     # Instantiate the model
     test_model = model_class.from_definition(model_entry)
 
+    if model_type == "LinearMethylationModel":
+        required_cpgs = test_model.methylation_sites()
+        missing_cpgs = sorted(
+            set(required_cpgs) - set(test_data.dnam.index)
+        )
+        if missing_cpgs:
+            missing_preview = missing_cpgs[0]
+            with pytest.raises(
+                ValueError,
+                match=rf"Missing required CpG sites.*{missing_preview}",
+            ):
+                test_model.predict(test_data)
+            return
+
     actual_results = test_model.predict(test_data).sort_index()
 
     # Load the expected results
