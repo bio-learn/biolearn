@@ -7,10 +7,6 @@ import gzip
 import shutil
 import os
 import math
-import matplotlib.pyplot as plt
-import seaborn as sns
-
-
 from biolearn.util import cached_download, get_data_file
 from biolearn.defaults import default_cache
 from biolearn.cache import NoCache

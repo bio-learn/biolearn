@@ -1,8 +1,10 @@
-from biolearn.data_library import DataSource
+from biolearn.data_library import load_geo_metadata
+from biolearn.util import cached_download
 import pandas as pd
 import os
 import sys
 import hashlib
+import gzip
 
 source_url = "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE41nnn/GSE41169/matrix/GSE41169_series_matrix.txt.gz"
 
@@ -58,28 +60,51 @@ ensure_folder_exists(data_file_path)
 
 print("Checking if file generation is needed")
 if not is_file_valid(data_file_path, expected_hash):
-    print("Loading data source")
-    data_source_spec = {
-        "id": "TestData",
-        "path": source_url,
-        "parser": {
-            "type": "geo-matrix",
-            "id-row": 33,
-            "format": "",
-            "metadata": {
-                "age": {"row": 47, "parse": "numeric"},
-                "sex": {"row": 41, "parse": "sex"},
-            },
-            "matrix-start": 73,
-        },
-    }
-    source = DataSource(data_source_spec)
-    loaded_data = source.load()
+    print("Downloading series matrix (this can take a few minutes)")
+    matrix_path = cached_download(
+        source_url,
+        show_progress=True,
+        progress_label="Download progress",
+    )
 
-    print("Processing DNAm data")
-    dnam = (
-        loaded_data.dnam.transpose().head(10).transpose()
-    )  # Transpose and limit to 10 items
+    metadata_spec = {
+        "age": {"row": 47, "parse": "numeric"},
+        "sex": {"row": 41, "parse": "sex"},
+    }
+    id_row = 33
+    matrix_start = 73
+
+    def load_matrix_data(path):
+        print("Loading metadata")
+        metadata = load_geo_metadata(path, metadata_spec, id_row)
+        metadata = metadata.head(10)
+
+        print("Processing DNAm data")
+        sample_ids = metadata.index.tolist()
+        usecols = ["ID_REF"] + sample_ids
+        dnam = pd.read_table(
+            path,
+            index_col=0,
+            skiprows=matrix_start - 1,
+            usecols=usecols,
+        )
+        dnam = dnam.drop(["!series_matrix_table_end"], axis=0)
+        dnam.index.name = "id"
+        return metadata, dnam
+
+    try:
+        metadata, dnam = load_matrix_data(matrix_path)
+    except (EOFError, OSError, gzip.BadGzipFile) as exc:
+        print(
+            "Cached download appears corrupted. Re-downloading..."
+        )
+        matrix_path = cached_download(
+            source_url,
+            show_progress=True,
+            progress_label="Download progress",
+            force_download=True,
+        )
+        metadata, dnam = load_matrix_data(matrix_path)
     dnam.to_csv(data_file_path)
 
     print("Verifying new DNAm data file")
@@ -92,7 +117,6 @@ if not is_file_valid(data_file_path, expected_hash):
         print("DNAm data file matches existing hash. Done.")
 
     print("Processing metadata")
-    metadata = loaded_data.metadata.head(10)  # Limit to 10 items
     metadata.to_csv(metadata_file_path)
     print("Metadata file generated and saved.")
 else:
