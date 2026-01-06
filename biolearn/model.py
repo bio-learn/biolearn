@@ -1135,10 +1135,12 @@ class DeconvolutionModel:
         )
 
         # convert cell proportion ndarray to dataframe
-        cell_prop_df = pd.DataFrame(cell_prop, columns=sample_names)
-        cell_prop_df.index = cell_types
+        cell_prop_df = pd.DataFrame(
+            cell_prop, columns=sample_names, index=cell_types
+        )
 
-        return cell_prop_df
+        # Return samples as rows to match other model outputs
+        return cell_prop_df.T
 
     # returns required methylation sites
     def methylation_sites(self):
