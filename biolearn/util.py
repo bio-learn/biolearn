@@ -1,11 +1,11 @@
-import os
 import hashlib
-import requests
+import os
+from importlib.resources import open_text
 from urllib.parse import urlparse
-import shutil
+
 import appdirs
 import pandas as pd
-from importlib.resources import open_text
+import requests
 
 
 def getOlinkManifest():
@@ -159,15 +159,24 @@ def is_url(s):
     return bool(parsed.scheme)
 
 
-def cached_download(url_or_filepath):
+def cached_download(
+    url_or_filepath,
+    show_progress=False,
+    progress_label=None,
+    force_download=False,
+):
     """
     Downloads a file from a URL if not already cached, or verifies the existence of a local file.
 
     For URLs, the file is downloaded and saved in the user's cache directory using a hash of the URL.
+    If a partial download exists, it attempts to resume with an HTTP Range request.
     If the input is a local file path, it checks if the file exists. If not, raises a FileNotFoundError.
 
     Args:
         url_or_filepath (str): The URL or local file path to download or locate.
+        show_progress (bool): If True, prints periodic download progress.
+        progress_label (str | None): Optional label for progress output.
+        force_download (bool): If True, re-download even if cached.
 
     Returns:
         str: The path to the downloaded or located file.
@@ -187,17 +196,110 @@ def cached_download(url_or_filepath):
         os.makedirs(download_path, exist_ok=True)
         filepath = os.path.join(download_path, filename)
 
+        temp_path = f"{filepath}.part"
+        if force_download:
+            if os.path.exists(filepath):
+                os.remove(filepath)
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
+
         if not os.path.exists(filepath):
             # Download the file if it doesn't already exist locally
             try:
-                response = requests.get(url, stream=True)
+                existing_bytes = (
+                    os.path.getsize(temp_path)
+                    if os.path.exists(temp_path)
+                    else 0
+                )
+                headers = (
+                    {"Range": f"bytes={existing_bytes}-"}
+                    if existing_bytes
+                    else {}
+                )
+                response = requests.get(
+                    url, stream=True, headers=headers
+                )
+                if existing_bytes and response.status_code == 416:
+                    response.close()
+                    os.remove(temp_path)
+                    existing_bytes = 0
+                    headers = {}
+                    response = requests.get(
+                        url, stream=True, headers=headers
+                    )
+                if existing_bytes and response.status_code != 206:
+                    response.close()
+                    if os.path.exists(temp_path):
+                        os.remove(temp_path)
+                    existing_bytes = 0
+                    headers = {}
+                    response = requests.get(
+                        url, stream=True, headers=headers
+                    )
                 response.raise_for_status()  # Check for HTTP errors
-                with open(filepath, "wb") as out_file:
-                    shutil.copyfileobj(response.raw, out_file)
+                total_size = int(
+                    response.headers.get("Content-Length", 0)
+                )
+                if existing_bytes and response.status_code == 206:
+                    content_range = response.headers.get(
+                        "Content-Range"
+                    )
+                    if content_range and "/" in content_range:
+                        total_size = int(
+                            content_range.split("/")[-1]
+                        )
+                    elif total_size:
+                        total_size += existing_bytes
+                downloaded = existing_bytes
+                next_report_percent = 0
+                report_step = 5  # percent
+                report_bytes_step = 50 * 1024 * 1024
+                next_report_bytes = report_bytes_step
+                label = (
+                    f"{progress_label}: " if progress_label else ""
+                )
+                if show_progress and not total_size:
+                    print(
+                        f"{label}starting download (size unknown)"
+                    )
+                file_mode = "ab" if existing_bytes else "wb"
+                with open(temp_path, file_mode) as out_file:
+                    for chunk in response.iter_content(
+                        chunk_size=1024 * 1024
+                    ):
+                        if not chunk:
+                            continue
+                        out_file.write(chunk)
+                        downloaded += len(chunk)
+                        if show_progress:
+                            if total_size:
+                                percent = int(
+                                    downloaded * 100 / total_size
+                                )
+                                if percent >= next_report_percent:
+                                    print(
+                                        f"{label}{percent}% ({downloaded}/{total_size} bytes)"
+                                    )
+                                    next_report_percent = (
+                                        percent + report_step
+                                    )
+                            elif downloaded >= next_report_bytes:
+                                print(
+                                    f"{label}{downloaded} bytes"
+                                )
+                                next_report_bytes += report_bytes_step
+                if total_size and downloaded < total_size:
+                    raise Exception(
+                        "Download incomplete: expected "
+                        f"{total_size} bytes, got {downloaded} bytes."
+                    )
+                os.replace(temp_path, filepath)
             except requests.RequestException as e:
                 raise Exception(
                     f"Failed to download the file from {url}. Error: {e}"
                 )
+            except Exception:
+                raise
     else:
         if not os.path.exists(url_or_filepath):
             raise FileNotFoundError(
