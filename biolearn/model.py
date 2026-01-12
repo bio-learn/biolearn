@@ -1858,9 +1858,10 @@ class HurdleAPIModel:
                         sample_meta["chronologicalAge"] = float(row["age"])
                     if "sex" in row:
                         sex_value = row["sex"]
+                        # Biolearn standard: 0=female, 1=male (metadata_standard.rst)
                         sample_meta["sex"] = (
                             "f"
-                            if sex_value in [1, "f", "F", "female"]
+                            if sex_value in [0, "f", "F", "female"]
                             else "m"
                         )
 
@@ -1916,6 +1917,10 @@ class HurdleAPIModel:
             raise Exception(f"Network error: {str(e)}")
         except Exception as e:
             raise Exception(f"API error: {str(e)}")
+
+    def methylation_sites(self):
+        """Return list of required CpG sites for imputation compatibility."""
+        return self.required_cpgs if self.required_cpgs else []
 
 
 class ImputationDecorator:
