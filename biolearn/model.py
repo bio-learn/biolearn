@@ -1859,11 +1859,18 @@ class HurdleAPIModel:
                     if "sex" in row:
                         sex_value = row["sex"]
                         # Biolearn standard: 0=female, 1=male (metadata_standard.rst)
-                        sample_meta["sex"] = (
-                            "f"
-                            if sex_value in [0, "f", "F", "female"]
-                            else "m"
-                        )
+                        # Strict validation - only accept standard values
+                        if sex_value == 0:
+                            sample_meta["sex"] = "f"
+                        elif sex_value == 1:
+                            sample_meta["sex"] = "m"
+                        else:
+                            raise ValueError(
+                                f"Invalid sex value '{sex_value}' for sample "
+                                f"'{sample_id}'. Biolearn standard requires: "
+                                f"0 (female) or 1 (male). "
+                                f"See metadata_standard.rst for details."
+                            )
 
                 meta_list.append(sample_meta)
 

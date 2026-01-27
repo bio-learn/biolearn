@@ -189,3 +189,89 @@ class TestHurdleAPIModel:
 
             # Input should only be called once
             assert mock_input.call_count == 1
+
+    @patch("requests.post")
+    @patch("requests.put")
+    def test_invalid_sex_value_raises_error(self, mock_put, mock_post):
+        """Test that invalid sex values raise ValueError."""
+        from biolearn.data_library import GeoData
+
+        model = HurdleAPIModel(api_key="test_key")
+        model.required_cpgs = self.TEST_CPG_SITES
+        model._consent_given = True  # Skip consent for test
+
+        # Mock API responses for upload
+        mock_post.return_value.status_code = 200
+        mock_post.return_value.json.return_value = {
+            "uploadUrl": "https://example.com/upload",
+            "requestId": "test-request-123",
+        }
+        mock_put.return_value.status_code = 200
+
+        # Create test data with invalid sex value (2 instead of 0 or 1)
+        dnam = pd.DataFrame(
+            np.random.rand(100, 1),
+            index=self.TEST_CPG_SITES,
+            columns=["sample_0"],
+        )
+        metadata = pd.DataFrame({"sex": [2], "age": [45]}, index=["sample_0"])
+        data = GeoData(dnam=dnam, metadata=metadata)
+
+        with pytest.raises(Exception, match="Invalid sex value '2'"):
+            model.predict(data, require_consent=False)
+
+    @patch("requests.post")
+    @patch("requests.put")
+    def test_valid_sex_values_accepted(self, mock_put, mock_post):
+        """Test that valid sex values (0 and 1) are accepted."""
+        from biolearn.data_library import GeoData
+
+        model = HurdleAPIModel(api_key="test_key")
+        model.required_cpgs = self.TEST_CPG_SITES
+        model._consent_given = True
+
+        # Mock API responses
+        mock_post.return_value.status_code = 200
+        mock_post.return_value.json.side_effect = [
+            {
+                "uploadUrl": "https://example.com/upload",
+                "requestId": "test-request-123",
+            },
+            {
+                "data": [
+                    {"barcode": "sample_f", "prediction": "35.5"},
+                    {"barcode": "sample_m", "prediction": "42.3"},
+                ]
+            },
+        ]
+        mock_put.return_value.status_code = 200
+
+        # Create test data with valid sex values
+        dnam = pd.DataFrame(
+            np.random.rand(100, 2),
+            index=self.TEST_CPG_SITES,
+            columns=["sample_f", "sample_m"],
+        )
+        metadata = pd.DataFrame(
+            {"sex": [0, 1], "age": [45, 50]},
+            index=["sample_f", "sample_m"],
+        )
+        data = GeoData(dnam=dnam, metadata=metadata)
+
+        # Should not raise
+        predictions = model.predict(data, require_consent=False)
+        assert len(predictions) == 2
+
+
+@pytest.mark.skipif(
+    not os.environ.get("HURDLE_API_KEY"),
+    reason="HURDLE_API_KEY not set - skipping integration test",
+)
+class TestHurdleAPIIntegration:
+    """Integration tests that require a real API key."""
+
+    def test_sandbox_api_connection(self):
+        """Test that we can connect to the sandbox API."""
+        model = HurdleAPIModel(use_production=False)
+        assert model.api_key is not None
+        assert "sandbox" in model.api_endpoint

@@ -47,6 +47,5 @@ biolearn/test/data/testset/testset_metadata.csv
 # API credentials and sensitive files
 *_api_key*
 *_credentials*
-HurdleTesting.ipynb
 **/hurdle_credentials.json
 **/.biolearn/
