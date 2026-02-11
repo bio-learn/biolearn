@@ -13,6 +13,7 @@ from biolearn.model import (
     PCLinearTransformationModel,
     MiAgeModel,
     HurdleAPIModel,
+    GPAgeModel,
 )
 from biolearn.imputation import (
     hybrid_impute,
@@ -40,6 +41,7 @@ class ModelGallery:
         "PCLinearTransformationModel": PCLinearTransformationModel.from_definition,
         "MiAgeModel": MiAgeModel.from_definition,
         "HurdleAPIModel": HurdleAPIModel.from_definition,
+        "GPAgeModel": GPAgeModel.from_definition,
     }
 
     def __init__(self, models=model_definitions):

@@ -102,6 +102,272 @@ model_definitions = {
         "output": "Age (Years)",
         "model": {"type": "LinearMethylationModel", "file": "Hannum.csv"},
     },
+    "GPAge10": {
+        "year": 2023,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.cell.com/cell-reports-methods/fulltext/S2667-2375(23)00211-4",
+        "output": "Age (Years)",
+        "model": {
+            "type": "GPAgeModel",
+            "file": "GP-age_model_10_cpgs.json.zip",
+            "sites": [
+                "cg16867657",
+                "cg06639320",
+                "cg04875128",
+                "cg19283806",
+                "cg07553761",
+                "cg08128734",
+                "cg12934382",
+                "cg00573770",
+                "cg23479922",
+                "cg10501210",
+            ],
+            "default_imputation": "none",
+        },
+    },
+    "GPAge30": {
+        "year": 2023,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.cell.com/cell-reports-methods/fulltext/S2667-2375(23)00211-4",
+        "output": "Age (Years)",
+        "model": {
+            "type": "GPAgeModel",
+            "file": "GP-age_model_30_cpgs.json.zip",
+            "sites": [
+                "cg16867657",
+                "cg22454769",
+                "cg06639320",
+                "cg04875128",
+                "cg19283806",
+                "cg24724428",
+                "cg07553761",
+                "cg24079702",
+                "cg08128734",
+                "cg12934382",
+                "cg08468401",
+                "cg20816447",
+                "cg00573770",
+                "cg06335143",
+                "cg06155229",
+                "cg03032497",
+                "cg06619077",
+                "cg17804348",
+                "cg00329615",
+                "cg23479922",
+                "cg10501210",
+                "cg19991948",
+                "cg27312979",
+                "cg23186333",
+                "cg25413977",
+                "cg22078805",
+                "cg17621438",
+                "cg21878650",
+                "cg04503319",
+                "cg09809672",
+            ],
+            "default_imputation": "none",
+        },
+    },
+    "GPAge71": {
+        "year": 2023,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.cell.com/cell-reports-methods/fulltext/S2667-2375(23)00211-4",
+        "output": "Age (Years)",
+        "model": {
+            "type": "GPAgeModel",
+            "file": "GP-age_model_71_cpgs.json.zip",
+            "sites": [
+                "cg16867657",
+                "cg22454769",
+                "cg06639320",
+                "cg04875128",
+                "cg19283806",
+                "cg24724428",
+                "cg07553761",
+                "cg24079702",
+                "cg14556683",
+                "cg07547549",
+                "cg08128734",
+                "cg23500537",
+                "cg12934382",
+                "cg08468401",
+                "cg05404236",
+                "cg20816447",
+                "cg17110586",
+                "cg24466241",
+                "cg18473521",
+                "cg00573770",
+                "cg06335143",
+                "cg06155229",
+                "cg03032497",
+                "cg12899747",
+                "cg06619077",
+                "cg17804348",
+                "cg00329615",
+                "cg23479922",
+                "cg09017434",
+                "cg10501210",
+                "cg19991948",
+                "cg03738025",
+                "cg27312979",
+                "cg14766700",
+                "cg23186333",
+                "cg21184711",
+                "cg22730004",
+                "cg19421125",
+                "cg15894389",
+                "cg10835286",
+                "cg25413977",
+                "cg11807280",
+                "cg22078805",
+                "cg02872426",
+                "cg00303541",
+                "cg04295144",
+                "cg19729744",
+                "cg24794228",
+                "cg17621438",
+                "cg05017994",
+                "cg21878650",
+                "cg15804973",
+                "cg07797372",
+                "cg27152890",
+                "cg17471939",
+                "cg18887458",
+                "cg15243034",
+                "cg04503319",
+                "cg03350900",
+                "cg09809672",
+                "cg14577707",
+                "cg24892069",
+                "cg00602811",
+                "cg05991454",
+                "cg23126342",
+                "cg09988805",
+                "cg19344626",
+                "cg20059012",
+                "cg21826784",
+                "cg07164639",
+                "cg11693709",
+            ],
+            "default_imputation": "none",
+        },
+    },
+    "GPAgeA": {
+        "year": 2023,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.cell.com/cell-reports-methods/fulltext/S2667-2375(23)00211-4",
+        "output": "Age (Years)",
+        "model": {
+            "type": "GPAgeModel",
+            "file": "GP-age_model_a.json.zip",
+            "sites": [
+                "cg16867657",
+                "cg19283806",
+                "cg24724428",
+                "cg07547549",
+                "cg05404236",
+                "cg06155229",
+                "cg03738025",
+                "cg14766700",
+                "cg23186333",
+                "cg21184711",
+                "cg15894389",
+                "cg02872426",
+                "cg15804973",
+                "cg18887458",
+                "cg15243034",
+                "cg03350900",
+                "cg23126342",
+                "cg07164639",
+            ],
+            "default_imputation": "none",
+        },
+    },
+    "GPAgeB": {
+        "year": 2023,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.cell.com/cell-reports-methods/fulltext/S2667-2375(23)00211-4",
+        "output": "Age (Years)",
+        "model": {
+            "type": "GPAgeModel",
+            "file": "GP-age_model_b.json.zip",
+            "sites": [
+                "cg22454769",
+                "cg06639320",
+                "cg07553761",
+                "cg24079702",
+                "cg08128734",
+                "cg12934382",
+                "cg08468401",
+                "cg20816447",
+                "cg24466241",
+                "cg00573770",
+                "cg06335143",
+                "cg03032497",
+                "cg12899747",
+                "cg06619077",
+                "cg17804348",
+                "cg00329615",
+                "cg10501210",
+                "cg22730004",
+                "cg10835286",
+                "cg25413977",
+                "cg11807280",
+                "cg22078805",
+                "cg00303541",
+                "cg19729744",
+                "cg07797372",
+                "cg17471939",
+                "cg09809672",
+                "cg14577707",
+                "cg00602811",
+                "cg05991454",
+                "cg09988805",
+                "cg21826784",
+            ],
+            "default_imputation": "none",
+        },
+    },
+    "GPAgeC": {
+        "year": 2023,
+        "species": "Human",
+        "tissue": "Blood",
+        "source": "https://www.cell.com/cell-reports-methods/fulltext/S2667-2375(23)00211-4",
+        "output": "Age (Years)",
+        "model": {
+            "type": "GPAgeModel",
+            "file": "GP-age_model_c.json.zip",
+            "sites": [
+                "cg04875128",
+                "cg14556683",
+                "cg23500537",
+                "cg17110586",
+                "cg18473521",
+                "cg23479922",
+                "cg09017434",
+                "cg19991948",
+                "cg27312979",
+                "cg19421125",
+                "cg04295144",
+                "cg24794228",
+                "cg17621438",
+                "cg05017994",
+                "cg21878650",
+                "cg27152890",
+                "cg04503319",
+                "cg24892069",
+                "cg19344626",
+                "cg20059012",
+                "cg11693709",
+            ],
+            "default_imputation": "none",
+        },
+    },
     "Lin": {
         "year": 2016,
         "species": "Human",
@@ -1928,6 +2194,56 @@ class HurdleAPIModel:
     def methylation_sites(self):
         """Return list of required CpG sites for imputation compatibility."""
         return self.required_cpgs if self.required_cpgs else []
+
+
+class GPAgeModel:
+    """Gaussian Process regression model for age prediction (GP-age clock)."""
+
+    def __init__(self, model_file, sites):
+        self.model_file = model_file
+        self._sites = sites
+        self._model = None
+        self._training_means = None
+
+    def _load_model(self):
+        if self._model is not None:
+            return
+        try:
+            import GPy
+        except ImportError:
+            raise ImportError(
+                "GPy is required for GP-age models. "
+                "Install with: pip install biolearn[gpage]"
+            )
+        model_path = get_data_file(self.model_file)
+        self._model = GPy.models.GPRegression.load_model(model_path)
+        self._training_means = np.mean(self._model.X, axis=0)
+
+    @classmethod
+    def from_definition(cls, clock_definition):
+        model_def = clock_definition["model"]
+        return cls(model_def["file"], model_def["sites"])
+
+    def predict(self, geo_data):
+        self._load_model()
+        dnam = geo_data.dnam
+        methylation_data = pd.DataFrame(
+            np.nan, index=dnam.columns, columns=self._sites
+        )
+        existing = [s for s in self._sites if s in dnam.index]
+        for site in existing:
+            methylation_data[site] = dnam.loc[site].values
+        X = methylation_data.values
+        if np.isnan(X).any():
+            for i, mean_val in enumerate(self._training_means):
+                X[np.isnan(X[:, i]), i] = mean_val
+        predictions = self._model.predict(X)[0].squeeze()
+        return pd.DataFrame(
+            predictions, index=dnam.columns, columns=["Predicted"]
+        )
+
+    def methylation_sites(self):
+        return self._sites
 
 
 class ImputationDecorator:
