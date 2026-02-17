@@ -52,9 +52,7 @@ def test_models(model_name, model_entry):
 
     if model_type == "LinearMethylationModel":
         required_cpgs = test_model.methylation_sites()
-        missing_cpgs = sorted(
-            set(required_cpgs) - set(test_data.dnam.index)
-        )
+        missing_cpgs = sorted(set(required_cpgs) - set(test_data.dnam.index))
         if missing_cpgs:
             missing_preview = missing_cpgs[0]
             with pytest.raises(
