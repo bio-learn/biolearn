@@ -14,6 +14,8 @@ import pickle
 TOLERANCES = defaultdict(lambda: 1e-5)
 # AltumAge: TF→Torch port can differ ~1e-4 across platforms/versions.
 TOLERANCES["AltumAge"] = 2e-4
+# MiAge: iterative algorithm can drift ~3e-5 across Python/platform versions.
+TOLERANCES["MiAge"] = 5e-5
 
 sample_inputs = load_test_data_file("testset/testset_methylation_part0.csv")
 
