@@ -18,7 +18,7 @@ Core Team
 * `Seth Paulson`_  /  `Biolearn Lead <https://www.linkedin.com/in/seth-paulson-6ba80226/>`_
 * `Mahdi Moqri`_  /  `Researcher & BoA Executive <https://www.linkedin.com/in/mahdi-moqri-41432547/>`_
 * `Albert Ying`_ / `Harvard Universiy <https://scholar.google.com/citations?user=JS7AdkcAAAAJ&hl=zh-CN>`_
-* `Marc Balestreri`_/ `Software Engineer <https://www.linkedin.com/in/marcbal/>`_
+* `Marc Balestreri`_ / `Biolearn Contributor <https://www.linkedin.com/in/marcbal/>`_
 
 Other contributors
 ..................
