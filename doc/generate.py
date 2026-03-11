@@ -20,7 +20,8 @@ def generate_models_csv(models, output_file="generated/model_table.csv"):
                 source_link = "unknown"
             else:
                 source_link = f"`paper <{details['source']}>`_"
-            coefficients_link = f"`coefficients file <https://github.com/bio-learn/biolearn/blob/master/biolearn/data/{details['model']['file']}>`_"
+            model_file = details.get('model', {}).get('file')
+            coefficients_link = f"`coefficients file <https://github.com/bio-learn/biolearn/blob/master/biolearn/data/{model_file}>`_" if model_file else "N/A"
 
             row = [
                 name,
