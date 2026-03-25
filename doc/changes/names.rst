@@ -10,6 +10,8 @@
 .. _Nureldin Mohamed: https://www.linkedin.com/in/nureldin-m-19738625b/
 .. _Yasamin Jodat: https://www.linkedin.com/in/yasamin-jodat/
 .. _Aneesh Mazumder: https://www.linkedin.com/in/aneesh-mazumder/
+.. _Antonino Libarnes: https://www.linkedin.com/in/anjolib/
+.. _Alexis Musaelyan-Blackmon: https://www.linkedin.com/in/alexis-musaelyan-blackmon/
 .. _Marc Balestreri: https://www.linkedin.com/in/marcbal/
 
 .. _AI4Life Institute: https://www.ai4lifeinstitute.com/
