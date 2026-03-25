@@ -144,11 +144,11 @@ This library is packaged with examples that can be downloaded via the doc websit
 
 This project uses [Semantic Versioning](https://semver.org/) (`MAJOR.MINOR.PATCH`) with the `hatch-vcs` plugin, which derives the package version from git tags automatically.
 
-Biolearn is currently pre-1.0, meaning the API is not yet considered stable. In the `0.x` range:
+Biolearn is currently pre-1.0, meaning the library is not yet considered stable. In the `0.x` range:
 
 - **PATCH** (e.g., 0.9.0 → 0.9.1): Bug fixes and small additions
 - **MINOR** (e.g., 0.9.1 → 0.10.0): New features, may include breaking changes
-- **MAJOR** (e.g., 0.10.0 → 1.0.0): Major release, stable API with full feature completeness
+- **MAJOR** (e.g., 0.10.0 → 1.0.0): Major release, stable library with comprehensive clock and feature coverage
 
 Tags use the `v` prefix (e.g., `v0.9.0`). You **must** tag before building — otherwise hatch produces a dev version.
 
