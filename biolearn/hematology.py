@@ -22,7 +22,7 @@ def phenotypic_age(df):
 
     constant = -19.9067
     gamma = 0.0077
-    cs = [141.50225, -0.00553, 0.090165]
+    cs = [141.50225, -0.0055305, 0.09165]
 
     # Vectorized calculation - no DataFrame modifications
     pheno = (
