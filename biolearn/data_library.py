@@ -183,6 +183,7 @@ class GeoData:
         rna=None,
         protein_alamar=None,
         protein_olink=None,
+        clinical=None,
     ):
         """
         Initializes the GeoData instance.
@@ -190,12 +191,15 @@ class GeoData:
         Args:
             metadata (DataFrame): Metadata associated with genomic samples.
             dnam (DataFrame): Methylation data associated with genomic samples.
+            clinical (DataFrame): Clinical biomarker data with samples as rows
+                and biomarkers as columns. Same orientation as ``metadata``.
         """
         self.metadata = metadata
         self.dnam = dnam
         self.rna = rna
         self.protein_alamar = protein_alamar
         self.protein_olink = protein_olink
+        self.clinical = clinical
 
     def _validate_metadata_omics_consistency(self):
         """Validate that metadata exists for all omics samples and vice versa."""
@@ -216,6 +220,10 @@ class GeoData:
         if self.protein_olink is not None:
             omics_samples.update(self.protein_olink.columns)
             omics_types.append("protein_olink")
+        if self.clinical is not None:
+            # clinical uses samples-as-rows, so samples live in the index
+            omics_samples.update(self.clinical.index)
+            omics_types.append("clinical")
 
         if not omics_samples:
             return
@@ -264,6 +272,11 @@ class GeoData:
             protein_olink=(
                 self.protein_olink.copy(deep=True)
                 if self.protein_olink is not None
+                else None
+            ),
+            clinical=(
+                self.clinical.copy(deep=True)
+                if self.clinical is not None
                 else None
             ),
         )
@@ -358,6 +371,58 @@ class GeoData:
 
         return cls(metadata, dnam)
 
+    @classmethod
+    def from_clinical_matrix(cls, df, source_units=None, units=None):
+        """Creates a GeoData instance from a clinical biomarker DataFrame.
+
+        Splits ``df`` into a metadata frame (age, sex, mortality fields) and a
+        clinical frame (everything else). Both keep the standard tabular
+        orientation: one row per sample, one column per field.
+
+        Parameters
+        ----------
+        df : DataFrame
+            DataFrame with samples as rows and biomarkers/metadata as columns.
+            Index should be sample identifiers.
+        source_units : str, optional
+            Named source preset for unit conversion (e.g. ``"fhs"``).
+        units : dict, optional
+            Per-biomarker unit overrides (e.g. ``{"glucose": "mg/dL"}``).
+
+        Returns
+        -------
+        GeoData
+            Instance with clinical and metadata layers populated. Both layers
+            use samples as rows and fields as columns.
+        """
+        from biolearn.clinical.convert import convert_units, validate_ranges
+
+        df = df.copy()
+
+        # Separate metadata columns from biomarker columns
+        metadata_cols = ["age", "sex", "is_dead", "months_until_death"]
+        existing_meta = [c for c in metadata_cols if c in df.columns]
+        biomarker_cols = [c for c in df.columns if c not in metadata_cols]
+
+        metadata = (
+            df[existing_meta]
+            if existing_meta
+            else pd.DataFrame(index=df.index)
+        )
+
+        clinical = df[biomarker_cols]
+
+        # Convert units if requested
+        if source_units is not None or units is not None:
+            clinical = convert_units(
+                clinical, source_units=source_units, units=units
+            )
+
+        # Warn about out-of-range values
+        validate_ranges(clinical, warn=True)
+
+        return cls(metadata=metadata, clinical=clinical)
+
     def save_csv(self, folder_path, name):
         """
         Saves the GeoData instance to CSV files according to the DNA Methylation Array Data Standard V-2410.
@@ -410,6 +475,9 @@ class GeoData:
                 folder_path, f"{name}_protein_olink.csv"
             )
             self.protein_olink.to_csv(protein_file)
+        if self.clinical is not None:
+            clinical_file = os.path.join(folder_path, f"{name}_clinical.csv")
+            self.clinical.to_csv(clinical_file)
 
     @classmethod
     def load_csv(cls, folder_path, name, series_part="all", validate=True):
@@ -509,12 +577,20 @@ class GeoData:
             else None
         )
 
+        clinical_file = os.path.join(folder_path, f"{name}_clinical.csv")
+        clinical_df = (
+            pd.read_csv(clinical_file, index_col=0, skipinitialspace=True)
+            if os.path.exists(clinical_file)
+            else None
+        )
+
         geodata = cls(
             metadata_df,
             dnam=dnam_df,
             rna=rna_df,
             protein_alamar=protein_alamar_df,
             protein_olink=protein_olink_df,
+            clinical=clinical_df,
         )
 
         if validate and metadata_df is not None:
@@ -1093,6 +1169,44 @@ class NoMatrixDataError(Exception):
         super().__init__(message)
 
 
+class NhanesParser:
+    """Parser for NHANES clinical biomarker data.
+
+    Calls ``biolearn.load.load_nhanes(year)`` and returns a GeoData with the
+    clinical and metadata layers populated. The ``year`` is read from the
+    parser config in library.yaml.
+    """
+
+    def __init__(self, data):
+        self.year = data.get("year")
+        if self.year is None:
+            raise ValueError("NhanesParser requires 'year' in parser config")
+
+    def parse(self, _):
+        from biolearn.load import load_nhanes
+
+        df = load_nhanes(self.year)
+        return GeoData.from_clinical_matrix(df)
+
+
+class FhsParser:
+    """Parser for Framingham Heart Study Period 1 clinical biomarker data.
+
+    Loads the raw FHS CSV and runs it through ``GeoData.from_clinical_matrix``
+    with ``source_units="fhs"`` so glucose lands in biolearn canonical mmol/L.
+    """
+
+    def __init__(self, data):
+        # No config needed for Period 1; future periods can be added here.
+        self.data = data
+
+    def parse(self, _):
+        from biolearn.load import _load_fhs_raw
+
+        df = _load_fhs_raw()
+        return GeoData.from_clinical_matrix(df, source_units="fhs")
+
+
 class DataSource:
     """
     Represents a single data source in the DataLibrary.
@@ -1205,6 +1319,10 @@ class DataSource:
             return GisbyOlinkParser(parser_data)
         if parser_type == "filbin-olink":
             return FilbinOlinkParser(parser_data)
+        if parser_type == "nhanes":
+            return NhanesParser(parser_data)
+        if parser_type == "fhs":
+            return FhsParser(parser_data)
         raise ValueError(f"Unknown parser type: {parser_type}")
 
     def _show_work_needed_warning(self):

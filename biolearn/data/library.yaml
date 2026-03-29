@@ -930,6 +930,43 @@ items:
         parse: numeric
   datalinks:
     - https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE246337
+- id: NHANES_2010
+  title: NHANES 2010 Clinical Biomarkers
+  summary: Blood biomarker panel and linked mortality follow-up for the 2009-2010
+    NHANES cycle. Loaded directly from CDC public data files.
+  format: clinical
+  organism: human
+  path: https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?BeginYear=2009
+  parser:
+    type: nhanes
+    year: 2010
+  datalinks:
+    - https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?BeginYear=2009
+- id: NHANES_2012
+  title: NHANES 2012 Clinical Biomarkers
+  summary: Blood biomarker panel and linked mortality follow-up for the 2011-2012
+    NHANES cycle. Loaded directly from CDC public data files. Note that C-reactive
+    protein is not available in this cycle.
+  format: clinical
+  organism: human
+  path: https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?BeginYear=2011
+  parser:
+    type: nhanes
+    year: 2012
+  datalinks:
+    - https://wwwn.cdc.gov/nchs/nhanes/continuousnhanes/default.aspx?BeginYear=2011
+- id: FHS
+  title: Framingham Heart Study (Period 1)
+  summary: Period 1 (1948-1953) clinical biomarkers for the Framingham Heart Study
+    Original Cohort. Glucose is converted from the source mg/dL into biolearn
+    canonical mmol/L via the "fhs" unit-conversion preset.
+  format: clinical
+  organism: human
+  path: https://raw.githubusercontent.com/singator/bdah/master/data/frmgham2.csv
+  parser:
+    type: fhs
+  datalinks:
+    - https://www.framinghamheartstudy.org/
 - id: GSE167998
   title: 'FlowSorted.BloodExtended.EPIC: An Enhanced DNA Methylation Library for Deconvoluting
     Peripheral Blood'
