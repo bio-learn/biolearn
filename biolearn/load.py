@@ -208,3 +208,26 @@ def load_nhanes(year):
     )
     df = df.rename({"LB2RDW": "LBXRDW", "LB2WBCSI": "LBXWBCSI"}, axis=1)
     return df
+
+
+def load_nhanes_as_geodata(year):
+    """Load NHANES data and return as GeoData with clinical layer.
+
+    Calls ``load_nhanes(year)`` and wraps the result using
+    ``GeoData.from_clinical_matrix()`` so the data can be used
+    directly with clinical aging clocks via the ModelGallery.
+
+    Parameters
+    ----------
+    year : int
+        NHANES cycle year (2010 or 2012).
+
+    Returns
+    -------
+    GeoData
+        GeoData with ``clinical`` and ``metadata`` layers populated.
+    """
+    from biolearn.data_library import GeoData
+
+    df = load_nhanes(year)
+    return GeoData.from_clinical_matrix(df)
