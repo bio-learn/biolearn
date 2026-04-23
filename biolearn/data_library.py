@@ -183,6 +183,7 @@ class GeoData:
         rna=None,
         protein_alamar=None,
         protein_olink=None,
+        clinical=None,
     ):
         """
         Initializes the GeoData instance.
@@ -190,12 +191,15 @@ class GeoData:
         Args:
             metadata (DataFrame): Metadata associated with genomic samples.
             dnam (DataFrame): Methylation data associated with genomic samples.
+            clinical (DataFrame): Clinical biomarker data with features as rows
+                and samples as columns (same orientation as dnam).
         """
         self.metadata = metadata
         self.dnam = dnam
         self.rna = rna
         self.protein_alamar = protein_alamar
         self.protein_olink = protein_olink
+        self.clinical = clinical
 
     def _validate_metadata_omics_consistency(self):
         """Validate that metadata exists for all omics samples and vice versa."""
@@ -216,6 +220,9 @@ class GeoData:
         if self.protein_olink is not None:
             omics_samples.update(self.protein_olink.columns)
             omics_types.append("protein_olink")
+        if self.clinical is not None:
+            omics_samples.update(self.clinical.columns)
+            omics_types.append("clinical")
 
         if not omics_samples:
             return
@@ -264,6 +271,11 @@ class GeoData:
             protein_olink=(
                 self.protein_olink.copy(deep=True)
                 if self.protein_olink is not None
+                else None
+            ),
+            clinical=(
+                self.clinical.copy(deep=True)
+                if self.clinical is not None
                 else None
             ),
         )
@@ -358,6 +370,60 @@ class GeoData:
 
         return cls(metadata, dnam)
 
+    @classmethod
+    def from_clinical_matrix(cls, df, source_units=None, units=None):
+        """Creates a GeoData instance from a clinical biomarker DataFrame.
+
+        Separates metadata columns (age, sex, mortality) from biomarker
+        columns, converts units if needed, and transposes biomarkers to
+        features-as-rows (matching GeoData's internal convention).
+
+        Parameters
+        ----------
+        df : DataFrame
+            DataFrame with samples as rows and biomarkers/metadata as columns.
+            Index should be sample identifiers.
+        source_units : str, optional
+            Named source preset for unit conversion (e.g. 'ukbiobank').
+        units : dict, optional
+            Per-biomarker unit overrides (e.g. ``{"creatinine": "umol/L"}``).
+
+        Returns
+        -------
+        GeoData
+            Instance with clinical and metadata layers populated.
+        """
+        from biolearn.clinical.convert import convert_units, validate_ranges
+
+        df = df.copy()
+
+        # Separate metadata columns from biomarker columns
+        metadata_cols = ["age", "sex", "is_dead", "months_until_death"]
+        existing_meta = [c for c in metadata_cols if c in df.columns]
+        biomarker_cols = [c for c in df.columns if c not in metadata_cols]
+
+        metadata = (
+            df[existing_meta]
+            if existing_meta
+            else pd.DataFrame(index=df.index)
+        )
+
+        biomarkers = df[biomarker_cols]
+
+        # Convert units if requested
+        if source_units is not None or units is not None:
+            biomarkers = convert_units(
+                biomarkers, source_units=source_units, units=units
+            )
+
+        # Warn about out-of-range values
+        validate_ranges(biomarkers, warn=True)
+
+        # Transpose to features-as-rows, samples-as-columns
+        clinical = biomarkers.T
+
+        return cls(metadata=metadata, clinical=clinical)
+
     def save_csv(self, folder_path, name):
         """
         Saves the GeoData instance to CSV files according to the DNA Methylation Array Data Standard V-2410.
@@ -410,6 +476,9 @@ class GeoData:
                 folder_path, f"{name}_protein_olink.csv"
             )
             self.protein_olink.to_csv(protein_file)
+        if self.clinical is not None:
+            clinical_file = os.path.join(folder_path, f"{name}_clinical.csv")
+            self.clinical.to_csv(clinical_file)
 
     @classmethod
     def load_csv(cls, folder_path, name, series_part="all", validate=True):
@@ -509,12 +578,20 @@ class GeoData:
             else None
         )
 
+        clinical_file = os.path.join(folder_path, f"{name}_clinical.csv")
+        clinical_df = (
+            pd.read_csv(clinical_file, index_col=0, skipinitialspace=True)
+            if os.path.exists(clinical_file)
+            else None
+        )
+
         geodata = cls(
             metadata_df,
             dnam=dnam_df,
             rna=rna_df,
             protein_alamar=protein_alamar_df,
             protein_olink=protein_olink_df,
+            clinical=clinical_df,
         )
 
         if validate and metadata_df is not None:

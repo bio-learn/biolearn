@@ -1289,6 +1289,13 @@ class AltumAgeModel:
             weights_path=weights_path, preprocess_file_path=preprocess_file
         )
 
+    def required_features(self):
+        return {
+            "layer": "dnam",
+            "features": list(self.reference),
+            "metadata": [],
+        }
+
     def methylation_sites(self):
         return list(self.reference)
 
@@ -1441,6 +1448,13 @@ class DeconvolutionModel:
         # Return samples as rows to match other model outputs
         return cell_prop_df.T
 
+    def required_features(self):
+        return {
+            "layer": "dnam",
+            "features": list(self.reference.index),
+            "metadata": [],
+        }
+
     # returns required methylation sites
     def methylation_sites(self):
         return list(self.reference.index)
@@ -1513,6 +1527,19 @@ class LinearModel:
 
         # Return as a DataFrame
         return result.apply(self.transform).to_frame(name="Predicted")
+
+    def required_features(self):
+        """Return the data layer, features, and metadata this model needs.
+
+        Returns
+        -------
+        dict
+            ``{"layer": str, "features": list, "metadata": list}``
+        """
+        features = [
+            idx for idx in self.coefficients.index if idx != "intercept"
+        ]
+        return {"layer": "dnam", "features": features, "metadata": []}
 
     def _validate_required_features(self, matrix_data):
         return
@@ -1644,6 +1671,13 @@ class PCLinearTransformationModel(LinearModel):
         PCs = X_centered.T.dot(rotation)  # (samples × PCs)
         return PCs.T  # (PCs × samples)
 
+    def required_features(self):
+        return {
+            "layer": "dnam",
+            "features": self.methylation_sites(),
+            "metadata": [],
+        }
+
     def methylation_sites(self):
         """
         Return the list of required CpG sites.
@@ -1661,6 +1695,12 @@ class PCLinearTransformationModel(LinearModel):
 class LinearTranscriptomicModel(LinearModel):
     def _get_data_matrix(self, geo_data):
         return geo_data.rna
+
+    def required_features(self):
+        features = [
+            idx for idx in self.coefficients.index if idx != "intercept"
+        ]
+        return {"layer": "rna", "features": features, "metadata": []}
 
 
 class GrimageModel:
@@ -1803,6 +1843,13 @@ class GrimageModel:
         unique_vars = set(filtered_df["var"]) - {"Intercept", "Age", "Female"}
         return list(unique_vars)
 
+    def required_features(self):
+        return {
+            "layer": "dnam",
+            "features": self.methylation_sites(),
+            "metadata": ["age", "sex"],
+        }
+
 
 class LinearMultipartProteomicModel:
     def __init__(
@@ -1868,6 +1915,15 @@ class LinearMultipartProteomicModel:
         # Apply transformation to results
         return self.transform(pd.DataFrame(results))
 
+    def required_features(self):
+        proteins = list(
+            self.coefficients.loc[
+                self.coefficients["Protein"].str.lower() != "intercept",
+                "Protein",
+            ].unique()
+        )
+        return {"layer": "protein_olink", "features": proteins, "metadata": []}
+
     def methylation_sites(self):
         return []
 
@@ -1931,6 +1987,13 @@ class SexEstimationModel:
 
         return pred_df
 
+    def required_features(self):
+        return {
+            "layer": "dnam",
+            "features": list(self.coefficients.index),
+            "metadata": [],
+        }
+
     def methylation_sites(self):
         return list(self.coefficients.index)
 
@@ -1969,6 +2032,13 @@ class EpiTOC2Model:
         vals = 2.0 * (np.sum(contrib, axis=0) / k)
 
         return pd.DataFrame(vals, index=dnam.columns, columns=["Predicted"])
+
+    def required_features(self):
+        return {
+            "layer": "dnam",
+            "features": list(self.CpG_names),
+            "metadata": [],
+        }
 
     def methylation_sites(self):
         return list(self.CpG_names)
@@ -2232,6 +2302,13 @@ class HurdleAPIModel:
         except Exception as e:
             raise Exception(f"API error: {str(e)}")
 
+    def required_features(self):
+        return {
+            "layer": "dnam",
+            "features": self.required_cpgs if self.required_cpgs else [],
+            "metadata": ["age", "sex"],
+        }
+
     def methylation_sites(self):
         """Return list of required CpG sites for imputation compatibility."""
         return self.required_cpgs if self.required_cpgs else []
@@ -2282,6 +2359,9 @@ class GPAgeModel:
         return pd.DataFrame(
             predictions, index=dnam.columns, columns=["Predicted"]
         )
+
+    def required_features(self):
+        return {"layer": "dnam", "features": self._sites, "metadata": []}
 
     def methylation_sites(self):
         return self._sites
@@ -2433,6 +2513,9 @@ class MiAgeModel:
         return pd.DataFrame(
             predictions, index=methylation_data.columns, columns=["Predicted"]
         )
+
+    def required_features(self):
+        return {"layer": "dnam", "features": self.cpg_sites, "metadata": []}
 
     def methylation_sites(self):
         """Return list of required CpG sites"""
