@@ -50,6 +50,9 @@ def quantile_normalize_using_target(data, target_values):
     """
     Apply quantile normalization on data using target values.
     """
+    # Writable float copy: DataFrame.values can be read-only under pandas>=3.0
+    # copy-on-write, which would break the in-place updates below.
+    data = np.array(data, dtype=float)
     sorted_target = np.sort(target_values)
 
     for _, column_data in enumerate(data.T):
