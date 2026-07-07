@@ -110,20 +110,31 @@ def test_dunedin_pace_normalization():
     with open(data_file_path, "rb") as file:
         expected = pickle.load(file)
 
-    # Finding mismatches based on tolerance
-    mask = np.abs(actual - expected) > 0.000001
-    mismatches = actual[mask].stack()
+    # The reference fixture stores probe IDs in an ``ID_REF`` column with a
+    # default RangeIndex, whereas the loader returns CpG-indexed data. Align the
+    # fixture's orientation to ``actual`` before comparing; otherwise the axes
+    # don't match and the comparison is vacuous. (On older pandas ``stack()``
+    # silently dropped the misaligned NaNs, so this test passed without ever
+    # comparing values; pandas 3.0 keeps them, surfacing a KeyError instead.)
+    if "ID_REF" in expected.columns:
+        expected = expected.set_index("ID_REF")
+        expected.index.name = actual.index.name
+    expected = expected.reindex(index=actual.index, columns=actual.columns)
 
-    total_mismatches = mismatches.size
+    # Count mismatches from the boolean mask directly, independent of how
+    # ``stack()`` treats NaNs across pandas versions.
+    mismatch_mask = np.abs(actual - expected) > 0.000001
+    total_mismatches = int(mismatch_mask.to_numpy().sum())
     percentage_mismatched = (total_mismatches / actual.size) * 100
 
-    # Display the mismatches
-    for idx, value in enumerate(mismatches.items()):
-        if idx == 100:
-            break
-        print(
-            f"Location: {value[0]}, Actual: {actual.at[value[0]]}, Expected: {expected.at[value[0]]}"
-        )
+    # Display up to the first 100 mismatching cells, if any.
+    if total_mismatches:
+        stacked = mismatch_mask.stack()
+        for row, col in stacked[stacked].index[:100]:
+            print(
+                f"Location: ({row}, {col}), "
+                f"Actual: {actual.at[row, col]}, Expected: {expected.at[row, col]}"
+            )
 
     print(
         f"Total mismatches: {total_mismatches} ({percentage_mismatched:.2f}%)"
