@@ -762,12 +762,11 @@ class JenAgeCustomParser:
 
 class ChallengeDataParser:
     def __init__(self, data):
-        if data.get("id-row") is None:
-            raise ValueError("Parser not valid: missing id-row")
         self.id_row = data.get("id-row")
         self.metadata = data.get("metadata")
         self.matrix_file = data.get("matrix-file")
         self.matrix_file_key_line = data.get("matrix-file-key-line")
+        self.matrix_file_key_tag = data.get("matrix-file-key-tag")
         self.data_type = data.get("data-type")
         self.protein_matrix_url = "https://storage.googleapis.com/boa-challenge-2024/challenge_alamar_data.csv"
         self.metadata_url = "https://storage.googleapis.com/boa-challenge-2024/challenge_proteomic_metadata.csv"
@@ -775,13 +774,25 @@ class ChallengeDataParser:
 
     def parse(self, file_path):
         print("Note: This dataset will take a few minutes to load")
-        # Load methylation data and metadata from GEO
-        metadata = load_geo_metadata(file_path, self.metadata, self.id_row)
+        series = GeoSeriesMatrix(file_path)
+        metadata = load_geo_metadata(series, self.metadata, self.id_row)
         dnam_data = pd.read_csv(self.matrix_file, index_col=0)
-        column_mapping = build_column_mapping(
-            file_path, self.matrix_file_key_line, self.id_row
-        )
+        if self.matrix_file_key_tag is not None:
+            column_mapping = build_column_mapping(
+                series, key_tag=self.matrix_file_key_tag
+            )
+        else:
+            column_mapping = build_column_mapping(
+                series,
+                key_line=self.matrix_file_key_line,
+                offset=series.id_offset(self.id_row),
+            )
         fixed_dnam = map_and_prune_columns(dnam_data, column_mapping)
+        if fixed_dnam.shape[1] == 0:
+            raise ValueError(
+                "No sample columns matched the series matrix; the GEO header "
+                "may have changed"
+            )
         geodata = GeoData.from_methylation_matrix(fixed_dnam)
         geodata.metadata = metadata
 

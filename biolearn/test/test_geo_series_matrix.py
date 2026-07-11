@@ -140,3 +140,18 @@ def test_geo_matrix_parser_id_row_optional():
     # id-row is now optional; auto-detected from the series matrix
     parser = GeoMatrixParser({"type": "geo-matrix", "matrix-start": 74})
     assert parser.id_row is None
+
+
+from biolearn.data_library import ChallengeDataParser
+
+
+def test_challenge_parser_accepts_key_tag_and_optional_id_row():
+    parser = ChallengeDataParser(
+        {
+            "matrix-file": "ftp://example/betas.csv.gz",
+            "matrix-file-key-tag": "!Sample_description",
+            "metadata": {},
+        }
+    )
+    assert parser.matrix_file_key_tag == "!Sample_description"
+    assert parser.id_row is None
