@@ -1009,8 +1009,6 @@ class GeoMatrixParser:
     seperators = {"space": " ", "comma": ",", "tab": "\t"}
 
     def __init__(self, data):
-        if data.get("id-row") is None:
-            raise ValueError("Parser not valid: missing id-row")
         self.id_row = data.get("id-row")
         self.metadata = data.get("metadata")
         self.matrix_start = data.get("matrix-start")
@@ -1019,14 +1017,17 @@ class GeoMatrixParser:
             data.get("matrix-file-seperator")
         )
         self.matrix_file_key_line = data.get("matrix-file-key-line")
+        self.matrix_file_key_tag = data.get("matrix-file-key-tag")
         self.matrix_file_format = data.get("matrix-file-format")
         self.data_type = data.get("data-type")
 
     def parse(self, file_path):
-        metadata = load_geo_metadata(file_path, self.metadata, self.id_row)
+        series = GeoSeriesMatrix(file_path)
+        metadata = load_geo_metadata(series, self.metadata, self.id_row)
         if self.matrix_start:
+            matrix_start = series.matrix_start or self.matrix_start
             matrix_data = pd.read_table(
-                file_path, index_col=0, skiprows=self.matrix_start - 1
+                file_path, index_col=0, skiprows=matrix_start - 1
             )
             matrix_data = matrix_data.drop(
                 ["!series_matrix_table_end"], axis=0
@@ -1050,13 +1051,13 @@ class GeoMatrixParser:
                 # NaN values in pval_df will cause corresponding values in methylation_df to be NaN
                 matrix_data = reading_df + pval_df.values
                 matrix_data = self._remap_and_prune_columns(
-                    matrix_data, file_path
+                    matrix_data, series
                 )
 
             elif self.matrix_file_format == "standard":
                 matrix_data = df
                 matrix_data = self._remap_and_prune_columns(
-                    matrix_data, file_path
+                    matrix_data, series
                 )
 
             else:
@@ -1069,37 +1070,25 @@ class GeoMatrixParser:
         else:
             return GeoData(metadata, dnam=matrix_data)
 
-    def _remap_and_prune_columns(self, data, matrix_file_path):
-        if self.matrix_file_key_line is None:
-            # No key line for mapping so assume the ordering is sufficient
-            header_row = pd.read_table(
-                matrix_file_path,
-                index_col=0,
-                header=None,
-                skiprows=lambda x: x != self.id_row - 1,
-                nrows=1,
+    def _remap_and_prune_columns(self, data, series):
+        offset = series.id_offset(self.id_row)
+        if self.matrix_file_key_tag is not None:
+            column_mapping = build_column_mapping(
+                series, key_tag=self.matrix_file_key_tag
             )
-            column_mapping = dict(zip(data.columns, header_row.iloc[0]))
+        elif self.matrix_file_key_line is not None:
+            column_mapping = build_column_mapping(
+                series, key_line=self.matrix_file_key_line, offset=offset
+            )
         else:
-            # Use the key line for the mapping
-            mapping_df = pd.read_table(
-                matrix_file_path,
-                index_col=0,
-                skiprows=lambda x: x != self.id_row - 1
-                and x != self.matrix_file_key_line - 1,
+            column_mapping = dict(zip(data.columns, series.sample_ids()))
+        pruned = map_and_prune_columns(data, column_mapping)
+        if pruned.shape[1] == 0:
+            raise ValueError(
+                "No sample columns matched the series matrix; the GEO header "
+                "may have changed"
             )
-            column_mapping = mapping_df.to_dict("records")[0]
-
-            # Reverse the mapping if needed as key is based on first line loaded
-            reverse_mapping = self.id_row < self.matrix_file_key_line
-            if reverse_mapping:
-                column_mapping = {v: k for k, v in column_mapping.items()}
-
-        data = data.rename(columns=column_mapping)
-        data = data[
-            [col for col in data.columns if col in column_mapping.values()]
-        ]
-        return data
+        return pruned
 
     def _metadata_load_list(self):
         load_list = [

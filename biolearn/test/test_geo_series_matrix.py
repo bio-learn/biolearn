@@ -131,3 +131,12 @@ def test_legacy_offset_zero_does_not_validate():
     filekey = {"plate": {"row": 43, "parse": "string"}}
     meta = load_geo_metadata(series, filekey, id_row=33)
     assert "plate" in meta.columns
+
+
+from biolearn.data_library import GeoMatrixParser
+
+
+def test_geo_matrix_parser_id_row_optional():
+    # id-row is now optional; auto-detected from the series matrix
+    parser = GeoMatrixParser({"type": "geo-matrix", "matrix-start": 74})
+    assert parser.id_row is None

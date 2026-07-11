@@ -142,7 +142,10 @@ items:
     assert str(e.value) == "'path' key is missing in item"
 
 
-def test_parser_missing_id_row_gives_error():
+def test_parser_id_row_is_optional():
+    # id-row is optional now. The parser auto-detects the sample row from the
+    # series matrix, so an absent id-row leaves the attribute as None rather
+    # than raising.
     file_contents = """
 ---
 items:
@@ -150,7 +153,6 @@ items:
   path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE40nnn/GSE40279/matrix/GSE40279_series_matrix.txt.gz
   parser:
     type: geo-matrix
-    misspelled-id-row: 12
     metadata:
       age:
         row: 44
@@ -158,9 +160,8 @@ items:
     matrix-start: 72
 """
     test_file = StringIO(file_contents)
-    with pytest.raises(ValueError) as e:
-        parse_library_file(test_file)
-    assert str(e.value) == "Parser not valid: missing id-row"
+    sources = parse_library_file(test_file)
+    assert sources[0].parser.id_row is None
 
 
 def test_missing_parser_gives_error():
