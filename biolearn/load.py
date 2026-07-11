@@ -6,14 +6,18 @@ import gzip
 MG_PER_DL_TO_MMOL_PER_L = 0.05551
 
 
-def load_fhs():
-    """
-    Loads data from the Framingham Heart Study
+def _load_fhs_raw():
+    """Load Framingham Heart Study Period 1 data in its native units.
+
+    Loads the public frmgham2.csv, filters to Period 1 rows, and returns the
+    columns biolearn uses. Glucose is left in mg/dL (the FHS source unit) so
+    callers can apply the canonical conversion themselves.
 
     Returns
     -------
-    df: Pandas.Dataframe
-        A pandas dataframe where each row represents an individual and each column represents a measurement about that individual
+    pandas.DataFrame
+        Indexed by ``id`` (RANDID) with columns: ``age``, ``sex``,
+        ``glucose`` (mg/dL), ``is_dead``, ``months_until_death``.
     """
     public_link = "https://raw.githubusercontent.com/singator/bdah/master/data/frmgham2.csv"
     df = pd.read_csv(
@@ -43,10 +47,24 @@ def load_fhs():
         },
         axis=1,
     )
+    return df
 
+
+def load_fhs():
+    """Loads data from the Framingham Heart Study (Period 1).
+
+    Glucose is converted from the FHS source unit (mg/dL) to biolearn's
+    canonical mmol/L.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Each row represents an individual; columns are ``age``, ``sex``,
+        ``glucose`` (mmol/L), ``is_dead``, ``months_until_death``.
+    """
+    df = _load_fhs_raw()
     # standardize glucose units
     df["glucose"] = df["glucose"].apply(lambda g: g * MG_PER_DL_TO_MMOL_PER_L)
-
     return df
 
 
