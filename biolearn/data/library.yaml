@@ -903,30 +903,29 @@ items:
   path: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE246nnn/GSE246337/matrix/GSE246337_series_matrix.txt.gz
   parser:
     type: biomarkers-challenge-2024
-    id-row: 31
     matrix-file: ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE246nnn/GSE246337/suppl/GSE246337%5Fbetas.csv.gz
-    matrix-file-key-line: 53
+    matrix-file-key-tag: "!Sample_description"
     metadata:
       subject_id:
-        row: 39
+        key: "subject id"
         parse: string
       sex:
-        row: 41
+        key: "Sex"
         parse: sex
       tissue:
-        row: 40
+        key: "tissue"
         parse: string
       race1:
-        row: 42
+        key: "race1"
         parse: string
       race2:
-        row: 43
+        key: "race2"
         parse: string
       ethnicity:
-        row: 44
+        key: "ethnicity"
         parse: string
       age:
-        row: 45
+        key: "age"
         parse: numeric
   datalinks:
     - https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE246337

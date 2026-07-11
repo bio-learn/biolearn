@@ -155,3 +155,66 @@ def test_challenge_parser_accepts_key_tag_and_optional_id_row():
     )
     assert parser.matrix_file_key_tag == "!Sample_description"
     assert parser.id_row is None
+
+
+import os
+
+
+def _write_boa_like_header(tmp_path):
+    # Old BoA config assumed id-row 31 and key line 53. Emulate the current
+    # file where everything sits one line lower, with three samples.
+    lines = [f"!Series_line_{n}" for n in range(1, 31)]
+    lines.append('!Sample_title\t"t1"\t"t2"\t"t3"')  # line 31
+    lines.append('!Sample_geo_accession\t"GSM1"\t"GSM2"\t"GSM3"')  # line 32
+    while len(lines) < 39:
+        lines.append(f'!Sample_pad_{len(lines)}\t"x"\t"x"\t"x"')
+    lines.append(
+        '!Sample_characteristics_ch1\t"subject id: A"\t"subject id: B"\t"subject id: C"'
+    )  # 40
+    lines.append(
+        '!Sample_characteristics_ch1\t"tissue: blood"\t"tissue: blood"\t"tissue: blood"'
+    )  # 41
+    lines.append(
+        '!Sample_characteristics_ch1\t"Sex: M"\t"Sex: F"\t"Sex: M"'
+    )  # 42
+    while len(lines) < 53:
+        lines.append(f'!Sample_pad_{len(lines)}\t"x"\t"x"\t"x"')
+    lines.append(
+        '!Sample_description\t"SENTRIX_1"\t"SENTRIX_2"\t"SENTRIX_3"'
+    )  # 54
+    lines.append("!series_matrix_table_begin")
+    path = os.path.join(tmp_path, "boa_like_series_matrix.txt")
+    with open(path, "w") as handle:
+        handle.write("\n".join(lines) + "\n")
+    return path
+
+
+def test_boa_like_offset_and_key_resolution(tmp_path):
+    path = _write_boa_like_header(str(tmp_path))
+    series = GeoSeriesMatrix(path)
+
+    # Sample ids come from geo accession regardless of the stale id-row
+    assert series.sample_ids() == ["GSM1", "GSM2", "GSM3"]
+
+    # Column mapping by the description tag yields sentrix -> GSM for all 3
+    mapping = build_column_mapping(series, key_tag="!Sample_description")
+    assert mapping == {
+        "SENTRIX_1": "GSM1",
+        "SENTRIX_2": "GSM2",
+        "SENTRIX_3": "GSM3",
+    }
+
+    # Metadata by key lands on the right characteristics
+    filekey = {
+        "subject_id": {"key": "subject id", "parse": "string"},
+        "sex": {"key": "Sex", "parse": "sex"},
+    }
+    meta = load_geo_metadata(series, filekey, id_row=None)
+    assert list(meta.index) == ["GSM1", "GSM2", "GSM3"]
+    assert list(meta["subject_id"]) == ["A", "B", "C"]
+    assert meta["sex"].notna().all()
+
+    # The stale legacy lines still work via the id-row offset (31 -> 32 = +1)
+    legacy = {"subject_id": {"row": 39, "parse": "string"}}
+    meta_legacy = load_geo_metadata(series, legacy, id_row=31)
+    assert list(meta_legacy["subject_id"]) == ["A", "B", "C"]
