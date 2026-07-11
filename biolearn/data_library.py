@@ -126,20 +126,20 @@ class GeoSeriesMatrix:
         return self.id_row - configured_id_row
 
 
-def build_column_mapping(matrix_file_path, from_key_line, to_key_line):
-    # Use the key line for the mapping
-    mapping_df = pd.read_table(
-        matrix_file_path,
-        index_col=0,
-        skiprows=lambda x: x != from_key_line - 1 and x != to_key_line - 1,
-    )
-    column_mapping = mapping_df.to_dict("records")[0]
-
-    # Reverse the mapping if needed as key is based on first line loaded
-    reverse_mapping = to_key_line < from_key_line
-    if reverse_mapping:
-        column_mapping = {v: k for k, v in column_mapping.items()}
-    return column_mapping
+def build_column_mapping(series, key_tag=None, key_line=None, offset=0):
+    if key_tag is not None:
+        keys = series.tag_values(key_tag)
+    elif key_line is not None:
+        keys = series.line_values(key_line + offset)
+    else:
+        raise ValueError("build_column_mapping needs key_tag or key_line")
+    ids = series.sample_ids()
+    if keys is None or ids is None:
+        raise ValueError(
+            "Series matrix is missing the columns needed to map samples; "
+            "the GEO header may have changed"
+        )
+    return dict(zip(keys, ids))
 
 
 def map_and_prune_columns(data, column_mapping):

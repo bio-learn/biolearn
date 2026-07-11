@@ -51,3 +51,37 @@ def test_id_offset():
     assert series.id_offset(33) == 0
     assert series.id_offset(31) == 2
     assert series.id_offset(None) == 0
+
+
+import pytest
+import pandas as pd
+from biolearn.data_library import build_column_mapping, map_and_prune_columns
+
+
+def test_build_column_mapping_by_tag():
+    series = _series()
+    mapping = build_column_mapping(series, key_tag="!Sample_title")
+    assert len(mapping) == 5
+    assert all(str(v).startswith("GSM") for v in mapping.values())
+
+
+def test_build_column_mapping_by_offset_corrected_line():
+    series = _series()
+    # !Sample_title is line 32; feed a stale line 30 with a +2 offset
+    mapping = build_column_mapping(series, key_line=30, offset=2)
+    assert len(mapping) == 5
+    assert all(str(v).startswith("GSM") for v in mapping.values())
+
+
+def test_build_column_mapping_missing_source_raises():
+    with pytest.raises(ValueError):
+        build_column_mapping(_series(), key_tag="!Sample_not_present")
+
+
+def test_map_and_prune_keeps_only_mapped_columns():
+    data = pd.DataFrame(
+        {"sentrixA": [1, 2], "sentrixB": [3, 4], "junk": [5, 6]}
+    )
+    mapping = {"sentrixA": "GSM1", "sentrixB": "GSM2"}
+    pruned = map_and_prune_columns(data, mapping)
+    assert list(pruned.columns) == ["GSM1", "GSM2"]
