@@ -53,6 +53,79 @@ parsers = {
 }
 
 
+def _open_series_text(path):
+    with open(path, "rb") as probe:
+        is_gzip = probe.read(2) == b"\x1f\x8b"
+    if is_gzip:
+        return gzip.open(path, "rt", encoding="utf-8", errors="replace")
+    return open(path, "rt", encoding="utf-8", errors="replace")
+
+
+class GeoSeriesMatrix:
+    """Reads a GEO series-matrix header and resolves rows by tag and
+    characteristic key rather than by absolute line number, which shifts
+    when GEO re-versions a series."""
+
+    def __init__(self, file_path):
+        local_path = cached_download(file_path)
+        self._tags = {}
+        self._tag_line = {}
+        self._characteristics = []
+        self._line_values = {}
+        self.matrix_start = None
+        with _open_series_text(local_path) as handle:
+            for lineno, raw in enumerate(handle, start=1):
+                line = raw.rstrip("\n")
+                if line.startswith("!series_matrix_table_begin"):
+                    self.matrix_start = lineno + 1
+                    break
+                if not line.startswith("!Sample_"):
+                    continue
+                parts = line.split("\t")
+                tag = parts[0]
+                values = [p.strip().strip('"') for p in parts[1:]]
+                self._line_values[lineno] = values
+                if tag == "!Sample_characteristics_ch1":
+                    self._characteristics.append(
+                        (self._value_key(values), values)
+                    )
+                else:
+                    self._tags.setdefault(tag, values)
+                    self._tag_line.setdefault(tag, lineno)
+
+    @staticmethod
+    def _value_key(values):
+        for value in values:
+            if value and ":" in value:
+                return value.split(":", 1)[0].strip().lower()
+        return None
+
+    @property
+    def id_row(self):
+        return self._tag_line.get("!Sample_geo_accession")
+
+    def sample_ids(self):
+        return self._tags.get("!Sample_geo_accession")
+
+    def tag_values(self, tag):
+        return self._tags.get(tag)
+
+    def characteristic_values(self, key):
+        key = key.strip().lower()
+        for candidate_key, values in self._characteristics:
+            if candidate_key == key:
+                return values
+        return None
+
+    def line_values(self, lineno):
+        return self._line_values.get(lineno)
+
+    def id_offset(self, configured_id_row):
+        if configured_id_row is None or self.id_row is None:
+            return 0
+        return self.id_row - configured_id_row
+
+
 def build_column_mapping(matrix_file_path, from_key_line, to_key_line):
     # Use the key line for the mapping
     mapping_df = pd.read_table(
