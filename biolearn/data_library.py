@@ -150,23 +150,54 @@ def map_and_prune_columns(data, column_mapping):
     return data
 
 
-def load_geo_metadata(metadata_file, filekey, id_row):
-    load_list = [(key, filekey[key]["row"] - 1) for key in filekey.keys()]
-    load_list.sort(key=lambda x: x[1])
-    load_rows = [x[1] for x in load_list]
-    column_names = [x[0] for x in load_list]
-    metadata = pd.read_table(
-        metadata_file,
-        index_col=0,
-        skiprows=lambda x: x != id_row - 1 and x not in load_rows,
+def _resolve_field_values(series, spec, offset):
+    if spec.get("key") is not None:
+        values = series.characteristic_values(spec["key"])
+        source = "characteristic '%s'" % spec["key"]
+    elif spec.get("tag") is not None:
+        values = series.tag_values(spec["tag"])
+        source = "tag '%s'" % spec["tag"]
+    elif spec.get("row") is not None:
+        values = series.line_values(spec["row"] + offset)
+        source = "row %s" % (spec["row"] + offset)
+    else:
+        raise ValueError("Metadata field must specify key, tag, or row")
+    if values is None:
+        raise ValueError(
+            "Series matrix has no %s; the GEO header may have changed" % source
+        )
+    return values
+
+
+def _validate_metadata(metadata, filekey, strict):
+    if not strict or len(metadata) < 2:
+        return
+    for field, spec in filekey.items():
+        if spec["parse"] not in ("sex", "numeric"):
+            continue
+        if metadata[field].notna().sum() == 0:
+            raise ValueError(
+                "Metadata field '%s' resolved to no usable values; the GEO "
+                "header likely changed" % field
+            )
+
+
+def load_geo_metadata(series, filekey, id_row):
+    offset = series.id_offset(id_row)
+    uses_semantic = any(
+        spec.get("key") is not None or spec.get("tag") is not None
+        for spec in filekey.values()
     )
-    metadata.index = column_names
-    metadata = metadata.transpose()
+    columns = {}
+    for field, spec in filekey.items():
+        values = _resolve_field_values(series, spec, offset)
+        parser = parsers[spec["parse"]]
+        columns[field] = [parser(value) for value in values]
+    metadata = pd.DataFrame(columns, index=series.sample_ids())
     metadata.index.name = "id"
-    for col in metadata.columns:
-        parser_name = filekey[col]["parse"]
-        parser = parsers[parser_name]
-        metadata[col] = metadata[col].apply(parser)
+    _validate_metadata(
+        metadata, filekey, strict=(offset != 0 or uses_semantic)
+    )
     return metadata
 
 

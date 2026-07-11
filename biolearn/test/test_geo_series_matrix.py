@@ -85,3 +85,49 @@ def test_map_and_prune_keeps_only_mapped_columns():
     mapping = {"sentrixA": "GSM1", "sentrixB": "GSM2"}
     pruned = map_and_prune_columns(data, mapping)
     assert list(pruned.columns) == ["GSM1", "GSM2"]
+
+
+from biolearn.data_library import load_geo_metadata
+
+
+def test_metadata_by_key_ignores_line_numbers():
+    series = _series()
+    filekey = {"age": {"key": "age", "parse": "numeric"}}
+    meta = load_geo_metadata(series, filekey, id_row=33)
+    assert list(meta.index) == series.sample_ids()
+    assert meta["age"].notna().all()
+
+
+def test_metadata_by_tag():
+    series = _series()
+    filekey = {"title": {"tag": "!Sample_title", "parse": "string"}}
+    meta = load_geo_metadata(series, filekey, id_row=33)
+    assert meta["title"].notna().all()
+
+
+def test_metadata_offset_corrects_stale_rows():
+    series = _series()
+    # age characteristic is on line 47. Pretend the config was written when
+    # the header sat two lines higher: id_row 31 (real is 33) and age row 45.
+    filekey = {"age": {"row": 45, "parse": "numeric"}}
+    meta = load_geo_metadata(series, filekey, id_row=31)
+    assert meta["age"].notna().all()
+
+
+def test_metadata_all_unparseable_raises_when_corrected():
+    series = _series()
+    # With a +2 offset applied, a bad row that lands on a digit-free
+    # characteristic must fail loudly rather than return a NaN column.
+    # row 40 + offset 2 = line 42, "sample type: whole blood".
+    filekey = {"age": {"row": 40, "parse": "numeric"}}
+    with pytest.raises(ValueError):
+        load_geo_metadata(series, filekey, id_row=31)
+
+
+def test_legacy_offset_zero_does_not_validate():
+    series = _series()
+    # Offset 0, legacy row that happens to be non-numeric stays permissive
+    # so the 40 unchanged datasets keep their exact behavior.
+    filekey = {"plate": {"row": 43, "parse": "string"}}
+    meta = load_geo_metadata(series, filekey, id_row=33)
+    assert "plate" in meta.columns
