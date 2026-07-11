@@ -53,20 +53,93 @@ parsers = {
 }
 
 
-def build_column_mapping(matrix_file_path, from_key_line, to_key_line):
-    # Use the key line for the mapping
-    mapping_df = pd.read_table(
-        matrix_file_path,
-        index_col=0,
-        skiprows=lambda x: x != from_key_line - 1 and x != to_key_line - 1,
-    )
-    column_mapping = mapping_df.to_dict("records")[0]
+def _open_series_text(path):
+    with open(path, "rb") as probe:
+        is_gzip = probe.read(2) == b"\x1f\x8b"
+    if is_gzip:
+        return gzip.open(path, "rt", encoding="utf-8", errors="replace")
+    return open(path, "rt", encoding="utf-8", errors="replace")
 
-    # Reverse the mapping if needed as key is based on first line loaded
-    reverse_mapping = to_key_line < from_key_line
-    if reverse_mapping:
-        column_mapping = {v: k for k, v in column_mapping.items()}
-    return column_mapping
+
+class GeoSeriesMatrix:
+    """Reads a GEO series-matrix header and resolves rows by tag and
+    characteristic key rather than by absolute line number, which shifts
+    when GEO re-versions a series."""
+
+    def __init__(self, file_path):
+        local_path = cached_download(file_path)
+        self._tags = {}
+        self._tag_line = {}
+        self._characteristics = []
+        self._line_values = {}
+        self.matrix_start = None
+        with _open_series_text(local_path) as handle:
+            for lineno, raw in enumerate(handle, start=1):
+                line = raw.rstrip("\n")
+                if line.startswith("!series_matrix_table_begin"):
+                    self.matrix_start = lineno + 1
+                    break
+                if not line.startswith("!Sample_"):
+                    continue
+                parts = line.split("\t")
+                tag = parts[0]
+                values = [p.strip().strip('"') for p in parts[1:]]
+                self._line_values[lineno] = values
+                if tag == "!Sample_characteristics_ch1":
+                    self._characteristics.append(
+                        (self._value_key(values), values)
+                    )
+                else:
+                    self._tags.setdefault(tag, values)
+                    self._tag_line.setdefault(tag, lineno)
+
+    @staticmethod
+    def _value_key(values):
+        for value in values:
+            if value and ":" in value:
+                return value.split(":", 1)[0].strip().lower()
+        return None
+
+    @property
+    def id_row(self):
+        return self._tag_line.get("!Sample_geo_accession")
+
+    def sample_ids(self):
+        return self._tags.get("!Sample_geo_accession")
+
+    def tag_values(self, tag):
+        return self._tags.get(tag)
+
+    def characteristic_values(self, key):
+        key = key.strip().lower()
+        for candidate_key, values in self._characteristics:
+            if candidate_key == key:
+                return values
+        return None
+
+    def line_values(self, lineno):
+        return self._line_values.get(lineno)
+
+    def id_offset(self, configured_id_row):
+        if configured_id_row is None or self.id_row is None:
+            return 0
+        return self.id_row - configured_id_row
+
+
+def build_column_mapping(series, key_tag=None, key_line=None, offset=0):
+    if key_tag is not None:
+        keys = series.tag_values(key_tag)
+    elif key_line is not None:
+        keys = series.line_values(key_line + offset)
+    else:
+        raise ValueError("build_column_mapping needs key_tag or key_line")
+    ids = series.sample_ids()
+    if keys is None or ids is None:
+        raise ValueError(
+            "Series matrix is missing the columns needed to map samples; "
+            "the GEO header may have changed"
+        )
+    return dict(zip(keys, ids))
 
 
 def map_and_prune_columns(data, column_mapping):
@@ -77,23 +150,54 @@ def map_and_prune_columns(data, column_mapping):
     return data
 
 
-def load_geo_metadata(metadata_file, filekey, id_row):
-    load_list = [(key, filekey[key]["row"] - 1) for key in filekey.keys()]
-    load_list.sort(key=lambda x: x[1])
-    load_rows = [x[1] for x in load_list]
-    column_names = [x[0] for x in load_list]
-    metadata = pd.read_table(
-        metadata_file,
-        index_col=0,
-        skiprows=lambda x: x != id_row - 1 and x not in load_rows,
+def _resolve_field_values(series, spec, offset):
+    if spec.get("key") is not None:
+        values = series.characteristic_values(spec["key"])
+        source = "characteristic '%s'" % spec["key"]
+    elif spec.get("tag") is not None:
+        values = series.tag_values(spec["tag"])
+        source = "tag '%s'" % spec["tag"]
+    elif spec.get("row") is not None:
+        values = series.line_values(spec["row"] + offset)
+        source = "row %s" % (spec["row"] + offset)
+    else:
+        raise ValueError("Metadata field must specify key, tag, or row")
+    if values is None:
+        raise ValueError(
+            "Series matrix has no %s; the GEO header may have changed" % source
+        )
+    return values
+
+
+def _validate_metadata(metadata, filekey, strict):
+    if not strict or len(metadata) < 2:
+        return
+    for field, spec in filekey.items():
+        if spec["parse"] not in ("sex", "numeric"):
+            continue
+        if metadata[field].notna().sum() == 0:
+            raise ValueError(
+                "Metadata field '%s' resolved to no usable values; the GEO "
+                "header likely changed" % field
+            )
+
+
+def load_geo_metadata(series, filekey, id_row):
+    offset = series.id_offset(id_row)
+    uses_semantic = any(
+        spec.get("key") is not None or spec.get("tag") is not None
+        for spec in filekey.values()
     )
-    metadata.index = column_names
-    metadata = metadata.transpose()
+    columns = {}
+    for field, spec in filekey.items():
+        values = _resolve_field_values(series, spec, offset)
+        parser = parsers[spec["parse"]]
+        columns[field] = [parser(value) for value in values]
+    metadata = pd.DataFrame(columns, index=series.sample_ids())
     metadata.index.name = "id"
-    for col in metadata.columns:
-        parser_name = filekey[col]["parse"]
-        parser = parsers[parser_name]
-        metadata[col] = metadata[col].apply(parser)
+    _validate_metadata(
+        metadata, filekey, strict=(offset != 0 or uses_semantic)
+    )
     return metadata
 
 
@@ -658,12 +762,11 @@ class JenAgeCustomParser:
 
 class ChallengeDataParser:
     def __init__(self, data):
-        if data.get("id-row") is None:
-            raise ValueError("Parser not valid: missing id-row")
         self.id_row = data.get("id-row")
         self.metadata = data.get("metadata")
         self.matrix_file = data.get("matrix-file")
         self.matrix_file_key_line = data.get("matrix-file-key-line")
+        self.matrix_file_key_tag = data.get("matrix-file-key-tag")
         self.data_type = data.get("data-type")
         self.protein_matrix_url = "https://storage.googleapis.com/boa-challenge-2024/challenge_alamar_data.csv"
         self.metadata_url = "https://storage.googleapis.com/boa-challenge-2024/challenge_proteomic_metadata.csv"
@@ -671,13 +774,25 @@ class ChallengeDataParser:
 
     def parse(self, file_path):
         print("Note: This dataset will take a few minutes to load")
-        # Load methylation data and metadata from GEO
-        metadata = load_geo_metadata(file_path, self.metadata, self.id_row)
+        series = GeoSeriesMatrix(file_path)
+        metadata = load_geo_metadata(series, self.metadata, self.id_row)
         dnam_data = pd.read_csv(self.matrix_file, index_col=0)
-        column_mapping = build_column_mapping(
-            file_path, self.matrix_file_key_line, self.id_row
-        )
+        if self.matrix_file_key_tag is not None:
+            column_mapping = build_column_mapping(
+                series, key_tag=self.matrix_file_key_tag
+            )
+        else:
+            column_mapping = build_column_mapping(
+                series,
+                key_line=self.matrix_file_key_line,
+                offset=series.id_offset(self.id_row),
+            )
         fixed_dnam = map_and_prune_columns(dnam_data, column_mapping)
+        if fixed_dnam.shape[1] == 0:
+            raise ValueError(
+                "No sample columns matched the series matrix; the GEO header "
+                "may have changed"
+            )
         geodata = GeoData.from_methylation_matrix(fixed_dnam)
         geodata.metadata = metadata
 
@@ -905,8 +1020,6 @@ class GeoMatrixParser:
     seperators = {"space": " ", "comma": ",", "tab": "\t"}
 
     def __init__(self, data):
-        if data.get("id-row") is None:
-            raise ValueError("Parser not valid: missing id-row")
         self.id_row = data.get("id-row")
         self.metadata = data.get("metadata")
         self.matrix_start = data.get("matrix-start")
@@ -915,14 +1028,17 @@ class GeoMatrixParser:
             data.get("matrix-file-seperator")
         )
         self.matrix_file_key_line = data.get("matrix-file-key-line")
+        self.matrix_file_key_tag = data.get("matrix-file-key-tag")
         self.matrix_file_format = data.get("matrix-file-format")
         self.data_type = data.get("data-type")
 
     def parse(self, file_path):
-        metadata = load_geo_metadata(file_path, self.metadata, self.id_row)
+        series = GeoSeriesMatrix(file_path)
+        metadata = load_geo_metadata(series, self.metadata, self.id_row)
         if self.matrix_start:
+            matrix_start = series.matrix_start or self.matrix_start
             matrix_data = pd.read_table(
-                file_path, index_col=0, skiprows=self.matrix_start - 1
+                file_path, index_col=0, skiprows=matrix_start - 1
             )
             matrix_data = matrix_data.drop(
                 ["!series_matrix_table_end"], axis=0
@@ -946,13 +1062,13 @@ class GeoMatrixParser:
                 # NaN values in pval_df will cause corresponding values in methylation_df to be NaN
                 matrix_data = reading_df + pval_df.values
                 matrix_data = self._remap_and_prune_columns(
-                    matrix_data, file_path
+                    matrix_data, series
                 )
 
             elif self.matrix_file_format == "standard":
                 matrix_data = df
                 matrix_data = self._remap_and_prune_columns(
-                    matrix_data, file_path
+                    matrix_data, series
                 )
 
             else:
@@ -965,37 +1081,25 @@ class GeoMatrixParser:
         else:
             return GeoData(metadata, dnam=matrix_data)
 
-    def _remap_and_prune_columns(self, data, matrix_file_path):
-        if self.matrix_file_key_line is None:
-            # No key line for mapping so assume the ordering is sufficient
-            header_row = pd.read_table(
-                matrix_file_path,
-                index_col=0,
-                header=None,
-                skiprows=lambda x: x != self.id_row - 1,
-                nrows=1,
+    def _remap_and_prune_columns(self, data, series):
+        offset = series.id_offset(self.id_row)
+        if self.matrix_file_key_tag is not None:
+            column_mapping = build_column_mapping(
+                series, key_tag=self.matrix_file_key_tag
             )
-            column_mapping = dict(zip(data.columns, header_row.iloc[0]))
+        elif self.matrix_file_key_line is not None:
+            column_mapping = build_column_mapping(
+                series, key_line=self.matrix_file_key_line, offset=offset
+            )
         else:
-            # Use the key line for the mapping
-            mapping_df = pd.read_table(
-                matrix_file_path,
-                index_col=0,
-                skiprows=lambda x: x != self.id_row - 1
-                and x != self.matrix_file_key_line - 1,
+            column_mapping = dict(zip(data.columns, series.sample_ids()))
+        pruned = map_and_prune_columns(data, column_mapping)
+        if pruned.shape[1] == 0:
+            raise ValueError(
+                "No sample columns matched the series matrix; the GEO header "
+                "may have changed"
             )
-            column_mapping = mapping_df.to_dict("records")[0]
-
-            # Reverse the mapping if needed as key is based on first line loaded
-            reverse_mapping = self.id_row < self.matrix_file_key_line
-            if reverse_mapping:
-                column_mapping = {v: k for k, v in column_mapping.items()}
-
-        data = data.rename(columns=column_mapping)
-        data = data[
-            [col for col in data.columns if col in column_mapping.values()]
-        ]
-        return data
+        return pruned
 
     def _metadata_load_list(self):
         load_list = [
