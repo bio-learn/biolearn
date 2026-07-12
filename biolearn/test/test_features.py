@@ -107,3 +107,54 @@ def test_validate_missing_layer_frame_is_empty_set():
     model = _StubModel(RequiredFeatures("dnam", ("cg1",)))
     with pytest.raises(MissingFeaturesError):
         validate_required_features(model, _geo(dnam=None))
+
+
+from biolearn.model import (
+    LinearMethylationModel,
+    LinearTranscriptomicModel,
+)
+
+
+def _linear_methylation_model():
+    coeffs = pd.DataFrame(
+        {"CoefficientTraining": [0.5, 0.5, 1.0]},
+        index=["cg1", "cg2", "intercept"],
+    )
+    return LinearMethylationModel(coeffs, transform=lambda x: x, name="TestLM")
+
+
+def test_linear_methylation_required_features():
+    model = _linear_methylation_model()
+    rf = model.required_features()
+    assert rf.layer == "dnam"
+    assert set(rf.features) == {"cg1", "cg2"}
+    assert rf.metadata == ()
+    assert "intercept" not in rf.features
+
+
+def test_linear_transcriptomic_layer_is_rna():
+    coeffs = pd.DataFrame(
+        {"CoefficientTraining": [0.5, 1.0]}, index=["GENE1", "intercept"]
+    )
+    model = LinearTranscriptomicModel(coeffs, transform=lambda x: x)
+    rf = model.required_features()
+    assert rf.layer == "rna"
+    assert set(rf.features) == {"GENE1"}
+
+
+def test_linear_methylation_predict_raises_on_missing_cpg():
+    model = _linear_methylation_model()
+    dnam = pd.DataFrame({"S1": [0.1]}, index=["cg1"])
+    geo = _geo(dnam=dnam)
+    with pytest.raises(
+        MissingFeaturesError, match=r"Missing required CpG sites.*cg2"
+    ):
+        model.predict(geo)
+
+
+def test_linear_methylation_missing_cpg_is_value_error():
+    # Backward compatibility: existing `except ValueError` still catches it.
+    model = _linear_methylation_model()
+    dnam = pd.DataFrame({"S1": [0.1]}, index=["cg1"])
+    with pytest.raises(ValueError):
+        model.predict(_geo(dnam=dnam))
