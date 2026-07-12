@@ -158,3 +158,33 @@ def test_linear_methylation_missing_cpg_is_value_error():
     dnam = pd.DataFrame({"S1": [0.1]}, index=["cg1"])
     with pytest.raises(ValueError):
         model.predict(_geo(dnam=dnam))
+
+
+from biolearn.model_gallery import ModelGallery
+from biolearn.data_library import GeoData
+from biolearn.util import get_test_data_file
+
+
+def test_tolerant_clock_runs_when_required_cpg_missing():
+    # EpiTOC2 is tolerant by design (uses the CpG intersection). Dropping a
+    # required CpG must NOT raise; required_features() is descriptive only.
+    data = GeoData.load_csv(
+        get_test_data_file("testset/"), "testset", validate=False
+    )
+    model = ModelGallery().get("EpiTOC2", imputation_method="none")
+    present_required = [
+        cpg for cpg in model.methylation_sites() if cpg in data.dnam.index
+    ]
+    assert present_required, "test fixture lacks EpiTOC2 CpGs"
+
+    partial = data.copy()
+    partial.dnam = data.dnam.drop(index=present_required[:1])
+    result = model.predict(partial)  # must not raise
+    assert result is not None
+
+
+def test_tolerant_clock_reports_dnam_layer():
+    model = ModelGallery().get("EpiTOC2", imputation_method="none")
+    rf = model.required_features()
+    assert rf.layer == "dnam"
+    assert len(rf.features) > 0

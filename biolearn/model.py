@@ -1293,6 +1293,9 @@ class AltumAgeModel:
     def methylation_sites(self):
         return list(self.reference)
 
+    def required_features(self):
+        return RequiredFeatures("dnam", tuple(self.methylation_sites()))
+
 
 def quantile_normalize(df):
     rank_mean = (
@@ -1445,6 +1448,9 @@ class DeconvolutionModel:
     # returns required methylation sites
     def methylation_sites(self):
         return list(self.reference.index)
+
+    def required_features(self):
+        return RequiredFeatures("dnam", tuple(self.methylation_sites()))
 
 
 class LinearModel:
@@ -1929,6 +1935,9 @@ class SexEstimationModel:
     def methylation_sites(self):
         return list(self.coefficients.index)
 
+    def required_features(self):
+        return RequiredFeatures("dnam", tuple(self.methylation_sites()))
+
 
 class EpiTOC2Model:
     def __init__(self, reference_file):
@@ -1967,6 +1976,9 @@ class EpiTOC2Model:
 
     def methylation_sites(self):
         return list(self.CpG_names)
+
+    def required_features(self):
+        return RequiredFeatures("dnam", tuple(self.methylation_sites()))
 
 
 class HurdleAPIModel:
@@ -2231,6 +2243,9 @@ class HurdleAPIModel:
         """Return list of required CpG sites for imputation compatibility."""
         return self.required_cpgs if self.required_cpgs else []
 
+    def required_features(self):
+        return RequiredFeatures("dnam", tuple(self.methylation_sites()))
+
 
 class GPAgeModel:
     """Gaussian Process regression model for age prediction (GP-age clock)."""
@@ -2280,6 +2295,9 @@ class GPAgeModel:
 
     def methylation_sites(self):
         return self._sites
+
+    def required_features(self):
+        return RequiredFeatures("dnam", tuple(self.methylation_sites()))
 
 
 class ImputationDecorator:
@@ -2432,6 +2450,9 @@ class MiAgeModel:
     def methylation_sites(self):
         """Return list of required CpG sites"""
         return self.cpg_sites
+
+    def required_features(self):
+        return RequiredFeatures("dnam", tuple(self.methylation_sites()))
 
 
 def single_sample_clock(clock_function, data):
