@@ -16,6 +16,7 @@ from typing import Optional, Dict, Any, Union
 from biolearn.data_library import GeoData
 from biolearn.dunedin_pace import dunedin_pace_normalization
 from biolearn.util import get_data_file
+from biolearn.features import RequiredFeatures, validate_required_features
 
 
 def anti_trafo(x, adult_age=20):
@@ -1292,6 +1293,9 @@ class AltumAgeModel:
     def methylation_sites(self):
         return list(self.reference)
 
+    def required_features(self):
+        return RequiredFeatures("dnam", tuple(self.methylation_sites()))
+
 
 def quantile_normalize(df):
     rank_mean = (
@@ -1445,8 +1449,13 @@ class DeconvolutionModel:
     def methylation_sites(self):
         return list(self.reference.index)
 
+    def required_features(self):
+        return RequiredFeatures("dnam", tuple(self.methylation_sites()))
+
 
 class LinearModel:
+    _LAYER = "dnam"
+
     def __init__(
         self,
         coefficient_file_or_df,
@@ -1490,9 +1499,9 @@ class LinearModel:
         )
 
     def predict(self, geo_data):
+        self._validate_inputs(geo_data)
         matrix_data = self._get_data_matrix(geo_data)
         matrix_data = self.preprocess(matrix_data)
-        self._validate_required_features(matrix_data)
         matrix_data.loc["intercept"] = 1
 
         # Join the coefficients and dnam_data on the index
@@ -1514,7 +1523,13 @@ class LinearModel:
         # Return as a DataFrame
         return result.apply(self.transform).to_frame(name="Predicted")
 
-    def _validate_required_features(self, matrix_data):
+    def required_features(self):
+        features = tuple(
+            index for index in self.coefficients.index if index != "intercept"
+        )
+        return RequiredFeatures(self._LAYER, features)
+
+    def _validate_inputs(self, geo_data):
         return
 
     def _get_data_matrix(self, geo_data):
@@ -1522,33 +1537,11 @@ class LinearModel:
 
 
 class LinearMethylationModel(LinearModel):
-    _MISSING_CPG_PREVIEW_LIMIT = 5
-
     def _get_data_matrix(self, geo_data):
         return geo_data.dnam
 
-    def _validate_required_features(self, matrix_data):
-        required_cpgs = self.methylation_sites()
-        missing_cpgs = sorted(set(required_cpgs) - set(matrix_data.index))
-        if not missing_cpgs:
-            return
-
-        model_name = self.details.get("name")
-        model_label = f" for model '{model_name}'" if model_name else ""
-        preview_limit = self._MISSING_CPG_PREVIEW_LIMIT
-        preview = ", ".join(missing_cpgs[:preview_limit])
-        remaining = len(missing_cpgs) - preview_limit
-        if remaining > 0:
-            preview = (
-                f"showing first {preview_limit}: {preview} (+{remaining} more)"
-            )
-
-        raise ValueError(
-            "Missing required CpG sites"
-            f"{model_label} ({len(missing_cpgs)}/{len(required_cpgs)}): "
-            f"{preview}. "
-            "Provide methylation data with these CpGs or use an imputation method that includes them."
-        )
+    def _validate_inputs(self, geo_data):
+        validate_required_features(self, geo_data)
 
     def methylation_sites(self):
         unique_vars = set(self.coefficients.index) - {"intercept"}
@@ -1657,8 +1650,16 @@ class PCLinearTransformationModel(LinearModel):
             ).iloc[:, 0]
         return list(self.center_.index)
 
+    def required_features(self):
+        # Coefficients are principal components, not CpGs; describe the CpG
+        # inputs instead. PC clocks tolerate missing CpGs (intersect and
+        # center-fill), so this is descriptive only, never hard-validated.
+        return RequiredFeatures("dnam", tuple(self.methylation_sites()))
+
 
 class LinearTranscriptomicModel(LinearModel):
+    _LAYER = "rna"
+
     def _get_data_matrix(self, geo_data):
         return geo_data.rna
 
@@ -1803,6 +1804,13 @@ class GrimageModel:
         unique_vars = set(filtered_df["var"]) - {"Intercept", "Age", "Female"}
         return list(unique_vars)
 
+    def required_features(self):
+        # Grimage keeps its own runtime age/sex checks; these are declared
+        # for introspection only.
+        return RequiredFeatures(
+            "dnam", tuple(self.methylation_sites()), ("age", "sex")
+        )
+
 
 class LinearMultipartProteomicModel:
     def __init__(
@@ -1871,6 +1879,14 @@ class LinearMultipartProteomicModel:
     def methylation_sites(self):
         return []
 
+    def required_features(self):
+        proteins = tuple(
+            protein
+            for protein in self.coefficients["Protein"].unique()
+            if str(protein).lower() != "intercept"
+        )
+        return RequiredFeatures("protein_olink", proteins)
+
 
 class SexEstimationModel:
     def __init__(self, coeffecient_file, **details):
@@ -1934,6 +1950,9 @@ class SexEstimationModel:
     def methylation_sites(self):
         return list(self.coefficients.index)
 
+    def required_features(self):
+        return RequiredFeatures("dnam", tuple(self.methylation_sites()))
+
 
 class EpiTOC2Model:
     def __init__(self, reference_file):
@@ -1972,6 +1991,9 @@ class EpiTOC2Model:
 
     def methylation_sites(self):
         return list(self.CpG_names)
+
+    def required_features(self):
+        return RequiredFeatures("dnam", tuple(self.methylation_sites()))
 
 
 class HurdleAPIModel:
@@ -2236,6 +2258,9 @@ class HurdleAPIModel:
         """Return list of required CpG sites for imputation compatibility."""
         return self.required_cpgs if self.required_cpgs else []
 
+    def required_features(self):
+        return RequiredFeatures("dnam", tuple(self.methylation_sites()))
+
 
 class GPAgeModel:
     """Gaussian Process regression model for age prediction (GP-age clock)."""
@@ -2285,6 +2310,9 @@ class GPAgeModel:
 
     def methylation_sites(self):
         return self._sites
+
+    def required_features(self):
+        return RequiredFeatures("dnam", tuple(self.methylation_sites()))
 
 
 class ImputationDecorator:
@@ -2437,6 +2465,9 @@ class MiAgeModel:
     def methylation_sites(self):
         """Return list of required CpG sites"""
         return self.cpg_sites
+
+    def required_features(self):
+        return RequiredFeatures("dnam", tuple(self.methylation_sites()))
 
 
 def single_sample_clock(clock_function, data):
