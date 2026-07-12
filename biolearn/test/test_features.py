@@ -204,3 +204,25 @@ def test_proteomic_clock_reports_protein_layer():
     rf = model.required_features()
     assert rf.layer == "protein_olink"
     assert "intercept" not in [str(f).lower() for f in rf.features]
+
+
+def test_every_gallery_model_exposes_required_features():
+    gallery = ModelGallery()
+    for name, model_def in gallery.model_definitions.items():
+        # HurdleAPIModel needs API credentials just to instantiate; skip it.
+        if model_def["model"]["type"] == "HurdleAPIModel":
+            continue
+        model = gallery.get(name)  # default imputation may wrap in decorator
+        rf = model.required_features()
+        assert rf.layer in VALID_LAYERS, name
+        assert set(rf.keys()) == {"layer", "features", "metadata"}, name
+        assert isinstance(rf["features"], list), name
+        assert isinstance(rf["metadata"], list), name
+
+
+def test_required_features_forwards_through_imputation_decorator():
+    model = ModelGallery().get("Horvathv1", imputation_method="averaging")
+    # ImputationDecorator wraps the clock; __getattr__ forwards the call.
+    rf = model.required_features()
+    assert rf.layer == "dnam"
+    assert len(rf.features) > 0

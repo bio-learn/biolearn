@@ -9,7 +9,6 @@ major version bump.
 from collections.abc import Mapping
 from dataclasses import dataclass
 
-
 VALID_LAYERS = (
     "dnam",
     "rna",
