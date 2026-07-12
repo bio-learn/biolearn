@@ -188,3 +188,19 @@ def test_tolerant_clock_reports_dnam_layer():
     rf = model.required_features()
     assert rf.layer == "dnam"
     assert len(rf.features) > 0
+
+
+def test_grimage_declares_age_and_sex_metadata():
+    model = ModelGallery().get("GrimAgeV1", imputation_method="none")
+    rf = model.required_features()
+    assert rf.layer == "dnam"
+    assert set(rf.metadata) == {"age", "sex"}
+
+
+def test_proteomic_clock_reports_protein_layer():
+    model = ModelGallery().get(
+        "OrganAgeChronological", imputation_method="none"
+    )
+    rf = model.required_features()
+    assert rf.layer == "protein_olink"
+    assert "intercept" not in [str(f).lower() for f in rf.features]

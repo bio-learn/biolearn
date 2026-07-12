@@ -1804,6 +1804,13 @@ class GrimageModel:
         unique_vars = set(filtered_df["var"]) - {"Intercept", "Age", "Female"}
         return list(unique_vars)
 
+    def required_features(self):
+        # Grimage keeps its own runtime age/sex checks; these are declared
+        # for introspection only.
+        return RequiredFeatures(
+            "dnam", tuple(self.methylation_sites()), ("age", "sex")
+        )
+
 
 class LinearMultipartProteomicModel:
     def __init__(
@@ -1871,6 +1878,14 @@ class LinearMultipartProteomicModel:
 
     def methylation_sites(self):
         return []
+
+    def required_features(self):
+        proteins = tuple(
+            protein
+            for protein in self.coefficients["Protein"].unique()
+            if str(protein).lower() != "intercept"
+        )
+        return RequiredFeatures("protein_olink", proteins)
 
 
 class SexEstimationModel:
