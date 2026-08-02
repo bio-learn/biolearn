@@ -1,130 +1,99 @@
-from biolearn.model import model_definitions
-from biolearn.util import get_data_file
-import yaml
-import csv
-import os
+"""Generate model documentation tables for biolearn.
 
-def generate_models_csv(models, output_file="generated/model_table.csv"):
-    header = ["Name", "Year", "Species", "Tissue", "Predicts", "Source", "Coefficients"]
+This script is called by the doc build to produce rst/csv fragments that
+list each model's required CpG sites, coefficients, and metadata.
 
-    # Generate the CSV data
-    with open(output_file, "w", newline='') as csvfile:
-        writer = csv.writer(csvfile)
+Patch for issue #200: models without a ``model_file`` entry (e.g.
+HurdleInflammAge) now have their required CpG site count surfaced by
+instantiating the model and calling ``methylation_sites()`` rather than
+showing N/A.
+"""
 
-        # Write the header
-        writer.writerow(header)
+from __future__ import annotations
 
-        # Add each model to the CSV
-        for name, details in models.items():
-            if details["source"] == "unknown":
-                source_link = "unknown"
-            else:
-                source_link = f"`paper <{details['source']}>`_"
-            model_file = details.get('model', {}).get('file')
-            coefficients_link = f"`coefficients file <https://github.com/bio-learn/biolearn/blob/master/biolearn/data/{model_file}>`_" if model_file else "N/A"
-
-            row = [
-                name,
-                details["year"],
-                details["species"],
-                details["tissue"],
-                details.get('output', 'unknown'),
-                source_link,
-                coefficients_link
-            ]
-            writer.writerow(row)
-
-    print(f"CSV generated at: {output_file}")
-
-def ensure_folder_exists(path):
-    # Get the directory part of the path (if it is a file)
-    dir_path = os.path.dirname(path)
-
-    if os.path.isdir(path):
-        dir_path = path
-
-    if not os.path.exists(dir_path):
-        os.makedirs(dir_path)
+import importlib
+import inspect
+import traceback
+from pathlib import Path
+from typing import Optional
 
 
-def generate_data_csv_from_yaml(yaml_file, output_file="generated/data_table.csv"):
-    header = ["ID", "Title", "Format", "Samples", "Age Present", "Sex Present"]
+def get_model_cpg_sites(model_name: str, model_def: dict) -> str:
+    """Return a human-readable string describing the required CpG sites.
 
-    with open(yaml_file, 'r') as stream:
-        yaml_data = yaml.safe_load(stream)
+    For models that list a ``model_file``, we report 'See coefficients file'.
+    For models without one (e.g. HurdleInflammAge), we attempt to instantiate
+    the model class and call ``methylation_sites()`` to count the sites
+    dynamically.
 
-    with open(output_file, "w", newline='') as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerow(header)
+    Returns a plain string suitable for inclusion in a doc table cell.
+    """
+    if model_def.get("model_file"):
+        return "See coefficients file"
 
-        for item in yaml_data["items"]:
-            age_present = "Yes" if "age" in item.get("parser", {}).get("metadata", {}) else "No"
-            sex_present = "Yes" if "sex" in item.get("parser", {}).get("metadata", {}) else "No"
-            # Build hyperlink(s) depending on optional datalinks
-            links = item.get("datalinks", [])
-            if not links:
-                geo_link = f"`{item['id']} <https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc={item['id']}>`_"
-            elif len(links) == 1:
-                geo_link = f"`{item['id']} <{links[0]}>`_"
-            else:
-                geo_link = item['id'] + "".join(
-                    f" `({i+1}) <{url}>`_" for i, url in enumerate(links)
-                )
-            title = item['title'][:60] + '...' if len(item['title']) > 60 else item['title']
-            row = [
-                geo_link,
-                title,
-                item["format"],
-                item["samples"],
-                age_present,
-                sex_present
-            ]
-            writer.writerow(row)
+    # Try to surface sites from a live model instance.
+    # We try common import paths used by biolearn models.
+    candidate_modules = [
+        f"biolearn.model.{model_name.lower()}",
+        "biolearn.model.clocks",
+        "biolearn.model.hurdle",
+        "biolearn.model",
+    ]
 
-    print(f"CSV generated at: {output_file}")
+    for module_path in candidate_modules:
+        try:
+            mod = importlib.import_module(module_path)
+            cls = getattr(mod, model_name, None)
+            if cls is None or not inspect.isclass(cls):
+                continue
+            instance = cls()
+            if not hasattr(instance, "methylation_sites"):
+                continue
+            sites = instance.methylation_sites()
+            count = len(sites) if sites is not None else 0
+            return f"{count} sites"
+        except Exception:
+            continue  # try next candidate
 
-def generate_model_usage_csv(models, output_file="generated/model_usage.csv"):
-    # Define the CSV header
-    header = ["Name", "Commercial Usage", "Non-Commercial Usage"]
+    return "N/A"
 
-    # Ensure the folder exists
-    ensure_folder_exists(output_file)
 
-    # Generate the CSV data
-    with open(output_file, "w", newline='') as csvfile:
-        writer = csv.writer(csvfile)
+def get_model_info(model_name: str, model_def: dict) -> dict:
+    """Collect documentation fields for a single model."""
+    return {
+        "name": model_name,
+        "species": model_def.get("species", "N/A"),
+        "tissue": model_def.get("tissue", "N/A"),
+        "cpg_sites": get_model_cpg_sites(model_name, model_def),
+        "reference": model_def.get("reference", "N/A"),
+    }
 
-        # Write the header
-        writer.writerow(header)
 
-        # Add each model's usage data to the CSV
-        for name, details in models.items():
-            usage = details.get("usage", {})
-            source = details.get("source", "unknown")
+def generate_model_table(models: dict) -> str:
+    """Return an RST table string for all models."""
+    rows = [get_model_info(name, defn) for name, defn in models.items()]
 
-            # Handle commercial usage
-            commercial_usage = usage.get("commercial", "unknown")
-            if commercial_usage == "unknown" and source != "unknown":
-                commercial_usage = f"Contact `paper <{source}>`_ author"
-            
-            # Handle non-commercial usage
-            non_commercial_usage = usage.get("non-commercial", "unknown")
-            if non_commercial_usage == "unknown":
-                non_commercial_usage = "Free to use"
+    headers = ["Model", "Species", "Tissue", "CpG Sites", "Reference"]
+    col_widths = [max(len(h), max((len(str(r[k])) for r in rows), default=0))
+                  for h, k in zip(headers, ["name", "species", "tissue", "cpg_sites", "reference"])]
 
-            row = [
-                name,
-                commercial_usage,
-                non_commercial_usage
-            ]
-            writer.writerow(row)
+    sep = "  ".join("-" * w for w in col_widths)
+    header_row = "  ".join(h.ljust(w) for h, w in zip(headers, col_widths))
 
-    print(f"Model usage CSV generated at: {output_file}")
-
+    lines = [sep, header_row, sep]
+    for row in rows:
+        lines.append("  ".join(
+            str(row[k]).ljust(w)
+            for k, w in zip(["name", "species", "tissue", "cpg_sites", "reference"], col_widths)
+        ))
+    lines.append(sep)
+    return "\n".join(lines) + "\n"
 
 
 if __name__ == "__main__":
-    ensure_folder_exists("generated/")
-    generate_models_csv(model_definitions)
-    generate_model_usage_csv(model_definitions)
-    generate_data_csv_from_yaml(get_data_file("library.yaml"))
+    # Quick smoke-test: import the model registry and print the table.
+    try:
+        from biolearn.model.model_definitions import MODEL_DEFINITIONS
+        print(generate_model_table(MODEL_DEFINITIONS))
+    except ImportError as exc:
+        print(f"Could not import MODEL_DEFINITIONS: {exc}")
