@@ -42,18 +42,39 @@ def run_predictions(data, predictors_dict):
     return results_df
 
 
-def calculate_c_index(data, predictor_results):
+def calculate_c_index(
+    data,
+    predictor_results,
+    ci_bootstrap_samples=0,
+    seed=42,
+    adjust_for_age=False,
+):
     """
-    Calculates the C-index for each predictor in the predictor_results DataFrame without adjusting for age.
+    Calculates the C-index for each predictor in the predictor_results DataFrame.
 
     Args:
         data (Dataset): A Dataset object containing metadata with columns:
             'dead' - boolean indicating if the subject is dead
             'years_until_death' - time until death or censoring
         predictor_results (pd.DataFrame): DataFrame containing predictor results. Columns are the names of the predictors, and rows are IDs from data.
+        ci_bootstrap_samples (int): When > 0, also report a 95% percentile-bootstrap
+            confidence interval for each C-index (columns 'CI95_low'/'CI95_high'),
+            resampling subjects with replacement this many times. A C-index of 0.75
+            from 100 deaths and from 5,000 deaths support very different conclusions;
+            the interval makes that difference visible.
+        seed (int): Seed for the bootstrap resampling, so reported intervals are
+            reproducible.
+        adjust_for_age (bool): When True, the C-index is computed on the residuals
+            of each predictor after regressing out chronological age (metadata
+            column 'age'), mirroring the standardization used in
+            calculate_mortality_hazard_ratios. Chronological age alone predicts
+            mortality, so an unadjusted C-index rewards a clock merely for
+            correlating with age; the adjusted value asks what the clock adds
+            beyond it.
 
     Returns:
-        pd.DataFrame: A DataFrame containing C-index values for each predictor.
+        pd.DataFrame: A DataFrame containing C-index values for each predictor,
+        plus CI columns when ci_bootstrap_samples > 0.
     """
     # Merge predictor results with metadata
     analysis_df = pd.merge(
@@ -62,12 +83,23 @@ def calculate_c_index(data, predictor_results):
 
     # Remove rows with missing 'dead' or 'years_until_death' values
     analysis_df = analysis_df.dropna(subset=["dead", "years_until_death"])
+    if adjust_for_age:
+        analysis_df = analysis_df.dropna(subset=["age"])
+
+    def compute_scores(frame, clock):
+        predictor_values = frame[clock].astype(float)
+        if adjust_for_age:
+            age = frame["age"].astype(float)
+            slope, intercept = np.polyfit(age, predictor_values, 1)
+            predictor_values = predictor_values - (slope * age + intercept)
+        return predictor_values
 
     c_index_values = []
+    ci_lows = []
+    ci_highs = []
 
     for clock in predictor_results.columns:
-        # Ensure predictor values are numeric
-        predictor_values = analysis_df[clock].astype(float)
+        predictor_values = compute_scores(analysis_df, clock)
 
         # Calculate the C-index directly
         c_index = concordance_index(
@@ -77,6 +109,25 @@ def calculate_c_index(data, predictor_results):
         )
         c_index_values.append(c_index)
 
+        if ci_bootstrap_samples > 0:
+            rng = np.random.default_rng(seed)
+            boot_values = []
+            n = len(analysis_df)
+            for _ in range(ci_bootstrap_samples):
+                idx = rng.integers(0, n, size=n)
+                sample = analysis_df.iloc[idx]
+                if sample["dead"].astype(bool).sum() == 0:
+                    continue
+                boot_values.append(
+                    concordance_index(
+                        event_times=sample["years_until_death"],
+                        predicted_scores=-compute_scores(sample, clock),
+                        event_observed=sample["dead"],
+                    )
+                )
+            ci_lows.append(np.quantile(boot_values, 0.025))
+            ci_highs.append(np.quantile(boot_values, 0.975))
+
     # Create a DataFrame with the results
     results_df = pd.DataFrame(
         {
@@ -84,6 +135,9 @@ def calculate_c_index(data, predictor_results):
             "C_index": c_index_values,
         }
     )
+    if ci_bootstrap_samples > 0:
+        results_df["CI95_low"] = ci_lows
+        results_df["CI95_high"] = ci_highs
 
     return results_df
 
