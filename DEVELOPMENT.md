@@ -135,10 +135,8 @@ This library is packaged with examples that can be downloaded via the doc websit
 
 1. **PyPI maintainer access**: You must be added as a maintainer on the [biolearn PyPI project](https://pypi.org/project/biolearn/). Contact an existing maintainer to be added.
 2. **PyPI API token**: Generate a project-scoped API token at [pypi.org/manage/account/token](https://pypi.org/manage/account/token/). Scope it to the `biolearn` project only.
-3. **Hatch**: Install the build/publish tool globally:
-   ```bash
-   pipx install hatch
-   ```
+3. **Development environment**: Complete the [setup](#setup) steps. The
+   development dependencies include Hatch, the build and publishing tool.
 
 ### Versioning
 
@@ -169,7 +167,7 @@ Tags use the `v` prefix (e.g., `v0.9.0`). You **must** tag before building — o
 
 3. **Build**
    ```bash
-   hatch build -c
+   .venv/bin/hatch build -c
    ```
    Verify the filenames in `dist/` show the correct version with no `dev` suffix.
 
@@ -177,7 +175,7 @@ Tags use the `v` prefix (e.g., `v0.9.0`). You **must** tag before building — o
    ```bash
    export HATCH_INDEX_USER=__token__
    export HATCH_INDEX_AUTH=<your-api-token>
-   hatch publish
+   .venv/bin/hatch publish
    ```
 
 5. **Build and publish documentation**
@@ -188,5 +186,5 @@ Tags use the `v` prefix (e.g., `v0.9.0`). You **must** tag before building — o
    ```
    Copy the contents of `doc/_build/html/` into the [bio-learn.github.io](https://github.com/bio-learn/bio-learn.github.io) repo and push.
 
-**Note:** The Makefile has a `publish` target (`make publish`) but it references `.venv/bin/hatch` which may not be available. Use a globally installed `hatch` as described above.
-
+**Note:** Once the release artifacts have been verified, `make publish` can be
+used to rebuild and publish them in one command.
