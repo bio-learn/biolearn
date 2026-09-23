@@ -75,7 +75,7 @@ def generate_data_csv_from_yaml(yaml_file, output_file="generated/data_table.csv
                 geo_link,
                 title,
                 item["format"],
-                item["samples"],
+                item.get("samples", "N/A"),
                 age_present,
                 sex_present
             ]
