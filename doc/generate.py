@@ -3,6 +3,7 @@ from biolearn.util import get_data_file
 import yaml
 import csv
 import os
+import importlib
 
 def generate_models_csv(models, output_file="generated/model_table.csv"):
     header = ["Name", "Year", "Species", "Tissue", "Predicts", "Source", "Coefficients"]
@@ -22,6 +23,27 @@ def generate_models_csv(models, output_file="generated/model_table.csv"):
                 source_link = f"`paper <{details['source']}>`_"
             model_file = details.get('model', {}).get('file')
             coefficients_link = f"`coefficients file <https://github.com/bio-learn/biolearn/blob/master/biolearn/data/{model_file}>`_" if model_file else "N/A"
+
+            # If there is no static coefficients file, try to obtain required CpG sites from the model class
+            if not model_file:
+                class_path = details.get('class')
+                if not class_path:
+                    class_path = f"biolearn.model.{name}"
+                try:
+                    module_path, class_name = class_path.rsplit(".", 1)
+                    mod = importlib.import_module(module_path)
+                    model_cls = getattr(mod, class_name)
+                    if hasattr(model_cls, "methylation_sites"):
+                        sites = model_cls.methylation_sites()
+                        if isinstance(sites, (list, tuple)):
+                            sites_str = ", ".join(map(str, sites))
+                            if len(sites_str) > 200:
+                                sites_str = sites_str[:197] + "..."
+                            else:
+                                sites_str = str(sites)
+                            coefficients_link = sites_str if sites_str else "N/A"
+                except Exception:
+                    pass
 
             row = [
                 name,
@@ -120,7 +142,6 @@ def generate_model_usage_csv(models, output_file="generated/model_usage.csv"):
             writer.writerow(row)
 
     print(f"Model usage CSV generated at: {output_file}")
-
 
 
 if __name__ == "__main__":
