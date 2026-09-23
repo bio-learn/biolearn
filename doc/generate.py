@@ -4,6 +4,8 @@ import yaml
 import csv
 import os
 
+DATA_URL = "https://github.com/bio-learn/biolearn/blob/master/biolearn/data"
+
 def generate_models_csv(models, output_file="generated/model_table.csv"):
     header = ["Name", "Year", "Species", "Tissue", "Predicts", "Source", "Coefficients"]
 
@@ -21,7 +23,14 @@ def generate_models_csv(models, output_file="generated/model_table.csv"):
             else:
                 source_link = f"`paper <{details['source']}>`_"
             model_file = details.get('model', {}).get('file')
-            coefficients_link = f"`coefficients file <https://github.com/bio-learn/biolearn/blob/master/biolearn/data/{model_file}>`_" if model_file else "N/A"
+            # Models without a coefficients file (e.g. API models) may list their required sites instead
+            sites_file = details.get('model', {}).get('sites_file')
+            if model_file:
+                coefficients_link = f"`coefficients file <{DATA_URL}/{model_file}>`_"
+            elif sites_file:
+                coefficients_link = f"`required sites <{DATA_URL}/{sites_file}>`_"
+            else:
+                coefficients_link = "N/A"
 
             row = [
                 name,

@@ -1029,7 +1029,15 @@ class AutoScanGeoMatrixParser:
 
     def _create_metadata(self, metadata_query_url):
         response = requests.get(metadata_query_url)
-        json_data = response.json()
+        response.raise_for_status()
+        try:
+            json_data = response.json()
+        except ValueError as e:
+            # NCBI serves an HTML CAPTCHA page when it blocks automated requests
+            raise ValueError(
+                f"GEO metadata query did not return JSON: {metadata_query_url}. "
+                "NCBI may be blocking automated requests."
+            ) from e
         smaples = [item for item in json_data["GeoMetaData"]]
         return self._convert_to_metadata_df(self.metadata_keys, smaples)
 

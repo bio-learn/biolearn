@@ -1082,6 +1082,7 @@ model_definitions = {
         "model": {
             "type": "HurdleAPIModel",
             "use_production": True,
+            "sites_file": "Hurdle_CpGs.csv",
             "default_imputation": "none",
         },
         "usage": {
@@ -1995,12 +1996,14 @@ class HurdleAPIModel:
     DEFAULT_TIMEOUT = 30  # seconds
     MAX_RETRIES = 3
     RETRY_DELAY = 1  # seconds
+    DEFAULT_SITES_FILE = "Hurdle_CpGs.csv"
 
     def __init__(
         self,
         api_key: Optional[str] = None,
         use_production: bool = False,
         timeout: Optional[int] = None,
+        sites_file: str = DEFAULT_SITES_FILE,
         **details: Any,
     ) -> None:
         self.details = details
@@ -2023,7 +2026,7 @@ class HurdleAPIModel:
 
         # Load required CpG sites
         try:
-            cpg_file = get_data_file("Hurdle_CpGs.csv")
+            cpg_file = get_data_file(sites_file)
             self.required_cpgs = pd.read_csv(cpg_file, encoding="ISO-8859-1")[
                 "ProbeID"
             ].tolist()
@@ -2040,6 +2043,7 @@ class HurdleAPIModel:
         model_def = clock_definition["model"]
         return cls(
             use_production=model_def.get("use_production", False),
+            sites_file=model_def.get("sites_file", cls.DEFAULT_SITES_FILE),
             **{k: v for k, v in clock_definition.items() if k != "model"},
         )
 

@@ -1,3 +1,4 @@
+import os
 import pytest
 from math import isclose
 import pandas as pd
@@ -5,6 +6,7 @@ from collections import defaultdict
 import numpy as np
 from biolearn import model
 from biolearn.util import (
+    get_data_file,
     get_test_data_file,
     load_test_data_file,
 )
@@ -144,6 +146,22 @@ def test_dunedin_pace_normalization():
     assert (
         total_mismatches == 0
     ), "Dataframes are not equal within the given tolerance."
+
+
+@pytest.mark.parametrize(
+    "model_name, model_entry",
+    [
+        (name, entry)
+        for name, entry in model.model_definitions.items()
+        if "sites_file" in entry["model"]
+    ],
+)
+def test_sites_file_exists(model_name, model_entry):
+    # The docs link to this file, so it must ship with the package
+    sites_file = model_entry["model"]["sites_file"]
+    assert os.path.isfile(
+        get_data_file(sites_file)
+    ), f"{model_name} sites_file '{sites_file}' not found in biolearn/data"
 
 
 # Run the test

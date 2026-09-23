@@ -10,6 +10,7 @@ import os
 
 from biolearn.model import HurdleAPIModel
 from biolearn.model_gallery import ModelGallery
+from biolearn.util import get_data_file
 
 
 class TestHurdleAPIModel:
@@ -155,6 +156,31 @@ class TestHurdleAPIModel:
         with patch.dict(os.environ, {"HURDLE_API_KEY": "test_key"}):
             model = gallery.get("HurdleInflammAge")
             assert isinstance(model, HurdleAPIModel)
+
+    def test_sites_loaded_from_definition_sites_file(self):
+        """Test that required sites come from the definition's sites_file."""
+        definition = ModelGallery().model_definitions["HurdleInflammAge"]
+        sites_file = definition["model"]["sites_file"]
+        expected = pd.read_csv(
+            get_data_file(sites_file), encoding="ISO-8859-1"
+        )["ProbeID"].tolist()
+
+        with patch.dict(os.environ, {"HURDLE_API_KEY": "test_key"}):
+            model = HurdleAPIModel.from_definition(definition)
+
+        assert len(expected) > 0
+        assert model.methylation_sites() == expected
+
+    def test_missing_sites_file_falls_back_to_all_sites(self):
+        """Test that an unknown sites_file warns and leaves sites unset."""
+        with pytest.warns(
+            UserWarning, match="Could not load Hurdle CpG sites"
+        ):
+            model = HurdleAPIModel(
+                api_key="test_key", sites_file="does_not_exist.csv"
+            )
+
+        assert model.methylation_sites() == []
 
     @patch("builtins.input", return_value="yes")
     def test_consent_only_asked_once(self, mock_input):
