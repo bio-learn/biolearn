@@ -56,7 +56,11 @@ plotting = ["matplotlib>=3.3.0", "seaborn>=0.13.0"]
 # Examples external dependencies
 examples = ["lifelines"]
 # Required for GP-age clock (Gaussian Process regression)
-gpage = ["gpy>=1.10.0"]
+gpage = [
+	"gpy>=1.10.0",
+	# gpy 1.14+ needs paramz>0.9.6, which requires Python 3.11+
+	"gpy<1.14; python_version < '3.11'",
+]
 # Requirements necessary for building the documentation
 doc = [
     "biolearn[plotting,examples]",
