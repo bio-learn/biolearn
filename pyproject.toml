@@ -78,6 +78,7 @@ doc = [
 # A combination of dependencies useful for developers
 dev = [
 	"biolearn[test,plotting,examples,doc,gpage]",
+	"hatch",
 	"jupyterlab",
 	"scikit-learn",
 	"torch",
